@@ -17,6 +17,11 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                primary: '#5EB54D',
+                secondary: '#027DC0',
+                'ijo-terang': '#6FD358',
+            }
         },
     },
 

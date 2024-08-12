@@ -118,8 +118,8 @@ const submit = () => {
                 </div>
             </form>
         </AuthenticationCard>
-        
-        <div class="lg:block hidden">
+
+        <div class="hidden">
             <img src="/img/Group 63.png" alt="">
         </div>
     </div>
