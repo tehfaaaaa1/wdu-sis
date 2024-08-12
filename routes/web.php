@@ -35,8 +35,10 @@ Route::middleware([
     })->name('surveys');
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
+})->name('users')->middleware(['ableCreateUser']);
 
-    Route::get('/dashboard/admin', function () {
-        return Inertia::render('Dashboard/Admin');
-    })->name('dashboard.admin');
-});
+Route::get('/dashboard/admin', function () {
+    return Inertia::render('Dashboard/Admin');
+})->name('dashboard.admin');
+
+Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');
