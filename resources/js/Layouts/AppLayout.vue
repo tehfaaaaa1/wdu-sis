@@ -48,7 +48,7 @@ const logout = () => {
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 lg:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
@@ -64,7 +64,7 @@ const logout = () => {
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <div class="hidden lg:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
                                 <!-- Teams Dropdown -->
                                 <template v-for="team in $page.props.auth.user.all_teams" :key="team.id">
@@ -193,7 +193,7 @@ const logout = () => {
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="-me-2 flex items-center sm:hidden">
+                        <div class="-me-2 flex items-center lg:hidden">
                             <button
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = !showingNavigationDropdown">
@@ -214,7 +214,7 @@ const logout = () => {
 
                 <!-- Responsive Navigation Menu -->
                 <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
-                    class="sm:hidden">
+                    class="lg:hidden">
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
@@ -298,7 +298,7 @@ const logout = () => {
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
-                                                    <div>{{ team.name }}</div>
+                                                    <div>{{ current_team }}</div>
                                                 </div>
                                             </ResponsiveNavLink>
                                         </form>
