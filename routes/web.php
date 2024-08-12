@@ -34,8 +34,8 @@ Route::middleware([
         return Inertia::render('Surveys');
     })->name('surveys');
 
-    Route::get('/users', [UserController::class, 'index'])->name('users');
-})->name('users')->middleware(['ableCreateUser']);
+    Route::get('/users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
+});
 
 Route::get('/dashboard/admin', function () {
     return Inertia::render('Dashboard/Admin');
