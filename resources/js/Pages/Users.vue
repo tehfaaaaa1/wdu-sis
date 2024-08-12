@@ -64,21 +64,6 @@ defineProps({ users: Object })
                                 <input type="checkbox" name="filter" id="klien" value="klien" class="rounded-sm">
                                 <label for="klien" class="ps-2 w-full">Klien</label>
                             </div>
-
-
-                            <!-- <DropdownLink v-if="$page.props.jetstream.hasApiFeatures"
-                                    :href="route('api-tokens.index')">
-                                    API Tokens
-                                </DropdownLink> -->
-
-                            <div class="border-t border-gray-200" />
-
-                            <!-- Authentication -->
-                            <form @submit.prevent="logout">
-                                <DropdownLink as="button">
-                                    Log Out
-                                </DropdownLink>
-                            </form>
                         </template>
                     </Dropdown>
                 </div>
@@ -104,7 +89,8 @@ defineProps({ users: Object })
                     </thead>
                     <tbody>
                         <tr v-for="user in users" class="bg-white border-b hover:bg-gray-50">
-                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block ">
+                            <td scope="row"
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block ">
                                 {{ user.name }}
                             </td>
                             <td class="px-6 py-4">
@@ -112,7 +98,7 @@ defineProps({ users: Object })
                             </td>
                             <td class="px-6 py-4 truncate">
                                 {{ user.usertype }}
-                                
+
                             </td>
                             <td class="px-6 py-4">
                                 <a href="#" class="font-medium text-blue-600 hover:underline mr-4">Edit</a>

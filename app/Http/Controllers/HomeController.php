@@ -21,6 +21,7 @@ class HomeController extends Controller
             return redirect()->route('dashboard'); 
         }
     }
+    
     public function store(Request $request, Team $team)
     {
         $request->validate([
@@ -34,7 +35,12 @@ class HomeController extends Controller
             return back()->withErrors(['email' => 'User with this email does not exist.']);
         }
 
+        // Assign the user to the team with the specified role
         $team->users()->attach($user->id, ['role' => $request->role]);
+
+        // Set the newly assigned team as the current team for the user
+        $user->current_team_id = $team->id;
+        $user->save();
 
         return back()->with('success', 'Team member added successfully.');
     }

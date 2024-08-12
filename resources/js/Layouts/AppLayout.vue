@@ -69,11 +69,12 @@ const logout = () => {
 
                         <div class="hidden lg:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
-                                <!-- Teams Dropdown -->
-                                <template v-for="team in $page.props.auth.user.all_teams" :key="team.id">
-                                    <p v-if="$page.props.auth.user.usertype === 'user'" class="text-white">You are
-                                        {{ team.name }}</p>
-                                </template>
+                                <div v-if="$page.props.auth.user.usertype === 'user'">
+                                <p class="text-white">
+                                    You are {{ $page.props.auth.user.all_teams.find(team => team.id === $page.props.auth.user.current_team_id).name }}
+                                </p>
+                                
+                            </div>
                                 <Dropdown v-if="$page.props.auth.user.usertype === 'admin'" align="right" width="60">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
