@@ -112,6 +112,7 @@ defineProps({ users: Object })
                             </td>
                             <td class="px-6 py-4 hidden sm:block truncate">
                                 {{ user.usertype }}
+                                
                             </td>
                             <td class="px-6 py-4">
                                 <a href="#" class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
