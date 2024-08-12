@@ -2,19 +2,20 @@
 
 namespace App\Actions\Jetstream;
 
+use Closure;
 use App\Models\Team;
 use App\Models\User;
-use Closure;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Laravel\Jetstream\Jetstream;
+use Laravel\Jetstream\Rules\Role;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Laravel\Jetstream\Contracts\InvitesTeamMembers;
-use Laravel\Jetstream\Events\InvitingTeamMember;
-use Laravel\Jetstream\Jetstream;
 use Laravel\Jetstream\Mail\TeamInvitation;
-use Laravel\Jetstream\Rules\Role;
+use Laravel\Jetstream\Events\InvitingTeamMember;
+use Laravel\Jetstream\Contracts\InvitesTeamMembers;
 
 class InviteTeamMember implements InvitesTeamMembers
 {
@@ -34,11 +35,7 @@ class InviteTeamMember implements InvitesTeamMembers
             'role' => $role,
         ]);
 
-<<<<<<< HEAD
         $user->switchTeam($team);
-=======
-        Mail::to($email)->send(new TeamInvitation($invitation));
->>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
     }
 
     /**
@@ -65,14 +62,15 @@ class InviteTeamMember implements InvitesTeamMembers
     {
         return array_filter([
             'email' => [
-                'required', 'email',
+                'required',
+                'email',
                 Rule::unique(Jetstream::teamInvitationModel())->where(function (Builder $query) use ($team) {
                     $query->where('team_id', $team->id);
                 }),
             ],
             'role' => Jetstream::hasRoles()
-                            ? ['required', 'string', new Role]
-                            : null,
+                ? ['required', 'string', new Role]
+                : null,
         ]);
     }
 
@@ -89,7 +87,6 @@ class InviteTeamMember implements InvitesTeamMembers
             );
         };
     }
-<<<<<<< HEAD
     public function store(Request $request, Team $team)
     {
         $request->validate([
@@ -107,6 +104,4 @@ class InviteTeamMember implements InvitesTeamMembers
 
         return back()->with('success', 'Team member added successfully.');
     }
-=======
->>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
 }
