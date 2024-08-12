@@ -68,7 +68,10 @@ const logout = () => {
                             <div class="ms-3 relative">
                                 <!-- Teams Dropdown -->
                                 <template v-for="team in $page.props.auth.user.all_teams" :key="team.id">
-                                <p v-if="$page.props.auth.user.usertype === 'user'" class="text-white">You are {{team.name}}</p>
+
+                                <p v-if="$page.props.auth.user.current_team_id === team.id && $page.props.auth.user.usertype === 'user'" class="text-white">
+                                    You are {{ team.name }}
+                                </p>
                                 </template>
                                 <Dropdown v-if="$page.props.auth.user.usertype === 'admin'" align="right" width="60">
                                     <template #trigger>
