@@ -67,7 +67,10 @@ const logout = () => {
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
                                 <!-- Teams Dropdown -->
-                                <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="60">
+                                <template v-for="team in $page.props.auth.user.all_teams" :key="team.id">
+                                <p v-if="$page.props.auth.user.usertype === 'user'" class="text-white">You are {{team.name}}</p>
+                                </template>
+                                <Dropdown v-if="$page.props.auth.user.usertype === 'admin'" align="right" width="60">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
@@ -216,7 +219,7 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin'" :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                             Admin Panel
                         </ResponsiveNavLink>
                     </div>
