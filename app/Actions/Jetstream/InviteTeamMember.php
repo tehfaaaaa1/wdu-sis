@@ -34,7 +34,11 @@ class InviteTeamMember implements InvitesTeamMembers
             'role' => $role,
         ]);
 
+<<<<<<< HEAD
         $user->switchTeam($team);
+=======
+        Mail::to($email)->send(new TeamInvitation($invitation));
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
     }
 
     /**
@@ -85,6 +89,7 @@ class InviteTeamMember implements InvitesTeamMembers
             );
         };
     }
+<<<<<<< HEAD
     public function store(Request $request, Team $team)
     {
         $request->validate([
@@ -102,4 +107,6 @@ class InviteTeamMember implements InvitesTeamMembers
 
         return back()->with('success', 'Team member added successfully.');
     }
+=======
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
 }

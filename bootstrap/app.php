@@ -3,6 +3,10 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+<<<<<<< HEAD
+=======
+use App\Http\Middleware\ableCreateUser;
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,7 +20,13 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
+<<<<<<< HEAD
 
+=======
+        $middleware->alias([
+            'ableCreateUser' => ableCreateuser::class,
+         ]);
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
