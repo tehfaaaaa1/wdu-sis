@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
+use App\Http\Controllers\HomeController;
+
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
@@ -26,4 +28,22 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::get('/surveys', function () { 
+        return Inertia::render('Surveys');})->name('surveys');
+
+    Route::get('/users', function () { 
+        return Inertia::render('Users');})->name('users');
 });
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard/admin', function () {
+        return Inertia::render('Dashboard/Admin');
+    })->name('dashboard.admin');
+});
+
+Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');
