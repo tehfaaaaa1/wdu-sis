@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use App\Models\User;
+use illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+
+class ableCreateUser
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        // return response($user);
+        if(Auth::user()->usertype != 'admin' && Auth::user()->usertype != 'Pic WDU'){
+            abort(403, 'Tidak diizinkan masuk.');
+            // return response('Tidak diizinkan masuk.', 403);
+        }
+        return $next($request);
+    }
+}

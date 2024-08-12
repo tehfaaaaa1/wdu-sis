@@ -58,7 +58,7 @@ const logout = () => {
                                 <NavLink :href="route('surveys')" :active="route().current('surveys')">
                                     Surveys
                                 </NavLink>
-                                <NavLink :href="route('users')" :active="route().current('users')">
+                                <NavLink v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'Pic WDU'"  :href="route('users')" :active="route().current('users')">
                                     User
                                 </NavLink>
                             </div>

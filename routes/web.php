@@ -33,7 +33,7 @@ Route::middleware([
         return Inertia::render('Surveys');})->name('surveys');
 
     Route::get('/users', function () { 
-        return Inertia::render('Users');})->name('users');
+        return Inertia::render('Users');})->name('users')->middleware(['ableCreateUser']);
 });
 
 Route::middleware([

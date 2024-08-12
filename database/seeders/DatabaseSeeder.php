@@ -16,8 +16,10 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->withPersonalTeam()->create();
 
         User::factory()->withPersonalTeam()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Enum',
+            'email' => 'enum@gmail.com',
+            'password' => 'enum1234',
+            'usertype' => 'enum',
         ]);
     }
 }
