@@ -45,3 +45,5 @@ Route::middleware([
         return Inertia::render('Dashboard/Admin');
     })->name('dashboard.admin');
 });
+
+Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');
