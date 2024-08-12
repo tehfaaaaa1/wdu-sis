@@ -52,9 +52,10 @@ const logout = () => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.usertype === 'admin'" :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
+                                <NavLink v-if="$page.props.auth.user.usertype === 'admin'"
+                                    :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                                     Admin Panel
-                                </NavLink> 
+                                </NavLink>
                                 <NavLink :href="route('surveys')" :active="route().current('surveys')">
                                     Surveys
                                 </NavLink>
@@ -68,7 +69,8 @@ const logout = () => {
                             <div class="ms-3 relative">
                                 <!-- Teams Dropdown -->
                                 <template v-for="team in $page.props.auth.user.all_teams" :key="team.id">
-                                <p v-if="$page.props.auth.user.usertype === 'user'" class="text-white">You are {{team.name}}</p>
+                                    <p v-if="$page.props.auth.user.usertype === 'user'" class="text-white">You are
+                                        {{ team.name }}</p>
                                 </template>
                                 <Dropdown v-if="$page.props.auth.user.usertype === 'admin'" align="right" width="60">
                                     <template #trigger>
@@ -195,7 +197,7 @@ const logout = () => {
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center lg:hidden">
                             <button
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                                class="inline-flex items-center justify-center p-2 rounded-md bg-gray-100 text-gray-400 hover:text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = !showingNavigationDropdown">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
@@ -219,8 +221,15 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin'" :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin'"
+                            :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                             Admin Panel
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('surveys')" :active="route().current('surveys')">
+                            Surveys
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('users')" :active="route().current('users')">
+                            User
                         </ResponsiveNavLink>
                     </div>
 
@@ -234,10 +243,10 @@ const logout = () => {
                             </div>
 
                             <div>
-                                <div class="font-medium text-base text-gray-800">
+                                <div class="font-medium text-base text-white">
                                     {{ $page.props.auth.user.name }}
                                 </div>
-                                <div class="font-medium text-sm text-gray-500">
+                                <div class="font-medium text-sm text-gray-300">
                                     {{ $page.props.auth.user.email }}
                                 </div>
                             </div>
@@ -264,7 +273,7 @@ const logout = () => {
                             <template v-if="$page.props.jetstream.hasTeamFeatures">
                                 <div class="border-t border-gray-200" />
 
-                                <div class="block px-4 py-2 text-xs text-gray-400">
+                                <div class="block px-4 py-2 text-xs text-gray-200">
                                     Manage Team
                                 </div>
 
@@ -283,7 +292,7 @@ const logout = () => {
                                 <template v-if="$page.props.auth.user.all_teams.length > 1">
                                     <div class="border-t border-gray-200" />
 
-                                    <div class="block px-4 py-2 text-xs text-gray-400">
+                                    <div class="block px-4 py-2 text-xs text-gray-200">
                                         Switch Teams
                                     </div>
 

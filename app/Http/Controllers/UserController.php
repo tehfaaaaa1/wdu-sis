@@ -16,7 +16,7 @@ class UserController extends Controller
                     'id'=>$user->id,
                     'name'=>$user->name,
                     'email'=>$user->email,
-                    'password'=>$user->password,
+                    'usertype'=>$user->usertype,
                 ];
             })
         ]);
