@@ -20,7 +20,7 @@ class ableCreateUser
         // return response($user);
         if(Auth::user()->usertype != 'admin' && Auth::user()->usertype != 'Pic WDU'){
             abort(403, 'Tidak diizinkan masuk.');
-            // return response('Tidak diizinkan masuk.', 403);
+            // return redirect()->back()->withErrors(Auth::user()->usertype, ' Dilarang Masuk');
         }
         return $next($request);
     }
