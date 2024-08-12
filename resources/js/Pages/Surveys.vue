@@ -14,15 +14,15 @@ import Dropdown from '@/Components/Dropdown.vue';
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between mb-6">
-                    <div class="">
+                    <div class="w-1/2 sm:w-full">
                         <button
                             class="bg-primary text-white font-medium px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add Survey
                         </button>
                     </div>
-                    <div class="relative">
-                        <input type="text" name="search" id="search" placeholder="Search" class="rounded-md border-primary ps-9">
+                    <div class="relative w-1/2 sm:w-auto mr-4">
+                        <input type="text" name="search" id="search" placeholder="Search" class="rounded-md border-primary text-center">
                         <div class="absolute top-2 left-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 stroke-gray-500">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                             </svg>
                         </div>
@@ -30,7 +30,7 @@ import Dropdown from '@/Components/Dropdown.vue';
                 </div>
             </div>
             <div class="container mx-auto flex flex-wrap justify-center lg:justify-evenly xl:justify-between gap-5">
-                <div class="rounded-md shadow-lg outline outline-2 outline-gray-300 w-full md:w-330 px-5 py-4 bg-white">
+                <div class="rounded-md shadow-lg outline outline-2 outline-gray-300 w-full md:w-330 px-5 py-4 bg-white mx-5 sm:mx-0">
                     <h1 class="text-2xl text-center mb-2 font-medium">Survey</h1>
                     <p class="my-3 text-base text-justify">
                         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt
@@ -67,7 +67,7 @@ import Dropdown from '@/Components/Dropdown.vue';
                         </div>
                     </div>
                 </div>
-                <div class="rounded-md shadow-lg outline outline-2 outline-gray-300 w-full md:w-330 px-5 py-4 bg-white">
+                <div class="rounded-md shadow-lg outline outline-2 outline-gray-300 w-full md:w-330 px-5 py-4 mx-5 sm:mx-0 bg-white">
                     <h1 class="text-2xl text-center mb-2 font-medium">Survey</h1>
                     <p class="my-3 text-base text-justify">
                         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt
@@ -104,7 +104,7 @@ import Dropdown from '@/Components/Dropdown.vue';
                         </div>
                     </div>
                 </div>
-                <div class="rounded-md shadow-lg outline outline-2 outline-gray-300 w-full md:w-330 px-5 py-4 bg-white">
+                <div class="rounded-md shadow-lg outline outline-2 outline-gray-300 w-full md:w-330 px-5 py-4 mx-5 sm:mx-0 bg-white">
                     <h1 class="text-2xl text-center mb-2 font-medium">Survey</h1>
                     <p class="my-3 text-base text-justify">
                         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt
