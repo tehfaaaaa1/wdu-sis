@@ -88,14 +88,14 @@ defineProps({ users: Object })
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 table-fixed">
                     <thead class="text-xs text-white uppercase bg-primary">
                         <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Full Name
+                            <th scope="col" class="px-6 py-3 hidden sm:block">
+                                Name
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Email
                             </th>
-                            <th scope="col" class="px-6 py-3 hidden sm:block">
-                                Password
+                            <th scope="col" class="px-6 py-3">
+                                User Type
                             </th>
                             <th scope="col" class="px-6 py-3 md:w-1/6">
                                 Action
@@ -104,13 +104,13 @@ defineProps({ users: Object })
                     </thead>
                     <tbody>
                         <tr v-for="user in users" class="bg-white border-b hover:bg-gray-50">
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block ">
                                 {{ user.name }}
-                            </th>
+                            </td>
                             <td class="px-6 py-4">
                                 {{ user.email }}
                             </td>
-                            <td class="px-6 py-4 hidden sm:block truncate">
+                            <td class="px-6 py-4 truncate">
                                 {{ user.usertype }}
                                 
                             </td>
