@@ -34,7 +34,11 @@ class InviteTeamMember implements InvitesTeamMembers
             'role' => $role,
         ]);
 
+<<<<<<< HEAD
+        $user->switchTeam($team);
+=======
         Mail::to($email)->send(new TeamInvitation($invitation));
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
     }
 
     /**
@@ -85,4 +89,24 @@ class InviteTeamMember implements InvitesTeamMembers
             );
         };
     }
+<<<<<<< HEAD
+    public function store(Request $request, Team $team)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'role' => ['required', 'string'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'User with this email does not exist.']);
+        }
+
+        $team->users()->attach($user->id, ['role' => $request->role]);
+
+        return back()->with('success', 'Team member added successfully.');
+    }
+=======
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
 }

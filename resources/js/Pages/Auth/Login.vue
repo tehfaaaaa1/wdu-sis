@@ -45,17 +45,33 @@ const submit = () => {
             <form @submit.prevent="submit" class="space-y-6">
                 <div class="mt-4 relative">
                     <InputLabel for="email" />
+<<<<<<< HEAD
+                    <TextInput id="email" v-model="form.email" type="email" placeholder="Email"
+                        class="block w-full rounded-md border-0 py-1.5 text-primary shadow-sm ring-1 ring-inset ring-primary placeholder:text-primary focus:ring-2 focus:ring-inset text-sm lg:text-base focus:ring-primary sm:text-sm sm:leading-6"
+                        required autocomplete="username" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6 absolute right-3 top-1.5 text-primary">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                    </svg>
+=======
                     <TextInput id="email" v-model="form.email" type="email" placeholder="Email" class="text-primary" required autocomplete="username" />
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 absolute right-3 top-1.5 text-primary">
                             <path stroke-linecap="round" stroke-linejoin="round"
                             d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                         </svg>
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
 
                 <div class="mt-4 relative">
                     <InputLabel for="password" />
+<<<<<<< HEAD
+                    <TextInput id="password" v-model="form.password" type="password" placeholder="Password"
+                        class="block w-full rounded-md border-0 py-1.5 text-primary shadow-sm ring-1 ring-inset ring-primary placeholder:text-primary focus:ring-2 focus:ring-inset text-sm md:text-base focus:ring-primary sm:text-sm sm:leading-6" required autocomplete="new-password" />
+=======
                     <TextInput id="password" v-model="form.password" type="password" placeholder="Password" required class="text-primary" autocomplete="new-password" />
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
                         
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6 absolute right-3 top-1.5 text-primary">
@@ -69,9 +85,15 @@ const submit = () => {
                             <Checkbox v-model:checked="form.remember" name="remember" />
                             <span class="ms-2 text-sm text-secondary">Remember me</span>
                         </label>
+<<<<<<< HEAD
+                        <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-primary hover:text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            Forgot your password?
+                        </Link>
+=======
                         <!-- <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-primary hover:text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                             Forgot your password?
                         </Link> -->
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
                     </div>
                     
                     <div class="flex items-center justify-center mt-4">
@@ -88,4 +110,8 @@ const submit = () => {
             <img src="/img/Group 63.png" alt="">
         </div>
     </div>
+<<<<<<< HEAD
 </template>
+=======
+</template>
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d

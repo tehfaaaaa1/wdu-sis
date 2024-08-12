@@ -33,7 +33,11 @@ Route::middleware([
         return Inertia::render('Surveys');})->name('surveys');
 
     Route::get('/users', function () { 
+<<<<<<< HEAD
+        return Inertia::render('Users');})->name('users');
+=======
         return Inertia::render('Users');})->name('users')->middleware(['ableCreateUser']);
+>>>>>>> f7d4836190d4a3a0cb6344051a14c0485303787d
 });
 
 Route::middleware([
