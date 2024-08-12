@@ -20,10 +20,14 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () { 
-        return Inertia::render('Dashboard');})->name('dashboard');
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 
     Route::get('/surveys', function () { 
         return Inertia::render('Surveys');})->name('surveys');
@@ -32,3 +36,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         return Inertia::render('Users');})->name('users');
 });
 
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard/admin', function () {
+        return Inertia::render('Dashboard/Admin');
+    })->name('dashboard.admin');
+});
