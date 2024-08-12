@@ -2,6 +2,7 @@
 - Footer
 - Create User
 - Create Survey
+- Team Admin assign
 - Admin Panel Content
 # Changelog
 ## 12 Aug 2024
