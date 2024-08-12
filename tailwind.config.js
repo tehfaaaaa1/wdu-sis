@@ -14,9 +14,17 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                primary: "#5EB54D",
+                secondary: "#027DC0",
+                "ijo-terang": "#6FD358",
+              },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            spacing: {
+                330: "21.875rem",
+              },
         },
     },
 
