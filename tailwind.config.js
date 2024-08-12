@@ -14,14 +14,17 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                primary: "#5EB54D",
+                secondary: "#027DC0",
+                "ijo-terang": "#6FD358",
+              },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
-            colors: {
-                primary: '#5EB54D',
-                secondary: '#027DC0',
-                'ijo-terang': '#6FD358',
-            }
+            spacing: {
+                330: "21.875rem",
+              },
         },
     },
 
