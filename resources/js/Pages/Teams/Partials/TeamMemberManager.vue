@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import ActionSection from '@/Components/ActionSection.vue';
 import ConfirmationModal from '@/Components/ConfirmationModal.vue';
@@ -20,15 +20,17 @@ const props = defineProps({
     userPermissions: Object,
 });
 
-const page = usePage();
+const { props: pageProps } = usePage();
 
 const addTeamMemberForm = useForm({
     email: '',
     role: null,
+    usertype: 'user',
 });
 
 const updateRoleForm = useForm({
     role: null,
+    usertype: 'user',
 });
 
 const leaveTeamForm = useForm({});
@@ -40,6 +42,8 @@ const confirmingLeavingTeam = ref(false);
 const teamMemberBeingRemoved = ref(null);
 
 const addTeamMember = () => {
+    addTeamMemberForm.usertype = addTeamMemberForm.role === 'admin' ? 'admin' : 'user';
+
     addTeamMemberForm.post(route('team-members.store', props.team), {
         errorBag: 'addTeamMember',
         preserveScroll: true,
@@ -50,10 +54,13 @@ const addTeamMember = () => {
 const manageRole = (teamMember) => {
     managingRoleFor.value = teamMember;
     updateRoleForm.role = teamMember.membership.role;
+    updateRoleForm.usertype = teamMember.membership.role === 'admin' ? 'admin' : 'user';
     currentlyManagingRole.value = true;
 };
 
 const updateRole = () => {
+    updateRoleForm.usertype = updateRoleForm.role === 'admin' ? 'admin' : 'user';
+
     updateRoleForm.put(route('team-members.update', [props.team, managingRoleFor.value]), {
         preserveScroll: true,
         onSuccess: () => currentlyManagingRole.value = false,
@@ -65,7 +72,7 @@ const confirmLeavingTeam = () => {
 };
 
 const leaveTeam = () => {
-    leaveTeamForm.delete(route('team-members.destroy', [props.team, page.props.auth.user]));
+    leaveTeamForm.delete(route('team-members.destroy', [props.team, pageProps.auth.user]));
 };
 
 const confirmTeamMemberRemoval = (teamMember) => {
@@ -85,6 +92,7 @@ const displayableRole = (role) => {
     return props.availableRoles.find(r => r.key === role)?.name || 'Unknown Role';
 };
 </script>
+
 
 <template>
     <div>
@@ -123,12 +131,15 @@ const displayableRole = (role) => {
                                 :key="role.key"
                                 type="button"
                                 class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                                :class="{'border-t border-gray-200 focus:border-none rounded-t-none': i > 0, 'rounded-b-none': i !== availableRoles.length - 1}"
+                                :class="{
+                                    'border-t border-gray-200 focus:border-none rounded-t-none': i > 0,
+                                    'rounded-b-none': i !== availableRoles.length - 1
+                                }"
                                 @click="addTeamMemberForm.role = role.key"
                             >
-                                <div :class="{'opacity-50': addTeamMemberForm.role && addTeamMemberForm.role !== role.key}">
+                                <div :class="{ 'opacity-50': addTeamMemberForm.role && addTeamMemberForm.role !== role.key }">
                                     <div class="flex items-center">
-                                        <div class="text-sm text-gray-600" :class="{'font-semibold': addTeamMemberForm.role === role.key}">
+                                        <div class="text-sm text-gray-600" :class="{ 'font-semibold': addTeamMemberForm.role === role.key }">
                                             {{ role.name }}
                                         </div>
                                         <svg v-if="addTeamMemberForm.role === role.key" class="ms-2 h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -218,19 +229,22 @@ const displayableRole = (role) => {
                             :key="role.key"
                             type="button"
                             class="relative px-4 py-3 inline-flex w-full rounded-lg focus:z-10 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
-                            :class="{'border-t border-gray-200 focus:border-none rounded-t-none': i > 0, 'rounded-b-none': i !== availableRoles.length - 1}"
+                            :class="{
+                                'border-t border-gray-200 focus:border-none rounded-t-none': i > 0,
+                                'rounded-b-none': i !== availableRoles.length - 1
+                            }"
                             @click="updateRoleForm.role = role.key"
                         >
-                            <div :class="{'opacity-50': updateRoleForm.role && updateRoleForm.role !== role.key}">
+                            <div :class="{ 'opacity-50': updateRoleForm.role && updateRoleForm.role !== role.key }">
                                 <div class="flex items-center">
-                                    <div class="text-sm text-gray-600" :class="{'font-semibold': updateRoleForm.role === role.key}">
+                                    <div class="text-sm text-gray-600" :class="{ 'font-semibold': updateRoleForm.role === role.key }">
                                         {{ role.name }}
                                     </div>
                                     <svg v-if="updateRoleForm.role === role.key" class="ms-2 h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <div class="mt-2 text-xs text-gray-600">
+                                <div class="mt-2 text-xs text-gray-600 text-start">
                                     {{ role.description }}
                                 </div>
                             </div>
@@ -242,12 +256,7 @@ const displayableRole = (role) => {
                 <SecondaryButton @click="currentlyManagingRole = false">
                     Cancel
                 </SecondaryButton>
-                <PrimaryButton
-                    class="ms-3"
-                    :class="{ 'opacity-25': updateRoleForm.processing }"
-                    :disabled="updateRoleForm.processing"
-                    @click="updateRole"
-                >
+                <PrimaryButton class="ms-3" :class="{ 'opacity-25': updateRoleForm.processing }" :disabled="updateRoleForm.processing" @click="updateRole">
                     Save
                 </PrimaryButton>
             </template>
@@ -265,12 +274,7 @@ const displayableRole = (role) => {
                 <SecondaryButton @click="confirmingLeavingTeam = false">
                     Cancel
                 </SecondaryButton>
-                <DangerButton
-                    class="ms-3"
-                    :class="{ 'opacity-25': leaveTeamForm.processing }"
-                    :disabled="leaveTeamForm.processing"
-                    @click="leaveTeam"
-                >
+                <DangerButton class="ms-3" :class="{ 'opacity-25': leaveTeamForm.processing }" :disabled="leaveTeamForm.processing" @click="leaveTeam">
                     Leave
                 </DangerButton>
             </template>
@@ -288,12 +292,7 @@ const displayableRole = (role) => {
                 <SecondaryButton @click="teamMemberBeingRemoved = null">
                     Cancel
                 </SecondaryButton>
-                <DangerButton
-                    class="ms-3"
-                    :class="{ 'opacity-25': removeTeamMemberForm.processing }"
-                    :disabled="removeTeamMemberForm.processing"
-                    @click="removeTeamMember"
-                >
+                <DangerButton class="ms-3" :class="{ 'opacity-25': removeTeamMemberForm.processing }" :disabled="removeTeamMemberForm.processing" @click="removeTeamMember">
                     Remove
                 </DangerButton>
             </template>
