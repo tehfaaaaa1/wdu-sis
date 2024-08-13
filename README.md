@@ -1,4 +1,4 @@
-# To Be Added
+    # To Be Added
 - Updated Documentation (Fadel)
 - Footer
 - Create User
@@ -15,3 +15,10 @@
 
 ## 13 Aug 2024
 - Assigning team admin or editor via team member settings
+- New admin role assigned: superadmin (one level above admin)
+- Superadmin permission:
+  - Has access to "users" list (/users)
+  - CRUD team
+  - Switching team
+- Admin (team administrator) permission:
+  - Manage team members
