@@ -34,7 +34,7 @@ const submit = () => {
     <Head title="Log in" />
 
     <div class="flex items-center p-6 sm:p-0">
-        <AuthenticationCard class="xl:w-1/2 w-full">
+        <AuthenticationCard class="xl:w-1/2">
             <template #logo>
                 <AuthenticationCardLogo />
             </template>
