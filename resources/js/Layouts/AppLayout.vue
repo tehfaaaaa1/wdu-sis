@@ -7,6 +7,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import Footer from '@/Components/Footer.vue';
 
 defineProps({
     title: String,
@@ -59,9 +60,9 @@ const logout = () => {
                                 <NavLink :href="route('surveys')" :active="route().current('surveys')">
                                     Surveys
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.usertype === 'admin' || 
-                                $page.props.auth.user.usertype === 'Pic WDU'" 
-                                :href="route('users')" :active="route().current('users')">
+                                <NavLink v-if="$page.props.auth.user.usertype === 'admin' ||
+                                    $page.props.auth.user.usertype === 'Pic WDU'" :href="route('users')"
+                                    :active="route().current('users')">
                                     User
                                 </NavLink>
                             </div>
@@ -70,11 +71,12 @@ const logout = () => {
                         <div class="hidden lg:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
                                 <div v-if="$page.props.auth.user.usertype === 'user'">
-                                <p class="text-white">
-                                    You are {{ $page.props.auth.user.all_teams.find(team => team.id === $page.props.auth.user.current_team_id).name }}
-                                </p>
-                                
-                            </div>
+                                    <p class="text-white">
+                                        You are {{ $page.props.auth.user.all_teams.find(team => team.id ===
+                                            $page.props.auth.user.current_team_id).name }}
+                                    </p>
+
+                                </div>
                                 <Dropdown v-if="$page.props.auth.user.usertype === 'admin'" align="right" width="60">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
@@ -231,9 +233,9 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('surveys')" :active="route().current('surveys')">
                             Surveys
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin' || 
-                                                $page.props.auth.user.usertype === 'Pic WDU'"  
-                                                :href="route('users')" :active="route().current('users')">
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin' ||
+                            $page.props.auth.user.usertype === 'Pic WDU'" :href="route('users')"
+                            :active="route().current('users')">
                             User
                         </ResponsiveNavLink>
                     </div>
@@ -335,6 +337,8 @@ const logout = () => {
             <main>
                 <slot />
             </main>
+
+            <Footer />
         </div>
     </div>
 </template>
