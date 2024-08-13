@@ -64,25 +64,25 @@ const submit = () => {
                     </div>
 
                     <div class="mt-4 relative">
-                        <div class="w-full inline-flex flex-wrap justify-evenly items-center">
+                        <div class="w-full inline-flex flex-wrap justify-evenly items-center text-gray-700">
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick1">
+                                <input type="radio" name="pick" id="pick1" class="checked:text-primary">
                                 <label for="pick1" class="pl-1.5">Admin</label>
                             </div>
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick2">
+                                <input type="radio" name="pick" id="pick2" class="checked:text-primary">
                                 <label for="pick2" class="pl-1.5">PIC WDU</label>
                             </div>
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick3">
+                                <input type="radio" name="pick" id="pick3" class="checked:text-primary">
                                 <label for="pick3" class="pl-1.5">Korlap</label>
                             </div>
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick4">
+                                <input type="radio" name="pick" id="pick4" class="checked:text-primary">
                                 <label for="pick4" class="pl-1.5">Enum</label>
                             </div>
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick5">
+                                <input type="radio" name="pick" id="pick5" class="checked:text-primary">
                                 <label for="pick5" class="pl-1.5">Klien</label>
                             </div>
                         </div>

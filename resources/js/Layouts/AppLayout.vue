@@ -7,6 +7,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import Footer from '@/Components/Footer.vue';
 
 defineProps({
     title: String,
@@ -34,7 +35,7 @@ const logout = () => {
 
         <Banner />
 
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-gray-100 pb-8">
             <nav class="bg-primary border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,15 +53,14 @@ const logout = () => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.usertype === 'admin'"
+                                <NavLink v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                     :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                                     Admin Panel
                                 </NavLink>
                                 <NavLink :href="route('surveys')" :active="route().current('surveys')">
                                     Surveys
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.usertype === 'admin' || 
-                                $page.props.auth.user.usertype === 'Pic WDU'" 
+                                <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'" 
                                 :href="route('users')" :active="route().current('users')">
                                     User
                                 </NavLink>
@@ -75,7 +75,7 @@ const logout = () => {
                                 </p>
                                 
                             </div>
-                                <Dropdown v-if="$page.props.auth.user.usertype === 'admin'" align="right" width="60">
+                                <Dropdown v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin' " align="right" width="60">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
@@ -105,13 +105,13 @@ const logout = () => {
                                                 Team Settings
                                             </DropdownLink>
 
-                                            <DropdownLink v-if="$page.props.jetstream.canCreateTeams"
+                                            <DropdownLink v-if="$page.props.jetstream.canCreateTeams && $page.props.auth.user.usertype === 'superadmin'"
                                                 :href="route('teams.create')">
                                                 Create New Team
                                             </DropdownLink>
 
                                             <!-- Team Switcher -->
-                                            <template v-if="$page.props.auth.user.all_teams.length > 1">
+                                            <template v-if="$page.props.auth.user.all_teams.length > 1 && $page.props.auth.user.usertype === 'superadmin'">
                                                 <div class="border-t border-gray-200" />
 
                                                 <div class="block px-4 py-2 text-xs text-gray-400">
@@ -224,15 +224,14 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin'"
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                             :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                             Admin Panel
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('surveys')" :active="route().current('surveys')">
                             Surveys
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin' || 
-                                                $page.props.auth.user.usertype === 'Pic WDU'"  
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin'"  
                                                 :href="route('users')" :active="route().current('users')">
                             User
                         </ResponsiveNavLink>
@@ -288,13 +287,13 @@ const logout = () => {
                                     Team Settings
                                 </ResponsiveNavLink>
 
-                                <ResponsiveNavLink v-if="$page.props.jetstream.canCreateTeams"
+                                <ResponsiveNavLink v-if="$page.props.jetstream.canCreateTeams && $page.props.auth.user.usertype === 'superadmin'"
                                     :href="route('teams.create')" :active="route().current('teams.create')">
                                     Create New Team
                                 </ResponsiveNavLink>
 
                                 <!-- Team Switcher -->
-                                <template v-if="$page.props.auth.user.all_teams.length > 1">
+                                <template v-if="$page.props.auth.user.all_teams.length > 1 && $page.props.auth.user.usertype === 'superadmin'">
                                     <div class="border-t border-gray-200" />
 
                                     <div class="block px-4 py-2 text-xs text-gray-200">
@@ -335,6 +334,8 @@ const logout = () => {
             <main>
                 <slot />
             </main>
+
         </div>
+        <Footer />
     </div>
 </template>
