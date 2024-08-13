@@ -13,8 +13,6 @@ class Survey extends Model
     protected $fillable = [
         'title',
         'desc',
-        'created_at',
-        'updated_at',
     ];
 
 }
