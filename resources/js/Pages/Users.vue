@@ -18,7 +18,7 @@ defineProps({ users: Object })
             <div class="flex justify-between items-center mx-3 mb-6">
                 <div class="w-1/2 sm:w-full">
                     <a href="/createusers"
-                        class="bg-primary text-white font-medium px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add
+                        class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add
                         User
                     </a>
                 </div>

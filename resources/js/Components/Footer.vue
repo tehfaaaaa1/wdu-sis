@@ -13,38 +13,24 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
     <footer style="background-color: #215232;" class="p-3.5">
         <!-- Primary Navigation Menu -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between">
-                <div class="block lg:flex">
+            <div class="block text-center md:flex justify-between items-center">
+                <div>
                     <!-- Logo -->
-                    <div class="shrink-0 flex items-center">
+                    <div class="shrink-0 flex items-center justify-center">
                         <Link :href="route('dashboard')">
-                        <ApplicationMark class="block w-72" />
+                        <ApplicationMark class="block w-80" />
                         </Link>
                     </div>
 
-                    <!-- Navigation Links -->
-                    <div class="block space-x-2 lg:-my-px lg:ms-10 lg:flex">
-                        <NavLink :href="route('dashboard')">
-                            Dashboard
-                        </NavLink>
-                        <NavLink v-if="$page.props.auth.user.usertype === 'admin'" :href="route('dashboard.admin')">
-                            Admin Panel
-                        </NavLink>
-                        <NavLink :href="route('surveys')">
-                            Surveys
-                        </NavLink>
-                        <NavLink v-if="$page.props.auth.user.usertype === 'admin' ||
-                            $page.props.auth.user.usertype === 'Pic WDU'" :href="route('users')">
-                            User
-                        </NavLink>
-                    </div>
+                    <!-- Copyright -->
+                    <p class="text-white font-thin text-sm">© 2024 Wahana Data Utama. All Rights Reserved</p>
                 </div>
 
                 <!-- Contact -->
-                <div class="flex">
+                <div class="flex h-16 justify-center">
 
                     <!-- Navigation Links -->
-                    <div class="space-x-1 lg:flex">
+                    <div class="space-x-1 flex">
                         <NavLink :href>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="size-6">
@@ -73,27 +59,6 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
                     </div>
                 </div>
 
-            </div>
-        </div>
-
-        <!-- Responsive Navigation Menu -->
-        <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }" class="lg:hidden">
-            <div class="pt-2 pb-3 space-y-1">
-                <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                    Dashboard
-                </ResponsiveNavLink>
-                <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin'" :href="route('dashboard.admin')"
-                    :active="route().current('dashboard.admin')">
-                    Admin Panel
-                </ResponsiveNavLink>
-                <ResponsiveNavLink :href="route('surveys')" :active="route().current('surveys')">
-                    Surveys
-                </ResponsiveNavLink>
-                <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin' ||
-                    $page.props.auth.user.usertype === 'Pic WDU'" :href="route('users')"
-                    :active="route().current('users')">
-                    User
-                </ResponsiveNavLink>
             </div>
         </div>
     </footer>
