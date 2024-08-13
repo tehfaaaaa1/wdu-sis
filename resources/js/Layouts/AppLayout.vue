@@ -231,8 +231,7 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('surveys')" :active="route().current('surveys')">
                             Surveys
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin' || 
-                                                $page.props.auth.user.usertype === 'superadmin'"  
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin'"  
                                                 :href="route('users')" :active="route().current('users')">
                             User
                         </ResponsiveNavLink>
