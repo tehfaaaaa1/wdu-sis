@@ -1,13 +1,28 @@
 <script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
+import Checkbox from '@/Components/Checkbox.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Welcome from '@/Components/Welcome.vue';
+import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
 defineProps({surveys: Object})
+const form = useForm({
+    search: '',
+});
+
+const submit = () => {
+    form.get(route('surveys'));
+};
 </script>
 
 <template>
-    <AppLayout title="Survey">
+    <AppLayout title="List Survey">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Surveys
@@ -17,28 +32,34 @@ defineProps({surveys: Object})
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <button
+                        <NavLink :href="route('create_surveys')" 
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add Survey
-                        </button>
+                        </NavLink>
                     </div>
-                    <div class="relative w-1/2 sm:w-auto mr-4">
-                        <input type="text" name="search" id="search" placeholder="Search" class="rounded-md text-sm border-primary text-center">
-                        <div class="absolute top-2 left-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5   stroke-gray-500">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                            </svg>
+                    <form @submit.prevent="submit">
+                        <div class="flex justify-center">
+                            <TextInput name="search" id="search" v-model="form.search" placeholder="Search" class="rounded-r-none text-sm border-primary text-center"/>
+                            <PrimaryButton class="w-full rounded-r-md rounded-l-none justify-center px-0" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5   stroke-white">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>                        
+                            </PrimaryButton> 
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
             <div class="container mx-auto flex flex-wrap justify-center lg:justify-evenly xl:justify-between gap-5">
                 <div v-for="survey in surveys" class="rounded-md shadow-lg outline outline-2 outline-gray-300 w-full md:w-330 px-5 py-4 bg-white mx-5 sm:mx-0">
                     <h1 class="text-2xl text-center mb-2 font-medium">{{ survey.title }}</h1>
-                    <p class="my-3 text-base text-justify">
+                    <p class="my-3 text-base text-justify line-clamp-3">
                         {{survey.desc}}
                     </p>  
                     <p class="text-center text-gray-600 mb-3 text-sm">
                        Created at:  {{ survey.created_at }}
+                    </p>
+                    <p class="text-center text-gray-600 mb-3 text-sm">
+                       Updated at:  {{ survey.updated_at }}
                     </p>
                     <div class="flex justify-center">
                         <button class="p-3 px-6 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
@@ -60,7 +81,9 @@ defineProps({surveys: Object})
                                 <template #content>
                                         <div class="py-1">
                                             <a href="#":class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit Jawaban</a>
-                                            <a href="#":class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit Surveys</a>
+
+                                            <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" :href="route('edit_surveys',survey.id)">Edit Surveys</a>
+
                                             <a href="#":class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Hapus Surveys</a>
                                         </div>
                                 </template>
