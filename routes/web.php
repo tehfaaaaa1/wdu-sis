@@ -39,9 +39,9 @@ Route::middleware([
 
     Route::resource('surveys', SurveyController::class);
 
-    Route::post('/create', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableCreateUser']);
+    Route::post('/surveys/create', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableCreateUser']);
     
-    Route::put('/update', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableCreateUser']);
+    Route::put('/surveys/update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableCreateUser']);
     
     Route::get('/surveys/{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableCreateUser']);
 

@@ -48,13 +48,13 @@ class SurveyController extends Controller
         ]);
     }
 
-    public function update(Request $request, Survey $survey){
-        // dump($survey);
+    public function update(Request $request, Survey $survey, $id){
+        // dump($id);
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
           ]);
-          Survey::where('id', $survey->id)->update([
+          Survey::where('id', $id)->update([
             'title' => $request->title,
             'desc' => $request->desc,
             'updated_at' => now()
