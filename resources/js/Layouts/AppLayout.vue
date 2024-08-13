@@ -288,13 +288,13 @@ const logout = () => {
                                     Team Settings
                                 </ResponsiveNavLink>
 
-                                <ResponsiveNavLink v-if="$page.props.jetstream.canCreateTeams"
+                                <ResponsiveNavLink v-if="$page.props.jetstream.canCreateTeams && $page.props.auth.user.usertype === 'superadmin'"
                                     :href="route('teams.create')" :active="route().current('teams.create')">
                                     Create New Team
                                 </ResponsiveNavLink>
 
                                 <!-- Team Switcher -->
-                                <template v-if="$page.props.auth.user.all_teams.length > 1">
+                                <template v-if="$page.props.auth.user.all_teams.length > 1 && $page.props.auth.user.usertype === 'superadmin'">
                                     <div class="border-t border-gray-200" />
 
                                     <div class="block px-4 py-2 text-xs text-gray-200">
