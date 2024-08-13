@@ -44,6 +44,8 @@ Route::middleware([
     Route::put('/surveys/update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableCreateUser']);
     
     Route::get('/surveys/{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableCreateUser']);
+    
+    Route::get('/surveys/{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableCreateUser']);
 
     Route::get('/users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
 

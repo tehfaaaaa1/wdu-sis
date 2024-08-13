@@ -19,6 +19,12 @@ const form = useForm({
 const submit = () => {
     form.get(route('surveys'));
 };
+
+const hapus = (id) => {
+    if (confirm('delete this survey')) {
+        form.get(route('delete_surveys', id));
+    }
+};
 </script>
 
 <template>
@@ -84,7 +90,7 @@ const submit = () => {
 
                                             <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" :href="route('edit_surveys',survey.id)">Edit Surveys</a>
 
-                                            <a href="#":class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Hapus Surveys</a>
+                                            <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" @click="hapus(survey.id)" class="cursor-pointer">Hapus Surveys</a>
                                         </div>
                                 </template>
                             </Dropdown>

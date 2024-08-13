@@ -61,4 +61,10 @@ class SurveyController extends Controller
           ]);
           return redirect()->route('surveys')->with('success','Update successfully.');
     }
+
+    public function destroy( $id){
+        // dump($id);
+        Survey::destroy($id);
+        return redirect()->route('surveys')->with('success','Update successfully.');
+    }
 }
