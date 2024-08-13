@@ -1,12 +1,13 @@
 <?php
 
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SurveyController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -30,10 +31,8 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::get('/surveys', function () {
-        return Inertia::render('Surveys');
-    })->name('surveys');
-
+    Route::get('/surveys', [SurveyController::class, 'index'])->name('surveys');
+    
     Route::get('/users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
 });
 
