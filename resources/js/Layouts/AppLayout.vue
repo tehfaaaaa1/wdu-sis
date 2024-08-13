@@ -338,7 +338,7 @@ const logout = () => {
                 <slot />
             </main>
 
-            <Footer />
         </div>
+        <Footer />
     </div>
 </template>

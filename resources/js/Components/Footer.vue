@@ -11,7 +11,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
 <template>
 
-    <div class="absolute bottom-auto right-0 left-0">
+    
         <footer style="background-color: #215232;" class="p-3.5">
             <!-- Primary Navigation Menu -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -101,6 +101,6 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
             </div>
         </footer>
 
-    </div>
+
 
 </template>
