@@ -96,8 +96,7 @@ const displayableRole = (role) => {
 
 <template>
     <div>
-        <!-- Add Team Member Section -->
-        <div v-if="userPermissions.canAddTeamMembers">
+        <div v-if="userPermissions.canAddTeamMembers || $page.props.auth.user.usertype === 'admin'">
             <SectionBorder />
             <FormSection @submitted="addTeamMember">
                 <template #title>
@@ -203,7 +202,7 @@ const displayableRole = (role) => {
                                     Leave
                                 </button>
                                 <button
-                                    v-else-if="userPermissions.canRemoveTeamMembers"
+                                    v-else-if="userPermissions.canRemoveTeamMembers || $page.props.auth.user.usertype === 'admin'"
                                     class="cursor-pointer ms-6 text-sm text-red-500"
                                     @click="confirmTeamMemberRemoval(user)"
                                 >
