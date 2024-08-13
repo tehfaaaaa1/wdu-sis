@@ -1,4 +1,5 @@
 # To Be Added
+- Updated Documentation (Fadel)
 - Footer
 - Create User
 - Create Survey
