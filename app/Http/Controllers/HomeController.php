@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function adminpanel()
     {
-        if(Auth::user()->usertype == 'admin')
+        if(Auth::user()->usertype == 'admin' || 'superadmin')
         {
             return view('dashboard.admin');
         }
@@ -35,16 +35,12 @@ class HomeController extends Controller
             return back()->withErrors(['email' => 'User with this email does not exist.']);
         }
     
-        // Update the user's usertype based on the role
         $user->usertype = $request->role === 'admin' ? 'admin' : 'user';
         
-        // Set the user's current team
         $user->current_team_id = $team->id;
     
-        // Save the user's updates
         $user->save();
     
-        // Attach the user to the team with the specified role
         $team->users()->attach($user->id, ['role' => $request->role]);
     
         return back()->with('success', 'Team member added successfully.');
