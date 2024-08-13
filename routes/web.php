@@ -34,10 +34,15 @@ Route::middleware([
     Route::get('/surveys', [SurveyController::class, 'index'])->name('surveys');
     
     Route::get('/users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
+
+    Route::get('/createusers', function () {
+        return Inertia::render('CreateUsers');
+    })->name('create_users');
+
+    Route::get('/dashboard/admin', function () {
+        return Inertia::render('Dashboard/Admin');
+    })->name('dashboard.admin');
 });
 
-Route::get('/dashboard/admin', function () {
-    return Inertia::render('Dashboard/Admin');
-})->name('dashboard.admin');
 
 Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');

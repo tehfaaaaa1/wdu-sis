@@ -15,18 +15,19 @@ defineProps({ users: Object })
             </h2>
         </template>
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div class="flex justify-between mx-3 mb-6">
-                <div class="">
-                    <input type="text"
-                        class="border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
-                        placeholder="Search">
+            <div class="flex justify-between items-center mx-3 mb-6">
+                <div class="w-1/2 sm:w-full">
+                    <a href="/createusers"
+                        class="bg-primary text-white font-medium px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add
+                        User
+                    </a>
                 </div>
                 <div class="">
                     <Dropdown align="right">
                         <template #trigger>
                             <span class="inline-flex rounded-md">
                                 <button type="button"
-                                    class="inline-flex items-center px-16 py-2 border border-primary text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                    class="inline-flex items-center px-16 py-3 border border-primary text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                     Filter
 
                                     <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -64,6 +65,12 @@ defineProps({ users: Object })
                                 <input type="checkbox" name="filter" id="klien" value="klien" class="rounded-sm">
                                 <label for="klien" class="ps-2 w-full">Klien</label>
                             </div>
+                            <hr class="mb-2">
+                            <div class="flex items-center px-4 py-2 text-sm">
+                                <input type="text"
+                                    class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
+                                    placeholder="Search">
+                            </div>
                         </template>
                     </Dropdown>
                 </div>
@@ -93,7 +100,7 @@ defineProps({ users: Object })
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block ">
                                 {{ user.name }}
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 truncate">
                                 {{ user.email }}
                             </td>
                             <td class="px-6 py-4 truncate">

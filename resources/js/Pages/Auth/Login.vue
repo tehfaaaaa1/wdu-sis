@@ -30,17 +30,18 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Log in"/>
+
+    <Head title="Log in" />
 
     <div class="flex items-center p-6 sm:p-0">
-        <AuthenticationCard class="xl:w-1/2 w-full">
+        <AuthenticationCard class="xl:w-1/2">
             <template #logo>
                 <AuthenticationCardLogo />
             </template>
             <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
                 {{ status }}
             </div>
-            <h2 class="text-primary font-semibold text-xl md:text-2xl text-center mt-4 mb-2 md:mb-10">Login</h2>
+            <h2 class="text-primary font-semibold text-xl md:text-2xl text-center mt-4 mb-2 md:mb-10">Sign In to Your Account</h2>
 
             <form @submit.prevent="submit" class="space-y-6">
                 <div class="mt-4 relative">
@@ -59,10 +60,10 @@ const submit = () => {
                 <div class="mt-4 relative">
                     <InputLabel for="password" />
                     <TextInput id="password" v-model="form.password" type="password" placeholder="Password"
+                        class="block w-full rounded-md border-0 py-1.5 text-primary shadow-sm ring-1 ring-inset ring-primary placeholder:text-primary focus:ring-2 focus:ring-inset text-sm md:text-base focus:ring-primary sm:text-sm sm:leading-6 pr-10"
+                        required autocomplete="new-password" />
 
-                        class="block w-full rounded-md border-0 py-1.5 text-primary shadow-sm ring-1 ring-inset ring-primary placeholder:text-primary focus:ring-2 focus:ring-inset text-sm md:text-base focus:ring-primary sm:text-sm sm:leading-6 pr-10" required autocomplete="new-password" />
-                        
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6 absolute right-3 top-1.5 text-primary">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
@@ -70,25 +71,26 @@ const submit = () => {
                     <InputError class="mt-2" :message="form.errors.password" />
                 </div>
                 <div class="block mt-4">
-                        <label class="flex items-center">
-                            <Checkbox v-model:checked="form.remember" name="remember" />
-                            <span class="ms-2 text-sm text-secondary">Remember me</span>
-                        </label>
-                        <!-- <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-primary hover:text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <label class="flex items-center">
+                        <Checkbox v-model:checked="form.remember" name="remember" />
+                        <span class="ms-2 text-sm text-secondary">Remember me</span>
+                    </label>
+                    <!-- <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-primary hover:text-primary rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                             Forgot your password?
                         </Link> -->
-                    </div>
-                    
-                    <div class="flex items-center justify-center mt-4">
-                        <PrimaryButton class="flex justify-center mt-5 md:mb-10" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                            Log in
-                        </PrimaryButton>
-                    </div>
+                </div>
+
+                <div class="flex items-center justify-center mt-4">
+                    <PrimaryButton class="flex justify-center w-full md:mb-10" :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing">
+                        Log in
+                    </PrimaryButton>
+                </div>
 
 
             </form>
         </AuthenticationCard>
-        
+
         <div class="xl:block hidden">
             <img src="/img/Group 63.png" alt="">
         </div>
