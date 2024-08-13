@@ -1,25 +1,23 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Welcome from '@/Components/Welcome.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
 
-defineProps({ users: Object })
+defineProps({ users: Object });
 </script>
 
 <template>
     <AppLayout title="Users">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Users   
+                Users
             </h2>
         </template>
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mx-3 mb-6">
                 <div class="w-1/2 sm:w-full">
                     <a href="/createusers"
-                        class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add
-                        User
+                       class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                        Add User
                     </a>
                 </div>
                 <div class="">
@@ -27,49 +25,26 @@ defineProps({ users: Object })
                         <template #trigger>
                             <span class="inline-flex rounded-md">
                                 <button type="button"
-                                    class="inline-flex items-center px-16 py-3 border border-primary text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                        class="inline-flex items-center px-16 py-3 border border-primary text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                     Filter
-
                                     <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                              d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                                     </svg>
                                 </button>
                             </span>
                         </template>
 
                         <template #content>
-                            <!-- Account Management -->
                             <div class="block px-4 py-2 text-xs text-gray-400">
                                 Filter Users
                             </div>
-
-                            <div class="flex items-center px-4 py-2 text-sm">
-                                <input type="checkbox" name="filter" id="admin" value="admin" class="rounded-sm">
-                                <label for="admin" class="ps-2 w-full">Admin</label>
-                            </div>
-                            <div class="flex items-center px-4 py-2 text-sm">
-                                <input type="checkbox" name="filter" id="pic_wdu" value="pic_wdu" class="rounded-sm">
-                                <label for="pic_wdu" class="ps-2 w-full">PIC WDU</label>
-                            </div>
-                            <div class="flex items-center px-4 py-2 text-sm">
-                                <input type="checkbox" name="filter" id="korlap" value="korlap" class="rounded-sm">
-                                <label for="korlap" class="ps-2 w-full">Koordinator Lapangan</label>
-                            </div>
-                            <div class="flex items-center px-4 py-2 text-sm">
-                                <input type="checkbox" name="filter" id="enum" value="enum" class="rounded-sm">
-                                <label for="enum" class="ps-2 w-full">Enum</label>
-                            </div>
-                            <div class="flex items-center px-4 py-2 text-sm">
-                                <input type="checkbox" name="filter" id="klien" value="klien" class="rounded-sm">
-                                <label for="klien" class="ps-2 w-full">Klien</label>
-                            </div>
-                            <hr class="mb-2">
+                            <!-- Add your filter options here -->
                             <div class="flex items-center px-4 py-2 text-sm">
                                 <input type="text"
-                                    class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
-                                    placeholder="Search">
+                                       class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
+                                       placeholder="Search">
                             </div>
                         </template>
                     </Dropdown>
@@ -80,24 +55,17 @@ defineProps({ users: Object })
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 table-fixed">
                     <thead class="text-xs text-white uppercase bg-primary">
                         <tr>
-                            <th scope="col" class="px-6 py-3 hidden sm:block">
-                                Name
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Email
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                User Type
-                            </th>
-                            <th scope="col" class="px-6 py-3 md:w-1/6">
-                                Action
-                            </th>
+                            <th scope="col" class="px-6 py-3 hidden sm:block">Name</th>
+                            <th scope="col" class="px-6 py-3">Email</th>
+                            <th scope="col" class="px-6 py-3">User Type</th>
+                            <th scope="col" class="px-6 py-3">Team</th> <!-- New Team Column -->
+                            <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users" class="bg-white border-b hover:bg-gray-50">
+                        <tr v-for="user in users" :key="user.id" class="bg-white border-b hover:bg-gray-50">
                             <td scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block ">
+                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block">
                                 {{ user.name }}
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 truncate">
@@ -105,7 +73,9 @@ defineProps({ users: Object })
                             </td>
                             <td class="px-6 py-4 truncate">
                                 {{ user.usertype }}
-
+                            </td>
+                            <td class="px-6 py-4 truncate">
+                                {{ user.team }} <!-- Display the user's team -->
                             </td>
                             <td class="px-6 py-4">
                                 <a href="#" class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
@@ -117,6 +87,5 @@ defineProps({ users: Object })
             </div>
 
         </div>
-
     </AppLayout>
 </template>

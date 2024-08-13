@@ -11,14 +11,18 @@ class UserController extends Controller
     public function index()
     {
         return Inertia::render('Users', [
-            'users' => User::all()->map(function ($user) {
+            'users' => User::with('currentTeam')->get()->map(function ($user) {
                 return [
-                    'id'=>$user->id,
-                    'name'=>$user->name,
-                    'email'=>$user->email,
-                    'usertype'=>$user->usertype,
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'usertype' => $user->usertype,
+                    'team' => $user->currentTeam ? $user->currentTeam->name : 'No Team',
                 ];
-            })
+            }),
         ]);
     }
+
 }
+
+
