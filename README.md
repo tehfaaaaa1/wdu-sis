@@ -1,5 +1,7 @@
 # To Be Added
-- Updated Documentation (Fadel)
+- Updated Documentation (Fadel) (deadline: 17/8/2024)
+  - ERD Survey Database
+  - Activity Diagram
 - Footer
 - Create User
 - Create Survey
