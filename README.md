@@ -3,7 +3,6 @@
 - Footer
 - Create User
 - Create Survey
-- Team Admin assign
 - Admin Panel Content
 # Changelog
 ## 12 Aug 2024
@@ -13,3 +12,6 @@
     -  Add, Delete members to the team
     -  CRUD Team
 - Backend logic for accessing certain pages
+
+## 13 Aug 2024
+- Assigning team admin or editor via team member settings
