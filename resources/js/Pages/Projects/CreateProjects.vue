@@ -11,48 +11,48 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
 const form = useForm({
-    title: '',
+    project_name: '',
     desc: '',
 });
 
 const submit = () => {
-    form.post(route('create_survey'));
+    form.post(route('create_project'));
 };
 </script>
 
 <template>
     
-    <AppLayout title="Create User">
+    <AppLayout title="Create Project">
 
         <div class="mt-6 sm:-mt-4 px-4">
             <AuthenticationCard>
                 <template #logo>
                     <AuthenticationCardLogo />
                 </template>
-                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New Surey</h2>
+                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New Project</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
-                        <InputLabel for="title" />
-                        <TextInput id="name" v-model="form.title" type="text" placeholder="Title"
+                        <InputLabel for="project_name" />
+                        <TextInput id="projectname" v-model="form.project_name" type="text" placeholder="Project Name"
                             class=""
-                            required autofocus autocomplete="title" />
-                        <InputError class="mt-2" :message="form.errors.title" />
+                            required autofocus autocomplete="project_name" />
+                        <InputError class="mt-2" :message="form.errors.project_name" />
                     </div>
 
                     <div class="mt-4 relative">
-                        <textarea id="password_confirmation" v-model="form.desc"
+                        <textarea id="desc" v-model="form.desc"
                             placeholder="Description"
                             class="block text-primary placeholder-primary w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
                             required autocomplete="desc" />
 
-                        <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                        <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
 
 
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
-                            Add Survey
+                            Add project
                         </PrimaryButton>
                     </div>
                 </form>

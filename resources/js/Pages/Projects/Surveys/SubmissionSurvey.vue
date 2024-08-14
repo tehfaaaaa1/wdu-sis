@@ -11,24 +11,38 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-
 const props = defineProps({surveys: Object})
 
-console.log(props.surveys)
+
+const form = useForm({
+    title: '',     
+    desc: '',
+});
+const submit = () => {
+    form.put(route('update_survey', props.surveys.id));
+};
+
+console.log(props)
 
 </script>
 
 <template>
     <AppLayout title="Isi Survey">
+
         <main class="min-h-screen ">
         <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                 <h2>{{props.surveys.title}}</h2>
             </div>
-            <div class="bg-gray-200">
-                <p class="my-3 text-base text-justify line-clamp-3">
+            <div class="bg-gray-200 rounded-b-md">
+                <div class="border-b-2 p-5 border-gray-500">
+                    <p class="text-base text-justify line-clamp-3">
                         {{props.surveys.desc}}
-                    </p> 
+                    </p>
+                </div>
+                <div class="p-5">
+                    <h1>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio, accusantium. Consectetur optio alias architecto veniam iure expedita repudiandae voluptates praesentium, vero fugiat, obcaecati, dignissimos dolorum eveniet provident distinctio ex magni!</h1>
+                </div>
             </div>
         </div>
         </main>

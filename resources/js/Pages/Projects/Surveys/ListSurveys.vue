@@ -12,7 +12,7 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
 
-defineProps({surveys: Object})
+const props = defineProps({surveys: Object})
 const form = useForm({
     search: '',
 });
@@ -26,6 +26,7 @@ const hapus = (id) => {
         form.get(route('delete_surveys', id));
     }
 };
+console.log(props)
 </script>
 
 <template>
@@ -45,8 +46,8 @@ const hapus = (id) => {
                     </div>
                     <form @submit.prevent="submit">
                         <div class="flex justify-center">
-                            <TextInput name="search" id="search" v-model="form.search" placeholder="Search" class="rounded-r-none text-sm border-primary text-center"/>
-                            <PrimaryButton class="w-1/2 rounded-r-md rounded-l-none justify-center px-0" :class="{ 'opacity-25': form.processing }"
+                            <TextInput name="search" id="search" v-model="form.search" placeholder="Search" class="rounded-r-none text-sm border-primary  text-center"/>
+                            <PrimaryButton class=" rounded-r-md rounded-l-none justify-center" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5   stroke-white">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -78,7 +79,7 @@ const hapus = (id) => {
                             <div class="flex justify-end">
                                 <Dropdown>
                                     <template #trigger>
-                                        <div class="inline-flex w-12 gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 ">
+                                        <div class="inline-flex w-12 gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
                                             <div class="flex">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 right-0">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />

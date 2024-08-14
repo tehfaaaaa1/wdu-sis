@@ -10,12 +10,13 @@ class SurveyController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Surveys/ListSurveys', [
+        return Inertia::render('Projects/Surveys/ListSurveys', [
             'surveys' => Survey::all()->map(function ($survey) {
                 return [
                     'id'=>$survey->id,
                     'title'=>$survey->title,
                     'desc'=>$survey->desc,
+                    'project_id'=>$survey->project_id   ,
                     'created_at'=>$survey->created_at->format('Y-m-d H:i:s'),
                     'updated_at'=>$survey->updated_at->format('Y-m-d H:i:s'),
                 ];
@@ -47,8 +48,8 @@ class SurveyController extends Controller
             ]
         ]);
     }
-    public function submission(Survey $survey) {
-        // dump($survey->title);   
+    public function submission(Survey $survey, $id) {
+        $survey = $survey::findOrFail($id);
         return Inertia::render('Surveys/SubmissionSurvey', [
             'surveys' =>[
             'id' => $survey->id,
