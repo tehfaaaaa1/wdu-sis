@@ -37,7 +37,7 @@ class SurveyController extends Controller
     }
 
     public function edit(Survey $survey) {
-        dump($survey->id);   
+        // dump($survey->id);   
         return Inertia::render('Surveys/EditSurveys', [
             'surveys' =>[
             'id' => $survey->id,
