@@ -55,8 +55,8 @@ const hapus = (id) => {
                     </form>
                 </div>
             </div>
-            <div class="container mx-auto flex flex-wrap justify-center lg:justify-evenly xl:justify-between gap-5">
-                <div v-for="survey in surveys" class="rounded-md shadow-lg outline outline-2 outline-gray-300 w-full md:w-330 px-5 py-4 bg-white mx-5 sm:mx-0">
+            <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div v-for="survey in surveys" class="relative rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-80 bg-white mx-5 sm:mx-0">
                     <h1 class="text-2xl text-center mb-2 font-medium">{{ survey.title }}</h1>
                     <p class="my-3 text-base text-justify line-clamp-3">
                         {{survey.desc}}
