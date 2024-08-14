@@ -28,7 +28,7 @@ class UserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,',
+            'email' => 'required|email|unique:users',
             'usertype' => 'required',
             'password' => 'required|string|confirmed',
         ]);
@@ -58,8 +58,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => [
                 'required',
-                'email',
-                Rule::unique('users')->ignore($this->$id),
+                Rule::unique('users')->ignore($id),
             ],
             'usertype' => 'required',
             'password' => 'required|string|confirmed',

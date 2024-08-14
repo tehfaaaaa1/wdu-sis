@@ -17,6 +17,7 @@ const form = useForm({
     password_confirmation: '',
     terms: false,
     usertype: '',
+    team: '',
 });
 
 const submit = () => {

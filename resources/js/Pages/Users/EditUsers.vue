@@ -19,7 +19,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('create_user'), {
+    form.put(route('update_user', props.users.id), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
@@ -27,14 +27,14 @@ const submit = () => {
 
 <template>
 
-    <AppLayout title="Create User">
+    <AppLayout title="Edit User">
 
         <div class="mt-6 sm:-mt-4 px-4">
             <AuthenticationCard>
                 <template #logo>
                     <AuthenticationCardLogo />
                 </template>
-                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New User</h2>
+                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Update User</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
                         <!-- <InputLabel for="name" value="Name" /> -->
@@ -124,7 +124,7 @@ const submit = () => {
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
-                            Create User
+                            Update User
                         </PrimaryButton>
                     </div>
                 </form>
