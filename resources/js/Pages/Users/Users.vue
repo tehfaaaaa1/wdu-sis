@@ -84,7 +84,7 @@ const hapus = (id) => {
                                 {{ user.usertype }}
                             </td>
                             <td class="px-6 py-4 truncate">
-                                {{ user.team }} <!-- Display the user's team -->
+                                {{ user.team }} 
                             </td>
                             <td class="px-6 py-4">
                                 <a :href="route('edit_user', user.id)"

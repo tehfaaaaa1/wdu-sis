@@ -84,9 +84,9 @@ const deleteApiToken = () => {
                 API tokens allow third-party services to authenticate with our application on your behalf.
             </template>
 
-            <template #form>
+            <template #form v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin' ">
                 <!-- Token Name -->
-                <div class="col-span-6 sm:col-span-4">
+                <div class="col-span-6 sm:col-span-4" >
                     <InputLabel for="name" value="Name" />
                     <TextInput
                         id="name"
@@ -118,7 +118,7 @@ const deleteApiToken = () => {
                     Created.
                 </ActionMessage>
 
-                <PrimaryButton :class="{ 'opacity-25': createApiTokenForm.processing }" :disabled="createApiTokenForm.processing">
+                <PrimaryButton :class="{ 'opacity-25': createApiTokenForm.processing }" :disabled="createApiTokenForm.processing" v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin' ">
                     Create
                 </PrimaryButton>
             </template>

@@ -11,7 +11,7 @@ defineProps({
 
 <template>
     <AppLayout title="API Tokens">
-        <template #header>
+        <template #header >
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 API Tokens
             </h2>

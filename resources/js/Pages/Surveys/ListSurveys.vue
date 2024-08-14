@@ -61,7 +61,7 @@ const hapus = (id) => {
                     <p class="my-3 text-base text-justify line-clamp-3">
                         {{survey.desc}}
                     </p>  
-                    <div class="absolute bottom-0 right-0 left-0 p-5 mx-5 sm:mx-0">
+                    <div class=" mx-5 sm:mx-0">
                         <p class="text-center text-gray-600 mb-1.5 text-sm">
                            Created at:  {{ survey.created_at }}
                         </p>
@@ -69,11 +69,11 @@ const hapus = (id) => {
                            Updated at:  {{ survey.updated_at }}
                         </p>
                         <div class="flex justify-center">
-                            <button class="p-3 px-6 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                            <button class="p-3 px-6 mb-3 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                 Check Survey
                             </button>
                         </div>
-                        <div class="relative inline-block text-left w-full">
+                        <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'" class="relative inline-block text-left w-full">
                             <div class="flex justify-end">
                                 <Dropdown>
                                     <template #trigger>
@@ -87,7 +87,7 @@ const hapus = (id) => {
                                     </template>
                                     <template #content>
                                             <div class="py-1">
-                                                <a href="#":class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit Jawaban</a>
+                                                <a href="#":class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit Soal dan Jawaban</a>
     
                                                 <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" :href="route('edit_surveys',survey.id)">Edit Surveys</a>
     
