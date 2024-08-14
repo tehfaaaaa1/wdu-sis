@@ -19,7 +19,7 @@ const createTeam = () => {
 </script>
 
 <template>
-    <FormSection @submitted="createTeam">
+    <FormSection @submitted="createTeam" v-if=" $page.props.auth.user.usertype === 'admin'">
         <template #title>
             Team Details
         </template>

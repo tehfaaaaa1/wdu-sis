@@ -4,7 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
-
+use App\Actions\Jetstream\CreateTeam;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SurveyController;
@@ -39,23 +39,23 @@ Route::middleware([
 
     Route::resource('surveys', SurveyController::class);
 
-    Route::post('/surveys/create', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableCreateUser']);
+    Route::post('/surveys/create', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
     
-    Route::put('/surveys/update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableCreateUser']);
+    Route::put('/surveys/update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
     
-    Route::get('/surveys/{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableCreateUser']);
+    Route::get('/surveys/{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
 
-    Route::get('/surveys/{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableCreateUser']);
+    Route::get('/surveys/{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
 
     Route::get('/users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
 
     Route::get('/createusers', function () {
         return Inertia::render('CreateUsers');
-    })->name('create_users');
+    })->name('create_users')->middleware(['ableCreateUser']);
 
     Route::get('/dashboard/admin', function () {
         return Inertia::render('Dashboard/Admin');
-    })->name('dashboard.admin');
+    })->name('dashboard.admin');    
 });
 
 
