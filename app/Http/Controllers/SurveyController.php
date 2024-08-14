@@ -44,18 +44,17 @@ class SurveyController extends Controller
             'id' => $survey->id,
             'title' => $survey->title,
             'desc' => $survey->desc,
-            'updated_at'=>$survey->update_at,
+            'updated_at'=>$survey->updated_at,
             ]
         ]);
     }
-    public function submission(Survey $survey, $id) {
-        $survey = $survey::findOrFail($id);
+    public function submission(Survey $survey) { 
         return Inertia::render('Surveys/SubmissionSurvey', [
             'surveys' =>[
             'id' => $survey->id,
             'title' => $survey->title,
             'desc' => $survey->desc,
-            'updated_at'=>$survey->update_at,
+            // 'updated_at'=>$survey->updated_at,
             ]
         ]);
     }
