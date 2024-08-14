@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function adminpanel()
     {
-        if(Auth::user()->usertype == 'admin' || 'superadmin')
+        if(Auth::user()->usertype == 'admin' || Auth::user()->usertype == 'superadmin')
         {
             return view('dashboard.admin');
         }

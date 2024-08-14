@@ -66,7 +66,7 @@ const submit = () => {
                     <div class="mt-4 relative">
                         <div class="w-full inline-flex flex-wrap justify-evenly items-center text-gray-700">
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick1" class="checked:text-primary">
+                                <input type="radio" name="admin" id="pick1" class="checked:text-primary">
                                 <label for="pick1" class="pl-1.5">Admin</label>
                             </div>
                             <div class="flex items-center">
