@@ -35,7 +35,7 @@ Route::middleware([
     
     Route::get('/surveys/createsurveys', function () {
         return inertia::render('Surveys/CreateSurveys');
-    })->name('create_surveys')->middleware(['ableCreateUser']);
+    })->name('create_surveys')->middleware(['ableSurvey']);
 
     Route::resource('surveys', SurveyController::class);
 
@@ -44,6 +44,8 @@ Route::middleware([
     Route::put('/surveys/update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
     
     Route::get('/surveys/{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
+
+    Route::get('/surveys/submission/{id}',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
 
     Route::get('/surveys/{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
 

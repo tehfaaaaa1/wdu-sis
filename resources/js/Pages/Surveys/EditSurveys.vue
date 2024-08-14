@@ -20,7 +20,7 @@ const form = useForm({
 const submit = () => {
     form.put(route('update_survey', props.surveys.id));
 };
-console.log(props)
+console.log(props.surveys)
 </script>
 
 <template>
@@ -61,11 +61,6 @@ console.log(props)
                 </form>
             </AuthenticationCard>
         </div>
-
-        <!-- <div class="hidden">
-                <img src="/img/Group 63.png" alt="">
-            </div> -->
-
     </AppLayout>
 
 

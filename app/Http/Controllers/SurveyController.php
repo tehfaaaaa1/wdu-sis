@@ -37,8 +37,19 @@ class SurveyController extends Controller
     }
 
     public function edit(Survey $survey) {
-        // dump($survey->id);   
+        // dump($survey->title);   
         return Inertia::render('Surveys/EditSurveys', [
+            'surveys' =>[
+            'id' => $survey->id,
+            'title' => $survey->title,
+            'desc' => $survey->desc,
+            'updated_at'=>$survey->update_at,
+            ]
+        ]);
+    }
+    public function submission(Survey $survey) {
+        // dump($survey->title);   
+        return Inertia::render('Surveys/SubmissionSurvey', [
             'surveys' =>[
             'id' => $survey->id,
             'title' => $survey->title,
@@ -67,4 +78,5 @@ class SurveyController extends Controller
         Survey::destroy($id);
         return redirect()->route('surveys')->with('success','Update successfully.');
     }
+    
 }

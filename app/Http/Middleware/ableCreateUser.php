@@ -20,7 +20,7 @@ class ableCreateUser
         // return response($user);
         if(Auth::user()->usertype != 'superadmin'){
             abort(403, 'Tidak diizinkan masuk.');
-            // return redirect()->back()->withErrors(Auth::user()->usertype, ' Dilarang Masuk');
+            // return redirect()->back()->withErrors(Auth::user()->usertype, ' Dilarang Masuk');    
         }
         return $next($request);
     }
