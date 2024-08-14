@@ -2,7 +2,10 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-defineProps({ users: Object });
+
+const props = defineProps({
+    users: Object,
+});
 </script>
 
 <template>
@@ -75,7 +78,7 @@ defineProps({ users: Object });
                                 {{ user.usertype }}
                             </td>
                             <td class="px-6 py-4 truncate">
-                                {{ user.team }} <!-- Display the user's team -->
+                                {{ user.team }} 
                             </td>
                             <td class="px-6 py-4">
                                 <a href="#" class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
