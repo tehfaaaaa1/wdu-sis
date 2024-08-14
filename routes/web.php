@@ -46,7 +46,7 @@ Route::middleware([
     
     Route::get('/surveys/{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
 
-    Route::get('/surveys/submission/{id}',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
+    Route::get('/surveys/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
 
     Route::get('/surveys/{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
 
