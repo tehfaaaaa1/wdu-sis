@@ -41,23 +41,23 @@ Route::middleware([
     Route::resource('surveys', SurveyController::class);
 
     Route::post('/surveys/create', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
-    
+
     Route::put('/surveys/update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
-    
-    Route::get('/surveys/{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
 
-    Route::get('/surveys/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
+    Route::get('/surveys/{id}/edit', [SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
 
-    Route::get('/surveys/{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
+    Route::get('/surveys/{id}/submission', [SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
+
+    Route::get('/surveys/{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
 
     
     // Users
     Route::get('/users/list-users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
-    
+
     Route::get('/createusers', function () {
         return Inertia::render('Users/CreateUsers');
     })->name('create_users')->middleware(['ableCreateUser']);
-    
+
     Route::resource('users', UserController::class);
 
     Route::post('/users/create', [UserController::class, 'store'])->name('create_user')->middleware(['ableCreateUser']);
@@ -67,11 +67,11 @@ Route::middleware([
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('edit_user')->middleware(['ableCreateUser']);
 
     Route::get('/users/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
-    
+
 
     Route::get('/dashboard/admin', function () {
         return Inertia::render('Dashboard/Admin');
-    })->name('dashboard.admin');    
+    })->name('dashboard.admin');
 });
 
 
