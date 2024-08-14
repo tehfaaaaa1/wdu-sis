@@ -18,7 +18,7 @@ class ableCUDdSurvey
     public function handle(Request $request, Closure $next): Response
     {
         if(Auth::user()->usertype != 'superadmin'){
-            abort(403, 'Tidak diizinkan masuk.');
+            abort(403,  Auth::user()->usertype.' Tidak Diizinkan');
             // return redirect()->back()->withErrors(Auth::user()->usertype, ' Dilarang Masuk');
         }
         return $next($request);

@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Users', [
+        return Inertia::render('Users/Users', [
             'users' => User::with('currentTeam')->get()->map(function ($user) {
                 return [
                     'id' => $user->id,
@@ -23,13 +24,5 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(User $user)
-    {
-        $user->delete();
-    
-        return redirect()->route('users.index')->with('status', 'User deleted successfully.');
-    }
 
 }
-
-

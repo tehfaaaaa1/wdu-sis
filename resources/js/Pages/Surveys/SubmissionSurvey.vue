@@ -1,0 +1,36 @@
+<script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3';
+import AuthenticationCard from '@/Components/AuthenticationCard.vue';
+import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
+import Checkbox from '@/Components/Checkbox.vue';
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import NavLink from '@/Components/NavLink.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+
+
+const props = defineProps({surveys: Object})
+
+console.log(props.surveys)
+
+</script>
+
+<template>
+    <AppLayout title="Isi Survey">
+        <main class="min-h-screen ">
+        <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
+                <h2>{{props.surveys.title}}</h2>
+            </div>
+            <div class="bg-gray-200">
+                <p class="my-3 text-base text-justify line-clamp-3">
+                        {{props.surveys.desc}}
+                    </p> 
+            </div>
+        </div>
+        </main>
+    </AppLayout>
+</template>

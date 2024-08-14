@@ -7,7 +7,8 @@
 
 # Changelog
 ## 14 Aug 2024
-- 
+- CRUD User (Add Team needed here)
+
 ## 13 Aug 2024
 - Assigning team admin or editor via team member settings
 - New admin role assigned: superadmin (one level above admin)

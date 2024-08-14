@@ -11,6 +11,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
+
 defineProps({surveys: Object})
 const form = useForm({
     search: '',
@@ -45,7 +46,7 @@ const hapus = (id) => {
                     <form @submit.prevent="submit">
                         <div class="flex justify-center">
                             <TextInput name="search" id="search" v-model="form.search" placeholder="Search" class="rounded-r-none text-sm border-primary text-center"/>
-                            <PrimaryButton class="w-full rounded-r-md rounded-l-none justify-center px-0" :class="{ 'opacity-25': form.processing }"
+                            <PrimaryButton class="w-1/2 rounded-r-md rounded-l-none justify-center px-0" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5   stroke-white">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -55,7 +56,7 @@ const hapus = (id) => {
                     </form>
                 </div>
             </div>
-            <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 <div v-for="survey in surveys" class="relative rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-80 bg-white mx-5 sm:mx-0">
                     <h1 class="text-2xl text-center mb-2 font-medium">{{ survey.title }}</h1>
                     <p class="my-3 text-base text-justify line-clamp-3">
@@ -69,10 +70,10 @@ const hapus = (id) => {
                            Updated at:  {{ survey.updated_at }}
                         </p>
                         <div class="flex justify-center">
-                            <button class="p-3 px-6 mb-3 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                            <a :href="route('submission_surveys',survey.id)" class="p-3 px-6 mb-3 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                 Check Survey
-                            </button>
-                        </div>
+                            </a>
+                        </div>      
                         <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'" class="relative inline-block text-left w-full">
                             <div class="flex justify-end">
                                 <Dropdown>
