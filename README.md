@@ -17,13 +17,13 @@
   - Switching team
 - Admin (team administrator) permission:
   - Manage team members
-- CRUD Survey v1 & revamped UI
+- CRUD Survey v1 & improved UI
 - Footer added
 
 ## 12 Aug 2024
 - Added Surveys, Users, Admin Panel
-- Revamped Navbar
+- Navbar
 - Team System
     -  Add, Delete members to the team
     -  CRUD Team
-- Backend logic for accessing certain pages
+- Authentication for accessing certain pages
