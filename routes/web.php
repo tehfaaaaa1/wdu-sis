@@ -31,8 +31,9 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    // Surveys
     Route::get('/surveys/list-surveys', [SurveyController::class, 'index'])->name('surveys');
-    
+
     Route::get('/surveys/createsurveys', function () {
         return inertia::render('Surveys/CreateSurveys');
     })->name('create_surveys')->middleware(['ableSurvey']);
@@ -49,11 +50,24 @@ Route::middleware([
 
     Route::get('/surveys/{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
 
-    Route::get('/users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
-
+    
+    // Users
+    Route::get('/users/list-users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
+    
     Route::get('/createusers', function () {
-        return Inertia::render('CreateUsers');
+        return Inertia::render('Users/CreateUsers');
     })->name('create_users')->middleware(['ableCreateUser']);
+    
+    Route::resource('users', UserController::class);
+
+    Route::post('/users/create', [UserController::class, 'store'])->name('create_user')->middleware(['ableCreateUser']);
+
+    Route::put('/users/update/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
+
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('edit_user')->middleware(['ableCreateUser']);
+
+    Route::get('/users/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
+    
 
     Route::get('/dashboard/admin', function () {
         return Inertia::render('Dashboard/Admin');

@@ -2,25 +2,24 @@
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Dropdown from '@/Components/Dropdown.vue';
+
+const props = defineProps({users: Object})
 
 const form = useForm({
-    name: '',
-    email: '',
+    name: props.users.name,
+    email: props.users.email,
     password: '',
     password_confirmation: '',
     terms: false,
-    usertype: '',
+    usertype: props.users.usertype,
 });
 
 const submit = () => {
-    form.post(route('register'), {
+    form.put(route('update_user', props.users.id), {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
@@ -28,14 +27,14 @@ const submit = () => {
 
 <template>
 
-    <AppLayout title="Create User">
+    <AppLayout title="Edit User">
 
         <div class="mt-6 sm:-mt-4 px-4">
             <AuthenticationCard>
                 <template #logo>
                     <AuthenticationCardLogo />
                 </template>
-                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New User</h2>
+                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Update User</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
                         <!-- <InputLabel for="name" value="Name" /> -->
@@ -64,26 +63,31 @@ const submit = () => {
                     </div>
 
                     <div class="mt-4 relative">
-                        <div class="w-full inline-flex flex-wrap justify-evenly items-center text-gray-700">
+                        <div class="w-full grid grid-rows-3 grid-flow-col gap-2 text-gray-700">
+                            {{ form.usertype }}
                             <div class="flex items-center">
-                                <input type="radio" name="admin" id="pick1" class="checked:text-primary">
-                                <label for="pick1" class="pl-1.5">Admin</label>
+                                <input type="radio" name="pick" id="pick1" class="checked:text-primary" v-model="form.usertype" value="superadmin">
+                                <label for="pick1" class="pl-1.5">Super Admin</label>
                             </div>
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick2" class="checked:text-primary">
-                                <label for="pick2" class="pl-1.5">PIC WDU</label>
+                                <input type="radio" name="pick" id="pick2" class="checked:text-primary" v-model="form.usertype" value="admin">
+                                <label for="pick2" class="pl-1.5">Admin</label>
                             </div>
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick3" class="checked:text-primary">
+                                <input type="radio" name="pick" id="pick3" class="checked:text-primary" v-model="form.usertype" value="korlap">
                                 <label for="pick3" class="pl-1.5">Korlap</label>
                             </div>
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick4" class="checked:text-primary">
+                                <input type="radio" name="pick" id="pick4" class="checked:text-primary" v-model="form.usertype" value="enum">
                                 <label for="pick4" class="pl-1.5">Enum</label>
                             </div>
                             <div class="flex items-center">
-                                <input type="radio" name="pick" id="pick5" class="checked:text-primary">
+                                <input type="radio" name="pick" id="pick5" class="checked:text-primary" v-model="form.usertype" value="klien">
                                 <label for="pick5" class="pl-1.5">Klien</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" name="pick" id="pick6" class="checked:text-primary" v-model="form.usertype" value="user">
+                                <label for="pick6" class="pl-1.5">User</label>
                             </div>
                         </div>
                         <InputError class="mt-2" :message="form.errors.usertype" />
@@ -117,28 +121,10 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />
                     </div>
 
-                    <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="mt-4">
-                        <InputLabel for="terms">
-                            <div class="flex items-center">
-                                <Checkbox id="terms" v-model:checked="form.terms" name="terms" required />
-
-                                <div class="ms-2">
-                                    I agree to the <a target="_blank" :href="route('terms.show')"
-                                        class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Terms
-                                        of Service</a> and <a target="_blank" :href="route('policy.show')"
-                                        class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Privacy
-                                        Policy</a>
-                                </div>
-                            </div>
-                            <InputError class="mt-2" :message="form.errors.terms" />
-                        </InputLabel>
-                    </div>
-
-
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
-                            Register
+                            Update User
                         </PrimaryButton>
                     </div>
                 </form>

@@ -59,7 +59,7 @@ class SurveyController extends Controller
         ]);
     }
 
-    public function update(Request $request, Survey $survey, $id){
+    public function update(Request $request, $id){
         // dump($id);
         $request->validate([
             'title' => 'required|max:255',
