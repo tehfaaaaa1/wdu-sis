@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use Inertia\Inertia;
 use App\Models\Survey;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use DB;
+// use DB;
 class SurveyController extends Controller
 {
     public function index(Project $project, $slug, Survey $survey, $id = null){

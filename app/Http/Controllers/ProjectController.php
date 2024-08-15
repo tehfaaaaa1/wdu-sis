@@ -53,10 +53,17 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
-            'slug'=> 'project 1',
+        ]);
+    
+        $project = Project::create([
+            'project_name' => $validated['project_name'],
+            'desc' => $validated['desc'],
+            'slug' => Str::slug($validated['project_name']),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    
+        \Log::info('Project created:', $project->toArray());
     
         return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
@@ -102,9 +109,4 @@ class ProjectController extends Controller
         Project::destroy($id);
         return redirect()->route('projects')->with('success', 'Project deleted successfully.');
     }
-    public function create()
-    {
-        return Inertia::render('Projects/CreateProjects');
-    }
-
 }
