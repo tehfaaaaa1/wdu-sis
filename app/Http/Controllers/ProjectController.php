@@ -97,5 +97,9 @@ class ProjectController extends Controller
         Project::destroy($id);
         return redirect()->route('projects')->with('success', 'Project deleted successfully.');
     }
+    public function create()
+    {
+        return Inertia::render('Projects/CreateProjects');
+    }
 
 }

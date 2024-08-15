@@ -7,29 +7,39 @@ use Inertia\Inertia;
 use App\Models\Survey;
 use Illuminate\Http\Request;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+use DB;
 class SurveyController extends Controller
 {
-    public function index(Project $project, $slug, Survey $survey){
+    public function index(Project $project, $slug, Survey $survey, $id = null){
         $project =  Project::where('slug',$slug)->firstOrFail();
-        $survey = Survey::first();
+        $survey = DB::table('projects')
+        ->where('slug', $slug)
+        ->get();
+        // dump($survey);
         return Inertia::render('Projects/Surveys/ListSurveys',[
             'surveys' => $project->survey,
-            'projects' => $survey->project,
+            'projects' => $survey,
         ] 
         );
     }
 
     public function create(Project $project, $slug){
-        $project =  Project::where('slug',$slug)->firstOrFail();
-        return inertia::render('Projects/Surveys/CreateSurveys');
+        $project =  Survey::where('slug',$slug)->firstOrFail();
+        return inertia::render('Projects/Surveys/CreateSurveys',[
+            'surveys' => $project->project
+        ]
+    );
     }
     
-    public function store(Request $request)
+    public function store(Request $request, $slug)
     {
+        $project = Survey::where('slug', $slug)->firstOrFail();
+        $projectid = $project->project;
+        dump($projectid);
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
+            
         ]);
     
         Survey::create([

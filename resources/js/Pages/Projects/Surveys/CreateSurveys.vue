@@ -9,7 +9,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-
+const props = defineProps({surveys:Object})
 const form = useForm({
     title: '',
     desc: '',
@@ -18,6 +18,8 @@ const form = useForm({
 const submit = () => {
     form.post(route('create_survey'));
 };
+
+console.log(props)
 </script>
 
 <template>
