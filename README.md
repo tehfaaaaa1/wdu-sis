@@ -1,5 +1,5 @@
 # To Be Added
-- Updated Documentation (Fadel) (deadline: 17/8/2024)
+- Updated Documentation (Fadel)
   - ERD Survey Database
   - Activity Diagram
 - More Admin Panel Content
