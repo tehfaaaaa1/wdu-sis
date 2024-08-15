@@ -65,7 +65,7 @@ const submit = () => {
                     </div>
 
                     <div class="mt-4 relative">
-                        <div class="w-full grid grid-rows-3 grid-flow-col gap-2 text-gray-700">
+                        <div class="w-full grid grid-cols-2 gap-2 text-gray-700">
                             <div class="flex items-center">
                                 <input type="radio" name="pick" id="pick1" class="checked:text-primary" v-model="form.usertype" value="superadmin">
                                 <label for="pick1" class="pl-1.5">Super Admin</label>
@@ -73,6 +73,10 @@ const submit = () => {
                             <div class="flex items-center">
                                 <input type="radio" name="pick" id="pick2" class="checked:text-primary" v-model="form.usertype" value="admin">
                                 <label for="pick2" class="pl-1.5">Admin</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" name="pick" id="pick2.5" class="checked:text-primary" v-model="form.usertype" value="pic_wdu">
+                                <label for="pick2.5" class="pl-1.5">PIC WDU</label>
                             </div>
                             <div class="flex items-center">
                                 <input type="radio" name="pick" id="pick3" class="checked:text-primary" v-model="form.usertype" value="korlap">
