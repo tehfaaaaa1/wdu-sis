@@ -1,16 +1,31 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
-const form = useForm({})
+const form = useForm({});
+const showDeleteModal = ref(false);
+const selectedUserId = ref(null);
 
 defineProps({ users: Object });
 
 const hapus = (id) => {
-    if (confirm('Delete this user?')) {
-        form.get(route('delete_user', id));
-    }
+    selectedUserId.value = id;
+    showDeleteModal.value = true;
+};
+
+const confirmDeletion = () => {
+    form.get(route('delete_user', selectedUserId.value), {
+        onFinish: () => {
+            showDeleteModal.value = false;
+        }
+    });
+};
+
+const cancelDeletion = () => {
+    showDeleteModal.value = false;
 };
 </script>
 
@@ -49,7 +64,6 @@ const hapus = (id) => {
                             <div class="block px-4 py-2 text-xs text-gray-400">
                                 Filter Users
                             </div>
-                            <!-- Add your filter options here -->
                             <div class="flex items-center px-4 py-2 text-sm">
                                 <input type="text"
                                     class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
@@ -96,7 +110,13 @@ const hapus = (id) => {
                     </tbody>
                 </table>
             </div>
-
         </div>
+
+        <!-- Delete Confirmation Modal -->
+        <DeleteConfirmation 
+            :show="showDeleteModal" 
+            @confirm="confirmDeletion" 
+            @cancel="cancelDeletion" 
+        />
     </AppLayout>
 </template>
