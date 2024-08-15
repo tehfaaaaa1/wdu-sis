@@ -50,7 +50,15 @@ class ProjectController extends Controller
         $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
-            'slug'=> '',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $slug = Str::slug($request->project_name);
+
+        Project::create([
+            'project_name' => $request->project_name,
+            'desc' => $request->desc,
+            'slug' => $slug,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -101,10 +109,6 @@ class ProjectController extends Controller
     }
     public function create()
     {
-        return Inertia::render('Projects/CreateProjects');
-    }
-
-    public function create() {
         return Inertia::render('Projects/CreateProjects');
     }
 }
