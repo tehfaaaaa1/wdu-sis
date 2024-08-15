@@ -77,9 +77,14 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     Route::get('/users/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
 
+    // Dashboard admin
     Route::get('/dashboard/admin', function () {
         return Inertia::render('Dashboard/Admin');
-    })->name('dashboard.admin');
+    })->name('dashboard.admin')->middleware(['ableSurvey']);
+
+    Route::get('/dashboard/admin-users', function () {
+        return Inertia::render('Dashboard/AdminUsers');
+    })->name('dashboard.admin_users')->middleware(['ableSurvey']);
 });
 
 Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');

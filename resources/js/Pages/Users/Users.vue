@@ -4,6 +4,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import NavLink from '@/Components/NavLink.vue';
 
 const form = useForm({});
 const showDeleteModal = ref(false);
@@ -39,10 +40,10 @@ const cancelDeletion = () => {
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mx-3 mb-6">
                 <div class="w-1/2 sm:w-full">
-                    <a :href="route('create_users')"
+                    <NavLink :href="route('create_users')"
                         class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
                         Add User
-                    </a>
+                    </NavLink>
                 </div>
                 <div class="">
                     <Dropdown align="right">

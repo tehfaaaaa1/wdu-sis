@@ -18,7 +18,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center justify-center">
                         <Link :href="route('dashboard')">
-                        <ApplicationMark class="block w-80" />
+                        <ApplicationMark class="block w-80 border-b border-gray-400 mb-4" />
                         </Link>
                     </div>
 
