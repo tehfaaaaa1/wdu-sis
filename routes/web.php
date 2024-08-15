@@ -65,7 +65,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     Route::get('/users/list-users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
 
-    Route::get('/create-users', function () {
+    Route::get('/users/create-users', function () {
         return Inertia::render('Users/CreateUsers');
     })->name('create_users')->middleware(['ableCreateUser']);
 
