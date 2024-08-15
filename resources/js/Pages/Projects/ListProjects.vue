@@ -12,7 +12,7 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
 
-defineProps({projects: Object})
+defineProps({projects: Object, })
 
 const form = useForm({
     search: '',
@@ -72,7 +72,7 @@ const hapus = (id) => {
                         </p>
                         <div class="flex justify-center">
                             <a class="p-3 px-6 mb-3 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200"
-                            :href="route('listsurvey,',project.slug)">
+                            :href="route('listsurvey',project.slug)">
                                 Check Project
                             </a>
                         </div>      

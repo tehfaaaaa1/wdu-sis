@@ -12,7 +12,10 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
 
-const props = defineProps({surveys: Object})
+const props = defineProps({
+    surveys: Object,
+    projects: Object
+})
 const form = useForm({
     search: '',
 });
@@ -26,7 +29,6 @@ const hapus = (id) => {
         form.get(route('delete_surveys', id));
     }
 };
-console.log(props)
 </script>
 
 <template>
@@ -40,7 +42,7 @@ console.log(props)
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_surveys')" 
+                        <NavLink :href="route('create_surveys', props.projects.slug )" 
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add Survey
                         </NavLink>
                     </div>
@@ -71,7 +73,7 @@ console.log(props)
                            Updated at:  {{ survey.updated_at }}
                         </p>
                         <div class="flex justify-center">
-                            <a :href="route('submission_surveys',survey.id)" class="p-3 px-6 mb-3 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                            <a :href="route('submission_surveys', survey.id )" class="p-3 px-6 mb-3 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                 Check Survey
                             </a>
                         </div>      
@@ -91,9 +93,9 @@ console.log(props)
                                             <div class="py-1">
                                                 <a href="#":class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit Soal dan Jawaban</a>
     
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" :href="route('edit_surveys',survey.id)">Edit Surveys</a>
+                                                <!-- <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" :href="route('edit_surveys',surveys.project_id)">Edit Surveys</a>
     
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" @click="hapus(survey.id)" class="cursor-pointer">Hapus Surveys</a>
+                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" @click="hapus(surveys.project_id)" class="cursor-pointer">Hapus Surveys</a> -->
                                             </div>
                                     </template>
                                 </Dropdown>

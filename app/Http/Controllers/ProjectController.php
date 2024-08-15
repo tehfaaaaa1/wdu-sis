@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
+use App\Models\Survey;
 use Inertia\Inertia;
+use App\Models\Project;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
     public function index()
     {
+        
         return Inertia::render('Projects/ListProjects', [
             'projects' => Project::all()->map(function ($project) {
                 return [
@@ -17,8 +20,8 @@ class ProjectController extends Controller
                     'project_name'=>$project->project_name,
                     'desc'=>$project->desc,
                     'slug'=> $project->slug,
-                    'created_at'=>$project->created_at->format('Y-m-d H:i:s'),
-                    'updated_at'=>$project->updated_at->format('Y-m-d H:i:s'),
+                    'created_at'=>$project->created_at->format('j F Y H:i:s '),
+                    'updated_at'=>$project->updated_at->format('j F Y H:i:s'),
                 ];
                 
             })
@@ -29,6 +32,7 @@ class ProjectController extends Controller
         $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
+            'slug'=> 'project 1',
             'created_at' => now(),
             'updated_at' => now(),
           ]);
@@ -44,6 +48,7 @@ class ProjectController extends Controller
             'id' => $project->id,
             'project_name' => $project->project_name,
             'desc' => $project->desc,
+            'slug'=> $project->slug,
             'updated_at'=>$project->update_at,
             ]
         ]);
@@ -67,7 +72,6 @@ class ProjectController extends Controller
         Project::destroy($id);
         return redirect()->route('Projects')->with('success','Update successfully.');
     }
-    public function create(){
-        return inertia::render('Projects/CreateProjects');
-    }
+
+
 }

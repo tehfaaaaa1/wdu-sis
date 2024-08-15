@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('desc');
-            $table->unsignedBigInteger('project_id');
+            $table->foreignId('project_id')->constrained(
+                table: 'projects',
+                indexName: 'surveys_project_id',
+            );
             $table->timestamps();
 
-            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
     }
 

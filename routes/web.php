@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\ProjectController;
 use Inertia\Inertia;
+use App\Models\Survey;
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
+use App\Actions\Jetstream\CreateTeam;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
-use App\Actions\Jetstream\CreateTeam;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\ProjectController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -43,26 +45,27 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
         Route::get('/{id}/edit',[ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
 
         Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_projects')->middleware(['ableSurvey']);
-
-        Route::prefix('{slug}/surveys')->group(function () {
-            Route::get('/list-surveys', [SurveyController::class, 'index'])->name('listsurvey');
         
-            Route::get('/createsurveys', function () {
-                return inertia::render('Surveys/CreateSurveys');
-            })->name('create_surveys')->middleware(['ableSurvey']);
-        
-            Route::resource('surveys', SurveyController::class);
-        
+        Route::prefix('{Project:slug}/surveys/')->group(function () {
+            
+            Route::get('/list-surveys',[SurveyController::class, 'index'])->name('listsurvey');
+            
+            Route::get('/createsurveys', [SurveyController::class, 'create'])->name('create_surveys')->middleware(['ableSurvey']);
+            
             Route::post('/create', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
         
+            Route::get('{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
+
             Route::put('/update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
-        
-            Route::get('/{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
-        
-            Route::get('/submission/{id}',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
-        
-            Route::get('/{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
-        });
+
+            Route::get('{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
+            
+            Route::get('{id}/delete',[SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
+    
+            Route::resource('surveys', SurveyController::class);
+                
+
+            });
    });
 
     

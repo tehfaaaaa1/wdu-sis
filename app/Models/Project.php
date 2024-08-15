@@ -2,15 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
 {
     use HasFactory;
     protected $fillable = [
         'project_name',
-        'desc',
         'slug',
+        'desc',
     ];
+
+    public function survey() : HasMany{
+
+        return $this->hasMany(Survey::class);
+    }
 }
