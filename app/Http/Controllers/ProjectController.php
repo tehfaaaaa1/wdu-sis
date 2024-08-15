@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Survey;
 use Inertia\Inertia;
+use App\Models\Survey;
 use App\Models\Project;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use function Termwind\render;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -63,7 +64,7 @@ class ProjectController extends Controller
             'updated_at' => now(),
         ]);
     
-        \Log::info('Project created:', $project->toArray());
+        Log::info('Project created:', $project->toArray());
     
         return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
