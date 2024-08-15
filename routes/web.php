@@ -57,7 +57,6 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             Route::get('/submission/{id}', [SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
 
             Route::get('/{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
-
         });
     });
 
@@ -75,13 +74,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/users/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
 
     // Dashboard admin
-    Route::get('/dashboard/admin', function () {
-        return Inertia::render('Dashboard/Admin');
-    })->name('dashboard.admin')->middleware(['ableSurvey']);
+    Route::get('/dashboard/admin', [ProjectController::class, 'adminIndex'])->name('dashboard.admin')->middleware(['ableSurvey']);
 
-    Route::get('/dashboard/admin-users', function () {
-        return Inertia::render('Dashboard/AdminUsers');
-    })->name('dashboard.admin_users')->middleware(['ableSurvey']);
+    Route::get('/dashboard/admin-users', [UserController::class, 'adminIndex'])->name('dashboard.admin_users')->middleware(['ableSurvey']);
 });
 
 Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');

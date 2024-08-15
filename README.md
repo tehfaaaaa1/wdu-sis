@@ -6,8 +6,11 @@
 - Admin Panel Content
 
 # Changelog
+## 15 Aug 2024
+
 ## 14 Aug 2024
-- CRUD User (Add Team needed here)
+- CRUD User
+- Projects (WIP)
 
 ## 13 Aug 2024
 - Assigning team admin or editor via team member settings

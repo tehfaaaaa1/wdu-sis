@@ -25,6 +25,22 @@ class ProjectController extends Controller
         ]);
     }
 
+    public function adminIndex()
+    {
+        return Inertia::render('Dashboard/Admin', [
+            'projects' => Project::all()->map(function ($project) {
+                return [
+                    'id' => $project->id,
+                    'project_name' => $project->project_name,
+                    'desc' => $project->desc,
+                    'slug' => $project->slug,  // Removed nullable() as it's not necessary here
+                    'created_at' => $project->created_at->format('Y-m-d H:i:s'),
+                    'updated_at' => $project->updated_at->format('Y-m-d H:i:s'),
+                ];
+            })
+        ]);
+    }
+
     public function store(Request $request)
     {
         $request->validate([

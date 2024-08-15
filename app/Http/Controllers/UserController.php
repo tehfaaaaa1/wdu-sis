@@ -24,6 +24,21 @@ class UserController extends Controller
         ]);
     }
 
+    public function adminIndex()
+    {
+        return Inertia::render('Dashboard/AdminUsers', [
+            'users' => User::with('currentTeam')->get()->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'usertype' => $user->usertype,
+                    'team' => $user->currentTeam ? $user->currentTeam->name : 'No Team',
+                ];
+            }),
+        ]);
+    }
+
     public function create()
     {
         return Inertia::render('Users/CreateUsers');
