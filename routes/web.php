@@ -25,24 +25,19 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',])->group(function () {
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
 
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
     Route::prefix('projects')->group(function () {
+
         Route::get('/list-projects', [ProjectController::class, 'index'])->name('projects');
 
-        Route::get('/create-project',[ProjectController::class, 'create'])->name('create_projects')->middleware(['ableSurvey']);
-
-        // Route::resource('projects', ProjectController::class);
+        Route::get('/create-project', [ProjectController::class, 'create'])->name('create_projects')->middleware(['ableSurvey']);
 
         Route::post('/create', [ProjectController::class, 'store'])->name('create_project')->middleware(['ableSurvey']);
-    
-        Route::put('/update/{id}', [ProjectController::class, 'update'])->name('update_projects')->middleware(['ableSurvey']);
-    
-        Route::get('/{id}/edit',[ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
 
         Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_projects')->middleware(['ableSurvey']);
         
@@ -68,31 +63,25 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
             });
    });
 
-    
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
-
-    // Users
     Route::get('/users/list-users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
 
-    Route::get('/createusers', function () {
-        return Inertia::render('Users/CreateUsers');
-    })->name('create_users')->middleware(['ableCreateUser']);
-
-    Route::resource('users', UserController::class);
-
     Route::post('/users/create', [UserController::class, 'store'])->name('create_user')->middleware(['ableCreateUser']);
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware(['ableCreateUser']);
 
     Route::put('/users/update/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
 
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('edit_user')->middleware(['ableCreateUser']);
 
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
+
     Route::get('/users/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
 
+    // Dashboard admin
+    Route::get('/dashboard/admin', [ProjectController::class, 'adminIndex'])->name('dashboard.admin')->middleware(['ableSurvey']);
 
-    Route::get('/dashboard/admin', function () {
-        return Inertia::render('Dashboard/Admin');
-    })->name('dashboard.admin');
+    Route::get('/dashboard/admin-users', [UserController::class, 'adminIndex'])->name('dashboard.admin_users')->middleware(['ableSurvey']);
 });
-
 
 Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');

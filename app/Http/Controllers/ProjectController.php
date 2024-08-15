@@ -23,55 +23,79 @@ class ProjectController extends Controller
                     'created_at'=>$project->created_at->format('j F Y H:i:s '),
                     'updated_at'=>$project->updated_at->format('j F Y H:i:s'),
                 ];
-                
             })
         ]);
     }
-    
-    public function store(Request $request, Project $project) {
+
+    public function adminIndex()
+    {
+        return Inertia::render('Dashboard/Admin', [
+            'projects' => Project::all()->map(function ($project) {
+                return [
+                    'id' => $project->id,
+                    'project_name' => $project->project_name,
+                    'desc' => $project->desc,
+                    'slug' => $project->slug,  // Removed nullable() as it's not necessary here
+                    'created_at' => $project->created_at->format('Y-m-d H:i:s'),
+                    'updated_at' => $project->updated_at->format('Y-m-d H:i:s'),
+                ];
+            })
+        ]);
+    }
+
+    public function store(Request $request)
+    {
         $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
             'slug'=> 'project 1',
             'created_at' => now(),
             'updated_at' => now(),
-          ]);
-          Project::create($request->all());
-          return redirect()->route('projects')
-            ->with('success','Post created successfully.');
+        ]);
+    
+        return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
 
-    public function edit( $id) {
-           $project = Project::findOrFail($id);
+    public function edit($id)
+    {
+        $project = Project::findOrFail($id);
         return Inertia::render('Projects/EditProjects', [
+
             'projects' =>[
             'id' => $project->id,
             'project_name' => $project->project_name,
             'desc' => $project->desc,
             'slug'=> $project->slug,
             'updated_at'=>$project->update_at,
+
             ]
         ]);
     }
-    public function update(Request $request, $id){
-        // dump($id);
+
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
-          ]);
-          Project::where('id', $id)->update([
+        ]);
+
+        // Generate the slug from the project name
+        $slug = Str::slug($request->project_name);
+
+        Project::where('id', $id)->update([
             'project_name' => $request->project_name,
             'desc' => $request->desc,
-            'updated_at' => now()
-          ]);
-          return redirect()->route('projects')->with('success','Update successfully.');
+            'slug' => $slug,  // Update the slug
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('projects')->with('success', 'Project updated successfully.');
     }
 
-    public function destroy( $id){
-        // dump($id);
+    public function destroy($id)
+    {
         Project::destroy($id);
-        return redirect()->route('Projects')->with('success','Update successfully.');
+        return redirect()->route('projects')->with('success', 'Project deleted successfully.');
     }
-
 
 }

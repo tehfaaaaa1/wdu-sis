@@ -1,18 +1,49 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import { useForm } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
+import NavLink from '@/Components/NavLink.vue';
 
-const form = useForm({})
+const props = defineProps({
+    users: Array,
+});
 
-defineProps({ users: Object });
+const form = useForm({});
+const showDeleteModal = ref(false);
+const selectedUserId = ref(null);
+const searchQuery = ref('');
 
 const hapus = (id) => {
-    if (confirm('Delete this user?')) {
-        form.get(route('delete_user', id));
-    }
+    selectedUserId.value = id;
+    showDeleteModal.value = true;
 };
+
+const confirmDeletion = () => {
+    form.get(route('delete_user', selectedUserId.value), {
+        onFinish: () => {
+            showDeleteModal.value = false;
+        }
+    });
+};
+
+const cancelDeletion = () => {
+    showDeleteModal.value = false;
+};
+
+const filteredUsers = computed(() => {
+    return props.users.filter(user => {
+        return (
+            user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.usertype.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.team.toLowerCase().includes(searchQuery.value.toLowerCase())
+        );
+    });
+});
 </script>
+
 
 <template>
     <AppLayout title="Users">
@@ -24,10 +55,10 @@ const hapus = (id) => {
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mx-3 mb-6">
                 <div class="w-1/2 sm:w-full">
-                    <a href="/createusers"
+                    <NavLink :href="route('users.create')"
                         class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
                         Add User
-                    </a>
+                    </NavLink>
                 </div>
                 <div class="">
                     <Dropdown align="right">
@@ -49,9 +80,9 @@ const hapus = (id) => {
                             <div class="block px-4 py-2 text-xs text-gray-400">
                                 Filter Users
                             </div>
-                            <!-- Add your filter options here -->
                             <div class="flex items-center px-4 py-2 text-sm">
                                 <input type="text"
+                                    v-model="searchQuery"
                                     class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
                                     placeholder="Search">
                             </div>
@@ -67,12 +98,12 @@ const hapus = (id) => {
                             <th scope="col" class="px-6 py-3 hidden sm:block">Name</th>
                             <th scope="col" class="px-6 py-3">Email</th>
                             <th scope="col" class="px-6 py-3">User Type</th>
-                            <th scope="col" class="px-6 py-3">Team</th> <!-- New Team Column -->
+                            <th scope="col" class="px-6 py-3">Team</th>
                             <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users" :key="user.id" class="bg-white border-b hover:bg-gray-50">
+                        <tr v-for="user in filteredUsers" :key="user.id" class="bg-white border-b hover:bg-gray-50">
                             <td scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block">
                                 {{ user.name }}
@@ -96,7 +127,13 @@ const hapus = (id) => {
                     </tbody>
                 </table>
             </div>
-
         </div>
+
+        <!-- Delete Confirmation Modal -->
+        <DeleteConfirmation 
+            :show="showDeleteModal" 
+            @confirm="confirmDeletion" 
+            @cancel="cancelDeletion" 
+        />
     </AppLayout>
 </template>

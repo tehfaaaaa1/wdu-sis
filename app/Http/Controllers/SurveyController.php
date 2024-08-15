@@ -25,16 +25,21 @@ class SurveyController extends Controller
         return inertia::render('Projects/Surveys/CreateSurveys');
     }
     
-    public function store(Request $request, Survey $survey) {
+    public function store(Request $request)
+    {
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
+        ]);
+    
+        Survey::create([
+            'title' => $request->title,
+            'desc' => $request->desc,
             'created_at' => now(),
             'updated_at' => now(),
-          ]);
-          Survey::create($request->all());
-          return redirect()->route('surveys')
-            ->with('success','Post created successfully.');
+        ]);
+    
+        return redirect()->route('listsurvey', $request->project_id)->with('success', 'Survey created successfully.');
     }
 
     public function edit(Survey $survey, $id) {

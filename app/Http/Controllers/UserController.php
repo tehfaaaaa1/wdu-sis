@@ -24,6 +24,26 @@ class UserController extends Controller
         ]);
     }
 
+    public function adminIndex()
+    {
+        return Inertia::render('Dashboard/AdminUsers', [
+            'users' => User::with('currentTeam')->get()->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'usertype' => $user->usertype,
+                    'team' => $user->currentTeam ? $user->currentTeam->name : 'No Team',
+                ];
+            }),
+        ]);
+    }
+
+    public function create()
+    {
+        return Inertia::render('Users/CreateUsers');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -37,40 +57,32 @@ class UserController extends Controller
             ->with('success', 'Post created successfully.');
     }
 
-    public function edit(User $user)
+    public function edit($id)
     {
-        // dump($survey->id);   
-        return Inertia::render('Users/EditUsers', [
-            'users' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'usertype' => $user->usertype,
-                'password' => $user->password,
-            ]
+        $user = User::findOrFail($id); 
+        return inertia('Users/EditUsers', [
+            'users' => $user
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        // dump($id);
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                Rule::unique('users')->ignore($id),
-            ],
-            'usertype' => 'required',
-            'password' => 'required|string|confirmed',
+            'email' => 'required|email|max:255',
+            'password' => 'nullable|string|min:8|confirmed',
+            'usertype' => 'required|string',
         ]);
-        User::where('id', $id)->update([
-            'id' => $request->id,
+    
+        $user = User::findOrFail($id);
+        $user->update([
             'name' => $request->name,
             'email' => $request->email,
+            'password' => $request->password ? bcrypt($request->password) : $user->password,
             'usertype' => $request->usertype,
-            'password' => $request->password,
         ]);
-        return redirect()->route('users')->with('success', 'Update successfully.');
+    
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
     public function destroy($id)
