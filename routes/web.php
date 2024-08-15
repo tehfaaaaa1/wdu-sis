@@ -71,6 +71,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('edit_user')->middleware(['ableCreateUser']);
 
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
+
     Route::get('/users/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
 
     // Dashboard admin
