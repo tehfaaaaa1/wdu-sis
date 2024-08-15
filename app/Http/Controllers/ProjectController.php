@@ -103,8 +103,4 @@ class ProjectController extends Controller
     {
         return Inertia::render('Projects/CreateProjects');
     }
-
-    public function create() {
-        return Inertia::render('Projects/CreateProjects');
-    }
 }
