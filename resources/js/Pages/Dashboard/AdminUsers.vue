@@ -1,13 +1,24 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
-import NavLink from '@/Components/NavLink.vue';
+import { ref, computed } from 'vue';
 
-defineProps({ users: Object });
+const props = defineProps({
+    users: Array,
+});
+
+const searchQuery = ref('');
+const filteredUsers = computed(() => {
+    return props.users.filter(user => {
+        return (
+            user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.usertype.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.team.toLowerCase().includes(searchQuery.value.toLowerCase())
+        );
+    });
+});
 </script>
 
 <template>
@@ -57,6 +68,7 @@ defineProps({ users: Object });
                                     <div class="flex items-center px-4 py-2 text-sm">
                                         <input type="text"
                                             class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
+                                            v-model="searchQuery"
                                             placeholder="Search">
                                     </div>
                                 </template>
@@ -75,7 +87,8 @@ defineProps({ users: Object });
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="user in users" :key="user.id" class="bg-white border-b hover:bg-gray-50">
+                                <tr v-for="user in filteredUsers" :key="user.id"
+                                    class="bg-white border-b hover:bg-gray-50">
                                     <td scope="row"
                                         class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block">
                                         {{ user.name }}
@@ -96,8 +109,5 @@ defineProps({ users: Object });
                 </div>
             </div>
         </div>
-
-        <!-- Delete Confirmation Modal -->
-        <DeleteConfirmation :show="showDeleteModal" @confirm="confirmDeletion" @cancel="cancelDeletion" />
     </AppLayout>
 </template>
