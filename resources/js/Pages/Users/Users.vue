@@ -3,14 +3,17 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import NavLink from '@/Components/NavLink.vue';
+
+const props = defineProps({
+    users: Array,
+});
 
 const form = useForm({});
 const showDeleteModal = ref(false);
 const selectedUserId = ref(null);
-
-defineProps({ users: Object });
+const searchQuery = ref('');
 
 const hapus = (id) => {
     selectedUserId.value = id;
@@ -28,7 +31,19 @@ const confirmDeletion = () => {
 const cancelDeletion = () => {
     showDeleteModal.value = false;
 };
+
+const filteredUsers = computed(() => {
+    return props.users.filter(user => {
+        return (
+            user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.usertype.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.team.toLowerCase().includes(searchQuery.value.toLowerCase())
+        );
+    });
+});
 </script>
+
 
 <template>
     <AppLayout title="Users">
@@ -67,6 +82,7 @@ const cancelDeletion = () => {
                             </div>
                             <div class="flex items-center px-4 py-2 text-sm">
                                 <input type="text"
+                                    v-model="searchQuery"
                                     class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
                                     placeholder="Search">
                             </div>
@@ -82,12 +98,12 @@ const cancelDeletion = () => {
                             <th scope="col" class="px-6 py-3 hidden sm:block">Name</th>
                             <th scope="col" class="px-6 py-3">Email</th>
                             <th scope="col" class="px-6 py-3">User Type</th>
-                            <th scope="col" class="px-6 py-3">Team</th> <!-- New Team Column -->
+                            <th scope="col" class="px-6 py-3">Team</th>
                             <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users" :key="user.id" class="bg-white border-b hover:bg-gray-50">
+                        <tr v-for="user in filteredUsers" :key="user.id" class="bg-white border-b hover:bg-gray-50">
                             <td scope="row"
                                 class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block">
                                 {{ user.name }}
