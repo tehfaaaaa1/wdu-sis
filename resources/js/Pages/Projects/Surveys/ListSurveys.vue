@@ -107,36 +107,3 @@ const hapus = (id) => {
         </main>
     </AppLayout>
 </template>
-
-<script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import NavLink from '@/Components/NavLink.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-
-const props = defineProps({
-    surveys: Object,
-    projectSlug: String
-});
-
-const form = useForm({
-    search: '',
-});
-
-const submit = () => {
-    form.get(route('surveys'));
-};
-
-const hapus = (id) => {
-    if (confirm('delete this survey')) {
-        form.get(route('delete_surveys', id));
-    }
-};
-</script>
