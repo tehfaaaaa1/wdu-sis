@@ -26,7 +26,10 @@ class ProjectController extends Controller
             })
         ]);
     }
-
+    public function create()
+    {
+        return Inertia::render('Projects/CreateProjects');
+    }
     public function adminIndex()
     {
         return Inertia::render('Dashboard/Admin', [
@@ -45,10 +48,17 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
-            'slug'=> 'project 1',
+        ]);
+    
+        $slug = Str::slug($validated['project_name']);
+    
+        Project::create([
+            'project_name' => $validated['project_name'],
+            'desc' => $validated['desc'],
+            'slug' => $slug,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
