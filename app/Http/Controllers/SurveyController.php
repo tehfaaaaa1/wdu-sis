@@ -22,7 +22,9 @@ class SurveyController extends Controller
 
     public function create(Project $project, $slug){
         $project =  Project::where('slug',$slug)->firstOrFail();
-        return inertia::render('Projects/Surveys/CreateSurveys');
+        return inertia::render('Projects/Surveys/CreateSurveys', [
+            'surveys' => $project->project
+        ]);
     }
     
     public function store(Request $request)
@@ -43,7 +45,7 @@ class SurveyController extends Controller
     }
 
     public function edit(Survey $survey, $id) {
-        dump($survey->title);   
+        $survey = Survey::findOrFail($id);
         return Inertia::render('Projects/Surveys/EditSurveys', [
             'surveys' =>[
             'id' => $survey->id,
@@ -80,7 +82,7 @@ class SurveyController extends Controller
           return redirect()->route('surveys')->with('success','Update successfully.');
     }
 
-    public function destroy( $id){
+    public function destroy($id){
         // dump($id);
         Survey::destroy($id);
         return redirect()->route('surveys')->with('success','Update successfully.');
