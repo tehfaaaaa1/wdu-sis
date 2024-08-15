@@ -53,15 +53,16 @@ const logout = () => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                <NavLink
+                                    v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                     :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                                     Admin Panel
                                 </NavLink>
                                 <NavLink :href="route('projects')" :active="route().current('projects')">
                                     Projects
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'" 
-                                :href="route('users')" :active="route().current('users')">
+                                <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'" :href="route('users')"
+                                    :active="route().current('users')">
                                     User
                                 </NavLink>
                             </div>
@@ -70,12 +71,15 @@ const logout = () => {
                         <div class="hidden lg:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
                                 <div v-if="$page.props.auth.user.usertype === 'user'">
-                                <p class="text-white">
-                                    You are {{  $page.props.auth.user.all_teams.find(team => team.id === $page.props.auth.user.current_team_id).name }}
-                                </p>
-                                
+                                    <p class="text-white">
+                                        You are {{ $page.props.auth.user.all_teams.find(team => team.id ===
+                                            $page.props.auth.user.current_team_id).name }}
+                                    </p>
+
                                 </div>
-                                <Dropdown v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin' " align="right" width="60">
+                                <Dropdown
+                                    v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                    align="right" width="60">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
@@ -105,13 +109,15 @@ const logout = () => {
                                                 Team Settings
                                             </DropdownLink>
 
-                                            <DropdownLink v-if="$page.props.jetstream.canCreateTeams && $page.props.auth.user.usertype === 'superadmin'"
+                                            <DropdownLink
+                                                v-if="$page.props.jetstream.canCreateTeams && $page.props.auth.user.usertype === 'superadmin'"
                                                 :href="route('teams.create')">
                                                 Create New Team
                                             </DropdownLink>
 
                                             <!-- Team Switcher -->
-                                            <template v-if="$page.props.auth.user.all_teams.length > 1 && $page.props.auth.user.usertype === 'superadmin'">
+                                            <template
+                                                v-if="$page.props.auth.user.all_teams.length > 1 && $page.props.auth.user.usertype === 'superadmin'">
                                                 <div class="border-t border-gray-200" />
 
                                                 <div class="block px-4 py-2 text-xs text-gray-400">
@@ -224,15 +230,16 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                             :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                             Admin Panel
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('projects')" :active="route().current('project')">
                             Project
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin'"  
-                                                :href="route('users')" :active="route().current('users')">
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin'" :href="route('users')"
+                            :active="route().current('users')">
                             User
                         </ResponsiveNavLink>
                     </div>
@@ -287,13 +294,15 @@ const logout = () => {
                                     Team Settings
                                 </ResponsiveNavLink>
 
-                                <ResponsiveNavLink v-if="$page.props.jetstream.canCreateTeams && $page.props.auth.user.usertype === 'superadmin'"
+                                <ResponsiveNavLink
+                                    v-if="$page.props.jetstream.canCreateTeams && $page.props.auth.user.usertype === 'superadmin'"
                                     :href="route('teams.create')" :active="route().current('teams.create')">
                                     Create New Team
                                 </ResponsiveNavLink>
 
                                 <!-- Team Switcher -->
-                                <template v-if="$page.props.auth.user.all_teams.length > 1 && $page.props.auth.user.usertype === 'superadmin'">
+                                <template
+                                    v-if="$page.props.auth.user.all_teams.length > 1 && $page.props.auth.user.usertype === 'superadmin'">
                                     <div class="border-t border-gray-200" />
 
                                     <div class="block px-4 py-2 text-xs text-gray-200">
@@ -304,14 +313,16 @@ const logout = () => {
                                         <form @submit.prevent="switchToTeam(team)">
                                             <ResponsiveNavLink as="button">
                                                 <div class="flex items-center">
-                                                    <svg v-if="team.id == $page.props.auth.user.current_team_id"
-                                                        class="me-2 h-5 w-5 text-green-400"
-                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                    <div>{{ current_team }}</div>
+                                                    <div class="">
+                                                        <svg v-if="team.id == $page.props.auth.user.current_team_id"
+                                                            class="me-2 h-5 w-5"
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div>{{ team.name }}</div>
                                                 </div>
                                             </ResponsiveNavLink>
                                         </form>

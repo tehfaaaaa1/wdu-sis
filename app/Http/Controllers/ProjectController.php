@@ -8,6 +8,8 @@ use App\Models\Project;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
+use function Termwind\render;
+
 class ProjectController extends Controller
 {
     public function index()
@@ -48,7 +50,7 @@ class ProjectController extends Controller
         $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
-            'slug'=> 'project 1',
+            'slug'=> '',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -102,4 +104,7 @@ class ProjectController extends Controller
         return Inertia::render('Projects/CreateProjects');
     }
 
+    public function create() {
+        return Inertia::render('Projects/CreateProjects');
+    }
 }
