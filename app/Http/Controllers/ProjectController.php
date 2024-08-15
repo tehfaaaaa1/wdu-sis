@@ -53,12 +53,7 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
-        ]);
-    
-        $project = Project::create([
-            'project_name' => $validated['project_name'],
-            'desc' => $validated['desc'],
-            'slug' => Str::slug($validated['project_name']),
+            'slug'=> '',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
