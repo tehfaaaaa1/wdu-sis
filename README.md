@@ -6,7 +6,11 @@
 
 # Changelog
 ## 15 Aug 2024
-- Projects (halfway there, needs fixing on CRUD survey)
+- Projects 
+  - Contains grouped surveys for users to access
+  - Currently needs fixing on CRUD Survey
+- Added search for user
+- Minor fixes to UI
 
 ## 14 Aug 2024
 - CRUD User
