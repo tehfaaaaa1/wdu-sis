@@ -7,6 +7,7 @@ use App\Models\Survey;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use URL;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use DB;
 class SurveyController extends Controller
@@ -25,29 +26,37 @@ class SurveyController extends Controller
     }
 
     public function create(Project $project, $slug){
-        $project =  Project::where('slug',$slug)->firstOrFail();
-        return inertia::render('Projects/Surveys/CreateSurveys');
+        $survey = DB::table('projects')
+        ->where('slug', $slug)
+        ->get();
+
+        return Inertia::render('Projects/Surveys/CreateSurveys',[
+            'projects' => $survey,
+        ] 
+        );
     }
     
     public function store(Request $request, $slug)
     {
-        $project = Survey::where('slug', $slug)->firstOrFail();
-        $projectid = $project->project;
-        dump($projectid);
+        $id = $request->project_id;
+        $slug = $request->slug;
+
+
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
-            
+
         ]);
-    
+        
         Survey::create([
             'title' => $request->title,
             'desc' => $request->desc,
+            'project_id' => $id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
     
-        return redirect()->route('listsurvey', $request->project_id)->with('success', 'Survey created successfully.');
+        return redirect()->route('listsurvey', $slug)->with('success', 'Survey created successfully.');
     }
 
     public function edit(Survey $survey, $id) {

@@ -50,7 +50,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             
             Route::get('/createsurveys', [SurveyController::class, 'create'])->name('create_surveys')->middleware(['ableSurvey']);
             
-            Route::post('/create', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
+            Route::post('/createsurvey', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
         
             Route::get('{id}/edit',[SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
 

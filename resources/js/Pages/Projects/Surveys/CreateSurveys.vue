@@ -9,24 +9,26 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-const props = defineProps({surveys:Object})
+const props = defineProps({ projects:Object})
+const project = props.projects[0];
 const form = useForm({
     title: '',
     desc: '',
+    project_id: project['id'],
+    slug: project['slug']
 });
 
 const submit = () => {
-    form.post(route('create_survey'));
+    form.post(route('create_survey', form.slug));
 };
-
-console.log(props)
+// console.log(id)
 </script>
 
 <template>
     
     <AppLayout title="Create Survey">
 
-        <div class="mt-6 sm:-mt-4 px-4">
+        <div class="mt-6 sm:-mt-4 px-4" v-for="p in projects">
             <AuthenticationCard>
                 <template #logo>
                     <AuthenticationCardLogo />
