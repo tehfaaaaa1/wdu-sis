@@ -71,7 +71,7 @@ console.log(props.surveys)
                     </p>  
                     <div class=" mx-5 sm:mx-0">
                         <p class="text-center text-gray-600 mb-1.5 text-sm">
-                           Created at:  {{ survey.created_at }}
+                           Created at:  {{ survey.created_at}}
                         </p>
                         <p class="text-center text-gray-600 mb-3 text-sm">
                            Updated at:  {{ survey.updated_at }}

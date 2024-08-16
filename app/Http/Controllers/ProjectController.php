@@ -42,8 +42,8 @@ class ProjectController extends Controller
                     'project_name' => $project->project_name,
                     'desc' => $project->desc,
                     'slug' => $project->slug,  // Removed nullable() as it's not necessary here
-                    'created_at' => $project->created_at->format('Y-m-d H:i:s'),
-                    'updated_at' => $project->updated_at->format('Y-m-d H:i:s'),
+                    'created_at' => $project->created_at,
+                    'updated_at' => $project->updated_at,
                 ];
             })
         ]);
