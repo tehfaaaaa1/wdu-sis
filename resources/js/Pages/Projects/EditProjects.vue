@@ -10,10 +10,10 @@ import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-const props = defineProps({projects: Object})
+const props = defineProps({ projects: Object })
 
 const form = useForm({
-    project_name: props.projects.project_name,     
+    project_name: props.projects.project_name,
     desc: props.projects.desc,
 });
 
@@ -25,7 +25,7 @@ console.log(props)
 </script>
 
 <template>
-    
+
     <AppLayout title="Edit Survey">
 
         <div class="mt-6 sm:-mt-4 px-4">
@@ -33,30 +33,28 @@ console.log(props)
                 <template #logo>
                     <AuthenticationCardLogo />
                 </template>
-                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Edit Surey</h2>
+                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Edit Project</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
                         <InputLabel for="title" />
-                        <TextInput id="name" v-model="form.project_name" type="text" placeholder="Project Name"
-                            class=""
+                        <TextInput id="name" v-model="form.project_name" type="text" placeholder="Project Name" class=""
                             required autofocus autocomplete="title" />
                         <InputError class="mt-2" :message="form.errors.title" />
                     </div>
 
                     <div class="mt-4 relative">
-                        <TextInput id="password_confirmation" v-model="form.desc"
-                            placeholder="Description"
-                            class=""
+                        <textarea id="desc" v-model="form.desc" placeholder="Description"
+                            class="block text-primary placeholder-primary w-full h-48 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                             required autocomplete="desc" />
 
-                        <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                        <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
 
 
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
-                            Edit Project    
+                            Edit Project
                         </PrimaryButton>
                     </div>
                 </form>
