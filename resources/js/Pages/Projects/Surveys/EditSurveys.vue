@@ -10,18 +10,20 @@ import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-const props = defineProps({surveys: Object})
-
+const props = defineProps({surveys: Object, projects: Object})
+const project = props.projects[0]
 const form = useForm({
     title: props.surveys.title,     
     desc: props.surveys.desc,
+    project_id: props.surveys.project_id,
+    slug: project['slug'],
 });
 
 const submit = () => {
-    form.put(route('update_survey', props.surveys.id));
+    form.put(route('update_survey', [props.surveys.id, project['slug']]));
 };
 
-console.log(props)  
+console.log(props.surveys.id)  
 </script>
 
 <template>
