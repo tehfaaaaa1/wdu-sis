@@ -99,11 +99,15 @@ class SurveyController extends Controller
             return redirect()->route('listsurvey', [$request->slug])->with('success','Update successfully.');
     }
 
-    public function destroy($id, $slug){
-        // dump($id);
-        
-        Survey::destroy($id);
-        return redirect()->route('listsurvey', $slug)->with('success','Update successfully.');
+    public function destroy($id)
+    {
+        $project = Project::findOrFail($id);
+    
+        $project->surveys()->delete();
+    
+        $project->delete();
+    
+        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
     }
     
 }
