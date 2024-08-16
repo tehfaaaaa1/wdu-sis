@@ -21,7 +21,7 @@ const submit = () => {
 </script>
 
 <template>
-    
+
     <AppLayout title="Create Project">
 
         <div class="mt-6 sm:-mt-4 px-4">
@@ -34,15 +34,13 @@ const submit = () => {
                     <div class="relative">
                         <InputLabel for="project_name" />
                         <TextInput id="projectname" v-model="form.project_name" type="text" placeholder="Project Name"
-                            class=""
-                            required autofocus autocomplete="project_name" />
+                            class="" required autofocus autocomplete="project_name" />
                         <InputError class="mt-2" :message="form.errors.project_name" />
                     </div>
 
                     <div class="mt-4 relative">
-                        <textarea id="desc" v-model="form.desc"
-                            placeholder="Description"
-                            class="block text-primary placeholder-primary w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
+                        <textarea id="desc" v-model="form.desc" placeholder="Description"
+                            class="block text-primary placeholder-primary w-full h-48 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                             required autocomplete="desc" />
 
                         <InputError class="mt-2" :message="form.errors.desc" />

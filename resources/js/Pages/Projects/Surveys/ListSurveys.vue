@@ -63,13 +63,15 @@ console.log(props.surveys)
                     </form>
                 </div>
             </div>
+
+            <!-- May need to make this a component -->
             <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 <div v-for="survey in surveys" :key="survey.id" class="relative rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-80 bg-white mx-5 sm:mx-0">
                     <h1 class="text-2xl text-center mb-2 font-medium">{{ survey.title }}</h1>
                     <p class="my-3 text-base text-justify line-clamp-3">
                         {{survey.desc}}
                     </p>  
-                    <div class=" mx-5 sm:mx-0">
+                    <div class="absolute bottom-0 left-0 right-0 p-5 mx-5 sm:mx-0">
                         <p class="text-center text-gray-600 mb-1.5 text-sm">
                            Created at:  {{ survey.created_at}}
                         </p>

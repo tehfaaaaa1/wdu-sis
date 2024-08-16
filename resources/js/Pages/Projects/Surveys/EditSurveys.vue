@@ -10,10 +10,10 @@ import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-const props = defineProps({surveys: Object, projects: Object})
+const props = defineProps({ surveys: Object, projects: Object })
 const project = props.projects[0]
 const form = useForm({
-    title: props.surveys.title,     
+    title: props.surveys.title,
     desc: props.surveys.desc,
     project_id: props.surveys.project_id,
     slug: project['slug'],
@@ -27,7 +27,7 @@ console.log(props.surveys.id)
 </script>
 
 <template>
-    
+
     <AppLayout title="Edit Survey">
 
         <div class="mt-6 sm:-mt-4 px-4">
@@ -35,23 +35,21 @@ console.log(props.surveys.id)
                 <template #logo>
                     <AuthenticationCardLogo />
                 </template>
-                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Edit Surey</h2>
+                <h2 class="text-primary font-semibold text-2xl text-center mb-4">Edit Survey</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
                         <InputLabel for="title" />
-                        <TextInput id="name" v-model="form.title" type="text" placeholder="Title"
-                            class=""
-                            required autofocus autocomplete="title" />
+                        <TextInput id="name" v-model="form.title" type="text" placeholder="Title" class="" required
+                            autofocus autocomplete="title" />
                         <InputError class="mt-2" :message="form.errors.title" />
                     </div>
 
                     <div class="mt-4 relative">
-                        <TextInput id="password_confirmation" v-model="form.desc"
-                            placeholder="Description"
-                            class=""
+                        <textarea id="desc" v-model="form.desc" placeholder="Description"
+                            class="block text-primary placeholder-primary w-full h-48 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                             required autocomplete="desc" />
 
-                        <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                        <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
 
 
