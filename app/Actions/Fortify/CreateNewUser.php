@@ -43,4 +43,15 @@ class CreateNewUser implements CreatesNewUsers
 
         return $user;
     }
+    public function update(array $input, User $user)
+    {
+        Validator::make($input, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'password' => $this->passwordRules(),
+            'team_id' => ['nullable', 'exists:teams,id'], // Validate team_id
+        ])->validate();
+
+        return $user;
+    }
 }

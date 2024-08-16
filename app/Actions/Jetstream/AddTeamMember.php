@@ -14,6 +14,13 @@ use Laravel\Jetstream\Rules\Role;
 
 class AddTeamMember implements AddsTeamMembers
 {
+    public function create()
+    {
+        $teams = Team::all(); // Fetch teams from the database
+        return Inertia::render('CreateUser', [
+            'teams' => $teams,
+        ]);
+    }
     public function add(User $user, Team $team, string $email, ?string $role = null): void
     {
         Gate::forUser($user)->authorize('addTeamMember', $team);

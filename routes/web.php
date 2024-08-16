@@ -69,7 +69,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::post('/users/create', [UserController::class, 'store'])->name('create_user')->middleware(['ableCreateUser']);
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware(['ableCreateUser']);
 
-    Route::put('/users/update/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
+    Route::put('/users/update/{user}', [YourController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
 
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('edit_user')->middleware(['ableCreateUser']);
 
