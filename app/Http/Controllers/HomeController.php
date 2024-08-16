@@ -45,5 +45,12 @@ class HomeController extends Controller
     
         return back()->with('success', 'Team member added successfully.');
     }
+    public function create()
+    {
+        $teams = Team::all(); 
+        return Inertia::render('CreateUser', [
+            'teams' => $teams,
+        ]);
+    }
 
 }

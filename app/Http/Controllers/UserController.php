@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Team; /
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -41,7 +42,11 @@ class UserController extends Controller
 
     public function create()
     {
-        return Inertia::render('Users/CreateUsers');
+        // Fetch teams for the view
+        $teams = Team::all();
+        return Inertia::render('Users/CreateUsers', [
+            'teams' => $teams,
+        ]);
     }
 
     public function store(Request $request)
@@ -49,19 +54,37 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'usertype' => 'required',
             'password' => 'required|string|confirmed',
+            'usertype' => 'required|string',
+            'team_id' => 'nullable|exists:teams,id', 
         ]);
-        User::create($request->all());
-        return redirect()->route('users')
-            ->with('success', 'Post created successfully.');
+
+        // Create the user
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'usertype' => $request->usertype,
+        ]);
+
+        // Assign team if provided
+        if ($request->filled('team_id')) {
+            $team = Team::find($request->team_id);
+            if ($team) {
+                $user->currentTeam()->associate($team);
+                $user->save();
+            }
+        }
+
+        return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
+    
 
     public function edit($id)
     {
         $user = User::findOrFail($id); 
-        return inertia('Users/EditUsers', [
-            'users' => $user
+        return Inertia::render('Users/EditUsers', [
+            'user' => $user
         ]);
     }
 
@@ -90,5 +113,4 @@ class UserController extends Controller
         User::destroy($id);
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
-
 }
