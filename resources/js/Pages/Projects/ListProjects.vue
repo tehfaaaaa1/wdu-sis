@@ -60,6 +60,8 @@ const hapus = (id) => {
                         </div>
                     </form>
                 </div>
+                
+                <!-- May need to make this a component -->
                 <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
                     <div v-for="project in projects"
                         class="relative rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-80 bg-white mx-5 sm:mx-0">
