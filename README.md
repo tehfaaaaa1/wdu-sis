@@ -2,15 +2,23 @@
 - Updated Documentation (Fadel)
   - ERD Survey Database
   - Activity Diagram
+- Fleshed Out Dashboard
 - More Admin Panel Content
 
 # Changelog
+## 16 Aug 2024
+- Finished Project & Survey
+- Improved CRUD User
+  - Assign user to a team during creation
+  - Allow assignment as admin
+- Minor changes to UI
+
 ## 15 Aug 2024
 - Projects 
   - Contains grouped surveys for users to access
   - Currently needs fixing on CRUD Survey
 - Added search for user
-- Minor fixes to UI
+- Minor changes to UI
 
 ## 14 Aug 2024
 - CRUD User
