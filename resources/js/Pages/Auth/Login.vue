@@ -42,7 +42,7 @@ const submit = () => {
                 {{ status }}
             </div>
             <h2 class="text-primary font-semibold text-xl md:text-2xl text-center mt-4 mb-2 md:mb-10">Sign In to Your
-                Account</h2>
+                Accountq</h2>
 
             <form @submit.prevent="submit" class="space-y-6">
                 <div class="mt-4 relative">
