@@ -1,12 +1,16 @@
 # To Be Added
-- Updated Documentation (Fadel) (deadline: 17/8/2024)
+- Updated Documentation (Fadel)
   - ERD Survey Database
   - Activity Diagram
-- Create User
-- Admin Panel Content
+- More Admin Panel Content
 
 # Changelog
 ## 15 Aug 2024
+- Projects 
+  - Contains grouped surveys for users to access
+  - Currently needs fixing on CRUD Survey
+- Added search for user
+- Minor fixes to UI
 
 ## 14 Aug 2024
 - CRUD User

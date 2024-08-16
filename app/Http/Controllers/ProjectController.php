@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Survey;
 use Inertia\Inertia;
+use App\Models\Survey;
 use App\Models\Project;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 use function Termwind\render;
+use Illuminate\Support\Facades\Log;
 
 class ProjectController extends Controller
 {
@@ -28,7 +29,10 @@ class ProjectController extends Controller
             })
         ]);
     }
-
+    public function create()
+    {
+        return Inertia::render('Projects/CreateProjects');
+    }
     public function adminIndex()
     {
         return Inertia::render('Dashboard/Admin', [
@@ -47,21 +51,20 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
+        ]);
+    
+        $project = Project::create([
+            'project_name' => $validated['project_name'],
+            'desc' => $validated['desc'],
+            'slug' => Str::slug($validated['project_name']),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-        $slug = Str::slug($request->project_name);
-
-        Project::create([
-            'project_name' => $request->project_name,
-            'desc' => $request->desc,
-            'slug' => $slug,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+    
+        Log::info('Project created:', $project->toArray());
     
         return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
@@ -106,9 +109,5 @@ class ProjectController extends Controller
     {
         Project::destroy($id);
         return redirect()->route('projects')->with('success', 'Project deleted successfully.');
-    }
-    public function create()
-    {
-        return Inertia::render('Projects/CreateProjects');
     }
 }
