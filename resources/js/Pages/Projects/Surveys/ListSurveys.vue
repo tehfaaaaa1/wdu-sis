@@ -69,7 +69,7 @@ console.log(props.surveys)
                     <p class="my-3 text-base text-justify line-clamp-3">
                         {{survey.desc}}
                     </p>  
-                    <div class=" mx-5 sm:mx-0">
+                    <div class="absolute bottom-0 left-0 right-0 p-5 mx-5 sm:mx-0">
                         <p class="text-center text-gray-600 mb-1.5 text-sm">
                            Created at:  {{ survey.created_at}}
                         </p>
