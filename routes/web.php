@@ -42,7 +42,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
         Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('edit_projects')->middleware(['ableSurvey']);
         
-        Route::prefix('{slug}/surveys/')->group(function () {
+        Route::prefix('{slug}/surveys')->group(function () {
             
             Route::get('list-surveys', [SurveyController::class, 'index'])->name('listsurvey');
             
@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
             Route::put('update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
 
-            Route::get('{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
+            Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
             
             Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
             

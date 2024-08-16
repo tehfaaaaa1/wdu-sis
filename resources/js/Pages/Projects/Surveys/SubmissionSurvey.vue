@@ -11,7 +11,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-const props = defineProps({surveys: Object})
+const props = defineProps({surveys: Object, projects:Object})
 
 
 const form = useForm({

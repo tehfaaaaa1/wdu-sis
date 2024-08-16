@@ -12,7 +12,7 @@ use URL;
 // use DB;
 class SurveyController extends Controller
 {
-    public function index(Project $project, $slug, Survey $survey, $id = null){
+    public function index(Project $project, $slug, Survey $survey){
         $project =  Project::where('slug',$slug)->firstOrFail();
         $survey = DB::table('projects')
         ->where('slug', $slug)
@@ -70,17 +70,17 @@ class SurveyController extends Controller
             ]
         ]);
     }
-    public function submission(Survey $survey, $id) {
-        $survey = Survey::findOrFail($id);
-        
-        return Inertia::render('Projects/Surveys/SubmissionSurvey', [
-            'surveys' =>[
-            'id' => $survey->id,
-            'title' => $survey->title,
-            'desc' => $survey->desc,
-            // 'updated_at'=>$survey->updated_at,
-            ]
-        ]);
+    public function submission(Survey $survey,$slug, $id) {
+        $project =  Survey::findOrFail($id);
+        $survey = DB::table('projects')
+        ->where('slug', $slug)
+        ->get();
+        // dump($survey);
+        return Inertia::render('Projects/Surveys/SubmissionSurvey',[
+            'surveys' => $project,
+            'projects' => $survey,
+        ] 
+        );
     }
 
     public function update(Request $request, $id){
