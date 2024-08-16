@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ableCUDdSurvey;
+use App\Http\Middleware\admin;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'ableCreateUser' => ableCreateuser::class,
             'ableSurvey' => ableCUDdSurvey::class,
+            'isAdmin' => admin::class,
          ]);
         //
     })
