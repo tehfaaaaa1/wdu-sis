@@ -72,7 +72,7 @@ class SurveyController extends Controller
     }
     public function submission(Survey $survey, $id) {
         $survey = Survey::findOrFail($id);
-
+        
         return Inertia::render('Projects/Surveys/SubmissionSurvey', [
             'surveys' =>[
             'id' => $survey->id,
