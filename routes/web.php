@@ -44,15 +44,15 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         
         Route::prefix('{slug}/surveys/')->group(function () {
             
-            Route::get('/list-surveys', [SurveyController::class, 'index'])->name('listsurvey');
+            Route::get('list-surveys', [SurveyController::class, 'index'])->name('listsurvey');
             
-            Route::get('/createsurveys', [SurveyController::class, 'create'])->name('create_surveys')->middleware(['ableSurvey']);
+            Route::get('createsurveys', [SurveyController::class, 'create'])->name('create_surveys')->middleware(['ableSurvey']);
             
-            Route::post('/createsurvey', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
+            Route::post('createsurvey', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
         
             Route::get('{id}/edit', [SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
 
-            Route::put('/update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
+            Route::put('update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
 
             Route::get('{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
             

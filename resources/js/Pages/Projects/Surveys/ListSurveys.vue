@@ -29,21 +29,24 @@ const hapus = (id) => {
         form.get(route('delete_surveys', id));
     }
 };
-console.log(props.projects)
+// console.log(props.projects)
+const project = props.projects[0];
+console.log(project)
+
 </script>
 
 <template>
     <AppLayout title="List Survey">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Surveys
+                Survey grup {{ project['project_name'] }}
             </h2>
         </template>
-        <main v-for="project in projects" class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
+        <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_surveys', project.slug )" 
+                        <NavLink :href="route('create_surveys', project['slug'] )" 
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add Survey
                         </NavLink>
                     </div>
@@ -74,9 +77,9 @@ console.log(props.projects)
                            Updated at:  {{ survey.updated_at }}
                         </p>
                         <div class="flex justify-center">
-                            <!-- <a :href="route('submission_surveys',[props.surveys.id, projects.slug] )" class="p-3 px-6 mb-3 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                            <a :href="route('submission_surveys', [project['slug'], survey.id] )" class="p-3 px-6 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                 Check Survey
-                            </a> -->
+                            </a>
                         </div>      
                         <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'" class="relative inline-block text-left w-full">
                             <div class="flex justify-end">
