@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Team;
+use App\Models\Team; 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -78,13 +78,15 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
-    
 
     public function edit($id)
     {
-        $user = User::findOrFail($id); 
+        $user = User::findOrFail($id);
+        $teams = Team::all(); // Fetch all teams for the view
+
         return Inertia::render('Users/EditUsers', [
-            'user' => $user
+            'user' => $user,
+            'teams' => $teams, // Pass teams to the view
         ]);
     }
 
@@ -95,6 +97,7 @@ class UserController extends Controller
             'email' => 'required|email|max:255',
             'password' => 'nullable|string|min:8|confirmed',
             'usertype' => 'required|string',
+            'team_id' => 'nullable|exists:teams,id',
         ]);
     
         $user = User::findOrFail($id);
@@ -104,7 +107,16 @@ class UserController extends Controller
             'password' => $request->password ? bcrypt($request->password) : $user->password,
             'usertype' => $request->usertype,
         ]);
-    
+
+        // Assign team if provided
+        if ($request->filled('team_id')) {
+            $team = Team::find($request->team_id);
+            if ($team) {
+                $user->currentTeam()->associate($team);
+                $user->save();
+            }
+        }
+
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
