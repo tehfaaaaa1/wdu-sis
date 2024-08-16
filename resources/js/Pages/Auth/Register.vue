@@ -27,8 +27,8 @@ const submit = () => {
 
     <Head title="Register" />
 
-    <div class="flex items-center">
-        <AuthenticationCard class="lg:w-1/2 w-full">
+    <div class="flex items-center justify-center">
+        <AuthenticationCard class="xl:w-1/2 w-full">
             <template #logo>
                 <AuthenticationCardLogo />
             </template>
@@ -119,8 +119,9 @@ const submit = () => {
             </form>
         </AuthenticationCard>
 
-        <div class="hidden">
-            <img src="/img/Group 63.png" alt="">
+        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-no-repeat bg-bottom"
+            style="background-image: url('/img/wdu-building.jpg')">
+            <!-- <img src="/img/wdu-building.jpg" alt="" class="min-h-screen p-4 rounded-lg overflow-hidden"> -->
         </div>
     </div>
 

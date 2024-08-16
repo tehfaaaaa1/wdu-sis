@@ -33,7 +33,7 @@ const submit = () => {
 
     <Head title="Log in" />
 
-    <div class="flex items-center p-6 sm:p-0">
+    <div class="flex items-center justify-center xl:justify-between p-6 sm:p-0">
         <AuthenticationCard class="xl:w-1/2">
             <template #logo>
                 <AuthenticationCardLogo />
@@ -41,7 +41,8 @@ const submit = () => {
             <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
                 {{ status }}
             </div>
-            <h2 class="text-primary font-semibold text-xl md:text-2xl text-center mt-4 mb-2 md:mb-10">Sign In to Your Account</h2>
+            <h2 class="text-primary font-semibold text-xl md:text-2xl text-center mt-4 mb-2 md:mb-10">Sign In to Your
+                Account</h2>
 
             <form @submit.prevent="submit" class="space-y-6">
                 <div class="mt-4 relative">
@@ -81,8 +82,8 @@ const submit = () => {
                 </div>
 
                 <div class="flex items-center justify-center mt-4">
-                    <PrimaryButton class="flex justify-center w-full md:mb-10" :class="{ 'opacity-25': form.processing }"
-                        :disabled="form.processing">
+                    <PrimaryButton class="flex justify-center w-full md:mb-10"
+                        :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                         Log in
                     </PrimaryButton>
                 </div>
@@ -91,8 +92,9 @@ const submit = () => {
             </form>
         </AuthenticationCard>
 
-        <div class="xl:block hidden">
-            <img src="/img/Group 63.png" alt="">
+        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-no-repeat bg-bottom border-2 border-gray-300 shadow-2xl"
+            style="background-image: url('/img/wdu-building.jpg')">
+            <!-- <img src="/img/wdu-building.jpg" alt="" class="min-h-screen p-4 rounded-lg overflow-hidden"> -->
         </div>
     </div>
 </template>
