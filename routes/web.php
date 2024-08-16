@@ -34,25 +34,25 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
         Route::get('/create-project', [ProjectController::class, 'create'])->name('create_projects')->middleware(['ableSurvey']);
 
-        Route::get('/edit-project', [ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
+        Route::get('/{id}/edit-project', [ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
 
-        Route::post('/create', [ProjectController::class, 'store'])->name('create_project')->middleware(['ableSurvey']);
+        Route::post('/create-project', [ProjectController::class, 'store'])->name('create_project')->middleware(['ableSurvey']);
 
-        Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_projects')->middleware(['ableSurvey']);
+        Route::put('/update-project/{id}', [ProjectController::class, 'update'])->name('update_projects')->middleware(['ableSurvey']);
 
-        Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('edit_projects')->middleware(['ableSurvey']);
-        
+        Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_project')->middleware(['ableSurvey']);
+
         Route::prefix('{slug}/surveys')->group(function () {
             
             Route::get('list-surveys', [SurveyController::class, 'index'])->name('listsurvey');
             
             Route::get('createsurveys', [SurveyController::class, 'create'])->name('create_surveys')->middleware(['ableSurvey']);
             
-            Route::post('createsurvey', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
+            Route::post('create-survey', [SurveyController::class, 'store'])->name('create_survey')->middleware(['ableSurvey']);
         
             Route::get('{id}/edit', [SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
 
-            Route::put('update/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
+            Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
 
             Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
             

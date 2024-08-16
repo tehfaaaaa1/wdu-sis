@@ -87,18 +87,18 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
         ]);
 
         // Generate the slug from the project name
-        $slug = Str::slug($request->project_name);
+        $slug = Str::slug($validated['project_name']);
 
         Project::where('id', $id)->update([
-            'project_name' => $request->project_name,
-            'desc' => $request->desc,
-            'slug' => $slug,  // Update the slug
+            'project_name' => $validated['project_name'],
+            'desc' => $validated['desc'],
+            'slug' => $slug,
             'updated_at' => now(),
         ]);
 

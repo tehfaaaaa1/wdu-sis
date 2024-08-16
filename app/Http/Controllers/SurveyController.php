@@ -59,48 +59,51 @@ class SurveyController extends Controller
         return redirect()->route('listsurvey', $slug)->with('success', 'Survey created successfully.');
     }
 
-    public function edit(Survey $survey, $id) {
-        $survey = Survey::findOrFail($id);
-        return Inertia::render('Projects/Surveys/EditSurveys', [
-            'surveys' =>[
-            'id' => $survey->id,
-            'title' => $survey->title,
-            'desc' => $survey->desc,
-            'updated_at'=>$survey->updated_at,
-            ]
-        ]);
-    }
-    public function submission(Survey $survey,$slug, $id) {
+    public function edit(Survey $survey,$slug, $id) {
         $project =  Survey::findOrFail($id);
         $survey = DB::table('projects')
         ->where('slug', $slug)
         ->get();
         // dump($survey);
-        return Inertia::render('Projects/Surveys/SubmissionSurvey',[
+        return Inertia::render('Projects/Surveys/EditSurveys',[
             'surveys' => $project,
             'projects' => $survey,
         ] 
         );
     }
+    public function submission(Survey $survey,$slug, $id) {
+        $survey =  Survey::findOrFail($id);
+        $project = DB::table('projects')
+        ->where('slug', $slug)
+        ->get();
+        // dump($survey);
+        return Inertia::render('Projects/Surveys/SubmissionSurvey',[
+            'surveys' => $survey,
+            'projects' => $project,
+        ] 
+        );
+    }
 
     public function update(Request $request, $id){
-        // dump($id);
+        $survey = Survey::findOrFail($id);
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
           ]);
-          Survey::where('id', $id)->update([
+          Survey::where('id', $survey['id'])->update([
             'title' => $request->title,
             'desc' => $request->desc,
+            'project_id' => $request->project_id,
             'updated_at' => now()
           ]);
-          return redirect()->route('surveys')->with('success','Update successfully.');
+            return redirect()->route('listsurvey', [$request->slug])->with('success','Update successfully.');
     }
 
-    public function destroy($id){
+    public function destroy($id, $slug){
         // dump($id);
+        
         Survey::destroy($id);
-        return redirect()->route('surveys')->with('success','Update successfully.');
+        return redirect()->route('listsurvey', $slug)->with('success','Update successfully.');
     }
     
 }

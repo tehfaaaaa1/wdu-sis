@@ -23,15 +23,15 @@ const form = useForm({
 const submit = () => {
     form.get(route('surveys'));
 };
+const project = props.projects[0];
 
-const hapus = (id) => {
+const hapus = (id, slug) => {
     if (confirm('delete this survey')) {
-        form.get(route('delete_surveys', id));
+        form.get(route('delete_surveys', id, slug));
     }
 };
 // console.log(props.projects)
-const project = props.projects[0];
-console.log(project)
+console.log(props.surveys)
 
 </script>
 
@@ -97,9 +97,9 @@ console.log(project)
                                             <div class="py-1">
                                                 <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit Soal dan Jawaban</a>
     
-                                                <!-- <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" :href="route('edit_surveys',surveys.project_id)">Edit Surveys</a>
+                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" :href="route('edit_surveys',[project['slug'], survey.id])">Edit Surveys</a>
     
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" @click="hapus(surveys.project_id)" class="cursor-pointer">Hapus Surveys</a> -->
+                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" @click="hapus([survey.id, project['slug']])" class="cursor-pointer">Hapus Surveys</a>
                                             </div>
                                     </template>
                                 </Dropdown>
