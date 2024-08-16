@@ -92,7 +92,7 @@ const submit = () => {
             </form>
         </AuthenticationCard>
 
-        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-no-repeat bg-bottom border-2 border-gray-300 shadow-2xl"
+        <div class="xl:block hidden w-1/2 rounded-lg h-screen bg-no-repeat bg-cover bg-bottom border-2 border-gray-300 shadow-2xl"
             style="background-image: url('/img/wdu-building.jpg')">
             <!-- <img src="/img/wdu-building.jpg" alt="" class="min-h-screen p-4 rounded-lg overflow-hidden"> -->
         </div>
