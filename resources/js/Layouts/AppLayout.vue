@@ -72,10 +72,8 @@ const logout = () => {
                             <div class="ms-3 relative">
                                 <div v-if="$page.props.auth.user.usertype === 'user'">
                                     <p class="text-white">
-                                        You are {{ $page.props.auth.user.all_teams.find(team => team.id ===
-                                            $page.props.auth.user.current_team_id).name }}
+                                        You are {{ $page.props.auth.user.current_team.name }}
                                     </p>
-
                                 </div>
                                 <Dropdown
                                     v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
