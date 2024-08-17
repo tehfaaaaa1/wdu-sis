@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
             Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
 
-            Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
+            Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
             
             Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
             

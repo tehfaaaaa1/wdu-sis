@@ -183,7 +183,8 @@ const logout = () => {
                                             Profile
                                         </DropdownLink>
 
-                                        <DropdownLink v-if="$page.props.jetstream.hasApiFeatures"
+                                        <!-- if needed v-if="$page.props.jetstream.hasApiFeatures" -->
+                                        <DropdownLink v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                             :href="route('api-tokens.index')">
                                             API Tokens
                                         </DropdownLink>
