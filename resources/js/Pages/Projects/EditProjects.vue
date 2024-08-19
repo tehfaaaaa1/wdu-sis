@@ -28,7 +28,7 @@ console.log(props)
 
     <AppLayout title="Edit Survey">
 
-        <div class="mt-6 sm:-mt-4 px-4">
+        <div class="mt-6 sm:mt-4 px-4">
             <AuthenticationCard>
                 <template #logo>
                     <AuthenticationCardLogo />

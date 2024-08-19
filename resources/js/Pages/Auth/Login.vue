@@ -42,7 +42,7 @@ const submit = () => {
                 {{ status }}
             </div>
             <h2 class="text-primary font-semibold text-xl md:text-2xl text-center mt-4 mb-2 md:mb-10">Sign In to Your
-                Accountq</h2>
+                Account</h2>
 
             <form @submit.prevent="submit" class="space-y-6">
                 <div class="mt-4 relative">
@@ -92,9 +92,9 @@ const submit = () => {
             </form>
         </AuthenticationCard>
 
-        <div class="xl:block hidden w-1/2 rounded-lg h-screen bg-no-repeat bg-cover bg-bottom border-2 border-gray-300 shadow-2xl"
+        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-no-repeat bg-bottom border-2 brightne border-gray-300 shadow-2xl "
             style="background-image: url('/img/wdu-building.jpg')">
-            <!-- <img src="/img/wdu-building.jpg" alt="" class="min-h-screen p-4 rounded-lg overflow-hidden"> -->
+            <!-- <div class="h-full shadow-2xl bg-gradient-to-r from-cyan-500 to-blue-500 brightness-50 opacity-15 p-5"></div> -->
         </div>
     </div>
 </template>

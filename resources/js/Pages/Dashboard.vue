@@ -16,7 +16,7 @@ import Welcome from '@/Components/Welcome.vue';
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg h-auto">
                     <!-- <Welcome /> -->
                     <div class="flex flex-row items-center w-full">
-                        <div class="p-6 basis-1/2">
+                        <div class="p-6 basis-full md:basis-1/2">
                             <h1 class="text-3xl ps-3 font-bold">Welcome back, {{ $page.props.auth.user.name }}</h1>
                             <p class="text-gray-500 ps-3">Check the latest updates here.</p>
                         </div>

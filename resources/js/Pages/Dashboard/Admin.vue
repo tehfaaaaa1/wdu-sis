@@ -1,33 +1,29 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { ref, computed } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
-import Dropdown from '@/Components/Dropdown.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import Dropdown from '@/Components/Dropdown.vue';
 
 
-defineProps({ projects: Object })
+const props = defineProps({ projects: Object, })
 
-const form = useForm({
-    search: '',
-});
-
-const submit = () => {
-    form.get(route('Projects'));
-};
+const searchQuery = ref('');
 
 const hapus = (id) => {
     if (confirm('delete this Project')) {
         form.get(route('delete_project', id));
     }
 };
+
+const filteredProjects = computed(() => {
+    return props.projects.filter(projects => {
+        return (
+            projects.project_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            projects.desc.toLowerCase().includes(searchQuery.value.toLowerCase())
+        );
+    });
+});
 </script>
 
 <template>
@@ -58,23 +54,16 @@ const hapus = (id) => {
                                 </NavLink>
                             </div>
                             <form @submit.prevent="submit">
-                                <div class="flex justify-center">
-                                    <TextInput name="search" id="search" v-model="form.search" placeholder="Search"
-                                        class="rounded-r-none text-sm border-primary  text-center" />
-                                    <PrimaryButton class=" rounded-r-md rounded-l-none justify-center"
-                                        :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-5   stroke-white">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                                        </svg>
-                                    </PrimaryButton>
+                                <div class="flex items-center px-4 py-2 text-sm w-60">
+                                    <input type="text" v-model="searchQuery"
+                                        class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
+                                        placeholder="Search">
                                 </div>
                             </form>
                         </div>
 
                         <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                            <div v-for="project in projects"
+                            <div v-for="project in filteredProjects" :key="project.id"
                                 class="relative rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-80 bg-white mx-5 sm:mx-0">
                                 <h1 class="text-2xl text-center mb-2 font-medium truncate">{{ project.project_name }}
                                 </h1>

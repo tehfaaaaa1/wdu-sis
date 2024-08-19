@@ -12,7 +12,7 @@ use App\Http\Controllers\ProjectController;
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
-    }
+    }   
 
     return Inertia::render('Auth/Login', [
         'canLogin' => Route::has('login'),
@@ -54,7 +54,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
             Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
 
-            Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys')->middleware(['ableSurvey']);
+            Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
             
             Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
             
@@ -76,7 +76,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
     Route::get('/users/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
 
-    Route::get('/dashboard/admin', [ProjectController::class, 'adminIndex'])->name('dashboard.admin')->middleware(['isAdmin']);
+    Route::get('/dashboard/admin', [ProjectController::class, 'adminIndex'])->name('dashboard.admin')->middleware(['ableSurvey']);
 
     Route::get('/dashboard/admin-users', [UserController::class, 'adminIndex'])->name('dashboard.admin_users')->middleware(['ableSurvey']);
 });
