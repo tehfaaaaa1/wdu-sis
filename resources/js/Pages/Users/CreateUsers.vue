@@ -37,9 +37,6 @@ const submit = () => {
     <AppLayout title="Create User">
         <div class="mt-6 sm:-mt-4 px-4">
             <AuthenticationCard>
-                <template #logo>
-                    <AuthenticationCardLogo />
-                </template>
                 <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New User</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">

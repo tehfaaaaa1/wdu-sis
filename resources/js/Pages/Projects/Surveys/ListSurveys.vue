@@ -83,7 +83,7 @@ const filteredSurveys = computed(() => {
                                 <th scope="col" class="px-6 py-3">Desc</th>
                                 <th scope="col" class="px-6 py-3 w-1/6">Responses</th>
                                 <!-- <th scope="col" class="px-6 py-3">Team</th> -->
-                                <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
+                                <th scope="col" class="px-6 py-3 md:w-1/6 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,11 +99,12 @@ const filteredSurveys = computed(() => {
                                     100
                                 </td>
                                 <td class="px-6 py-6">
-                                    <a :href="route('submission_surveys', [project['slug'], survey.id])"
-                                        class="p-3 px-6 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
-                                        Check Survey
-                                    </a>
-                                    <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'" class="mt-5">
+                                    <PrimaryButton :href="route('submission_surveys', [project['slug'], survey.id])"
+                                        class="w-full flex justify-center py-2.5 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                                        Isi Survey
+                                    </PrimaryButton>
+                                    <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                        class="mt-5 text-center">
                                         <a :href="route('edit_surveys', [project['slug'], survey.id])"
                                             class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
                                         <a @click="hapus(survey.id)"

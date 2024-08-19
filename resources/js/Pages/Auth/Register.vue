@@ -109,7 +109,7 @@ const submit = () => {
                 <div class="my-4 text-center">
                     <Link :href="route('login')"
                         class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Already registered?
+                    Already registered? 
                     </Link>
                     <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing">
@@ -119,7 +119,7 @@ const submit = () => {
             </form>
         </AuthenticationCard>
 
-        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-no-repeat bg-bottom"
+        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-cover bg-no-repeat bg-center bg-bottom border-2 border-gray-300 shadow-2xl"
             style="background-image: url('/img/wdu-building.jpg')">
             <!-- <img src="/img/wdu-building.jpg" alt="" class="min-h-screen p-4 rounded-lg overflow-hidden"> -->
         </div>
