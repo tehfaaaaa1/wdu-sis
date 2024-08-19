@@ -20,6 +20,7 @@ class ProjectController extends Controller
                 return [
                     'id' => $project->id,
                     'project_name' => $project->project_name,
+                    'image' => $project->image, 
                     'desc' => $project->desc,
                     'slug' => $project->slug,
                     'created_at' => $project->created_at->diffForHumans(),
@@ -41,6 +42,7 @@ class ProjectController extends Controller
                 return [
                     'id' => $project->id,
                     'project_name' => $project->project_name,
+                    'image' => $project->image, 
                     'desc' => $project->desc,
                     'slug' => $project->slug,  // Removed nullable() as it's not necessary here
                     'created_at' => $project->created_at->format('j F Y'),
@@ -55,16 +57,22 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
+            'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
+        if($request->hasFile('image')){
+            $fileName = date('YmdHi').$request->file('image')->getClientOriginalName();
 
-        $project = Project::create([
-            'project_name' => $validated['project_name'],
-            'desc' => $validated['desc'],
-            'slug' => Str::slug($validated['project_name']),
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
+            $request->file('image')->move(public_path('img'), $fileName);
+        }
+            $project = Project::create([
+                'project_name' => $validated['project_name'],
+                'desc' => $validated['desc'],
+                'image' => $fileName,
+                'slug' => Str::slug($validated['project_name']),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            
         Log::info('Project created:', $project->toArray());
 
         return redirect()->route('projects')->with('success', 'Project created successfully.');

@@ -15,7 +15,7 @@ const hapus = (id) => {
         form.get(route('delete_project', id));
     }
 };
-
+console.log(props.projects)
 const filteredProjects = computed(() => {
     return props.projects.filter(projects => {
         return (
@@ -55,7 +55,7 @@ const filteredProjects = computed(() => {
                     <div v-for="project in filteredProjects" :key="project.id"
                         class="grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0">
                         <div class="">
-                            <img src="/img/wdu-building.jpg" alt="" class="h-40 w-full object-cover ">
+                            <img :src="'../img/'+project.image" alt="" class="h-40 w-full object-cover ">
                             <div class="px-4 mt-3">  
                                 <h1 class="text-xl mb-1 font-medium truncate">{{ project.project_name }}</h1>
                                 <p class=" text-base text-justify line-clamp-3 leading-5 tracking-wide">
