@@ -22,7 +22,7 @@ class ProjectController extends Controller
                     'project_name' => $project->project_name,
                     'desc' => $project->desc,
                     'slug' => $project->slug,
-                    'created_at' => $project->created_at->format('j F Y H:i:s '),
+                    'created_at' => $project->created_at->diffForHumans(),
                     'updated_at' => $project->updated_at->format('j F Y H:i:s'),
                 ];
             })
@@ -43,7 +43,7 @@ class ProjectController extends Controller
                     'project_name' => $project->project_name,
                     'desc' => $project->desc,
                     'slug' => $project->slug,  // Removed nullable() as it's not necessary here
-                    'created_at' => $project->created_at->format('j F Y H:i:s '),
+                    'created_at' => $project->created_at->format('j F Y'),
                     'updated_at' => $project->updated_at->format('j F Y H:i:s'),
                 ];
             })

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 
 const props = defineProps({ projects: Object, })
@@ -52,25 +53,22 @@ const filteredProjects = computed(() => {
                 <!-- May need to make this a component -->
                 <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10 content-stretch">
                     <div v-for="project in filteredProjects" :key="project.id"
-                        class="grid grid-cols-1 gap-4 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-auto bg-white mx-5 sm:mx-0">
+                        class="grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0">
                         <div class="">
-                            <h1 class="text-2xl text-center mb-1 font-medium truncate">{{ project.project_name }}</h1>
-                            <p class="text-base text-justify line-clamp-3">
-                                {{ project.desc }}
-                            </p>
+                            <img src="/img/wdu-building.jpg" alt="" class="h-40 w-full object-cover ">
+                            <div class="px-4 mt-3">  
+                                <h1 class="text-xl mb-1 tracking-tighter font-medium truncate">{{ project.project_name }}</h1>
+                                <p class=" text-base text-justify line-clamp-3 leading-5 tracking-wide">
+                                    {{ project.desc }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="p-3 mx-5 sm:mx-0">
-                            <p class="text-center text-gray-600 mb-1.5 text-sm">
-                                Created at: {{ project.created_at }}
-                            </p>
-                            <p class="text-center text-gray-600 mb-3 text-sm">
-                                Updated at: {{ project.updated_at }}
-                            </p>
-                            <div class="flex justify-center">
-                                <a class="p-3 px-6 mb-3 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200"
+                        <div class="pb-3 px-3 mx-5 sm:mx-0">
+                            <div class="flex justify-center mt-3">
+                                <PrimaryButton class=""
                                     :href="route('listsurvey', project.slug)">
                                     Check Project
-                                </a>
+                                </PrimaryButton>
                             </div>
                             <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                 class="relative inline-block text-left w-full">

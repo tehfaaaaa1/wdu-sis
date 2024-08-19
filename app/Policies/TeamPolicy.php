@@ -18,10 +18,6 @@ class TeamPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Team $team)
-    {
-        return $user->usertype === 'admin';
-    }
 
     /**
      * Determine whether the user can create models.

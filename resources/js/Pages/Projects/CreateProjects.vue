@@ -37,18 +37,17 @@ const submit = () => {
                             class="" required autofocus autocomplete="project_name" />
                         <InputError class="mt-2" :message="form.errors.project_name" />
                     </div>
-
                     <div class="mt-4 relative">
                         <textarea id="desc" v-model="form.desc" placeholder="Description"
-                            class="block text-primary placeholder-primary w-full h-48 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                            class="block w-full h-40 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 text-gray-700"
                             required autocomplete="desc" />
 
                         <InputError class="mt-2" :message="form.errors.desc" />
-                    </div>
+                    </div>  
 
 
                     <div class="my-4 text-center">
-                        <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
+                        <PrimaryButton class="w-full justify-center mt-2 " :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
                             Add project
                         </PrimaryButton>
