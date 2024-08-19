@@ -10,12 +10,9 @@ class TeamPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    public function view(User $user, Team $team)
     {
-        return true;
+        return $user->usertype === 'superadmin' || $user->usertype === 'admin' || $user->teams->contains($team);
     }
 
     /**
@@ -73,4 +70,5 @@ class TeamPolicy
     {
         return $user->ownsTeam($team);
     }
+
 }
