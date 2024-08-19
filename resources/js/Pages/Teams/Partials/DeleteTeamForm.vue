@@ -45,7 +45,6 @@ const deleteTeam = () => {
                 </DangerButton>
             </div>
 
-            <!-- Delete Team Confirmation Modal -->
             <ConfirmationModal :show="confirmingTeamDeletion" @close="confirmingTeamDeletion = false">
                 <template #title>
                     Delete Team
