@@ -62,23 +62,25 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         });
    });
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware(['ableCreateUser']);
 
     Route::get('/users/list-users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
 
     Route::post('/users/create', [UserController::class, 'store'])->name('create_user')->middleware(['ableCreateUser']);
+
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create')->middleware(['ableCreateUser']);
 
     Route::put('/users/update/{user}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
+
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('edit_user')->middleware(['ableCreateUser']);
 
     Route::put('/users/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
 
     Route::get('/users/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
 
-    Route::get('/dashboard/admin', [ProjectController::class, 'adminIndex'])->name('dashboard.admin')->middleware(['isAdmin']);
+    Route::get('/dashboard/admin', [ProjectController::class, 'adminIndex'])->name('dashboard.admin')->middleware(['admin']);
 
-    Route::get('/dashboard/admin-users', [UserController::class, 'adminIndex'])->name('dashboard.admin_users')->middleware(['ableSurvey']);
+    Route::get('/dashboard/admin-users', [UserController::class, 'adminIndex'])->name('dashboard.admin_users')->middleware(['admin']);
 });
 
 Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');

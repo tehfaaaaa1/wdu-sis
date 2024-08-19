@@ -50,14 +50,16 @@ const filteredProjects = computed(() => {
                 </div>
 
                 <!-- May need to make this a component -->
-                <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10 content-stretch">
                     <div v-for="project in filteredProjects" :key="project.id"
-                        class="relative rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-80 bg-white mx-5 sm:mx-0">
-                        <h1 class="text-2xl text-center mb-2 font-medium truncate">{{ project.project_name }}</h1>
-                        <p class="my-3 text-base text-justify line-clamp-3">
-                            {{ project.desc }}
-                        </p>
-                        <div class="absolute bottom-0 right-0 left-0 p-5 mx-5 sm:mx-0">
+                        class="grid grid-cols-1 gap-4 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-auto bg-white mx-5 sm:mx-0">
+                        <div class="">
+                            <h1 class="text-2xl text-center mb-1 font-medium truncate">{{ project.project_name }}</h1>
+                            <p class="text-base text-justify line-clamp-3">
+                                {{ project.desc }}
+                            </p>
+                        </div>
+                        <div class="p-3 mx-5 sm:mx-0">
                             <p class="text-center text-gray-600 mb-1.5 text-sm">
                                 Created at: {{ project.created_at }}
                             </p>
