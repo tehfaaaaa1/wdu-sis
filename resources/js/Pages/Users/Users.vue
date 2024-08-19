@@ -88,11 +88,11 @@ const filteredUsers = computed(() => {
                 </Dropdown>
             </div>
 
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-full">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 table-fixed">
+            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 sm:table-fixed">
                     <thead class="text-xs text-white uppercase bg-primary">
                         <tr>
-                            <th scope="col" class="px-6 py-3 hidden sm:block">Name</th>
+                            <th scope="col" class="px-6 py-3">Name</th>
                             <th scope="col" class="px-6 py-3">Email</th>
                             <th scope="col" class="px-6 py-3">User Type</th>
                             <th scope="col" class="px-6 py-3">Team</th>
@@ -101,17 +101,16 @@ const filteredUsers = computed(() => {
                     </thead>
                     <tbody>
                         <tr v-for="user in filteredUsers" :key="user.id" class="bg-white border-b hover:bg-gray-50">
-                            <td scope="row"
-                                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap hidden sm:block">
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                 {{ user.name }}
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 truncate">
+                            <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">
                                 {{ user.email }}
                             </td>
-                            <td class="px-6 py-4 truncate">
+                            <td class="px-6 py-4">
                                 {{ user.usertype }}
                             </td>
-                            <td class="px-6 py-4 truncate">
+                            <td class="px-6 py-4">
                                 {{ user.team }}
                             </td>
                             <td class="px-6 py-4">
