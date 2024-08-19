@@ -46,19 +46,23 @@ console.log(props.surveys)
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_surveys', project['slug'] )" 
-                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">Add Survey
+                        <NavLink :href="route('create_surveys', project['slug'])" v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                            Add Survey
                         </NavLink>
                     </div>
                     <form @submit.prevent="submit">
                         <div class="flex justify-center">
-                            <TextInput name="search" id="search" v-model="form.search" placeholder="Search" class="rounded-r-none text-sm border-primary  text-center"/>
-                            <PrimaryButton class=" rounded-r-md rounded-l-none justify-center" :class="{ 'opacity-25': form.processing }"
-                            :disabled="form.processing">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5   stroke-white">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                                </svg>                        
-                            </PrimaryButton> 
+                            <TextInput name="search" id="search" v-model="form.search" placeholder="Search"
+                                class="rounded-r-none text-sm border-primary  text-center" />
+                            <PrimaryButton class=" rounded-r-md rounded-l-none justify-center"
+                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-5   stroke-white">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>
+                            </PrimaryButton>
                         </div>
                     </form>
                 </div>
@@ -66,43 +70,55 @@ console.log(props.surveys)
 
             <!-- May need to make this a component -->
             <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                <div v-for="survey in surveys" :key="survey.id" class="relative rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-80 bg-white mx-5 sm:mx-0">
+                <div v-for="survey in surveys" :key="survey.id"
+                    class="relative rounded-md shadow-lg outline outline-2 outline-gray-300 px-5 py-4 h-80 bg-white mx-5 sm:mx-0">
                     <h1 class="text-2xl text-center mb-2 font-medium">{{ survey.title }}</h1>
                     <p class="my-3 text-base text-justify line-clamp-3">
-                        {{survey.desc}}
-                    </p>  
+                        {{ survey.desc }}
+                    </p>
                     <div class="absolute bottom-0 left-0 right-0 p-5 mx-5 sm:mx-0">
                         <p class="text-center text-gray-600 mb-1.5 text-sm">
-                           Created at:  {{ survey.created_at}}
+                            Created at: {{ survey.created_at }}
                         </p>
                         <p class="text-center text-gray-600 mb-3 text-sm">
-                           Updated at:  {{ survey.updated_at }}
+                            Updated at: {{ survey.updated_at }}
                         </p>
                         <div class="flex justify-center">
-                            <a :href="route('submission_surveys', [project['slug'], survey.id] )" class="p-3 px-6 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                            <a :href="route('submission_surveys', [project['slug'], survey.id])"
+                                class="p-3 px-6 bg-secondary text-white rounded-md text-sm hover:bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                 Check Survey
                             </a>
-                        </div>      
-                        <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'" class="relative inline-block text-left w-full">
+                        </div>
+                        <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                            class="relative inline-block text-left w-full">
                             <div class="flex justify-end">
                                 <Dropdown>
                                     <template #trigger>
-                                        <div class="inline-flex w-12 gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
+                                        <div
+                                            class="inline-flex w-12 gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300">
                                             <div class="flex">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 right-0">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="size-6 right-0">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                 </svg>
                                             </div>
                                         </div>
                                     </template>
                                     <template #content>
-                                            <div class="py-1">
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit Soal dan Jawaban</a>
-    
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" :href="route('edit_surveys',[project['slug'], survey.id])">Edit Surveys</a>
-    
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']" @click="hapus([survey.id, project['slug']])" class="cursor-pointer">Hapus Surveys</a>
-                                            </div>
+                                        <div class="py-1">
+                                            <a
+                                                :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']">Edit
+                                                Soal dan Jawaban</a>
+
+                                            <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
+                                                :href="route('edit_surveys', [project['slug'], survey.id])">Edit
+                                                Surveys</a>
+
+                                            <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
+                                                @click="hapus([survey.id, project['slug']])"
+                                                class="cursor-pointer">Hapus Surveys</a>
+                                        </div>
                                     </template>
                                 </Dropdown>
                             </div>
@@ -113,4 +129,3 @@ console.log(props.surveys)
         </main>
     </AppLayout>
 </template>
-

@@ -15,24 +15,25 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        
         return Inertia::render('Projects/ListProjects', [
             'projects' => Project::all()->map(function ($project) {
                 return [
-                    'id'=>$project->id,
-                    'project_name'=>$project->project_name,
-                    'desc'=>$project->desc,
-                    'slug'=> $project->slug,
-                    'created_at'=>$project->created_at->format('j F Y H:i:s '),
-                    'updated_at'=>$project->updated_at->format('j F Y H:i:s'),
+                    'id' => $project->id,
+                    'project_name' => $project->project_name,
+                    'desc' => $project->desc,
+                    'slug' => $project->slug,
+                    'created_at' => $project->created_at->format('j F Y H:i:s '),
+                    'updated_at' => $project->updated_at->format('j F Y H:i:s'),
                 ];
             })
         ]);
     }
+
     public function create()
     {
         return Inertia::render('Projects/CreateProjects');
     }
+
     public function adminIndex()
     {
         return Inertia::render('Dashboard/Admin', [
@@ -42,8 +43,8 @@ class ProjectController extends Controller
                     'project_name' => $project->project_name,
                     'desc' => $project->desc,
                     'slug' => $project->slug,  // Removed nullable() as it's not necessary here
-                    'created_at'=>$project->created_at->format('j F Y H:i:s '),
-                    'updated_at'=>$project->updated_at->format('j F Y H:i:s'),
+                    'created_at' => $project->created_at->format('j F Y H:i:s '),
+                    'updated_at' => $project->updated_at->format('j F Y H:i:s'),
                 ];
             })
         ]);
@@ -55,7 +56,7 @@ class ProjectController extends Controller
             'project_name' => 'required|max:255',
             'desc' => 'required',
         ]);
-    
+
         $project = Project::create([
             'project_name' => $validated['project_name'],
             'desc' => $validated['desc'],
@@ -63,9 +64,9 @@ class ProjectController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-    
+
         Log::info('Project created:', $project->toArray());
-    
+
         return redirect()->route('projects')->with('success', 'Project created successfully.');
     }
 
@@ -73,14 +74,12 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
         return Inertia::render('Projects/EditProjects', [
-
-            'projects' =>[
-            'id' => $project->id,
-            'project_name' => $project->project_name,
-            'desc' => $project->desc,
-            'slug'=> $project->slug,
-            'updated_at'=>$project->update_at,
-
+            'projects' => [
+                'id' => $project->id,
+                'project_name' => $project->project_name,
+                'desc' => $project->desc,
+                'slug' => $project->slug,
+                'updated_at' => $project->update_at,
             ]
         ]);
     }
