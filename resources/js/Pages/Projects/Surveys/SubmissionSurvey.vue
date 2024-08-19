@@ -11,11 +11,11 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-const props = defineProps({surveys: Object, projects:Object})
+const props = defineProps({ surveys: Object, projects: Object })
 
 
 const form = useForm({
-    title: '',     
+    title: '',
     desc: '',
 });
 const submit = () => {
@@ -30,21 +30,29 @@ console.log(props)
     <AppLayout title="Isi Survey">
 
         <main class="min-h-screen ">
-        <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-            <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
-                <h2>{{props.surveys.title}}</h2>
-            </div>
-            <div class="bg-gray-200 rounded-b-md">
-                <div class="border-b-2 p-5 border-gray-500">
-                    <p class="text-base text-justify line-clamp-3">
-                        {{props.surveys.desc}}
-                    </p>
+            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+                <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
+                    <h2>{{ props.surveys.title }}</h2>
                 </div>
-                <div class="p-5">
-                    <h1>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio, accusantium. Consectetur optio alias architecto veniam iure expedita repudiandae voluptates praesentium, vero fugiat, obcaecati, dignissimos dolorum eveniet provident distinctio ex magni!</h1>
+                <div class="bg-gray-200 rounded-b-md">
+                    <div class="border-b-2 p-5 border-gray-500">
+                        <p class="text-base text-justify line-clamp-3">
+                            {{ props.surveys.desc }}
+                        </p>
+                    </div>
+                    <div class="p-5">
+                        <h1>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odio, accusantium. Consectetur
+                            optio alias architecto veniam iure expedita repudiandae voluptates praesentium, vero fugiat,
+                            obcaecati, dignissimos dolorum eveniet provident distinctio ex magni!</h1>
+                    </div>
+                    <div class="p-5 flex justify-center">
+                        <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
+                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                            Submit Survey
+                        </PrimaryButton>
+                    </div>
                 </div>
             </div>
-        </div>
         </main>
     </AppLayout>
 </template>
