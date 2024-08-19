@@ -43,8 +43,15 @@ const submit = () => {
                             required autocomplete="desc" />
 
                         <InputError class="mt-2" :message="form.errors.desc" />
-                    </div>  
-
+                    </div>
+                    <div class="mt-4 relative">
+                        <label class="block mb-2 text-base font-medium text-primary"
+                            for="file_input">Upload file</label>
+                        <input
+                            class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
+                            file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white"
+                            id="file_input" type="file">
+                    </div>
 
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2 " :class="{ 'opacity-25': form.processing }"
