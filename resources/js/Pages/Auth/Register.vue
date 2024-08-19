@@ -109,7 +109,7 @@ const submit = () => {
                 <div class="my-4 text-center">
                     <Link :href="route('login')"
                         class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Already registered?
+                    Already registered? 
                     </Link>
                     <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                         :disabled="form.processing">

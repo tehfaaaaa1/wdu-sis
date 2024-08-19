@@ -84,7 +84,7 @@ const submit = () => {
                 <div class="flex items-center justify-center mt-4">
                     <PrimaryButton class="flex justify-center w-full md:mb-10"
                         :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Log in
+                        Log in 
                     </PrimaryButton>
                 </div>
 
