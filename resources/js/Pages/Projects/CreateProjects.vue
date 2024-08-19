@@ -50,7 +50,7 @@ const submit = () => {
                         <input
                             class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white"
-                            id="file_input" type="file">
+                            id="file_input" type="file" accept="image/png, image/jpeg">
                     </div>
 
                     <div class="my-4 text-center">
