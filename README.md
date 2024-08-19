@@ -2,10 +2,21 @@
 - Updated Documentation (Fadel)
   - ERD Survey Database
   - Activity Diagram
-- Fleshed Out Dashboard
+- More Dashboard Content
 - More Admin Panel Content
+- more user-friendly and aesthetically pleasing
+- turn cards in ListProjects to component (?)
+- FormSection.vue might be useful
+- change navbar to white (?)
+- change to indonesian language
 
 # Changelog
+## 18 Aug 2024
+- Changed survey list UI
+- Image in projects
+- Improved UI
+- Bug fixes
+
 ## 16 Aug 2024
 - Finished Project & Survey
 - Improved CRUD User
