@@ -28,7 +28,7 @@ const submit = () => {
     
     <AppLayout title="Create Survey">
 
-        <div class="mt-6 sm:-mt-4 px-4" v-for="p in projects">
+        <div class="mt-6 sm:mt-4 px-4" v-for="p in projects">
             <AuthenticationCard>
                 <template #logo>
                     <AuthenticationCardLogo />

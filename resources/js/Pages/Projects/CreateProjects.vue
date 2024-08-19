@@ -24,7 +24,7 @@ const submit = () => {
 
     <AppLayout title="Create Project">
 
-        <div class="mt-6 sm:-mt-4 px-4">
+        <div class="mt-6 sm:mt-4 px-4">
             <AuthenticationCard>
                 <template #logo>
                     <AuthenticationCardLogo />

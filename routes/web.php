@@ -12,7 +12,7 @@ use App\Http\Controllers\ProjectController;
 Route::get('/', function () {
     if (Auth::check()) {
         return redirect()->route('dashboard');
-    }
+    }   
 
     return Inertia::render('Auth/Login', [
         'canLogin' => Route::has('login'),
