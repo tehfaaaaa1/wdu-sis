@@ -10,17 +10,13 @@ class TeamPolicy
 {
     use HandlesAuthorization;
 
-    public function view(User $user, Team $team)
-    {
-        return $user->usertype === 'superadmin' || $user->usertype === 'admin' || $user->teams->contains($team);
-    }
 
     /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, Team $team)
     {
-        return $user->usertype === 'admin';
+        return $user->usertype === 'superadmin' || $user->usertype === 'admin' || $user->teams->contains($team);
     }
 
     /**
@@ -70,5 +66,4 @@ class TeamPolicy
     {
         return $user->ownsTeam($team);
     }
-
 }
