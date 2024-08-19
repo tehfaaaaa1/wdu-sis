@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 use function Termwind\render;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -98,7 +99,7 @@ class ProjectController extends Controller
             'project_name' => 'required|max:255',
             'desc' => 'required',
         ]);
-
+        
         // Generate the slug from the project name
         $slug = Str::slug($validated['project_name']);
 
@@ -114,7 +115,17 @@ class ProjectController extends Controller
 
     public function destroy($id)
     {
-        Project::destroy($id);
-        return redirect()->route('projects')->with('success', 'Project deleted successfully.');
+        $project = Project::where('id',$id)->first();
+        //        dd($project);
+                if(!$project){
+                    return response()->json([
+                        'status' => '500',
+                        'error' => 'project not found'
+                    ]);
+                }
+                Storage::disk('public')->delete('/storage/image'. $project['image']);
+                project::where('id', $id)->delete();
+                
+                return redirect()->route('projects')->with('success', 'Project deleted successfully.');
     }
 }
