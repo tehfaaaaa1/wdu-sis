@@ -1,4 +1,5 @@
 <script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -10,12 +11,16 @@ const props = defineProps({ projects: Object, })
 
 const searchQuery = ref('');
 
+const form = useForm({
+    search: '',
+});
+
 const hapus = (id) => {
     if (confirm('delete this Project')) {
         form.get(route('delete_project', id));
     }
 };
-console.log(props.projects)
+
 const filteredProjects = computed(() => {
     return props.projects.filter(projects => {
         return (
@@ -65,10 +70,10 @@ const filteredProjects = computed(() => {
                         </div>
                         <div class="pb-3 px-3 mx-5 sm:mx-0">
                             <div class="flex justify-center mt-3">
-                                <PrimaryButton class=""
+                                <NavLink class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
                                     :href="route('listsurvey', project.slug)">
                                     Check Project
-                                </PrimaryButton>
+                                </NavLink>
                             </div>
                             <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                 class="relative inline-block text-left w-full">
