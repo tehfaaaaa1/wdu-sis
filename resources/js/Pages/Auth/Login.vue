@@ -25,6 +25,19 @@ const submit = () => {
         remember: form.remember ? 'on' : '',
     })).post(route('login'), {
         onFinish: () => form.reset('password'),
+        onError: (errors) => {
+            if (errors.message) {
+                form.errors.global = errors.message; 
+            }
+            if (errors.errors) {
+                if (errors.errors.email) {
+                    form.errors.email = errors.errors.email[0];
+                }
+                if (errors.errors.password) {
+                    form.errors.password = errors.errors.password[0];
+                }
+            }
+        }
     });
 };
 </script>
@@ -92,7 +105,7 @@ const submit = () => {
             </form>
         </AuthenticationCard>
 
-        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-no-repeat bg-bottom border-2 border-gray-300 shadow-2xl"
+        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-cover bg-no-repeat bg-center bg-bottom border-2 border-gray-300 shadow-2xl"
             style="background-image: url('/img/wdu-building.jpg')">
             <!-- <div class="h-full shadow-2xl bg-gradient-to-r from-cyan-500 to-blue-500 brightness-50 opacity-15 p-5"></div> -->
         </div>
