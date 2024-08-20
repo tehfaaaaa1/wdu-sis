@@ -35,13 +35,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
         Route::get('/create-client', [ClientController::class, 'create'])->name('create_client_page');
 
-        Route::get('/{id}/edit-client', [ProjectController::class, 'edit'])->name('edit_client');
+        Route::get('/{id}/edit-client', [ClientController::class, 'edit'])->name('edit_client');
     
-        Route::post('/createclient', [ProjectController::class, 'store'])->name('create_client');
+        Route::post('/createclient', [ClientController::class, 'store'])->name('create_client');
 
-        Route::put('{id}/update-client/', [ProjectController::class, 'update'])->name('update_client');
+        Route::put('{id}/update-client/', [ClientController::class, 'update'])->name('update_client');
     
-        Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_client');
+        Route::get('/{id}/delete',[ClientController::class, 'destroy'])->name('delete_client');
         // Projects
 
         Route::prefix('{Client:slug}/projects')->group(function () {
