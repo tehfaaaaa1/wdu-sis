@@ -82,11 +82,12 @@ class ClientController extends Controller
     public function edit($id)
     {
         $client = Client::findOrFail($id);
-        return Inertia::render('Projects/EditProjects', [
-            'projects' => [
+        return Inertia::render('Client/EditClient', [
+            'clients' => [
                 'id' => $client->id,
-                'project_name' => $client->client_name,
+                'client_name' => $client->client_name,
                 'desc' => $client->desc,
+                'image' => $client->image,
                 'alamat' => $client->alamat,
                 'slug' => $client->slug,
                 'updated_at' => $client->update_at,
@@ -119,7 +120,7 @@ class ClientController extends Controller
         Client::where('id', $project['id'])->update([
             'project_name' => $validated['project_name'],
             'desc' => $validated['desc'],
-            'alamat' => $validated['desc'],
+            'alamat' => $validated['alamat'],
             'slug' => $slug,
             'updated_at' => now(),
         ]);

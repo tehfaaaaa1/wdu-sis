@@ -16,7 +16,8 @@ import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 
 const props = defineProps({
     surveys: Array,
-    projects: Array
+    projects: Array,
+    clients:Array
 })
 const form = useForm({
     search: '',
@@ -25,8 +26,7 @@ const form = useForm({
 const submit = () => {
     form.get(route('surveys'));
 };
-const project = props.projects[0];
-const projectSlug = project.slug;
+
 
 const selectedSurveyId = ref(null);
 const showDeleteModal = ref(false);
@@ -38,7 +38,11 @@ const hapus = (slug, id) => {
     }
 };
 */
+const client = props.clients[0];
+const clientSlug = client.slug;
 
+const project = props.projects[0];
+const projectSlug = project.slug;
 const hapus = (id) => {
     selectedSurveyId.value = id;
     showDeleteModal.value = true;
@@ -65,21 +69,21 @@ const filteredSurveys = computed(() => {
         );
     });
 });
-
+console.log(props)
 </script>
 
 <template>
     <AppLayout title="List Survey">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Survey grup {{ project['project_name'] }}
+                Survey grup 
             </h2>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_surveys', projectSlug)"
+                        <NavLink :href="route('create_surveys', [clientSlug ,projectSlug])"
                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
                             Add Survey
@@ -123,15 +127,15 @@ const filteredSurveys = computed(() => {
                                     100
                                 </td>
                                 <td class="px-6 py-6">
-                                    <NavLink :href="route('submission_surveys', [projectSlug, survey.id])"
+                                    <NavLink :href="route('submission_surveys', [clientSlug,projectSlug, survey.id])"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                         Isi Survey
                                     </NavLink>
                                     <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                         class="mt-5 text-center">
-                                        <a :href="route('edit_surveys', [projectSlug, survey.id])"
+                                        <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
                                             class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                        <a @click.prevent="hapus(survey.id)"
+                                        <a @click.prevent="hapus([clientSlug, projectSlug,survey.id])"
                                             class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                                     </div>
                                 </td>

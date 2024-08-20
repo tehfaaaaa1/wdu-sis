@@ -9,19 +9,21 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-const props = defineProps({ projects:Object})
+const props = defineProps({ projects:Array, clients:Array})
 const project = props.projects[0];
+const client = props.clients[0];
 const form = useForm({
     title: '',
     desc: '',
     project_id: project['id'],
-    slug: project['slug']
+    project_slug: project['slug'],
+    client_slug: client['slug'],
 });
 
 const submit = () => {
-    form.post(route('create_survey', form.slug));
+    form.post(route('create_survey', [form.client_slug, form.project_slug]));
 };
-// console.log(id)
+// console.log(form.client_slug)
 </script>
 
 <template>

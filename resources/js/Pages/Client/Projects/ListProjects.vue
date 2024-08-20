@@ -61,14 +61,14 @@ console.log(filteredProjects)
     <AppLayout title="List Projects">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Projects
+                Projects {{ client.client_name }}
             </h2>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_projects', clientSlug)"
+                        <NavLink :href="route('createprojects', clientSlug)"
                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
                             Add Projects
@@ -98,7 +98,7 @@ console.log(filteredProjects)
                             <div class="flex justify-center mt-3">
                                 <NavLink class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
                                     :href="route('listsurvey', [clientSlug, project.slug])">
-                                    Check Project
+                                    Check Project   
                                 </NavLink>
                             </div>
                             <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"

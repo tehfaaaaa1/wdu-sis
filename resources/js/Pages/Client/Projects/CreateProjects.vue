@@ -9,15 +9,18 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-
+const props = defineProps({ clients:Object})
+const client = props.clients[0];
 const form = useForm({
     project_name: '',
     desc: '',
     image: '',
+    client_id: client['id'],
+    clientSlug:client['slug']
 });
 
 const submit = () => {
-    form.post(route('create_project'));
+    form.post(route('create_project', form.clientSlug));
 };
 </script>
 

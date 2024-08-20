@@ -2,26 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use URL;
 use Inertia\Inertia;
+use App\Models\Client;
 use App\Models\Survey;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use URL;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use DB;
 class SurveyController extends Controller
 {
-    public function index(Project $project, $slug)
+    public function index(Project $project,$clientSlug, $projectSlug)
     {
-        $surveyall =  Project::where('slug', $slug)->firstOrFail();
-        $project = DB::table('projects')
-            ->where('slug', $slug)
+        $surveyall =  Project::where('slug', $projectSlug)->firstOrFail();
+        $projectall = DB::table('projects')
+        ->where('slug', $projectSlug)
+        ->get();
+        $client = DB::table('clients')
+            ->where('slug', $clientSlug)
             ->get();
         $s = $surveyall->survey;
         // dump($survey);
         return Inertia::render(
-            'Projects/Surveys/ListSurveys',
+            'Client/Projects/Surveys/ListSurveys',
             [
                 'surveys' => collect($s)->map(function ($survey) {
                     return [
@@ -33,29 +37,35 @@ class SurveyController extends Controller
                         'updated_at' => $survey->updated_at->format('j F Y H:i:s'),
                     ];
                 }),
-                'projects' => $project,
+                'projects'=> $projectall,
+                'clients' => $client,
             ]
         );
     }
 
-    public function create(Project $project, $slug)
+    public function create(Project $project,$clientSlug, $projectSlug)
     {
-        $survey = DB::table('projects')
-            ->where('slug', $slug)
+        $project = DB::table('projects')
+            ->where('slug', $projectSlug)
             ->get();
 
+        $client = DB::table('clients')
+            ->where('slug', $clientSlug)
+            ->get();
         return Inertia::render(
-            'Projects/Surveys/CreateSurveys',
+            'Client/Projects/Surveys/CreateSurveys',
             [
-                'projects' => $survey,
+                'projects' => $project,
+                'clients' => $client,
             ]
         );
     }
 
-    public function store(Request $request, $slug)
+    public function store(Request $request,$clientSlug, $projectSlug)
     {
         $id = $request->project_id;
-        $slug = $request->slug;
+        $clientSlug = $request->client_slug;
+        $projectSlug = $request->project_slug;
 
 
         $request->validate([
@@ -72,24 +82,51 @@ class SurveyController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('listsurvey', $slug)->with('success', 'Survey created successfully.');
+        return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Survey created successfully.');
     }
 
-    public function edit(Survey $survey, $slug, $id)
+    public function edit(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
+
         $project = DB::table('projects')
-            ->where('slug', $slug)
+            ->where('slug', $projectSlug)
+            ->get();
+        $client = DB::table('clients')
+            ->where('slug', $clientSlug)
             ->get();
         // dump($survey);
         return Inertia::render(
-            'Projects/Surveys/EditSurveys',
+            'Client/Projects/Surveys/EditSurveys',
             [
                 'surveys' => $survey,
                 'projects' => $project,
+                'clients' => $client,
             ]
         );
     }
+    
+    public function update(Request $request, $clientSlug, $projectSlug, $id)
+    {
+        $project_id = $request->project_id;
+        $clientSlug = $request->client_slug;
+        $projectSlug = $request->project_slug;
+        
+        $survey = Survey::findOrFail($id);
+        
+        $request->validate([
+            'title' => 'required|max:255',
+            'desc' => 'required',
+        ]);
+        Survey::where('id', $survey['id'])->update([
+            'title' => $request->title,
+            'desc' => $request->desc,
+            'project_id' => $project_id,
+            'updated_at' => now()
+        ]);
+        return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Update successfully.');
+    }
+    
     public function submission(Survey $survey, $slug, $id)
     {
         $survey =  Survey::findOrFail($id);
@@ -105,23 +142,6 @@ class SurveyController extends Controller
             ]
         );
     }
-
-    public function update(Request $request, $id)
-    {
-        $survey = Survey::findOrFail($id);
-        $request->validate([
-            'title' => 'required|max:255',
-            'desc' => 'required',
-        ]);
-        Survey::where('id', $survey['id'])->update([
-            'title' => $request->title,
-            'desc' => $request->desc,
-            'project_id' => $request->project_id,
-            'updated_at' => now()
-        ]);
-        return redirect()->route('listsurvey', [$request->slug])->with('success', 'Update successfully.');
-    }
-
     public function destroy($slug, $id)
     {
         $survey =  Survey::findOrFail($id);

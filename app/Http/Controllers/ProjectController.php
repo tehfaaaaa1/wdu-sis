@@ -75,12 +75,13 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $slug)
     {
+        $id = $request->client_id;
+        $slug = $request->clientSlug;
         $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
-            'client_id' => 'required',
             'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
         if($request->hasFile('image')){
@@ -92,7 +93,7 @@ class ProjectController extends Controller
                 'project_name' => $validated['project_name'],
                 'desc' => $validated['desc'],
                 'image' => $fileName,
-                'client_id' => $validated['client_id'],
+                'client_id' => $id,
                 'slug' => Str::slug($validated['project_name']),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -100,7 +101,7 @@ class ProjectController extends Controller
             
         Log::info('Project created:', $project->toArray());
 
-        return redirect()->route('projects')->with('success', 'Project created successfully.');
+        return redirect()->route('projects', $slug)->with('success', 'Project created successfully.');
     }
 
     public function edit($id)
@@ -148,7 +149,7 @@ class ProjectController extends Controller
         return redirect()->route('projects')->with('success', 'Project updated successfully.');
     }
 
-    public function destroy($id)
+    public function destroy($slug, $id)
     {
         $project = Project::where('id',$id)->first();
         //        dd($project);
@@ -161,6 +162,6 @@ class ProjectController extends Controller
                 Storage::disk('public')->delete(public_path('img'). $project['image']);
                 project::where('id', $id)->delete();
 
-                return redirect()->route('projects')->with('success', 'Project deleted successfully.');
+                return redirect()->route('listproject', $slug)->with('success', 'Project deleted successfully.');
     }
 }

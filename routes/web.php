@@ -49,7 +49,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
             Route::get('/list-projects', [ProjectController::class, 'index'])->name('projects');
     
-            Route::get('/create-project', [ProjectController::class, 'create'])->name('create_projects')->middleware(['ableSurvey']);
+            Route::get('/create-project', [ProjectController::class, 'create'])->name('createprojects')->middleware(['ableSurvey']);
     
             Route::get('/{id}/edit-project', [ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
     
@@ -61,7 +61,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             
             // surveys
 
-            Route::prefix('{Project:slug}/surveys')->group(function () {
+            Route::prefix('/{Project:slug}/surveys')->group(function () {
                 
                 Route::get('list-surveys', [SurveyController::class, 'index'])->name('listsurvey');
                 
