@@ -42,7 +42,6 @@ const submit = () => {
                         <textarea id="desc" v-model="form.desc" placeholder="Description"
                             class="block w-full h-40 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 text-gray-700"
                             required autocomplete="desc" />
-
                         <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
                     <div class="mt-4 relative">
@@ -52,8 +51,8 @@ const submit = () => {
                             class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white"
                             id="file_input" type="file" accept="image/png, image/jpeg">
+                        <div class="mt-1 text-sm"></div>
                     </div>
-
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2 " :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">

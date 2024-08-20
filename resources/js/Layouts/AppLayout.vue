@@ -61,7 +61,7 @@ const logout = () => {
                                 <NavLink :href="route('projects')" :active="route().current('projects')">
                                     Projects
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'" :href="route('users')"
+                                <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('users')"
                                     :active="route().current('users')">
                                     User
                                 </NavLink>
