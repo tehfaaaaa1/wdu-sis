@@ -58,8 +58,8 @@ const logout = () => {
                                     :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                                     Admin Panel
                                 </NavLink>
-                                <NavLink :href="route('projects')" :active="route().current('projects')">
-                                    Projects
+                                <NavLink :href="route('listclient')" :active="route().current('listclient')">
+                                    Client
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('users')"
                                     :active="route().current('users')">
@@ -234,8 +234,8 @@ const logout = () => {
                             :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                             Admin Panel
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('projects')" :active="route().current('project')">
-                            Project
+                        <ResponsiveNavLink :href="route('listclient')" :active="route().current('listclient')">
+                            Client
                         </ResponsiveNavLink>
                         <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin'" :href="route('users')"
                             :active="route().current('users')">

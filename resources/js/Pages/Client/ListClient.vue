@@ -15,37 +15,32 @@ import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 
 
 const props = defineProps({
-    surveys: Array,
-    projects: Array
+    clients:Object
 })
+
+const showDeleteModal = ref(false);
+const selectedClientId = ref(null);
+
+const searchQuery = ref('');
+
 const form = useForm({
     search: '',
 });
 
-const submit = () => {
-    form.get(route('surveys'));
-};
-const project = props.projects[0];
-const projectSlug = project.slug;
-
-const selectedSurveyId = ref(null);
-const showDeleteModal = ref(false);
-
 /*
-const hapus = (slug, id) => {
-    if (confirm('delete this survey')) {
-        form.get(route('delete_surveys', slug, id));
+const hapus = (id) => {
+    if (confirm('delete this Project and All Survey ')) {
+        form.get(route('delete_project', id));
     }
-};
-*/
+};*/
 
 const hapus = (id) => {
-    selectedSurveyId.value = id;
+    selectedClientId.value = id;
     showDeleteModal.value = true;
-} 
+};
 
 const confirmDeletion = () => {
-    form.get(route('delete_surveys', [projectSlug, selectedSurveyId.value]), {
+    form.get(route('delete_client', selectedClientId.value), {
         onFinish: () => {
             showDeleteModal.value = false;
         }
@@ -56,20 +51,19 @@ const cancelDeletion = () => {
     showDeleteModal.value = false;
 }
 
-const searchQuery = ref('')
-const filteredSurveys = computed(() => {
-    return props.surveys.filter(surveys => {
+
+const filteredClients = computed(() => {
+    return props.clients.filter(clients => {
         return (
-            surveys.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            surveys.desc.toLowerCase().includes(searchQuery.value.toLowerCase())
+            clients.project_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            clients.desc.toLowerCase().includes(searchQuery.value.toLowerCase())
         );
     });
 });
-
 </script>
 
 <template>
-    <AppLayout title="List Survey">
+    <AppLayout title="List Client">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Survey grup {{ project['project_name'] }}

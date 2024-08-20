@@ -7,13 +7,14 @@ use App\Models\Client;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ClientController extends Controller
 {
     public function index()
     {
         return Inertia::render('Client/ListClient', [
-            'projects' => Client::all()->map(function ($client) {
+            'clients' => Client::all()->map(function ($client) {
                 return [
                     'id' => $client->id,
                     'project_name' => $client->project_name,
@@ -95,48 +96,50 @@ class ClientController extends Controller
 
     public function update(Request $request, $id)
     {
-        $project = Project::findOrFail($id);
+        $project = Client::findOrFail($id);
         $validated = $request->validate([
-            'project_name' => 'required|max:255',
+            'client_name' => 'required|max:255',
+            'alamat' => 'required|max:255',
             'desc' => 'required',
         ]);
         // Generate the slug from the project name
-        $slug = Str::slug($validated['project_name']);
+        $slug = Str::slug($validated['client_name']);
 
         if($image = $request->file('image')){
             $filenname = date('YmdHi').$image->getClientOriginalName();
             $image->move(public_path('img'), $filenname);
 
-            Project::where('id', $project['id'])->update([
+            Client::where('id', $project['id'])->update([
                 'image' => $filenname,
             ]);
         }else{
             unset($validated['image']);
         }
 
-        Project::where('id', $project['id'])->update([
+        Client::where('id', $project['id'])->update([
             'project_name' => $validated['project_name'],
             'desc' => $validated['desc'],
+            'alamat' => $validated['desc'],
             'slug' => $slug,
             'updated_at' => now(),
         ]);
     //  dd($request->file('image'));
-        return redirect()->route('projects')->with('success', 'Project updated successfully.');
+        return redirect()->route('listclient')->with('success', 'Project updated successfully.');
     }
 
     public function destroy($id)
     {
-        $project = Project::where('id',$id)->first();
-        //        dd($project);
-                if(!$project){
+        $client = Client::where('id',$id)->first();
+        //        dd($client);
+                if(!$client){
                     return response()->json([
                         'status' => '500',
-                        'error' => 'project not found'
+                        'error' => 'client not found'
                     ]);
                 }
-                Storage::disk('public')->delete(public_path('img'). $project['image']);
-                project::where('id', $id)->delete();
+                Storage::disk('public')->delete(public_path('img'). $client['image']);
+                Client::where('id', $id)->delete();
 
-                return redirect()->route('projects')->with('success', 'Project deleted successfully.');
+                return redirect()->route('listclient')->with('success', 'Project deleted successfully.');
     }
 }
