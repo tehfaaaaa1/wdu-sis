@@ -1,4 +1,5 @@
 # To Be Added
+- Client
 - Updated Documentation (Fadel)
   - ERD Survey Database (V)
   - Activity Diagram (V)
@@ -15,7 +16,10 @@
 
 
 # Changelog
-## 18 Aug 2024
+## 20 Aug 2024
+- White navbar for more modern look
+
+## 19 Aug 2024
 - Changed survey list UI
 - Image in projects
 - Improved UI
