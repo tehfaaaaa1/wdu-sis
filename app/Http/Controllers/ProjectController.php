@@ -101,20 +101,24 @@ class ProjectController extends Controller
             'project_name' => 'required|max:255',
             'desc' => 'required',
         ]);
-
-        if($image = $request->file('image')){
-            $filenname = date('YmdHi').$image->getClientOriginalExtension();
-            $image->move(public_path('img'), $filenname);
-        }else{
-            unset($input['image']);
-        }
         // Generate the slug from the project name
         $slug = Str::slug($validated['project_name']);
+
+        if($image = $request->file('image')){
+            $filenname = date('YmdHi').$image->getClientOriginalName();
+            $image->move(public_path('img'), $filenname);
+
+            Project::where('id', $project['id'])->update([
+                'image' => $filenname,
+            ]);
+        }else{
+            unset($request['image']);
+        }
+
 
         Project::where('id', $project['id'])->update([
             'project_name' => $validated['project_name'],
             'desc' => $validated['desc'],
-            'image' => $filenname,
             'slug' => $slug,
             'updated_at' => now(),
         ]);
