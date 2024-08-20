@@ -50,7 +50,7 @@ const submit = () => {
                         <input @input="form.image =$event.target.files[0]"
                             class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white"
-                            id="file_input" type="file" accept="image/png, image/jpeg">
+                            id="file_input" type="file" accept=".png, .jpg, .jpeg">
                             <p class="mt-1 text-sm text-gray-500" id="file_input_help">PNG, JPG/JPEG (max file size : 2 MB).</p>
                     </div>
                     <div class="my-4 text-center">

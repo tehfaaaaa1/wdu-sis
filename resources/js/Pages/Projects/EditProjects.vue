@@ -27,7 +27,7 @@ console.log(props.projects.desc)
 
 <template>
 
-    <AppLayout title="Edit Survey">
+    <AppLayout title="Edit Project">
 
         <div class="mt-6 sm:mt-4 px-4">
             <AuthenticationCard>
@@ -50,14 +50,17 @@ console.log(props.projects.desc)
                         <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
                     <div class="mt-4 relative">
-                        <label class="block mb-2 text-base font-medium text-primary"
-                            for="file_input">Upload file</label>
+                        <label class="block mb-2 text-base font-medium text-primary" for="file_input">Upload
+                            file</label>
                         <input @input="form.image = $event.target.files[0]"
                             class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
-                            file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white"
-                            id="file_input" type="file" accept="image/png, image/jpeg">
-                            <InputError class="mt-2" :message="form.errors.image" />
-                            <img v-if="props.projects.image != null" :src="'../../img/'+props.projects.image" alt="" class="h-20 mt-2  ">
+                            file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" id="file_input"
+                            type="file" accept=".png, .jpg, .jpeg">
+                        <InputError class="mt-2" :message="form.errors.image" />
+                        <img v-if="props.projects.image != null" :src="'../../img/' + props.projects.image" alt=""
+                            class="h-20 mt-2  ">
+                        <p class="mt-1 text-sm text-gray-500" id="file_input_help">PNG, JPG/JPEG (max file size : 2 MB).
+                        </p>
                     </div>
 
 
