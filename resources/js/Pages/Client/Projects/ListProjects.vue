@@ -8,7 +8,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 
 
-const props = defineProps({ projects: Object, clients:Object })
+const props = defineProps({ projects: Object, clients: Object })
 const showDeleteModal = ref(false);
 const selectedProjectId = ref(null);
 
@@ -54,24 +54,23 @@ const filteredProjects = computed(() => {
     });
 });
 
-console.log(filteredProjects)
 </script>
 
 <template>
-    <AppLayout title="List Projects">
+    <AppLayout title="List Project">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Projects {{ client.client_name }}
+                Client {{ client['client_name'] }}
             </h2>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('createprojects', clientSlug)"
+                        <NavLink :href="route('create_projects', clientSlug)"
                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
-                            Add Projects
+                            Add Project
                         </NavLink>
                     </div>
                     <div class="flex items-center px-4 py-2 text-sm w-60">
@@ -81,57 +80,54 @@ console.log(filteredProjects)
                     </div>
                 </div>
 
-                <!-- May need to make this a component -->
-                <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10 content-stretch">
-                    <div v-for="project in filteredProjects" :key="project.id"
-                        class="grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0">
-                        <div class="">
-                            <img :src="'../../../img/'+project.image" alt="" class="h-40 w-full object-scale-down border-b-1 border-gray-400">
-                            <div class="px-4 mt-3">  
-                                <h1 class="text-xl mb-1 font-medium truncate">{{ project.project_name }}</h1>
-                                <p class=" text-base text-justify line-clamp-3 leading-5 tracking-wide">
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+                        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
+                            {{ client['client_name'] }}
+                            <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
+                                {{ client['desc'] }}
+                            </p>
+                            <div class="border-b-2 border-gray-300"></div>
+                        </caption>
+                        <thead class="text-xs text-white uppercase bg-primary">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 w-1/4">Project Title</th>
+                                <th scope="col" class="px-6 py-3">Description</th>
+                                <th scope="col" class="px-6 py-3 w-1/6">Responses</th>
+                                <!-- <th scope="col" class="px-6 py-3">Team</th> -->
+                                <th scope="col" class="px-6 py-3 md:w-1/6 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="project in filteredProjects" :key="project.id"
+                                class="bg-white border-b hover:bg-gray-50">
+                                <td scope="row" class="px-6 py-4 font-medium text-gray-900">
+                                    {{ project.project_name }}
+                                </td>
+                                <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">
                                     {{ project.desc }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="pb-3 px-3 mx-5 sm:mx-0">
-                            <div class="flex justify-center mt-3">
-                                <NavLink class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
-                                    :href="route('listsurvey', [clientSlug, project.slug])">
-                                    Check Project   
-                                </NavLink>
-                            </div>
-                            <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                                class="relative inline-block text-left w-full">
-                                <div class="flex justify-end">
-                                    <Dropdown>
-                                        <template #trigger>
-                                            <div
-                                                class="inline-flex w-12 gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 cursor-pointer">
-                                                <div class="flex">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                                        class="size-6 right-0">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                        </template>
-                                        <template #content>
-                                            <div class="py-1">
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
-                                                    :href="route('edit_projects', [clientSlug,project.id])">Edit Project</a>
+                                </td>
+                                <td class="px-6 py-4">
+                                    100
+                                </td>
+                                <td class="px-6 py-6">
+                                    <NavLink :href="route('listsurvey', [clientSlug, project.slug])"
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                                        See Surveys
+                                    </NavLink>
+                                    <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                        class="mt-5 text-center">
+                                        <a class="font-medium text-blue-600 hover:underline mr-4"
+                                            :href="route('edit_projects', [clientSlug, project.id])">Edit</a>
 
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
-                                                    @click="hapus([clientSlug, project.id])" class="cursor-pointer">Hapus Project</a>
-                                            </div>
-                                        </template>
-                                    </Dropdown>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                        <a class="font-medium text-red-600 hover:underline cursor-pointer"
+                                            @click="hapus([clientSlug, project.id])">Hapus
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </main>

@@ -108,7 +108,7 @@ console.log(props)
                         <thead class="text-xs text-white uppercase bg-primary">
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-1/4">Survey Title</th>
-                                <th scope="col" class="px-6 py-3">Desc</th>
+                                <th scope="col" class="px-6 py-3">Description</th>
                                 <th scope="col" class="px-6 py-3 w-1/6">Responses</th>
                                 <!-- <th scope="col" class="px-6 py-3">Team</th> -->
                                 <th scope="col" class="px-6 py-3 md:w-1/6 text-center">Action</th>
