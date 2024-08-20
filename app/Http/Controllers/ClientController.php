@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Client;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ClientController extends Controller
 {
@@ -27,7 +29,7 @@ class ClientController extends Controller
 
     public function create()
     {
-        return Inertia::render('Projects/CreateClient');
+        return Inertia::render('Client/CreateClient');
     }
 
     // public function adminIndex()
@@ -50,7 +52,8 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'project_name' => 'required|max:255',
+            'client_name' => 'required|max:255',
+            'alamat' => 'required|max:255',
             'desc' => 'required',
             'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
@@ -59,30 +62,33 @@ class ClientController extends Controller
 
             $request->file('image')->move(public_path('img'), $fileName);
         }
-            $project = Project::create([
-                'project_name' => $validated['project_name'],
+
+            $client = Client::create([
+                'project_name' => $validated['client_name'],
                 'desc' => $validated['desc'],
+                'alamat' => $validated['alamat'],
                 'image' => $fileName,
-                'slug' => Str::slug($validated['project_name']),
+                'slug' => Str::slug($validated['client_name']),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
             
-        Log::info('Project created:', $project->toArray());
+        Log::info('Project created:', $client->toArray());
 
-        return redirect()->route('projects')->with('success', 'Project created successfully.');
+        return redirect()->route('listclient')->with('success', 'Project created successfully.');
     }
 
     public function edit($id)
     {
-        $project = Project::findOrFail($id);
+        $client = Client::findOrFail($id);
         return Inertia::render('Projects/EditProjects', [
             'projects' => [
-                'id' => $project->id,
-                'project_name' => $project->project_name,
-                'desc' => $project->desc,
-                'slug' => $project->slug,
-                'updated_at' => $project->update_at,
+                'id' => $client->id,
+                'project_name' => $client->client_name,
+                'desc' => $client->desc,
+                'alamat' => $client->alamat,
+                'slug' => $client->slug,
+                'updated_at' => $client->update_at,
             ]
         ]);
     }
