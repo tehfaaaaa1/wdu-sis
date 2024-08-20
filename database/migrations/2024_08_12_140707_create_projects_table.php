@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->foreignId('client_id')->constrained(
                 table: 'clients',
-                indexName: 'surveys_project_id',
+                indexName: 'projects_client_id',
             )->onDelete('cascade');
             $table->text('desc');
             $table->timestamps();
