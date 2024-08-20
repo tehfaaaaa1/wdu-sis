@@ -10,7 +10,6 @@
 - change navbar to white (?)
 - change to indonesian language
 
-
 ## Need bug fix
 - EditProject doesn't update
 - No error message when adding invalidated image in CreateProject
