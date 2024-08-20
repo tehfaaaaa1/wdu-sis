@@ -95,21 +95,30 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
+        // dd($request->all());
+        $project = Project::findOrFail($id);
         $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
         ]);
-        
+
+        if($image = $request->file('image')){
+            $filenname = date('YmdHi').$image->getClientOriginalExtension();
+            $image->move(public_path('img'), $filenname);
+        }else{
+            unset($input['image']);
+        }
         // Generate the slug from the project name
         $slug = Str::slug($validated['project_name']);
 
-        Project::where('id', $id)->update([
+        Project::where('id', $project['id'])->update([
             'project_name' => $validated['project_name'],
             'desc' => $validated['desc'],
+            'image' => $filenname,
             'slug' => $slug,
             'updated_at' => now(),
         ]);
-
+     
         return redirect()->route('projects')->with('success', 'Project updated successfully.');
     }
 
@@ -123,9 +132,9 @@ class ProjectController extends Controller
                         'error' => 'project not found'
                     ]);
                 }
-                Storage::disk('public')->delete('/storage/image'. $project['image']);
+                Storage::disk('public')->delete(public_path('img'). $project['image']);
                 project::where('id', $id)->delete();
-                
+
                 return redirect()->route('projects')->with('success', 'Project deleted successfully.');
     }
 }
