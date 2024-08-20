@@ -76,7 +76,7 @@ console.log(props)
     <AppLayout title="List Survey">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Survey grup 
+                Survey Project {{ project.project_name }}
             </h2>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">

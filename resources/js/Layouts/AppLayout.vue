@@ -340,7 +340,7 @@ const logout = () => {
                 </div>
             </header> 
 
-            <!-- Page Content -->
+            <!-- Page Content -->   
             <main>
                 <slot />
             </main>
