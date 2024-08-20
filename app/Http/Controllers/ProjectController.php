@@ -46,14 +46,14 @@ class ProjectController extends Controller
 
     public function create(Client $client, $slug)
     {
-        $project = DB::table('clients')
+        $client = DB::table('clients')
         ->where('slug', $slug)
         ->get();
 
     return Inertia::render(
         'Client/Projects/CreateProjects',
         [
-            'clients' => $project,
+            'clients' => $client,
         ]
     );
     }

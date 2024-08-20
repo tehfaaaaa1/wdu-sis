@@ -65,7 +65,7 @@ class ClientController extends Controller
         }
 
             $client = Client::create([
-                'project_name' => $validated['client_name'],
+                'client_name' => $validated['client_name'],
                 'desc' => $validated['desc'],
                 'alamat' => $validated['alamat'],
                 'image' => $fileName,
