@@ -124,7 +124,7 @@ const filteredSurveys = computed(() => {
                                 </td>
                                 <td class="px-6 py-6">
                                     <NavLink :href="route('submission_surveys', [projectSlug, survey.id])"
-                                        class="w-full flex justify-center py-2.5 bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                         Isi Survey
                                     </NavLink>
                                     <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"

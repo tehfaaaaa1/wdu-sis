@@ -35,7 +35,7 @@ const filteredProjects = computed(() => {
         </template>
         <main class="min-h-screen bg-repeat" style="background-image: url('/img/bg-dashboard.png');">
             <div class="flex">
-                <div class="w-1/6 min-h-screen pt-10 bg-gray-800">
+                <div class="w-1/6 min-h-screen pt-10 bg-gray-200">
                     <ResponsiveNavLink :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                         Projects
                     </ResponsiveNavLink>
