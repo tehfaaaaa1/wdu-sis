@@ -10,7 +10,7 @@ import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 
 const props = defineProps({ clients: Object, })
 const showDeleteModal = ref(false);
-const selectedProjectId = ref(null);
+const selectedClientId = ref(null);
 
 const searchQuery = ref('');
 
@@ -19,12 +19,12 @@ const form = useForm({
 });
 
 const hapus = (id) => {
-    selectedProjectId.value = id;
+    selectedClientId.value = id;
     showDeleteModal.value = true;
 };
 
 const confirmDeletion = () => {
-    form.get(route('delete_project', selectedProjectId.value), {
+    form.get(route('delete_client', selectedClientId.value), {
         onFinish: () => {
             showDeleteModal.value = false;
         }
