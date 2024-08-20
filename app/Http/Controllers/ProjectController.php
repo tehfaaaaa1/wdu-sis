@@ -19,13 +19,13 @@ class ProjectController extends Controller
     public function index(Client $client, $slug)
     {
         $projectall =  Client::where('slug', $slug)->firstOrFail();
-        $client = DB::table('client')
+        $client = DB::table('clients')
             ->where('slug', $slug)
             ->get();
         $p = $projectall->project;
         // dump($survey);
         return Inertia::render(
-            'Projects/Surveys/ListSurveys',
+            'Client/Projects/ListProjects',
             [
                 'surveys' => collect($p)->map(function ($project) {
                     return [

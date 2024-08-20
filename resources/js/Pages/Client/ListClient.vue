@@ -44,6 +44,8 @@ const filteredClients = computed(() => {
         );
     });
 });
+
+console.log(filteredClients)
 </script>
 
 <template>
@@ -88,7 +90,7 @@ const filteredClients = computed(() => {
                             <div class="flex justify-center mt-3">
                                 <NavLink
                                     class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
-                                    :href="route('listprojects', client.slug)">
+                                    :href="route('projects', client.slug)">
                                     See projects
                                 </NavLink>
                             </div>

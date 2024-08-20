@@ -18,7 +18,7 @@ class Client extends Model
         'desc',
     ];
 
-    public function survey() : HasMany{
+    public function project() : HasMany{
 
         return $this->hasMany(Project::class);
     }

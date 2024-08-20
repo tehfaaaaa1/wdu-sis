@@ -17,7 +17,7 @@ class ClientController extends Controller
             'clients' => Client::all()->map(function ($client) {
                 return [
                     'id' => $client->id,
-                    'client_name' => $client->project_name,
+                    'client_name' => $client->client_name,
                     'image' => $client->image, 
                     'desc' => $client->desc,
                     'slug' => $client->slug,
