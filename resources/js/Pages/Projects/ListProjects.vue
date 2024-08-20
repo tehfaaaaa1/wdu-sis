@@ -5,9 +5,12 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 
 
 const props = defineProps({ projects: Object, })
+const showDeleteModal = ref(false);
+const selectedProjectId = ref(null);
 
 const searchQuery = ref('');
 
@@ -15,11 +18,30 @@ const form = useForm({
     search: '',
 });
 
+/*
 const hapus = (id) => {
     if (confirm('delete this Project')) {
         form.get(route('delete_project', id));
     }
+};*/
+
+const hapus = (id) => {
+    selectedProjectId.value = id;
+    showDeleteModal.value = true;
 };
+
+const confirmDeletion = () => {
+    form.get(route('delete_project', selectedProjectId.value), {
+        onFinish: () => {
+            showDeleteModal.value = false;
+        }
+    })
+}
+
+const cancelDeletion = () => {
+    showDeleteModal.value = false;
+}
+
 
 const filteredProjects = computed(() => {
     return props.projects.filter(projects => {
@@ -109,6 +131,6 @@ const filteredProjects = computed(() => {
                 </div>
             </div>
         </main>
-
+        <DeleteConfirmation :show="showDeleteModal" @confirm="confirmDeletion" @cancel="cancelDeletion" />
     </AppLayout>
 </template>

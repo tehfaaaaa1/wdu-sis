@@ -125,7 +125,6 @@ const filteredUsers = computed(() => {
             </div>
         </div>
 
-        <!-- Delete Confirmation Modal -->
         <DeleteConfirmation :show="showDeleteModal" @confirm="confirmDeletion" @cancel="cancelDeletion" />
     </AppLayout>
 </template>
