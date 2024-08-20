@@ -69,7 +69,7 @@ const filteredSurveys = computed(() => {
         );
     });
 });
-console.log(props)
+
 </script>
 
 <template>
