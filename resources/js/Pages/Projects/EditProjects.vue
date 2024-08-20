@@ -35,7 +35,7 @@ console.log(props.projects.desc)
                     <AuthenticationCardLogo />
                 </template>
                 <h2 class="text-primary font-semibold text-2xl text-center mb-4">Edit Project</h2>
-                <form @submit.prevent="submit">
+                <form @submit.prevent="submit"  enctype="multipart/form-data">
                     <div class="relative">
                         <InputLabel for="project_name" />
                         <TextInput id="name" v-model="form.project_name" type="text" placeholder="Project Name" class=""

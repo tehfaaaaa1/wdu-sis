@@ -95,7 +95,6 @@ class ProjectController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
         $project = Project::findOrFail($id);
         $validated = $request->validate([
             'project_name' => 'required|max:255',
@@ -112,9 +111,8 @@ class ProjectController extends Controller
                 'image' => $filenname,
             ]);
         }else{
-            unset($request['image']);
+            unset($validated['image']);
         }
-
 
         Project::where('id', $project['id'])->update([
             'project_name' => $validated['project_name'],
@@ -122,7 +120,7 @@ class ProjectController extends Controller
             'slug' => $slug,
             'updated_at' => now(),
         ]);
-     
+    //  dd($request->file('image'));
         return redirect()->route('projects')->with('success', 'Project updated successfully.');
     }
 
