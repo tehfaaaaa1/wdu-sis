@@ -1,14 +1,14 @@
 # To Be Added
+- Client
 - Updated Documentation (Fadel)
-  - ERD Survey Database
-  - Activity Diagram
+  - ERD Survey Database (V)
+  - Activity Diagram (V)
 - More Dashboard Content
 - More Admin Panel Content
-- more user-friendly and aesthetically pleasing
-- turn cards in ListProjects to component (?)
+- turn cards in ListProjects to a list
 - FormSection.vue might be useful
-- change navbar to white (?)
 - change to indonesian language
+- better UI/UX
 
 ## Need bug fix
 - EditProject doesn't update
@@ -16,7 +16,10 @@
 
 
 # Changelog
-## 18 Aug 2024
+## 20 Aug 2024
+- White navbar for more modern look
+
+## 19 Aug 2024
 - Changed survey list UI
 - Image in projects
 - Improved UI
