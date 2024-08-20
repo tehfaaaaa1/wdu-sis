@@ -11,13 +11,14 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
 const form = useForm({
-    project_name: '',
+    client_name: '',
+    alamat: '',
     desc: '',
     image: '',
 });
 
 const submit = () => {
-    form.post(route('create_project'));
+    form.post(route('create_client'));
 };
 </script>
 
