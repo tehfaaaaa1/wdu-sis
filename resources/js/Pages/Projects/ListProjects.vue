@@ -27,7 +27,7 @@ const hapus = (id) => {
 
 const hapus = (id) => {
     selectedProjectId.value = id;
-    showDeleteModal.value = true;
+    showDeleteModalsh.value = true;
 };
 
 const confirmDeletion = () => {
