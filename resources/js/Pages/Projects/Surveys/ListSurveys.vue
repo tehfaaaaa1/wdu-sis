@@ -26,9 +26,9 @@ const submit = () => {
 };
 const project = props.projects[0];
 
-const hapus = (id, slug) => {
+const hapus = (slug, id) => {
     if (confirm('delete this survey')) {
-        form.get(route('delete_surveys', id, slug));
+        form.get(route('delete_surveys', slug, id));
     }
 };
 
@@ -69,7 +69,7 @@ const filteredSurveys = computed(() => {
                 </div>
 
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 sm:table-fixed">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
                             {{ project['project_name'] }}
                             <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
@@ -107,7 +107,7 @@ const filteredSurveys = computed(() => {
                                         class="mt-5 text-center">
                                         <a :href="route('edit_surveys', [project['slug'], survey.id])"
                                             class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                        <a @click="hapus(survey.id)"
+                                        <a @click="hapus([project['slug'], survey.id])"
                                             class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                                     </div>
                                 </td>
@@ -115,7 +115,7 @@ const filteredSurveys = computed(() => {
                         </tbody>
                     </table>
                 </div>
-            </div>->
+            </div>
         </main>
     </AppLayout>
 </template>
