@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('project_id')->constrained(
                 table: 'projects',
                 indexName: 'surveys_project_id',
-            );
+            )->onDelete('cascade');
             $table->timestamps();
 
         });
