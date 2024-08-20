@@ -27,12 +27,13 @@ class ProjectController extends Controller
         return Inertia::render(
             'Client/Projects/ListProjects',
             [
-                'surveys' => collect($p)->map(function ($project) {
+                'projects' => collect($p)->map(function ($project) {
                     return [
                         'id' => $project->id,
-                        'title' => $project->title,
+                        'project_name' => $project->project_name,
                         'image' => $project->image,
                         'desc' => $project->desc,
+                        'slug' => $project->slug,
                         'client_id' => $project->client_id,
                         'created_at' => $project->created_at->format('j F Y'),
                         'updated_at' => $project->updated_at->format('j F Y'),

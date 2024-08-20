@@ -8,7 +8,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 
 
-const props = defineProps({ projects: Object, })
+const props = defineProps({ projects: Object, clients:Object })
 const showDeleteModal = ref(false);
 const selectedProjectId = ref(null);
 
@@ -24,6 +24,8 @@ const hapus = (id) => {
         form.get(route('delete_project', id));
     }
 };*/
+const client = props.clients[0];
+const clientSlug = client.slug;
 
 const hapus = (id) => {
     selectedProjectId.value = id;
@@ -31,7 +33,7 @@ const hapus = (id) => {
 };
 
 const confirmDeletion = () => {
-    form.get(route('delete_project', selectedProjectId.value), {
+    form.get(route('delete_project', [clientSlug, selectedProjectId.value]), {
         onFinish: () => {
             showDeleteModal.value = false;
         }
@@ -51,6 +53,8 @@ const filteredProjects = computed(() => {
         );
     });
 });
+
+console.log(filteredProjects)
 </script>
 
 <template>
@@ -64,7 +68,7 @@ const filteredProjects = computed(() => {
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_projects')"
+                        <NavLink :href="route('create_projects', clientSlug)"
                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
                             Add Projects
@@ -82,7 +86,7 @@ const filteredProjects = computed(() => {
                     <div v-for="project in filteredProjects" :key="project.id"
                         class="grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0">
                         <div class="">
-                            <img :src="'../img/'+project.image" alt="" class="h-40 w-full object-scale-down border-b-1 border-gray-400">
+                            <img :src="'../../../img/'+project.image" alt="" class="h-40 w-full object-scale-down border-b-1 border-gray-400">
                             <div class="px-4 mt-3">  
                                 <h1 class="text-xl mb-1 font-medium truncate">{{ project.project_name }}</h1>
                                 <p class=" text-base text-justify line-clamp-3 leading-5 tracking-wide">
@@ -93,7 +97,7 @@ const filteredProjects = computed(() => {
                         <div class="pb-3 px-3 mx-5 sm:mx-0">
                             <div class="flex justify-center mt-3">
                                 <NavLink class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
-                                    :href="route('listsurvey', project.slug)">
+                                    :href="route('listsurvey', [clientSlug, project.slug])">
                                     Check Project
                                 </NavLink>
                             </div>
@@ -117,10 +121,10 @@ const filteredProjects = computed(() => {
                                         <template #content>
                                             <div class="py-1">
                                                 <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
-                                                    :href="route('edit_projects', project.id)">Edit Project</a>
+                                                    :href="route('edit_projects', [clientSlug,project.id])">Edit Project</a>
 
                                                 <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
-                                                    @click="hapus(project.id)" class="cursor-pointer">Hapus Project</a>
+                                                    @click="hapus([clientSlug, project.id])" class="cursor-pointer">Hapus Project</a>
                                             </div>
                                         </template>
                                     </Dropdown>
