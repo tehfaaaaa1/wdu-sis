@@ -3,37 +3,58 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Client;
 use App\Models\Survey;
 use App\Models\Project;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use function Termwind\render;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Client $client, $slug)
     {
-        return Inertia::render('Projects/ListProjects', [
-            'projects' => Project::all()->map(function ($project) {
-                return [
-                    'id' => $project->id,
-                    'project_name' => $project->project_name,
-                    'image' => $project->image, 
-                    'desc' => $project->desc,
-                    'slug' => $project->slug,
-                    'created_at' => $project->created_at->diffForHumans(),
-                    'updated_at' => $project->updated_at->format('j F Y H:i:s'),
-                ];
-            })
-        ]);
+        $projectall =  Client::where('slug', $slug)->firstOrFail();
+        $client = DB::table('client')
+            ->where('slug', $slug)
+            ->get();
+        $p = $projectall->project;
+        // dump($survey);
+        return Inertia::render(
+            'Projects/Surveys/ListSurveys',
+            [
+                'surveys' => collect($p)->map(function ($project) {
+                    return [
+                        'id' => $project->id,
+                        'title' => $project->title,
+                        'image' => $project->image,
+                        'desc' => $project->desc,
+                        'client_id' => $project->client_id,
+                        'created_at' => $project->created_at->format('j F Y'),
+                        'updated_at' => $project->updated_at->format('j F Y'),
+                    ];
+                }),
+                'clients' => $client,
+            ]
+        );
     }
 
-    public function create()
+    public function create(Client $client, $slug)
     {
-        return Inertia::render('Projects/CreateProjects');
+        $project = DB::table('clients')
+        ->where('slug', $slug)
+        ->get();
+
+    return Inertia::render(
+        'Client/Projects/CreateProjects',
+        [
+            'clients' => $project,
+        ]
+    );
     }
 
     public function adminIndex()
@@ -58,6 +79,7 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
+            'client_id' => 'required',
             'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
         if($request->hasFile('image')){
@@ -69,6 +91,7 @@ class ProjectController extends Controller
                 'project_name' => $validated['project_name'],
                 'desc' => $validated['desc'],
                 'image' => $fileName,
+                'client_id' => $validated['client_id'],
                 'slug' => Str::slug($validated['project_name']),
                 'created_at' => now(),
                 'updated_at' => now(),
