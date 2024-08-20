@@ -66,15 +66,15 @@ class ClientController extends Controller
 
             $client = Client::create([
                 'client_name' => $validated['client_name'],
-                'desc' => $validated['desc'],
-                'alamat' => $validated['alamat'],
                 'image' => $fileName,
+                'alamat' => $validated['alamat'],
                 'slug' => Str::slug($validated['client_name']),
+                'desc' => $validated['desc'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
             
-        Log::info('Project created:', $client->toArray());
+        Log::info('client created:', $client->toArray());
 
         return redirect()->route('listclient')->with('success', 'Project created successfully.');
     }
