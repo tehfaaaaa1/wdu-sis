@@ -19,6 +19,7 @@ const form = useForm({
     password_confirmation: '',
     usertype: 'user',
     team_id: null, 
+    client_id: 1, 
 });
 
 const isAdmin = ref(false);

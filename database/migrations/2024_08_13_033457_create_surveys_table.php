@@ -19,7 +19,7 @@ return new class extends Migration
                 table: 'projects',
                 indexName: 'surveys_project_id',
             )->onDelete('cascade');
-            $table->integer('total_response');
+            $table->integer('total_response')->nullable();
             $table->timestamps();
         });
     }
