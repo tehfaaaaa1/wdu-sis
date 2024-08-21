@@ -55,7 +55,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     
             Route::post('/create-project', [ProjectController::class, 'store'])->name('create_project')->middleware(['ableSurvey']);
     
-            Route::put('{id}/update-project/', [ProjectController::class, 'update'])->name('update_projects')->middleware(['ableSurvey']);
+            Route::put('update-project/{id}', [ProjectController::class, 'update'])->name('update_projects')->middleware(['ableSurvey']);
     
             Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_project')->middleware(['ableSurvey']);
             

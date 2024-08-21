@@ -43,8 +43,6 @@ const confirmDeletion = () => {
 const cancelDeletion = () => {
     showDeleteModal.value = false;
 }
-
-
 const filteredProjects = computed(() => {
     return props.projects.filter(projects => {
         return (
