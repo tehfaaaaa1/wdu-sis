@@ -1,20 +1,23 @@
 # To Be Added
-- Modified client
+- **Questions & Answers in Surveys**
+- FormSection.vue might be useful in Forms
+- change to indonesian language
+- More Dashboard Content
+- better UI/UX
+- More Admin Panel Content
 - Updated Documentation (Fadel)
   - ERD Survey Database (V)
   - Activity Diagram (V)
-- More Dashboard Content
-- More Admin Panel Content
-- FormSection.vue might be useful
-- change to indonesian language
-- better UI/UX
 
 ## Need bug fix
 - EditProject doesn't update image
-- No error message when adding invalidated image in CreateProject
 
 
 # Changelog
+## 21 Aug 2024
+- Setup for questions in surveys (migration)
+- UI Changes
+
 ## 20 Aug 2024
 - Added client page to store all projects for a specific client (e.g. KPK, BKPM)
 - White navbar for more modern look
