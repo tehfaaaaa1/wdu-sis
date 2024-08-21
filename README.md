@@ -1,5 +1,5 @@
 # To Be Added
-- Client
+- Modified client
 - Updated Documentation (Fadel)
   - ERD Survey Database (V)
   - Activity Diagram (V)
