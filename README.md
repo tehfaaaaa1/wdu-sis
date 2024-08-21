@@ -5,13 +5,12 @@
   - Activity Diagram (V)
 - More Dashboard Content
 - More Admin Panel Content
-- turn cards in ListProjects to a list
 - FormSection.vue might be useful
 - change to indonesian language
 - better UI/UX
 
 ## Need bug fix
-- EditProject doesn't update
+- EditProject doesn't update image
 - No error message when adding invalidated image in CreateProject
 
 
