@@ -65,6 +65,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'usertype' => $request->usertype,
+            'client_id' => 1,
         ]);
 
         // Assign team if provided
