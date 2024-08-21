@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('surveys', function (Blueprint $table) {
+        Schema::create('question_choices', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('desc');
-            $table->foreignId('project_id')->constrained(
-                table: 'projects',
-                indexName: 'surveys_project_id',
+            $table->foreignId('question_id')->constrained(
+                table: 'questions',
+                indexName: 'question_choices_question_id',
             )->onDelete('cascade');
-            $table->integer('total_response');
+            $table->integer('order');
+            $table->string('value', 255);
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('surveys');
+        Schema::dropIfExists('question_choices');
     }
 };
