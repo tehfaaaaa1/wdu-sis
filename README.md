@@ -1,5 +1,5 @@
 # To Be Added
-- Client
+- Modified client
 - Updated Documentation (Fadel)
   - ERD Survey Database (V)
   - Activity Diagram (V)
@@ -17,6 +17,7 @@
 
 # Changelog
 ## 20 Aug 2024
+- Added client page to store all projects for a specific client (e.g. KPK, BKPM)
 - White navbar for more modern look
 
 ## 19 Aug 2024
