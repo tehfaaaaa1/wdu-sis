@@ -48,7 +48,7 @@ const submit = () => {
                     <div class="mt-4 relative">
                         <textarea id="desc" v-model="form.desc"
                             placeholder="Description"
-                            class="block text-primary placeholder-primary w-full h-48 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                            class="block text-primary placeholder-primary w-full h-28 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                             required autocomplete="desc" />
 
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />
