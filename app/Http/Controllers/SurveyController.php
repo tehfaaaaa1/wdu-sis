@@ -127,18 +127,23 @@ class SurveyController extends Controller
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Update successfully.');
     }
     
-    public function submission(Survey $survey, $slug, $id)
+    public function submission(Survey $survey, $clientSlug,$projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
+
         $project = DB::table('projects')
-            ->where('slug', $slug)
+            ->where('slug', $projectSlug)
+            ->get();
+        $client = DB::table('clients')
+            ->where('slug', $clientSlug)
             ->get();
         // dump($survey);
         return Inertia::render(
-            'Projects/Surveys/SubmissionSurvey',
+            'Client/Projects/Surveys/SubmissionSurvey',
             [
                 'surveys' => $survey,
                 'projects' => $project,
+                'clients' => $client,
             ]
         );
     }

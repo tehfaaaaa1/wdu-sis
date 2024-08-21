@@ -127,7 +127,7 @@ const filteredSurveys = computed(() => {
                                     100
                                 </td>
                                 <td class="px-6 py-6">
-                                    <NavLink :href="route('submission_surveys', [clientSlug,projectSlug, survey.id])"
+                                    <NavLink :href="route('submission_surveys', [clientSlug ,projectSlug, survey.id])"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                         Isi Survey
                                     </NavLink>
