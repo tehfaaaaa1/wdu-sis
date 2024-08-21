@@ -36,7 +36,7 @@ const logout = () => {
         <Banner />
 
         <div class="min-h-screen bg-gray-100 pb-8">
-            <nav class="bg-primary border-b border-gray-100">
+            <nav class="bg-white border-b border-gray-100">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -58,8 +58,8 @@ const logout = () => {
                                     :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                                     Admin Panel
                                 </NavLink>
-                                <NavLink :href="route('projects')" :active="route().current('projects')">
-                                    Projects
+                                <NavLink :href="route('listclient')" :active="route().current('listclient')">
+                                    Client
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('users')"
                                     :active="route().current('users')">
@@ -71,7 +71,7 @@ const logout = () => {
                         <div class="hidden lg:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
                                 <div v-if="$page.props.auth.user.usertype === 'user'">
-                                    <p class="text-white">
+                                    <p class="text-black">
                                         You are {{ $page.props.auth.user.current_team.name }}
                                     </p>
                                 </div>
@@ -81,7 +81,7 @@ const logout = () => {
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.current_team.name }}
 
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -205,7 +205,7 @@ const logout = () => {
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center lg:hidden">
                             <button
-                                class="inline-flex items-center justify-center p-2 rounded-md bg-gray-100 text-gray-400 hover:text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
+                                class="inline-flex items-center justify-center p-2 rounded-md bg-primary text-white transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = !showingNavigationDropdown">
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
@@ -234,8 +234,8 @@ const logout = () => {
                             :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                             Admin Panel
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('projects')" :active="route().current('project')">
-                            Project
+                        <ResponsiveNavLink :href="route('listclient')" :active="route().current('listclient')">
+                            Client
                         </ResponsiveNavLink>
                         <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin'" :href="route('users')"
                             :active="route().current('users')">
@@ -245,7 +245,7 @@ const logout = () => {
 
 
                     <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
+                    <div class="pt-4 pb-1 border-t border-gray-300">
                         <div class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 me-3">
                                 <img class="h-10 w-10 rounded-full object-cover"
@@ -253,10 +253,10 @@ const logout = () => {
                             </div>
 
                             <div>
-                                <div class="font-medium text-base text-white">
+                                <div class="font-medium text-base text-gray-700">
                                     {{ $page.props.auth.user.name }}
                                 </div>
-                                <div class="font-medium text-sm text-gray-300">
+                                <div class="font-medium text-sm text-gray-500">
                                     {{ $page.props.auth.user.email }}
                                 </div>
                             </div>
@@ -283,7 +283,7 @@ const logout = () => {
                             <template v-if="$page.props.jetstream.hasTeamFeatures">
                                 <div class="border-t border-gray-200" />
 
-                                <div class="block px-4 py-2 text-xs text-gray-200">
+                                <div class="block px-4 py-2 text-xs text-gray-500">
                                     Manage Team
                                 </div>
 
@@ -304,7 +304,7 @@ const logout = () => {
                                     v-if="$page.props.auth.user.all_teams.length > 1 && $page.props.auth.user.usertype === 'superadmin'">
                                     <div class="border-t border-gray-200" />
 
-                                    <div class="block px-4 py-2 text-xs text-gray-200">
+                                    <div class="block px-4 py-2 text-xs text-gray-500">
                                         Switch Teams
                                     </div>
 
@@ -314,7 +314,7 @@ const logout = () => {
                                                 <div class="flex items-center">
                                                     <div class="">
                                                         <svg v-if="team.id == $page.props.auth.user.current_team_id"
-                                                            class="me-2 h-5 w-5"
+                                                            class="me-2 h-5 w-5 text-primary"
                                                             xmlns="http://www.w3.org/2000/svg" fill="none"
                                                             viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -338,9 +338,9 @@ const logout = () => {
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
-            </header>
+            </header> 
 
-            <!-- Page Content -->
+            <!-- Page Content -->   
             <main>
                 <slot />
             </main>

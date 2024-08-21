@@ -8,9 +8,9 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 
 
-const props = defineProps({ projects: Object, })
+const props = defineProps({ clients: Object, })
 const showDeleteModal = ref(false);
-const selectedProjectId = ref(null);
+const selectedClientId = ref(null);
 
 const searchQuery = ref('');
 
@@ -18,20 +18,13 @@ const form = useForm({
     search: '',
 });
 
-/*
 const hapus = (id) => {
-    if (confirm('delete this Project and All Survey ')) {
-        form.get(route('delete_project', id));
-    }
-};*/
-
-const hapus = (id) => {
-    selectedProjectId.value = id;
+    selectedClientId.value = id;
     showDeleteModal.value = true;
 };
 
 const confirmDeletion = () => {
-    form.get(route('delete_project', selectedProjectId.value), {
+    form.get(route('delete_client', selectedClientId.value), {
         onFinish: () => {
             showDeleteModal.value = false;
         }
@@ -43,31 +36,33 @@ const cancelDeletion = () => {
 }
 
 
-const filteredProjects = computed(() => {
-    return props.projects.filter(projects => {
+const filteredClients = computed(() => {
+    return props.clients.filter(clients => {
         return (
-            projects.project_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            projects.desc.toLowerCase().includes(searchQuery.value.toLowerCase())
+            clients.client_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            clients.desc.toLowerCase().includes(searchQuery.value.toLowerCase())
         );
     });
 });
+
+console.log(filteredClients)
 </script>
 
 <template>
-    <AppLayout title="List Projects">
-        <template #header>
+    <AppLayout title="List Clients">
+        <!-- <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Projects
             </h2>
-        </template>
+        </template> -->
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_projects')"
+                        <NavLink :href="route('create_client_page')"
                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
-                            Add Projects
+                            Add Clients
                         </NavLink>
                     </div>
                     <div class="flex items-center px-4 py-2 text-sm w-60">
@@ -78,23 +73,25 @@ const filteredProjects = computed(() => {
                 </div>
 
                 <!-- May need to make this a component -->
-                <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10 content-stretch">
-                    <div v-for="project in filteredProjects" :key="project.id"
+                <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center content-stretch">
+                    <div v-for="client in filteredClients" :key="client.id"
                         class="grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0">
                         <div class="">
-                            <img :src="'../img/'+project.image" alt="" class="h-40 w-full object-scale-down border-b-1 border-gray-400">
-                            <div class="px-4 mt-3">  
-                                <h1 class="text-xl mb-1 font-medium truncate">{{ project.project_name }}</h1>
+                            <img :src="'../img/' + client.image" alt=""
+                                class="h-40 w-full object-scale-down border-b-1 border-gray-400">
+                            <div class="px-4 mt-3">
+                                <h1 class="text-xl mb-1 font-medium truncate">{{ client.client_name }}</h1>
                                 <p class=" text-base text-justify line-clamp-3 leading-5 tracking-wide">
-                                    {{ project.desc }}
+                                    {{ client.desc }}
                                 </p>
                             </div>
                         </div>
                         <div class="pb-3 px-3 mx-5 sm:mx-0">
                             <div class="flex justify-center mt-3">
-                                <NavLink class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
-                                    :href="route('listsurvey', project.slug)">
-                                    Check Project
+                                <NavLink
+                                    class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
+                                    :href="route('projects', client.slug)">
+                                    See projects
                                 </NavLink>
                             </div>
                             <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
@@ -117,10 +114,10 @@ const filteredProjects = computed(() => {
                                         <template #content>
                                             <div class="py-1">
                                                 <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
-                                                    :href="route('edit_projects', project.id)">Edit Project</a>
+                                                    :href="route('edit_client', client.id)">Edit Client</a>
 
                                                 <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
-                                                    @click="hapus(project.id)" class="cursor-pointer">Hapus Project</a>
+                                                    @click="hapus(client.id)" class="cursor-pointer">Delete Client</a>
                                             </div>
                                         </template>
                                     </Dropdown>
