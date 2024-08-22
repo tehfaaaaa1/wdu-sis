@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref, computed } from 'vue';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import Checkbox from '@/Components/Checkbox.vue';
@@ -13,6 +14,9 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 
 const props = defineProps({ surveys: Object, projects: Object })
+const choices = ref([])
+
+const texts = ref([])
 
 const form = useForm({
     title: '',
@@ -21,6 +25,25 @@ const form = useForm({
 const submit = () => {
     // form.put(route('update_survey', props.surveys.id));
 };
+let idchoice =1
+
+function radioQuestion(){
+    const choice={
+        id: idchoice++,
+        pilih: '',
+    }
+    choices.value.push(choice)
+}
+let idtext = 1
+function textQuestion(){
+    const text={
+        id: idtext++,
+        isi: '',
+    }
+    texts.value.push(text)
+}
+console.log(props)
+
 </script>
 
 <template>
@@ -55,7 +78,6 @@ const submit = () => {
                                             <button type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                                 Question Type
-
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                     fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                                     stroke="currentColor">
@@ -64,12 +86,12 @@ const submit = () => {
                                                 </svg>
                                             </button>
                                         </template>
-
+    
                                         <template #content>
-                                            <div class="block px-4 py-2 text-sm cursor-pointer">
+                                            <div @click="textQuestion" class="block px-4 py-2 text-sm cursor-pointer">
                                                 Text
                                             </div>
-                                            <div class="block px-4 py-2 text-sm cursor-pointer">
+                                            <div @click="radioQuestion" class="block px-4 py-2 text-sm cursor-pointer">
                                                 Single Choice
                                             </div>
                                             <div class="block px-4 py-2 text-sm cursor-pointer">
@@ -77,11 +99,20 @@ const submit = () => {
                                             </div>
                                         </template>
                                     </Dropdown>
+                                    
                                 </div>
-
-                                <!-- choice / answer -->
-                                <textarea type="text" name="qchoice-1" id="qchoice-1" placeholder="Insert choice here"
-                                    class="text-sm w-full h-16 rounded-md my-3" />
+                                <!-- single choice -->
+                                <div class="p-5" v-for="choice in choices">
+                                    <p>1</p>
+                                    <input type="text" v-model="choice.pilih" name="1" id="q1" placeholder="Insert single choice here"
+                                        class="text-sm mx-4 rounded-md">
+                                </div>
+                                <!-- text -->
+                                <div class="p-5" v-for="text in texts">
+                                    <p>1</p>
+                                    <textarea v-model="text.isi" name="1" id="q1" placeholder="jawaban"
+                                        class="text-sm mx-4 rounded-md"/>
+                                </div>
                             </div>
                         </div>
                         <!-- End question -->
