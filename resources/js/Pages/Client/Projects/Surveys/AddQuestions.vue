@@ -14,19 +14,25 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 
 const props = defineProps({ surveys: Object, projects: Object })
-const choices = ref([])
 
+const questions = ref([])
+const choices = ref([])
 const texts = ref([])
 
 const form = useForm({
     title: '',
     desc: '',
 });
-const submit = () => {
-    // form.put(route('update_survey', props.surveys.id));
-};
-let idchoice =1
 
+let idquestion =1
+function addQuestion(){
+    const question={
+        id: idquestion++,
+        soal: '',
+    }
+    questions.value.push(question)
+}
+let idchoice =1
 function radioQuestion(){
     const choice={
         id: idchoice++,
@@ -34,7 +40,7 @@ function radioQuestion(){
     }
     choices.value.push(choice)
 }
-let idtext = 1
+let idtext = 1  
 function textQuestion(){
     const text={
         id: idtext++,
@@ -60,15 +66,15 @@ console.log(props)
                             {{ props.surveys.desc }}
                         </p>
                     </div>
-                    <form action="" method="post" @submit.prevent>
-                        <div id="questions"> <!-- v-for here -->
+                    <form action="" method="post" @submit.prevent >
+                        <div id="questions" v-for="question in questions" > <!-- v-for here -->
                             <div>
                                 <div class="p-5 flex items-center">
                                     <!-- Order of question -->
-                                    <p>1. </p>
+                                    <p>{{ question.id }}</p>
     
                                     <!-- Insert text here -->
-                                    <input type="text" name="1" id="q1" placeholder="Insert question here"
+                                    <input v-model="question.soal" type="text" placeholder="Insert question here"
                                         class="text-sm w-full mx-4 rounded-md">
     
                                     <!-- Question types -->
@@ -101,25 +107,32 @@ console.log(props)
                                     </Dropdown>
                                     
                                 </div>
-                                <!-- single choice -->
-                                <div class="p-5" v-for="choice in choices">
-                                    <p>1</p>
-                                    <input type="text" v-model="choice.pilih" name="1" id="q1" placeholder="Insert single choice here"
-                                        class="text-sm mx-4 rounded-md">
-                                </div>
-                                <div class="p-5" v-for="text in texts">
-                                    <p>1</p>
-                                    <textarea v-model="text.isi" name="1" id="q1" placeholder="jawaban"
-                                        class="text-sm mx-4 rounded-md"/>
-                                </div>
+                                
                             </div>
+                            <!-- single choice -->
+                            <div class="" v-for="choice in choices">
+                                     <div class="p-5">
+                                         <p>{{ choice.id }}</p>
+                                         <input type="text" v-model="choice.pilih" :name="idchoice" :id="idchoice" placeholder="Insert single choice here" class="text-sm mx-4 rounded-md">
+                                     </div>
+                                 </div>
+                                 <!-- text -->
+                                    <div class="" v-for="text in texts">
+                                        <div class="">
+                                            <div class="p-5" >
+                                                <p>{{ text.id }}</p>
+                                                <textarea v-model="text.isi" name="1" id="q1" placeholder="jawaban"
+                                                class="text-sm mx-4 rounded-md"/>
+                                            </div>
+                                        </div>
+                                    </div>
                         </div>
                         <div class="pt-2 flex justify-center">
-                            <PrimaryButton
+                            <button
                                 class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200"
-                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                                 @click="addQuestion">
                                 Add Questions
-                            </PrimaryButton>
+                            </button>
                         </div>
                         <div class="border-b-2 border-gray-300" />
                         <div class="pt-5 flex justify-center">

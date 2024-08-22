@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\QuestionController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -73,7 +74,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     
                 Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
     
-                Route::get('/add-question/{id}',[SurveyController::class, 'question'])->name('question_surveys');
+                Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys');
                 
                 Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
                 
