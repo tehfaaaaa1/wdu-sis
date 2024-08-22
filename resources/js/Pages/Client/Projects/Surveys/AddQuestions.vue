@@ -38,45 +38,54 @@ const submit = () => {
                         </p>
                     </div>
                     <form action="" method="post" @submit.prevent>
-                        <div id="questions"> <!-- v-for here -->
-                            <div class="p-5 flex items-center">
-                                <!-- Order of question -->
-                                <p>1. </p>
+                        <!-- Question start -->
+                        <div id="questions" class="mx-5"> <!-- v-for here -->
+                            <div id="question-1" class="my-4">
+                                <div class="flex items-center">
+                                    <!-- Order of question -->
+                                    <p>1. </p>
 
-                                <!-- Insert text here -->
-                                <input type="text" name="1" id="q1" placeholder="Insert question here"
-                                    class="text-sm w-full mx-4 rounded-md">
+                                    <!-- Insert text here -->
+                                    <input type="text" name="q-1" id="q-1" placeholder="Insert question here"
+                                        class="text-sm w-full mx-4 rounded-md">
 
-                                <!-- Question types -->
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <button type="button"
-                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                            Question Type
+                                    <!-- Question types -->
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <button type="button"
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                                Question Type
 
-                                            <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                        </button>
-                                    </template>
+                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </button>
+                                        </template>
 
-                                    <template #content>
-                                        <div class="block px-4 py-2 text-sm cursor-pointer">
-                                            Text
-                                        </div>
-                                        <div class="block px-4 py-2 text-sm cursor-pointer">
-                                            Single Choice
-                                        </div>
-                                        <div class="block px-4 py-2 text-sm cursor-pointer">
-                                            Multiple Choice
-                                        </div>
-                                    </template>
-                                </Dropdown>
+                                        <template #content>
+                                            <div class="block px-4 py-2 text-sm cursor-pointer">
+                                                Text
+                                            </div>
+                                            <div class="block px-4 py-2 text-sm cursor-pointer">
+                                                Single Choice
+                                            </div>
+                                            <div class="block px-4 py-2 text-sm cursor-pointer">
+                                                Multiple Choice
+                                            </div>
+                                        </template>
+                                    </Dropdown>
+                                </div>
+
+                                <!-- choice / answer -->
+                                <textarea type="text" name="qchoice-1" id="qchoice-1" placeholder="Insert choice here"
+                                    class="text-sm w-full h-16 rounded-md my-3" />
                             </div>
                         </div>
+                        <!-- End question -->
+
                         <div class="pt-2 flex justify-center">
                             <PrimaryButton
                                 class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200"
