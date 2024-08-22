@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('project_name');
-            $table->string('image');
             $table->string('slug')->unique();
             $table->foreignId('client_id')->constrained(
                 table: 'clients',

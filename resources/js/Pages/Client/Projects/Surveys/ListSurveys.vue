@@ -99,10 +99,21 @@ const filteredSurveys = computed(() => {
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
-                            {{ project['project_name'] }}
-                            <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
-                                {{ project['desc'] }}
-                            </p>
+                            <div class="flex justify-between w-full ">
+                                <div>
+                                    {{ project['project_name'] }}
+                                    <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
+                                        {{ project['desc'] }}
+                                    </p>                                
+                                </div>
+                                <div>
+                                    <NavLink :href="route('projects', [clientSlug])"
+                                        v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                        class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                                        Back to Project
+                                    </NavLink>
+                                </div>
+                            </div>
                             <div class="border-b-2 border-gray-300"></div>
                         </caption>
                         <thead class="text-xs text-white uppercase bg-primary">
