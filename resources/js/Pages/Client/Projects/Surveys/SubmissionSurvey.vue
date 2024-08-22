@@ -34,7 +34,7 @@ console.log(props)
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                     <h2>{{ props.surveys.title }}</h2>
                 </div>
-                <div class="bg-gray-200 rounded-b-md">
+                <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
                         <p class="text-base text-justify line-clamp-3">
                             {{ props.surveys.desc }}
