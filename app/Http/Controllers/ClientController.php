@@ -52,7 +52,7 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
-        
+
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
@@ -103,11 +103,11 @@ class ClientController extends Controller
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
-            'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048',
+            'image' => 'sometimes|mimes:png,jpg,jpeg,gif|max:2048',
             'desc' => 'required',
         ]);
         $client = Client::findOrFail($id);
-        
+
         // Generate the slug from the client name
         $slug = Str::slug($validated['client_name']);
 
@@ -120,24 +120,21 @@ class ClientController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            unset($request->image);
             $image = $request->file('image');
 
             $filenname = date('YmdHi') . $image->getClientOriginalExtension();
             $image->move(public_path('img'), $filenname);
-            $request->image = $filenname;
-
+            Client::where('id', $id)->update(['image' => $filenname]);
         } else {
-            
+            unset($request->image);
         }
-
 
         return redirect()->route('listclient')->with('success', 'Client updated successfully.');
     }
 
     public function destroy($id)
     {
-       $client = Client::where('id', $id)->first();
+        $client = Client::where('id', $id)->first();
         //        dd($client);
         if (!$client) {
             return response()->json([
