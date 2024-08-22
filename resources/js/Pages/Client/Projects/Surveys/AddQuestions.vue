@@ -17,22 +17,53 @@ const props = defineProps({ surveys: Object, projects: Object })
 
 const form = useForm({})
 
-const questions = ref([{ id: 1, soal: '', texts: [], radios: [] }])
+// Note: Customize the functions below if needed
+const questions = ref([{ id: 1, soal: '', texts: [], radios: [], types: [] }])
 const radios = ref([])
 const texts = ref([])
 
 function addQuestion() {
-    questions.value.push({ id: questions.value.length + 1, soal: '', texts: [], radios: [] });
+    questions.value.push({ id: questions.value.length + 1, soal: '', texts: [], radios: [], types: [] });
 }
 
 function textQuestion(question) {
-    const text = { isi: '' };
-    question.texts.push(text);
+    if (question.types.length > 0 && !question.types.includes('Text')) {
+        // Clear previous type and data if it isn't Text
+        clearQuestionType(question);
+    }
+    if (!question.types.includes('Text')) {
+        const text = { isi: '' };
+        question.texts.push(text);
+        question.types.push('Text');
+    }
 }
 
 function radioQuestion(question) {
-    const radio = { pilih: '' };
-    question.radios.push(radio);
+    if (question.types.length > 0 && !question.types.includes('Radio')) {
+        // Clear previous type and data if it isn't Text
+        clearQuestionType(question);
+    }
+    if (!question.types.includes('Radio')) {
+        const radio = { pilih: '' };
+        question.radios.push(radio);
+        question.types.push('Radio'); // Track the type
+    }
+}
+
+function clearQuestionType(question) {
+    // Clear the existing type and its associated data
+    if (question.types.includes('Text')) {
+        question.texts = [];  // Clear text data
+    } else if (question.types.includes('Radio')) {
+        question.radios = [];  // Clear choice data
+    }
+
+    // Clear the type
+    question.types = [];
+}
+
+function isTypeAdded(question, type) {
+    return question.types.includes(type);
 }
 
 </script>
