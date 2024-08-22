@@ -84,9 +84,14 @@ const filteredSurveys = computed(() => {
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_surveys', [clientSlug, projectSlug])"
-                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                            v-if="$page.props.auth.user.usertype === 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
                             Add Survey
+                        </NavLink>
+                        <NavLink :href="route('projects', [clientSlug])"
+                            v-if="$page.props.auth.user.usertype !== 'superadmin'"
+                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                            Back to Project
                         </NavLink>
                     </div>
                     <div class="flex items-center px-4 py-2 text-sm w-60">
@@ -104,14 +109,7 @@ const filteredSurveys = computed(() => {
                                     {{ project['project_name'] }}
                                     <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
                                         {{ project['desc'] }}
-                                    </p>                                
-                                </div>
-                                <div>
-                                    <NavLink :href="route('projects', [clientSlug])"
-                                        v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                                        class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
-                                        Back to Project
-                                    </NavLink>
+                                    </p>
                                 </div>
                             </div>
                             <div class="border-b-2 border-gray-300"></div>
