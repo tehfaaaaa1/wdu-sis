@@ -13,16 +13,13 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 
-const props = defineProps({ surveys: Object, projects: Object })
+const props = defineProps({ surveys: Object, projects: Object, clients:Object})
+const project = props.projects[0];
+const client = props.clients[0];
 
 const questions = ref([])
 const choices = ref([])
 const texts = ref([])
-
-const form = useForm({
-    title: '',
-    desc: '',
-});
 
 let idquestion =1
 function addQuestion(){
@@ -31,6 +28,7 @@ function addQuestion(){
         soal: '',
     }
     questions.value.push(question)
+    return questions.value
 }
 let idchoice =1
 function radioQuestion(){
@@ -40,16 +38,24 @@ function radioQuestion(){
     }
     choices.value.push(choice)
 }
-let idtext = 1  
 function textQuestion(){
     const text={
-        id: idtext++,
         isi: '',
     }
     texts.value.push(text)
 }
-console.log(props)
+const p = questions.value
+const form = useForm({
+    question_text: questions.value,
+    project_slug: project['slug'],
+    client_slug: client['slug'],
+});
 
+const submit = () => {
+    form.post(route('question_store' ,[props.surveys.id ,form.client_slug, form.project_slug]));
+};
+
+console.log(form.question_text)
 </script>
 
 <template>
@@ -66,7 +72,7 @@ console.log(props)
                             {{ props.surveys.desc }}
                         </p>
                     </div>
-                    <form action="" method="post" @submit.prevent >
+                    <form action="" @submit.prevent =submit >
                         <div id="questions" v-for="question in questions" > <!-- v-for here -->
                             <div>
                                 <div class="p-5 flex items-center">
@@ -119,32 +125,15 @@ console.log(props)
                                         class="text-sm mx-4 rounded-md"/>
                                 </div>
                             </div>
-                            <!-- single choice -->
-                            <div class="" v-for="choice in choices">
-                                     <div class="p-5">
-                                         <p>{{ choice.id }}</p>
-                                         <input type="text" v-model="choice.pilih" :name="idchoice" :id="idchoice" placeholder="Insert single choice here" class="text-sm mx-4 rounded-md">
-                                     </div>
-                                 </div>
-                                 <!-- text -->
-                                    <div class="" v-for="text in texts">
-                                        <div class="">
-                                            <div class="p-5" >
-                                                <p>{{ text.id }}</p>
-                                                <textarea v-model="text.isi" name="1" id="q1" placeholder="jawaban"
-                                                class="text-sm mx-4 rounded-md"/>
-                                            </div>
-                                        </div>
-                                    </div>
                         </div>
                         <!-- End question -->
 
                         <div class="pt-2 flex justify-center">
-                            <button
+                            <a
                                 class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200"
                                  @click="addQuestion">
                                 Add Questions
-                            </button>
+                            </a>
                         </div>
                         <div class="border-b-2 border-gray-300" />
                         <div class="pt-5 flex justify-center">
