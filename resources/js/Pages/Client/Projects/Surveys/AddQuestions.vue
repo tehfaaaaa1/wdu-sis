@@ -76,14 +76,13 @@ console.log(props)
                                     <!-- Insert text here -->
                                     <input v-model="question.soal" type="text" placeholder="Insert question here"
                                         class="text-sm w-full mx-4 rounded-md">
-    
+
                                     <!-- Question types -->
                                     <Dropdown align="right" width="48">
                                         <template #trigger>
                                             <button type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                                 Question Type
-    
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                     fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                                     stroke="currentColor">
@@ -107,7 +106,18 @@ console.log(props)
                                     </Dropdown>
                                     
                                 </div>
-                                
+                                <!-- single choice -->
+                                <div class="p-5" v-for="choice in choices">
+                                    <p>1</p>
+                                    <input type="text" v-model="choice.pilih" name="1" id="q1" placeholder="Insert single choice here"
+                                        class="text-sm mx-4 rounded-md">
+                                </div>
+                                <!-- text -->
+                                <div class="p-5" v-for="text in texts">
+                                    <p>1</p>
+                                    <textarea v-model="text.isi" name="1" id="q1" placeholder="jawaban"
+                                        class="text-sm mx-4 rounded-md"/>
+                                </div>
                             </div>
                             <!-- single choice -->
                             <div class="" v-for="choice in choices">
@@ -127,6 +137,8 @@ console.log(props)
                                         </div>
                                     </div>
                         </div>
+                        <!-- End question -->
+
                         <div class="pt-2 flex justify-center">
                             <button
                                 class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200"

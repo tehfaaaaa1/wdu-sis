@@ -43,7 +43,7 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.client_name" />
                     </div>
                     <div class="mt-4 relative">
-                        <InputLabel for="alamat" />
+                        <InputLabel for="alamat" value="Alamat"/>
                         <TextInput id="alamat" v-model="form.alamat" type="text" placeholder="Alamat" class="" required
                             autofocus autocomplete="alamat" />
                         <InputError class="mt-2" :message="form.errors.alamat" />
@@ -57,6 +57,9 @@ const submit = () => {
                     <div class="mt-4 relative">
                         <label class="block mb-2 text-base font-medium text-primary" for="file_input">Upload
                             photo</label>
+                        <!-- Below input throws validation required for all text inputs above.  -->
+                        <!-- <input @input="form.image = $event.target.files[0]" -->
+                        <!-- Turns all the inputs to null. Why -->
                         <input @input="form.image = $event.target.files[1]"
                             class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" id="file_input"
