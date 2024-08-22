@@ -12,6 +12,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
+// import { route } from 'vendor/tightenco/ziggy/src/js';
+
 
 const props = defineProps({ surveys: Object, projects: Object, clients:Object})
 const project = props.projects[0];
@@ -35,18 +37,15 @@ function radioQuestion(question) {
     question.radios.push(radio);
 }
 
-
 const form = useForm({
-    question_text: questions.value,
     project_slug: project['slug'],
     client_slug: client['slug'],
 });
 
 const submit = () => {
-    form.post(route('question_store' ,[props.surveys.id ,form.client_slug, form.project_slug]));
+    form.transform(()=>({data:questions.value})).post(route('question_store' ,[ props.surveys.id ,form.client_slug, form.project_slug]));
 };
-
-console.log(form.question_text)
+console.log(questions.value)
 </script>
 
 <template>
@@ -73,10 +72,6 @@ console.log(form.question_text)
                                     <!-- Insert text here -->
                                     <input v-model="question.soal" type="text" placeholder="Insert question here"
                                         class="text-sm w-full mx-4 rounded-md">
-
-                                <!-- Insert text here -->
-                                <input v-model="question.soal" type="text" placeholder="Insert question here"
-                                    class="text-sm w-full mx-4 rounded-md">
 
                                 <!-- Question types -->
                                 <Dropdown align="right" width="48">
