@@ -21,8 +21,6 @@ const form = useForm({
 const submit = () => {
     form.put(route('update_projects', props.projects.id));
 };
-
-console.log(props.projects.desc)  
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 # To Be Added
 - **Questions & Answers in Surveys**
-- FormSection.vue might be useful in Forms
+- Add Icons to buttons
 - change to indonesian language
 - More Dashboard Content
 - better UI/UX
@@ -14,6 +14,9 @@
 
 
 # Changelog
+## 22 Aug 2024
+- Add questions in surveys
+
 ## 21 Aug 2024
 - Setup for questions in surveys (migration)
 - UI Changes

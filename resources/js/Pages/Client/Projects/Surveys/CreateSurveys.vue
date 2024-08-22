@@ -23,7 +23,6 @@ const form = useForm({
 const submit = () => {
     form.post(route('create_survey', [form.client_slug, form.project_slug]));
 };
-// console.log(form.client_slug)
 </script>
 
 <template>
