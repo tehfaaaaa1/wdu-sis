@@ -44,8 +44,6 @@ const filteredClients = computed(() => {
         );
     });
 });
-
-console.log(filteredClients)
 </script>
 
 <template>

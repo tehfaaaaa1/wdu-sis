@@ -21,9 +21,6 @@ const form = useForm({
 const submit = () => {
     // form.put(route('update_survey', props.surveys.id));
 };
-
-console.log(props)
-
 </script>
 
 <template>
