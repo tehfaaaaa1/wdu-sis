@@ -1,5 +1,8 @@
 # To Be Added
-- **Questions & Answers in Surveys**
+**Questions & Answers in Surveys**
+- Finish AddQuestion.vue
+
+**Misc**
 - Add Icons to buttons
 - change to indonesian language
 - More Dashboard Content
@@ -15,7 +18,7 @@
 
 # Changelog
 ## 22 Aug 2024
-- Add questions in surveys
+- Add questions in surveys (WIP)
 
 ## 21 Aug 2024
 - Setup for questions in surveys (migration)
