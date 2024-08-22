@@ -14,8 +14,8 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 
 const props = defineProps({ surveys: Object, projects: Object })
-const choices = ref([])
 
+const choices = ref([])
 const texts = ref([])
 
 const form = useForm({
@@ -25,18 +25,18 @@ const form = useForm({
 const submit = () => {
     // form.put(route('update_survey', props.surveys.id));
 };
-let idchoice =1
-
-function radioQuestion(){
-    const choice={
+let idchoice = 1
+function radioQuestion() {
+    const choice = {
         id: idchoice++,
         pilih: '',
     }
     choices.value.push(choice)
 }
+
 let idtext = 1
-function textQuestion(){
-    const text={
+function textQuestion() {
+    const text = {
         id: idtext++,
         isi: '',
     }
@@ -86,7 +86,7 @@ console.log(props)
                                                 </svg>
                                             </button>
                                         </template>
-    
+
                                         <template #content>
                                             <div @click="textQuestion" class="block px-4 py-2 text-sm cursor-pointer">
                                                 Text
@@ -99,19 +99,21 @@ console.log(props)
                                             </div>
                                         </template>
                                     </Dropdown>
-                                    
+
                                 </div>
                                 <!-- single choice -->
                                 <div class="p-5" v-for="choice in choices">
-                                    <p>1</p>
-                                    <input type="text" v-model="choice.pilih" name="1" id="q1" placeholder="Insert single choice here"
-                                        class="text-sm mx-4 rounded-md">
+                                    <input type="text" v-model="choice.pilih1" :name="idchoice" id="q1"
+                                        placeholder="Insert single choice here" class="text-sm mx-4 mb-2 rounded-md block w-1/4">
+                                    <input type="text" v-model="choice.pilih2" :name="idchoice" id="q2"
+                                        placeholder="Insert single choice here" class="text-sm mx-4 mb-2 rounded-md block w-1/4">
+                                    <input type="text" v-model="choice.pilih3" :name="idchoice" id="q3"
+                                        placeholder="Insert single choice here" class="text-sm mx-4 mb-2 rounded-md block w-1/4">
                                 </div>
                                 <!-- text -->
                                 <div class="p-5" v-for="text in texts">
-                                    <p>1</p>
-                                    <textarea v-model="text.isi" name="1" id="q1" placeholder="jawaban"
-                                        class="text-sm mx-4 rounded-md"/>
+                                    <textarea v-model="text.isi" :name="'text-' + idtext" :id="'text-' + idtext"
+                                        placeholder="Jawaban" class="w-full text-sm rounded-md bg-gray-200" disabled />
                                 </div>
                             </div>
                         </div>
