@@ -13,9 +13,9 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 
-const props = defineProps({ surveys: Object, projects: Object })
-
-const form = useForm({})
+const props = defineProps({ surveys: Object, projects: Object, clients:Object})
+const project = props.projects[0];
+const client = props.clients[0];
 
 // Note: Customize the functions below if needed
 const questions = ref([{ id: 1, soal: '', texts: [], radios: [], types: [] }])
@@ -66,6 +66,18 @@ function isTypeAdded(question, type) {
     return question.types.includes(type);
 }
 
+
+const form = useForm({
+    question_text: questions.value,
+    project_slug: project['slug'],
+    client_slug: client['slug'],
+});
+
+const submit = () => {
+    form.post(route('question_store' ,[props.surveys.id ,form.client_slug, form.project_slug]));
+};
+
+console.log(form.question_text)
 </script>
 
 <template>
@@ -82,12 +94,16 @@ function isTypeAdded(question, type) {
                             {{ props.surveys.desc }}
                         </p>
                     </div>
-                    <form action="" method="post" @submit.prevent>
-                        <div v-for="question in questions" :id="'question-' + question.id" class="mb-4">
-                            <!-- v-for here -->
-                            <div class="p-5 flex items-center">
-                                <!-- Order of question -->
-                                <p>{{ question.id }}</p>
+                    <form action="" @submit.prevent =submit >
+                        <div id="questions" v-for="question in questions" > <!-- v-for here -->
+                            <div>
+                                <div class="p-5 flex items-center">
+                                    <!-- Order of question -->
+                                    <p>{{ question.id }}</p>
+    
+                                    <!-- Insert text here -->
+                                    <input v-model="question.soal" type="text" placeholder="Insert question here"
+                                        class="text-sm w-full mx-4 rounded-md">
 
                                 <!-- Insert text here -->
                                 <input v-model="question.soal" type="text" placeholder="Insert question here"
@@ -138,15 +154,16 @@ function isTypeAdded(question, type) {
                                         class="text-sm mx-4 rounded-md block w-1/4">
                                 </div>
                             </div>
+                            </div>
                         </div>
                         <!-- End question -->
 
                         <div class="pt-2 flex justify-center">
-                            <button
+                            <a
                                 class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200"
                                 @click="addQuestion">
                                 Add Questions
-                            </button>
+                            </a>
                         </div>
                         <div class="border-b-2 border-gray-300" />
                         <div class="pt-5 flex justify-center">
