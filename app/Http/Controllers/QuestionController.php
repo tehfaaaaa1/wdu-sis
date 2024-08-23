@@ -32,8 +32,6 @@ class QuestionController extends Controller
 
     public function store(Request $request, $clientSlug, $projectSlug)
     {
-        $clientSlug = $request->client_slug;
-        $projectSlug = $request->project_slug;
 
         return $request->all();
 

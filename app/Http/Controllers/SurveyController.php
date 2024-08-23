@@ -64,8 +64,8 @@ class SurveyController extends Controller
     public function store(Request $request, $clientSlug, $projectSlug)
     {
         $id = $request->project_id;
-        $clientSlug = $request->client_slug;
-        $projectSlug = $request->project_slug;
+            // $clientSlug = $request->client_slug;
+            // $projectSlug = $request->project_slug;
 
 
         $request->validate([
