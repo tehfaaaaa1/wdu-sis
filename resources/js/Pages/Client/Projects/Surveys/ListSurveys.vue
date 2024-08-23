@@ -49,7 +49,7 @@ const hapus = (id) => {
 }
 
 const confirmDeletion = () => {
-    form.get(route('delete_surveys', [projectSlug, selectedSurveyId.value]), {
+    form.get(route('delete_surveys', [clientSlug, projectSlug, selectedSurveyId.value]), {
         onFinish: () => {
             showDeleteModal.value = false;
         }
@@ -76,7 +76,7 @@ const filteredSurveys = computed(() => {
     <AppLayout title="List Survey">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Survey Project {{ project.project_name }}
+                <b class="text-ijo-terang">Project</b> {{ project.project_name }}
             </h2>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">

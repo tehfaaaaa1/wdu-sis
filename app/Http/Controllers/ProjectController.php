@@ -104,21 +104,25 @@ class ProjectController extends Controller
         return redirect()->route('projects', $slug)->with('success', 'Project created successfully.');
     }
 
-    public function edit($id)
+    public function edit($slug, $id)
     {
         $project = Project::findOrFail($id);
-        return Inertia::render('Projects/EditProjects', [
+        $client = DB::table('clients')
+            ->where('slug', $slug)
+            ->get();
+        return Inertia::render('Client/Projects/EditProjects', [
             'projects' => [
                 'id' => $project->id,
                 'project_name' => $project->project_name,
                 'desc' => $project->desc,
                 'slug' => $project->slug,
                 'updated_at' => $project->update_at,
-            ]
+            ],
+            'clients' => $client,
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $clientSlug, $id)
     {
         $project = Project::findOrFail($id);
         $validated = $request->validate([
@@ -146,13 +150,13 @@ class ProjectController extends Controller
             'updated_at' => now(),
         ]);
         //  dd($request->file('image'));
-        return redirect()->route('projects')->with('success', 'Project updated successfully.');
+        return redirect()->route('projects', $clientSlug)->with('success', 'Project updated successfully.');
     }
 
     public function destroy($slug, $id)
     {
         $project = Project::where('id', $id)->first();
-        //        dd($project);
+        // dd($project);
         if (!$project) {
             return response()->json([
                 'status' => '500',
@@ -160,8 +164,8 @@ class ProjectController extends Controller
             ]);
         }
         Storage::disk('public')->delete(public_path('img') . $project['image']);
-        project::where('id', $id)->delete();
+        $project->delete();
 
-        return redirect()->route('listproject', $slug)->with('success', 'Project deleted successfully.');
+        return redirect()->route('projects', $slug)->with('success', 'Project deleted successfully.');
     }
 }

@@ -43,19 +43,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::put('{id}/update-client/', [ClientController::class, 'update'])->name('update_client');
     
         Route::get('/{id}/delete',[ClientController::class, 'destroy'])->name('delete_client');
+        
         // Projects
-
         Route::prefix('{Client:slug}/projects')->group(function () {
-
 
             Route::get('/list-projects', [ProjectController::class, 'index'])->name('projects');
     
             Route::get('/create-project', [ProjectController::class, 'create'])->name('create_projects')->middleware(['ableSurvey']);
     
-            Route::get('/{id}/edit-project', [ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
-    
             Route::post('/create-project', [ProjectController::class, 'store'])->name('create_project')->middleware(['ableSurvey']);
-    
+            
+            Route::get('/{id}/edit-project', [ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
+            
             Route::put('update-project/{id}', [ProjectController::class, 'update'])->name('update_projects')->middleware(['ableSurvey']);
     
             Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_project')->middleware(['ableSurvey']);
