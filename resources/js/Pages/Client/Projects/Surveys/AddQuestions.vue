@@ -23,6 +23,7 @@ const client = props.clients[0];
 const questions = ref([{ id: 1, soal: [], texts: [], radios: [], types: [] }])
 const radios = ref([])
 const texts = ref([])
+const MAX_RADIO_CHOICES = 5;
 
 function addQuestion() {
     questions.value.push({ id: questions.value.length + 1, soal: [], texts: [], radios: [], types: [] });
@@ -49,7 +50,30 @@ function radioQuestion(question) {
         const radio = { pilih: '' };
         question.radios.push(radio);
         question.types.push('Radio'); // Track the type
+
+        question.lastRadioIndex = question.radios.length - 1; // update radio index
     }
+}
+function AddRadioQuestion(question) {
+    if (question.lastRadioIndex < MAX_RADIO_CHOICES) {
+        const radio = { pilih: '' };
+        question.radios.push(radio);
+        question.types.push('Radio'); // Track the type
+
+        question.lastRadioIndex = question.radios.length - 1;
+    }
+    else {
+        alert('Max Option Limit Reached!')
+    }
+}
+
+function deleteRadio(question) {
+    const radio = { pilih: '' };
+    question.radios.delete(radio);
+    question.types.delete('Radio'); // Track the type
+
+    question.radios.length = - 1;
+    question.lastRadioIndex = question.radio.length;
 }
 
 function clearQuestionType(question) {
@@ -76,7 +100,6 @@ const form = useForm({
 const submit = () => {
     form.transform(()=>({data:questions.value, survey:props.surveys.id,project_slug: project['slug'],client_slug: client['slug'],})).post(route('question_store' ,[ props.surveys.id ,form.client_slug, form.project_slug]));
 };
-console.log(questions.value)
 </script>
 
 <template>
@@ -148,6 +171,20 @@ console.log(questions.value)
                                         <input type="text" v-model="radio.pilih" :name="'radio-' + question.id"
                                             :id="'radio-' + question.id" placeholder="Insert single choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" @click="deleteRadio"
+                                            class="size-6 text-red-600 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="ml-6"
+                                        v-if="index === question.lastRadioIndex && question.radios.length < MAX_RADIO_CHOICES">
+                                        <a class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddRadioQuestion(question)">
+                                            Add Questions
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -155,7 +192,7 @@ console.log(questions.value)
                         <!-- End question -->
 
                         <div class="pt-2 flex justify-center">
-                            <a class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200"
+                            <a class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
                                 @click="addQuestion">
                                 Add Questions
                             </a>
