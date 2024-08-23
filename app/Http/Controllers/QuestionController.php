@@ -41,40 +41,50 @@ class QuestionController extends Controller
         $idSurvey = $request['survey'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
+        $newQuestion = new Question;
+        
         foreach ($allData as $data){
             $soal = $data['soal'];
             $type = $data['types'];
             $question_type = null;
             $req = false;
             $tipe = null;
+            
             foreach($type as $Typee){
                 if($Typee === "Text"){
                     $question_type = 1;
                     $req = true;
+                    $tipe = null;
                 } elseif($Typee === 'Radio'){
                     $question_type = 2;
                     $tipe = $data['radios'];
                 }
-            }
+            }       
+            
         // dd($question_type);
-            Question::create([
-                'question_text' => $soal,
-                'survey_id' => $idSurvey,
-                'question_type_id' => $question_type,
-                'order' => random_int(1, 10000),
-                'required' => $req 
-            ]);
-
-            if($tipe !== [] || $tipe !== null || $tipe !== ''){
+            if( $tipe !== null){
+                $newQuestion->question_text = $soal;
+                $newQuestion->survey_id = $idSurvey;
+                $newQuestion->question_type_id = $question_type;
+                $newQuestion->order = random_int(1, 10000);
+                $newQuestion->required = $req;
+                $newQuestion->save();
                 foreach($tipe as $choice){
                     $value = $choice['pilih'];
 
                     QuestionChoice::Create([
                         'value' => $value, 
-                        'question_id' => $data['id'], 
+                        'question_id' => $newQuestion->id, 
                         'order' => random_int(1, 10000),
                     ]);
                 }
+            } else {
+                $newQuestion->question_text = $soal;
+                $newQuestion->survey_id = $idSurvey;
+                $newQuestion->question_type_id = $question_type;
+                $newQuestion->order = random_int(1, 10000);
+                $newQuestion->required = $req;
+                $newQuestion->save();
             }
 
         }   
