@@ -20,13 +20,13 @@ const project = props.projects[0];
 const client = props.clients[0];
 
 // Note: Customize the functions below if needed
-const questions = ref([{ id: 1, soal: '', texts: [], radios: [], lastRadioIndex: -1, types: [], }])
+const questions = ref([{ id: 1, soal: [], texts: [], radios: [], types: [] }])
 const radios = ref([])
 const texts = ref([])
 const MAX_RADIO_CHOICES = 5;
 
 function addQuestion() {
-    questions.value.push({ id: questions.value.length + 1, soal: '', texts: [], radios: [], lastRadioIndex: -1, types: [] });
+    questions.value.push({ id: questions.value.length + 1, soal: [], texts: [], radios: [], types: [] });
 }
 
 function textQuestion(question) {
@@ -98,7 +98,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.transform(() => ({ data: questions.value })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]));
+    form.transform(()=>({data:questions.value, survey:props.surveys.id,project_slug: project['slug'],client_slug: client['slug'],})).post(route('question_store' ,[ props.surveys.id ,form.client_slug, form.project_slug]));
 };
 </script>
 
