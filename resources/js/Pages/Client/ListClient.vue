@@ -71,7 +71,7 @@ const filteredClients = computed(() => {
                 </div>
 
                 <!-- May need to make this a component -->
-                <div class="container mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center content-stretch">
+                <div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center content-stretch">
                     <div v-for="client in filteredClients" :key="client.id"
                         class="grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0">
                         <div class="">

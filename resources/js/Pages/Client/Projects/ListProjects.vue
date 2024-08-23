@@ -27,7 +27,7 @@ const hapus = (id) => {
 const client = props.clients[0];
 const clientSlug = client.slug;
 
-const hapus = (id) => {
+const hapus = (slug, id) => {
     selectedProjectId.value = id;
     showDeleteModal.value = true;
 };
@@ -58,7 +58,7 @@ const filteredProjects = computed(() => {
     <AppLayout title="List Project">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Client {{ client['client_name'] }}
+                <b class="text-ijo-terang">Client</b> {{ client['client_name'] }}
             </h2>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
@@ -119,7 +119,7 @@ const filteredProjects = computed(() => {
                                             :href="route('edit_projects', [clientSlug, project.id])">Edit</a>
 
                                         <a class="font-medium text-red-600 hover:underline cursor-pointer"
-                                            @click="hapus([clientSlug, project.id])">Hapus
+                                            @click="hapus(clientSlug, project.id)">Hapus
                                         </a>
                                     </div>
                                 </td>

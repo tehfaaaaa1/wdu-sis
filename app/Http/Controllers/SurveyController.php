@@ -88,7 +88,6 @@ class SurveyController extends Controller
     public function edit(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
-
         $project = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
@@ -169,15 +168,18 @@ class SurveyController extends Controller
         );
     }
 
-    public function destroy($slug, $id)
+    public function destroy($clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
-        // $project = DB::table('projects')
-        //     ->where('slug', $slug)
-        //     ->get();
+        $project = DB::table('projects')
+            ->where('slug', $projectSlug)
+            ->get();
+        $client = DB::table('clients')
+            ->where('slug', $clientSlug)
+            ->get();
 
         $survey->delete();
 
-        return redirect()->route('listsurvey', $slug)->with('success', 'Survey deleted successfully.');
+        return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Survey deleted successfully.');
     }
 }
