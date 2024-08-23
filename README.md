@@ -26,6 +26,7 @@
 ### 20 Aug 2024
 - Added client page to store all projects for a specific client (e.g. KPK, BKPM)
 - White navbar for more modern look
+- Removed images from projects
 
 ### 19 Aug 2024
 - Changed survey list UI
