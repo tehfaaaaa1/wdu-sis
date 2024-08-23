@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Question;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class Survey extends Model
 {
     use HasFactory;
@@ -19,5 +20,9 @@ class Survey extends Model
 
     public function project(): BelongsTo {
         return $this->BelongsTo(Project::class, 'project_id');
+    }
+
+    public function Question():  Hasmany{
+        return $this->hasMany(Question::class);
     }
 }
