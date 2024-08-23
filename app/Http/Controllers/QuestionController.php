@@ -41,7 +41,6 @@ class QuestionController extends Controller
         $idSurvey = $request['survey'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
-        $newQuestion = new Question;
         
         foreach ($allData as $data){
             $soal = $data['soal'];
@@ -60,15 +59,14 @@ class QuestionController extends Controller
                     $tipe = $data['radios'];
                 }
             }       
-            
-        // dd($question_type);
-            if( $tipe !== null){
-                $newQuestion->question_text = $soal;
-                $newQuestion->survey_id = $idSurvey;
-                $newQuestion->question_type_id = $question_type;
-                $newQuestion->order = random_int(1, 10000);
-                $newQuestion->required = $req;
-                $newQuestion->save();
+            $newQuestion = new Question;
+            $newQuestion->question_text = $soal;
+            $newQuestion->survey_id = $idSurvey;
+            $newQuestion->question_type_id = $question_type;
+            $newQuestion->order = random_int(1, 10000);
+            $newQuestion->required = $req;
+            $newQuestion->save();
+            if($tipe !== null ){
                 foreach($tipe as $choice){
                     $value = $choice['pilih'];
 
@@ -79,12 +77,7 @@ class QuestionController extends Controller
                     ]);
                 }
             } else {
-                $newQuestion->question_text = $soal;
-                $newQuestion->survey_id = $idSurvey;
-                $newQuestion->question_type_id = $question_type;
-                $newQuestion->order = random_int(1, 10000);
-                $newQuestion->required = $req;
-                $newQuestion->save();
+
             }
 
         }   
