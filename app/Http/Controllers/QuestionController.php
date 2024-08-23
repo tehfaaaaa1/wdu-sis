@@ -14,7 +14,8 @@ class QuestionController extends Controller
     public function question(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
-
+        $question = DB::table('questions')->where('survey_id', $id)->get();
+        
         $project = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
@@ -28,6 +29,7 @@ class QuestionController extends Controller
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
+                'listquestions' => $question,
             ]
         );
     }

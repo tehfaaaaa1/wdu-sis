@@ -15,7 +15,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 // import { route } from 'vendor/tightenco/ziggy/src/js';
 
 
-const props = defineProps({ surveys: Object, projects: Object, clients: Object })
+const props = defineProps({ surveys: Object, projects: Object, clients: Object  })
 const project = props.projects[0];
 const client = props.clients[0];
 
@@ -100,6 +100,8 @@ const form = useForm({
 const submit = () => {
     form.transform(()=>({data:questions.value, survey:props.surveys.id,project_slug: project['slug'],client_slug: client['slug'],})).post(route('question_store' ,[ props.surveys.id ,form.client_slug, form.project_slug]));
 };
+
+
 </script>
 
 <template>
