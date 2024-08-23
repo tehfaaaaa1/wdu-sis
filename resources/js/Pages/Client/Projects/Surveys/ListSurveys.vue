@@ -43,7 +43,7 @@ const clientSlug = client.slug;
 
 const project = props.projects[0];
 const projectSlug = project.slug;
-const hapus = (id) => {
+const hapus = (cliSlug, proSlug, id) => {
     selectedSurveyId.value = id;
     showDeleteModal.value = true;
 }
@@ -155,7 +155,7 @@ const filteredSurveys = computed(() => {
                                         class="mt-5 text-center col-span-2">
                                         <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
                                             class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                        <a @click.prevent="hapus([clientSlug, projectSlug, survey.id])"
+                                        <a @click.prevent="hapus(clientSlug, projectSlug, survey.id)"
                                             class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                                     </div>
                                 </td>
