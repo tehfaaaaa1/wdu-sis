@@ -75,6 +75,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
                 
                 Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
+                Route::get('/{id}/report',[SurveyController::class, 'report'])->name('report_surveys');
                 Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');
                 
                 Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
@@ -82,7 +83,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::resource('surveys', SurveyController::class);
                 // question
                 Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys');
-
+                
                 Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store');
                 
             });

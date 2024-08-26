@@ -9,8 +9,7 @@ const props = defineProps({
     projects: Object,
     clients: Object,
     listquestion: Array,
-    choice: Array,
-    totalrespon: Object
+    choice: Array
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -21,7 +20,7 @@ const answers = ref([]);
 // Initialize the form using useForm
 const form = useForm({
     answer: [],
-    question: props.listquestion,
+    
     project_slug: project['slug'],
     client_slug: client['slug'],
 });
@@ -37,7 +36,8 @@ onMounted(() => {
 const submit = () => {
     form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]));
 };
-console.log(props.totalrespon)
+
+console.log(form.answer)
 </script>
 
 <template>
@@ -46,13 +46,14 @@ console.log(props.totalrespon)
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                     <h2>{{ props.surveys.title }}</h2>
-                        <div class="">
-                            {{ props.totalrespon }}
-                        </div>
                 </div>
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
                         <p class="text-base text-justify line-clamp-3">{{ props.surveys.desc }}</p>
+                        <div class="p-5 mt-2 border-2 border-gray-400">
+                            <h2 class="font-semibold text-lg">Summary</h2>
+                            <p class="font-medium">XX Responses</p>
+                        </div>
                     </div>
                     <div class="p-5 flex w-full">
                         <form @submit.prevent="submit">
