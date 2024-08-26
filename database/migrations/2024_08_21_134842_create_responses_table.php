@@ -11,15 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('surveys', function (Blueprint $table) {
+        Schema::create('responses', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('desc');
-            $table->foreignId('project_id')->constrained(
-                table: 'projects',
-                indexName: 'surveys_project_id',
+            $table->foreignId('user_id')->constrained(
+                table: 'users',
+                indexName: 'responses_user_id',
             )->onDelete('cascade');
-            $table->integer('total_response')->nullable();
+            $table->foreignId('survey_id')->constrained(
+                table: 'surveys',
+                indexName: 'responses_survey_id',
+            )->onDelete('cascade');
+            $table->boolean('status');
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('surveys');
+        Schema::dropIfExists('responses');
     }
 };

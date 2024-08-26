@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\QuestionController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -42,20 +44,19 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::put('{id}/update-client/', [ClientController::class, 'update'])->name('update_client');
     
         Route::get('/{id}/delete',[ClientController::class, 'destroy'])->name('delete_client');
+        
         // Projects
-
         Route::prefix('{Client:slug}/projects')->group(function () {
-
 
             Route::get('/list-projects', [ProjectController::class, 'index'])->name('projects');
     
             Route::get('/create-project', [ProjectController::class, 'create'])->name('create_projects')->middleware(['ableSurvey']);
     
-            Route::get('/{id}/edit-project', [ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
-    
             Route::post('/create-project', [ProjectController::class, 'store'])->name('create_project')->middleware(['ableSurvey']);
-    
-            Route::put('{id}/update-project/', [ProjectController::class, 'update'])->name('update_projects')->middleware(['ableSurvey']);
+            
+            Route::get('/{id}/edit-project', [ProjectController::class, 'edit'])->name('edit_projects')->middleware(['ableSurvey']);
+            
+            Route::put('update-project/{id}', [ProjectController::class, 'update'])->name('update_projects')->middleware(['ableSurvey']);
     
             Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_project')->middleware(['ableSurvey']);
             
@@ -72,12 +73,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::get('{id}/edit', [SurveyController::class, 'edit'])->name('edit_surveys')->middleware(['ableSurvey']);
     
                 Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
-    
+                
                 Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
+                Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');
                 
                 Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
                 
                 Route::resource('surveys', SurveyController::class);
+                // question
+                Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys');
+
+                Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store');
+                
             });
        });
     });

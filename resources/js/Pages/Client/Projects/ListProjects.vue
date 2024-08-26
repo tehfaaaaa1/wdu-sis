@@ -27,7 +27,7 @@ const hapus = (id) => {
 const client = props.clients[0];
 const clientSlug = client.slug;
 
-const hapus = (id) => {
+const hapus = (slug, id) => {
     selectedProjectId.value = id;
     showDeleteModal.value = true;
 };
@@ -43,8 +43,6 @@ const confirmDeletion = () => {
 const cancelDeletion = () => {
     showDeleteModal.value = false;
 }
-
-
 const filteredProjects = computed(() => {
     return props.projects.filter(projects => {
         return (
@@ -60,7 +58,7 @@ const filteredProjects = computed(() => {
     <AppLayout title="List Project">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Client {{ client['client_name'] }}
+                <b class="text-ijo-terang">Client</b> {{ client['client_name'] }}
             </h2>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
@@ -93,9 +91,9 @@ const filteredProjects = computed(() => {
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-1/4">Project Title</th>
                                 <th scope="col" class="px-6 py-3">Description</th>
-                                <th scope="col" class="px-6 py-3 w-1/6">Responses</th>
+                                <!-- <th scope="col" class="px-6 py-3 w-1/6">Responses</th> -->
                                 <!-- <th scope="col" class="px-6 py-3">Team</th> -->
-                                <th scope="col" class="px-6 py-3 md:w-1/6 text-center">Action</th>
+                                <th scope="col" class="px-6 py-3 md:w-1/5 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -107,9 +105,9 @@ const filteredProjects = computed(() => {
                                 <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">
                                     {{ project.desc }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <!-- <td class="px-6 py-4">
                                     100
-                                </td>
+                                </td> -->
                                 <td class="px-6 py-6">
                                     <NavLink :href="route('listsurvey', [clientSlug, project.slug])"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
@@ -121,7 +119,7 @@ const filteredProjects = computed(() => {
                                             :href="route('edit_projects', [clientSlug, project.id])">Edit</a>
 
                                         <a class="font-medium text-red-600 hover:underline cursor-pointer"
-                                            @click="hapus([clientSlug, project.id])">Hapus
+                                            @click="hapus(clientSlug, project.id)">Hapus
                                         </a>
                                     </div>
                                 </td>

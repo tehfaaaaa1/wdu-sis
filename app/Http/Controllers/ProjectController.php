@@ -47,15 +47,15 @@ class ProjectController extends Controller
     public function create(Client $client, $slug)
     {
         $client = DB::table('clients')
-        ->where('slug', $slug)
-        ->get();
+            ->where('slug', $slug)
+            ->get();
 
-    return Inertia::render(
-        'Client/Projects/CreateProjects',
-        [
-            'clients' => $client,
-        ]
-    );
+        return Inertia::render(
+            'Client/Projects/CreateProjects',
+            [
+                'clients' => $client,
+            ]
+        );
     }
 
     public function adminIndex()
@@ -65,7 +65,7 @@ class ProjectController extends Controller
                 return [
                     'id' => $project->id,
                     'project_name' => $project->project_name,
-                    'image' => $project->image, 
+                    'image' => $project->image,
                     'desc' => $project->desc,
                     'slug' => $project->slug,  // Removed nullable() as it's not necessary here
                     'created_at' => $project->created_at->format('j F Y'),
@@ -82,43 +82,47 @@ class ProjectController extends Controller
         $validated = $request->validate([
             'project_name' => 'required|max:255',
             'desc' => 'required',
-            'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048'
+            // 'image' => 'mimes:png,jpg,jpeg,gif|max:2048'
         ]);
-        if($request->hasFile('image')){
-            $fileName = date('YmdHi').$request->file('image')->getClientOriginalName();
+        if ($request->hasFile('image')) {
+            $fileName = date('YmdHi') . $request->file('image')->getClientOriginalName();
 
             $request->file('image')->move(public_path('img'), $fileName);
         }
-            $project = Project::create([
-                'project_name' => $validated['project_name'],
-                'desc' => $validated['desc'],
-                'image' => $fileName,
-                'client_id' => $id,
-                'slug' => Str::slug($validated['project_name']),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-            
+        $project = Project::create([
+            'project_name' => $validated['project_name'],
+            'desc' => $validated['desc'],
+            // 'image' => $fileName,
+            'client_id' => $id,
+            'slug' => Str::slug($validated['project_name']),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
         Log::info('Project created:', $project->toArray());
 
         return redirect()->route('projects', $slug)->with('success', 'Project created successfully.');
     }
 
-    public function edit($id)
+    public function edit($slug, $id)
     {
         $project = Project::findOrFail($id);
-        return Inertia::render('Projects/EditProjects', [
+        $client = DB::table('clients')
+            ->where('slug', $slug)
+            ->get();
+        return Inertia::render('Client/Projects/EditProjects', [
             'projects' => [
                 'id' => $project->id,
                 'project_name' => $project->project_name,
                 'desc' => $project->desc,
                 'slug' => $project->slug,
                 'updated_at' => $project->update_at,
-            ]
+            ],
+            'clients' => $client,
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $clientSlug, $id)
     {
         $project = Project::findOrFail($id);
         $validated = $request->validate([
@@ -128,14 +132,14 @@ class ProjectController extends Controller
         // Generate the slug from the project name
         $slug = Str::slug($validated['project_name']);
 
-        if($image = $request->file('image')){
-            $filenname = date('YmdHi').$image->getClientOriginalName();
+        if ($image = $request->file('image')) {
+            $filenname = date('YmdHi') . $image->getClientOriginalName();
             $image->move(public_path('img'), $filenname);
 
             Project::where('id', $project['id'])->update([
                 'image' => $filenname,
             ]);
-        }else{
+        } else {
             unset($validated['image']);
         }
 
@@ -145,23 +149,23 @@ class ProjectController extends Controller
             'slug' => $slug,
             'updated_at' => now(),
         ]);
-    //  dd($request->file('image'));
-        return redirect()->route('projects')->with('success', 'Project updated successfully.');
+        //  dd($request->file('image'));
+        return redirect()->route('projects', $clientSlug)->with('success', 'Project updated successfully.');
     }
 
     public function destroy($slug, $id)
     {
-        $project = Project::where('id',$id)->first();
-        //        dd($project);
-                if(!$project){
-                    return response()->json([
-                        'status' => '500',
-                        'error' => 'project not found'
-                    ]);
-                }
-                Storage::disk('public')->delete(public_path('img'). $project['image']);
-                project::where('id', $id)->delete();
+        $project = Project::where('id', $id)->first();
+        // dd($project);
+        if (!$project) {
+            return response()->json([
+                'status' => '500',
+                'error' => 'project not found'
+            ]);
+        }
+        Storage::disk('public')->delete(public_path('img') . $project['image']);
+        $project->delete();
 
-                return redirect()->route('listproject', $slug)->with('success', 'Project deleted successfully.');
+        return redirect()->route('projects', $slug)->with('success', 'Project deleted successfully.');
     }
 }

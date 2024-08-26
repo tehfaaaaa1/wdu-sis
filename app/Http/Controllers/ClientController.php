@@ -22,7 +22,7 @@ class ClientController extends Controller
                     'desc' => $client->desc,
                     'slug' => $client->slug,
                     'created_at' => $client->created_at->diffForHumans(),
-                    'updated_at' => $client->updated_at->format('j F Y H:i:s'),
+                    'updated_at' => $client->updated_at->format('j F Y'),
                 ];
             })
         ]);
@@ -52,6 +52,7 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
@@ -97,33 +98,36 @@ class ClientController extends Controller
 
     public function update(Request $request, $id)
     {
-        $client = Client::findOrFail($id);
+        // dd($request);
+
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
+            'image' => 'sometimes|mimes:png,jpg,jpeg,gif|max:2048',
             'desc' => 'required',
         ]);
+        $client = Client::findOrFail($id);
+
         // Generate the slug from the client name
         $slug = Str::slug($validated['client_name']);
 
-        if ($image = $request->file('image')) {
-            $filenname = date('YmdHi') . $image->getClientOriginalName();
-            $image->move(public_path('img'), $filenname);
-
-            Client::where('id', $client['id'])->update([
-                'image' => $filenname,
-            ]);
-        } else {
-            unset($validated['image']);
-        }
-
-        Client::where('id', $client['id'])->update([
+        Client::where('id', $id)->update([
             'client_name' => $validated['client_name'],
             'desc' => $validated['desc'],
             'alamat' => $validated['alamat'],
             'slug' => $slug,
             'updated_at' => now(),
         ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+
+            $filenname = date('YmdHi') . $image->getClientOriginalExtension();
+            $image->move(public_path('img'), $filenname);
+            Client::where('id', $id)->update(['image' => $filenname]);
+        } else {
+            unset($request->image);
+        }
 
         return redirect()->route('listclient')->with('success', 'Client updated successfully.');
     }

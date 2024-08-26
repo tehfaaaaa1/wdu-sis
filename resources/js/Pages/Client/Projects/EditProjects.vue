@@ -10,7 +10,8 @@ import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-const props = defineProps({ projects: Object })
+const props = defineProps({ projects: Object, clients: Array })
+const client = props.clients[0]
 
 const form = useForm({
     project_name: props.projects.project_name,
@@ -19,10 +20,8 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.put(route('update_projects', props.projects.id));
+    form.put(route('update_projects', [client['slug'], props.projects.id]));
 };
-
-console.log(props.projects.desc)  
 </script>
 
 <template>
@@ -35,7 +34,7 @@ console.log(props.projects.desc)
                     <AuthenticationCardLogo />
                 </template>
                 <h2 class="text-primary font-semibold text-2xl text-center mb-4">Edit Project</h2>
-                <form @submit.prevent="submit"  enctype="multipart/form-data">
+                <form @submit.prevent="submit" enctype="multipart/form-data">
                     <div class="relative">
                         <InputLabel for="project_name" />
                         <TextInput id="name" v-model="form.project_name" type="text" placeholder="Project Name" class=""
@@ -49,7 +48,7 @@ console.log(props.projects.desc)
 
                         <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
-                    <div class="mt-4 relative">
+                    <!-- <div class="mt-4 relative">
                         <label class="block mb-2 text-base font-medium text-primary" for="file_input">Upload
                             file</label>
                         <input @input="form.image = $event.target.files[0]"
@@ -61,7 +60,7 @@ console.log(props.projects.desc)
                             class="h-20 mt-2  ">
                         <p class="mt-1 text-sm text-gray-500" id="file_input_help">PNG, JPG/JPEG (max file size : 2 MB).
                         </p>
-                    </div>
+                    </div> -->
 
 
                     <div class="my-4 text-center">

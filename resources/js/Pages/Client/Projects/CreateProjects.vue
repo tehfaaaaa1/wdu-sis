@@ -47,7 +47,7 @@ const submit = () => {
                             required autocomplete="desc" />
                         <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
-                    <div class="mt-4 relative">
+                    <!-- <div class="mt-4 relative">
                         <label class="block mb-2 text-base font-medium text-primary"
                             for="file_input">Upload file</label>
                         <input @input="form.image =$event.target.files[0]"
@@ -55,7 +55,7 @@ const submit = () => {
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white"
                             id="file_input" type="file" accept=".png, .jpg, .jpeg">
                             <p class="mt-1 text-sm text-gray-500" id="file_input_help">PNG, JPG/JPEG (max file size : 2 MB).</p>
-                    </div>
+                    </div> -->
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2 " :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">

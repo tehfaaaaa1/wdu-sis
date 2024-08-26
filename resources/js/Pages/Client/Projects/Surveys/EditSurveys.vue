@@ -26,8 +26,6 @@ const form = useForm({
 const submit = () => {
     form.put(route('update_survey', [form.client_slug, form.project_slug, props.surveys.id]));
 };
-
-console.log(form.project_slug)  
 </script>
 
 <template>
