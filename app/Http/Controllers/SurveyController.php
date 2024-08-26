@@ -168,7 +168,7 @@ class SurveyController extends Controller
             ]
         );
     }
-
+    
     public function destroy($clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);

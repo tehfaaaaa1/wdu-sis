@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\QuestionController;
 use Inertia\Inertia;
@@ -74,6 +75,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
                 
                 Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
+                Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');
                 
                 Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
                 

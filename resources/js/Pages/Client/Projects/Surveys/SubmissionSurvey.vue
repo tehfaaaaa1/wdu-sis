@@ -11,6 +11,8 @@ const props = defineProps({
     listquestion: Array,
     choice: Array
 });
+const project = props.projects[0]
+const client = props.clients[0]
 
 // Initialize the answers array
 const answers = ref([]);
@@ -18,7 +20,9 @@ const answers = ref([]);
 // Initialize the form using useForm
 const form = useForm({
     answer: [],
-    desc: '',
+    
+    project_slug: project['slug'],
+    client_slug: client['slug'],
 });
 
 // On component mount, initialize the answers array based on the listquestion prop
@@ -30,9 +34,10 @@ onMounted(() => {
 
 // Submit handler for the form
 const submit = () => {
-    form.put(route('update_survey', props.surveys.id));
+    form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]));
 };
 
+console.log(form.answer)
 </script>
 
 <template>
@@ -78,7 +83,7 @@ const submit = () => {
                             </div>
 
                             <!-- Display answers for debugging -->
-                            <pre>{{ form.answer }}</pre>
+                            <!-- <pre>{{ form.answer }}</pre> -->
 
                             <!-- Submit Button -->
                             <PrimaryButton class="flex justify-center md:mb-6 text-center"
