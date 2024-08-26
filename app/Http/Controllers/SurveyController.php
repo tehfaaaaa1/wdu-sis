@@ -148,6 +148,26 @@ class SurveyController extends Controller
         );
     }
 
+    public function report(Survey $survey, $clientSlug, $projectSlug, $id)
+    {
+        $survey =  Survey::findOrFail($id);
+        $question = DB::table('questions')->where('survey_id', $id)->get();
+        $project = DB::table('projects')->where('slug', $projectSlug)->get();
+        $client = DB::table('clients')->where('slug', $clientSlug)->get();
+        $choice = QuestionChoice::all();
+        // dump($survey);
+        return Inertia::render(
+            'Client/Projects/Surveys/ReportSurvey',
+            [
+                'surveys' => $survey,
+                'projects' => $project,
+                'clients' => $client,
+                'listquestion' => $question,
+                'choice' => $choice
+            ]
+        );
+    }
+
     public function question(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);

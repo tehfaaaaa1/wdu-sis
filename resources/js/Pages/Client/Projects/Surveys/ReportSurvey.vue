@@ -50,6 +50,10 @@ console.log(form.answer)
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
                         <p class="text-base text-justify line-clamp-3">{{ props.surveys.desc }}</p>
+                        <div class="p-5 mt-2 border-2 border-gray-400">
+                            <h2 class="font-semibold text-lg">Summary</h2>
+                            <p class="font-medium">XX Responses</p>
+                        </div>
                     </div>
                     <div class="p-5 flex w-full">
                         <form @submit.prevent="submit">

@@ -136,7 +136,7 @@ const filteredSurveys = computed(() => {
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                         Isi Survey
                                     </NavLink>
-                                    <NavLink :href="route('submission_surveys', [clientSlug, projectSlug, survey.id])"
+                                    <NavLink :href="route('report_surveys', [clientSlug, projectSlug, survey.id])"
                                         v-if="$page.props.auth.user.current_team_id !== 1 || $page.props.auth.user.usertype !== 'user'"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                         Cek Respon
