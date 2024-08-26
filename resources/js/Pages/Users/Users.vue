@@ -114,7 +114,7 @@ const filteredUsers = computed(() => {
                                 {{ user.team }}
                             </td>
                             <td class="px-6 py-4">
-                                <a :href="route('edit_user', user.id)"
+                                <a :href="route('edit_user', user.id)"   
                                     class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
                                 <a @click="hapus(user.id)"
                                     class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
