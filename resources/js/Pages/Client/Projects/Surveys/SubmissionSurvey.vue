@@ -48,15 +48,17 @@ console.log(props.choice)
                                 <div class="flex">
                                     <p>{{ index+1 }}. </p>
                                     <label>{{ question.question_text}} </label>
-                                    <TextInput v-if="question.question_id === 1" class="p-5" placeholder="dsaflmlo"/>
-                                    <!-- <TextInput v-model="answer.text"/> -->
                                     <div v-if="question.question_type_id == 2 ">
                                         <div class="" v-for="(list, index) in choice" :key="index">
                                             <p v-if="question.id == list.question_id">{{ list.value }}</p>
                                         </div>
                                     </div>  
                                     <div class="" v-if="question.question_type_id == 1">
-                                        <textarea></textarea>
+                                        <div class="" v-for="answer in answers">
+                                            <textarea v-model="answer.jawaban">
+                                                
+                                            </textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
