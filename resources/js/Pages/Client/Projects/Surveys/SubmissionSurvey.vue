@@ -10,9 +10,9 @@ import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-
+import { ref } from 'vue';
 const props = defineProps({ surveys: Object, projects: Object, clients:Object, listquestion:Array, choice:Array})
-// const answer = ref([])    
+const answers = ref([{id: 1, jawaban: ''}])    
 
 const form = useForm({
     answer: '',
@@ -47,13 +47,17 @@ console.log(props.choice)
                             <div class="" v-for="(question, index) in listquestion" :key="index">
                                 <div class="flex">
                                     <p>{{ index+1 }}. </p>
-                                    <p>{{ question.question_text}} </p>
+                                    <label>{{ question.question_text}} </label>
+                                    <TextInput v-if="question.question_id === 1" class="p-5" placeholder="dsaflmlo"/>
                                     <!-- <TextInput v-model="answer.text"/> -->
-                                    <p v-if="question.question_type_id == 2">
+                                    <div v-if="question.question_type_id == 2 ">
                                         <div class="" v-for="(list, index) in choice" :key="index">
                                             <p v-if="question.id == list.question_id">{{ list.value }}</p>
                                         </div>
-                                    </p>
+                                    </div>  
+                                    <div class="" v-if="question.question_type_id == 1">
+                                        <textarea></textarea>
+                                    </div>
                                 </div>
                             </div>
                             <PrimaryButton class="flex justify-center md:mb-10"
