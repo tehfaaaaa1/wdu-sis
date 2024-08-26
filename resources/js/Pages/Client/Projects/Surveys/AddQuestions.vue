@@ -15,7 +15,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 // import { route } from 'vendor/tightenco/ziggy/src/js';
 
 
-const props = defineProps({ surveys: Object, projects: Object, clients: Object  })
+const props = defineProps({ surveys: Object, projects: Object, clients: Object })
 const project = props.projects[0];
 const client = props.clients[0];
 
@@ -68,12 +68,9 @@ function AddRadioQuestion(question) {
 }
 
 function deleteRadio(question) {
-    const radio = { pilih: '' };
-    question.radios.delete(radio);
-    question.types.delete('Radio'); // Track the type
+    // question.radios = [-1];  // Clear choice data
 
-    question.radios.length = - 1;
-    question.lastRadioIndex = question.radio.length;
+    // question.lastRadioIndex = question.radios.length - 2;
 }
 
 function clearQuestionType(question) {
@@ -98,14 +95,18 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.transform(()=>({data:questions.value, survey:props.surveys.id,project_slug: project['slug'],client_slug: client['slug'],})).post(route('question_store' ,[ props.surveys.id ,form.client_slug, form.project_slug]));
+    form.transform(() => ({
+        data: questions.value,
+        survey: props.surveys.id,
+        project_slug: project['slug'],
+        client_slug: client['slug'],
+    })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]));
 };
-
 
 </script>
 
 <template>
-    <AppLayout title="Isi Survey">
+    <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen ">
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
