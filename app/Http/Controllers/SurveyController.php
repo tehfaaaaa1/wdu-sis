@@ -7,7 +7,9 @@ use Inertia\Inertia;
 use App\Models\Client;
 use App\Models\Survey;
 use App\Models\Project;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Models\QuestionChoice;
 use Illuminate\Support\Facades\DB;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use DB;
@@ -129,13 +131,10 @@ class SurveyController extends Controller
     public function submission(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
-
-        $project = DB::table('projects')
-            ->where('slug', $projectSlug)
-            ->get();
-        $client = DB::table('clients')
-            ->where('slug', $clientSlug)
-            ->get();
+        $question = DB::table('questions')->where('survey_id', $id)->get();
+        $project = DB::table('projects')->where('slug', $projectSlug)->get();
+        $client = DB::table('clients')->where('slug', $clientSlug)->get();
+        $choice = QuestionChoice::all();
         // dump($survey);
         return Inertia::render(
             'Client/Projects/Surveys/SubmissionSurvey',
@@ -143,6 +142,8 @@ class SurveyController extends Controller
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
+                'listquestion' => $question,
+                'choice' => $choice
             ]
         );
     }
