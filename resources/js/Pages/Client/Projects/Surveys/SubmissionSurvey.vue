@@ -11,8 +11,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { ref } from 'vue';
-const props = defineProps({ surveys: Object, projects: Object, clients:Object, listquestion:Array, choice:Array})
-const answers = ref([{id: 1, jawaban: ''}])    
+const props = defineProps({ surveys: Object, projects: Object, clients: Object, listquestion: Array, choice: Array })
+const answers = ref([{ id: 1, jawaban: [] }])
 
 const form = useForm({
     answer: '',
@@ -21,7 +21,7 @@ const form = useForm({
 const submit = () => {
     form.put(route('update_survey', props.surveys.id));
 };
-console.log(props.choice)
+console.log(answers)
 </script>
 
 <template>
@@ -42,33 +42,37 @@ console.log(props.choice)
                             optio alias architecto veniam iure expedita repudiandae voluptates praesentium, vero fugiat,
                             obcaecati, dignissimos dolorum eveniet provident distinctio ex magni!</h1>
                     </div>
-                        <div class="p-5 flex">
-                            <form action="" @submit.prevent="submit">
-                            <div class="" v-for="(question, index) in listquestion" :key="index">
-                                <div class="flex">
-                                    <p>{{ index+1 }}. </p>
-                                    <label>{{ question.question_text}} </label>
-                                    <div v-if="question.question_type_id == 2 ">
+                    <div class="p-5 flex w-full">
+                        <form action="" @submit.prevent="submit">
+                            <div class="" v-for="(question, index) in listquestion" :key="index" :ref="answers">
+                                <div class="block">
+                                    <p>{{ index + 1 }}.
+                                        <label>{{ question.question_text }} </label>
+                                    </p>
+
+                                    <div v-if="question.question_type_id == 2">
                                         <div class="" v-for="(list, index) in choice" :key="index">
-                                            <p v-if="question.id == list.question_id">{{ list.value }}</p>
+                                            <input type="radio" v-if="question.id == list.question_id"
+                                                :id="'option' + index + 1" :value="list.value"
+                                                :name="list.question_id" />
+                                            <label v-if="question.id == list.question_id" class="px-3"
+                                                :for="'option' + index + 1">{{ list.value }}</label>
                                         </div>
-                                    </div>  
+
+                                    </div>
                                     <div class="" v-if="question.question_type_id == 1">
-                                        <div class="" v-for="answer in answers">
-                                            <textarea v-model="answer.jawaban">
-                                                
-                                            </textarea>
-                                        </div>
+                                        <textarea title="Answer" placeholder="Jawab open-ended"
+                                            class="text-sm" />
                                     </div>
                                 </div>
                             </div>
-                            <PrimaryButton class="flex justify-center md:mb-10"
+                            <PrimaryButton class="flex justify-center md:mb-6 text-center"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                                 Submit Survey
                             </PrimaryButton>
                         </form>
                     </div>
-                </div>                
+                </div>
             </div>
         </main>
     </AppLayout>
