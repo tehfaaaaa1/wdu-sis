@@ -9,7 +9,8 @@ const props = defineProps({
     projects: Object,
     clients: Object,
     listquestion: Array,
-    choice: Array
+    choice: Array,
+    totalrespon: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -20,7 +21,7 @@ const answers = ref([]);
 // Initialize the form using useForm
 const form = useForm({
     answer: [],
-    
+    question: props.listquestion,
     project_slug: project['slug'],
     client_slug: client['slug'],
 });
@@ -36,8 +37,7 @@ onMounted(() => {
 const submit = () => {
     form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]));
 };
-
-console.log(form.answer)
+console.log(props.totalrespon)
 </script>
 
 <template>
@@ -46,6 +46,9 @@ console.log(form.answer)
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                     <h2>{{ props.surveys.title }}</h2>
+                        <div class="">
+                            {{ props.totalrespon }}
+                        </div>
                 </div>
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">

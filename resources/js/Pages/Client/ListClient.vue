@@ -44,6 +44,7 @@ const filteredClients = computed(() => {
         );
     });
 });
+
 </script>
 
 <template>
@@ -72,8 +73,7 @@ const filteredClients = computed(() => {
 
                 <!-- May need to make this a component -->
                 <div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center content-stretch">
-                    <div v-for="client in filteredClients" :key="client.id"
-                        class="grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0">
+                    <div v-for="client in filteredClients" :key="client.id" :class="client.id == $page.props.auth.user.client_id  || $page.props.auth.user.usertype === 'superadmin' ? 'grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0' : 'hidden'">
                         <div class="">
                             <img :src="'../img/' + client.image" alt=""
                                 class="h-40 w-full object-scale-down border-b-1 border-gray-400">
@@ -122,7 +122,7 @@ const filteredClients = computed(() => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>                     
                 </div>
             </div>
         </main>

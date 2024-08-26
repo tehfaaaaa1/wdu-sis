@@ -15,7 +15,7 @@ class QuestionController extends Controller
     {
         $survey =  Survey::findOrFail($id);
         $question = DB::table('questions')->where('survey_id', $id)->get();
-        
+
         $project = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
@@ -30,6 +30,7 @@ class QuestionController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'listquestions' => $question,
+
             ]
         );
     }
