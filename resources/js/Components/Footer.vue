@@ -31,7 +31,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
                     <!-- Navigation Links -->
                     <div class="space-x-1 flex">
-                        <NavLink :href class="text-white">
+                        <NavLink :href="'#'" class="text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="size-6">
                                 <path fill-rule="evenodd"
@@ -39,7 +39,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
                                     clip-rule="evenodd" />
                             </svg>
                         </NavLink>
-                        <NavLink :href class="text-white">
+                        <NavLink :href="'#'" class="text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="size-6">
                                 <path
@@ -48,7 +48,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
                                     d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
                             </svg>
                         </NavLink>
-                        <NavLink :href class="text-white">
+                        <NavLink :href="'#'" class="text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="size-6">
                                 <path fill-rule="evenodd"
