@@ -1,18 +1,10 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
-
 
 const props = defineProps({
     surveys: Array,
@@ -27,17 +19,9 @@ const submit = () => {
     form.get(route('surveys'));
 };
 
-
 const selectedSurveyId = ref(null);
 const showDeleteModal = ref(false);
 
-/*
-const hapus = (slug, id) => {
-    if (confirm('delete this survey')) {
-        form.get(route('delete_surveys', slug, id));
-    }
-};
-*/
 const client = props.clients[0];
 const clientSlug = client.slug;
 
@@ -70,6 +54,18 @@ const filteredSurveys = computed(() => {
     });
 });
 
+const isVisible = ref()
+
+function popupShow() {
+    setTimeout(() => {
+        this.isVisible = false;
+    }, 5000);
+}
+onMounted(() => {
+    this.popupShow;
+})
+
+
 </script>
 
 <template>
@@ -81,6 +77,17 @@ const filteredSurveys = computed(() => {
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <div v-if="$page.props.flash.question_added"
+                    class="fixed z-50 bottom-10 right-10 bg-ijo-terang w-1/4 h-20 flex justify-center items-center rounded-lg">
+                    <p class="text-center text-white font-medium text-lg">
+                        {{ $page.props.flash.question_added }}
+                    </p>
+                    <svg class="ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_surveys', [clientSlug, projectSlug])"

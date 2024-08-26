@@ -82,7 +82,7 @@ class QuestionController extends Controller
 
         }   
 
-        session()->flash('question_added', 'Questions added!');
-        return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Question added successfully.');
+        // session()->flash('question_added', 'Questions added!');
+        return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('question_added', 'Question added successfully.');
     }
 }
