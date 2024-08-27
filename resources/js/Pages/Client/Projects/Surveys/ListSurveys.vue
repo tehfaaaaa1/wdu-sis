@@ -54,18 +54,16 @@ const filteredSurveys = computed(() => {
     });
 });
 
-const isVisible = ref()
+// const isVisible = ref()
 
-function popupShow() {
-    setTimeout(() => {
-        this.isVisible = false;
-    }, 5000);
-}
-onMounted(() => {
-    this.popupShow();
-})
-
-
+// function popupShow() {
+//     setTimeout(() => {
+//         this.isVisible = false;
+//     }, 5000);
+// }
+// onMounted(() => {
+//     this.popupShow();
+// })
 </script>
 
 <template>
