@@ -42,6 +42,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::post('/createclient', [ClientController::class, 'store'])->name('create_client');
 
         Route::put('{id}/update-client/', [ClientController::class, 'update'])->name('update_client');
+
+        Route::get('{id}/profile-client/', [ClientController::class, 'profile'])->name('profile_client');
     
         Route::get('/{id}/delete',[ClientController::class, 'destroy'])->name('delete_client');
         
@@ -59,6 +61,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             Route::put('update-project/{id}', [ProjectController::class, 'update'])->name('update_projects')->middleware(['ableSurvey']);
     
             Route::get('/{id}/delete',[ProjectController::class, 'destroy'])->name('delete_project')->middleware(['ableSurvey']);
+
             
             // surveys
 

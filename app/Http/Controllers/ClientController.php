@@ -27,7 +27,6 @@ class ClientController extends Controller
             })
         ]);
     }
-
     public function create()
     {
         return Inertia::render('Client/CreateClient');
@@ -93,6 +92,32 @@ class ClientController extends Controller
                 'slug' => $client->slug,
                 'updated_at' => $client->update_at,
             ]
+        ]);
+    }
+
+    public function profile($id)
+    {
+        $client = Client::findOrFail($id);
+        $project = $client->project;
+
+        return Inertia::render('Client/ProfileClient', [
+            'client' => [
+                'client_name' => $client->client_name,
+                'alamat' => $client->alamat,
+                'desc' => $client->desc,
+                'image' => $client->image,
+                'date' => $client->created_at->format('j F Y'),
+            ],
+            'project' => $project->map(function ($project) {
+                return [
+                    'id' => $project->id,
+                    'project_name' => $project->project_name,
+                    'image' => $project->image,
+                    'desc' => $project->desc,
+                    'slug' => $project->slug,
+                    'created_at' => $project->created_at->format('j F Y'),
+                ];
+            }),
         ]);
     }
 
