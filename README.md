@@ -6,7 +6,6 @@
 - Logic Boolean in Surveys
 - Region & Target Number of Survey Respondents
 - Verify Respondent Region
-- 
 
 **Misc**
 - Add Icons to buttons
@@ -22,6 +21,20 @@
 - N/A
 
 ## Changelog
+### 27 Aug 2024
+- Biodata WIP (Daud)
+- List Response & Response Detail WIP (Daud)
+- Drag & Drop questions WIP (Patih)
+- Profile Client (thx mas Fadel)
+- Show Location in client page
+
+### 26 Aug 2024
+- Report Survey to check
+- User submit survey
+- View clients only for eligible client user
+- Added TeamSeeder for convenience
+- Bug Fix
+
 ### 22 Aug 2024
 - Add questions in surveys (WIP)
 
