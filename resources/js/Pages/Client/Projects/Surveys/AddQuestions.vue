@@ -25,8 +25,16 @@ const radios = ref([])
 const texts = ref([])
 const MAX_RADIO_CHOICES = 5;
 
-function addQuestion() {
-    questions.value.push({ id: questions.value.length + 1, soal: [], texts: [], radios: [], types: [] });
+function addQuestion(question_type) {
+    // questions.value.push({ id: questions.value.length + 1, soal: [], texts: [], radios: [], types: [] });
+    if (question_type === 'text') {
+        const text = { isi: '' }
+        questions.value.push({ id: questions.value.length + 1, soal: [], texts: [text], radios: [], types: ['text'] });
+    }
+    if (question_type === 'radio') {
+        questions.value.push({ id: questions.value.length + 1, soal: [], texts: [], radios: [{ pilih: '' }], types: ['radio'] });
+        alert(questions.value[1].radios)
+    }
 }
 
 function textQuestion(question) {
@@ -54,12 +62,12 @@ function radioQuestion(question) {
         question.lastRadioIndex = question.radios.length - 1; // update radio index
     }
 }
-function AddRadioQuestion(question) {
+function AddRadioOption(question) {
     if (question.lastRadioIndex < MAX_RADIO_CHOICES) {
         const radio = { pilih: '' };
         question.radios.push(radio);
         question.types.push('Radio'); // Track the type
-        
+
         question.lastRadioIndex = question.radios.length - 1;
     }
     else {
@@ -68,7 +76,7 @@ function AddRadioQuestion(question) {
 }
 
 function deleteRadio(question) {
-    if (question.lastRadioIndex  >= 1) {
+    if (question.lastRadioIndex >= 1) {
         question.radios.splice(question, 1)
         question.lastRadioIndex = question.radios.length - 1; // update radio index
     }
@@ -107,10 +115,44 @@ const submit = () => {
 </script>
 
 <template>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js'></script>
+
     <AppLayout title="Tambah Pertanyaan Survey">
 
-        <main class="min-h-screen ">
-            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+
+        <main class="min-h-screen relative">
+            <aside class="sticky bg-gray-200 w-1/6 min-h-full top-0">
+                <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add Questions
+                </h1>
+                <div class="bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-pointer"
+                    @click="addQuestion('text')">
+                    <span>Text</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6 text-gray-500">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </div>
+                <div class="bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-pointer"
+                    @click="addQuestion('radio')">
+                    <span>Single Choice</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6 text-gray-500">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </div>
+                <div
+                    class="bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-pointer">
+                    <span>Multiple Choice</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6 text-gray-500">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </div>
+            </aside>
+            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8 relative -top-40">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                     <h2>{{ props.surveys.title }}</h2>
                 </div>
@@ -186,9 +228,9 @@ const submit = () => {
                                     </div>
                                     <div class="ml-6"
                                         v-if="index === question.lastRadioIndex && question.radios.length < MAX_RADIO_CHOICES">
-                                        <a class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
-                                            @click="AddRadioQuestion(question)">
-                                            Add Questions
+                                        <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddRadioOption(question)">
+                                            Add Options
                                         </a>
                                     </div>
                                 </div>
@@ -196,12 +238,12 @@ const submit = () => {
                         </div>
                         <!-- End question -->
 
-                        <div class="pt-2 flex justify-center">
+                        <!-- <div class="pt-2 flex justify-center">
                             <a class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
                                 @click="addQuestion">
                                 Add Questions
                             </a>
-                        </div>
+                        </div> -->
                         <div class="border-b-2 border-gray-300" />
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
