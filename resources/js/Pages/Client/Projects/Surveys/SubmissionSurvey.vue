@@ -37,7 +37,6 @@ onMounted(() => {
 const submit = () => {
     form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]));
 };
-console.log(props.totalrespon)
 </script>
 
 <template>

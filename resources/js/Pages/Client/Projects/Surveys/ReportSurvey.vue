@@ -41,7 +41,7 @@ console.log(form.answer)
 </script>
 
 <template>
-    <AppLayout title="Isi Survey">
+    <AppLayout title="Hasil Survey">
         <main class="min-h-screen">
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
