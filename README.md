@@ -1,7 +1,7 @@
 ## To Be Added
 **Surveys**
 - Drag & Drop Form Builder (Elementor-like)
-- Respondent Biodata 
+- Biodata Respondent
 <!-- (Age, Address, Phone Number, Instance) -->
 - Logic Boolean in Surveys
 - Region & Target Number of Survey Respondents

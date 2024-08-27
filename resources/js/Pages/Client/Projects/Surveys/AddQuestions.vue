@@ -59,7 +59,7 @@ function AddRadioQuestion(question) {
         const radio = { pilih: '' };
         question.radios.push(radio);
         question.types.push('Radio'); // Track the type
-
+        
         question.lastRadioIndex = question.radios.length - 1;
     }
     else {
@@ -68,9 +68,10 @@ function AddRadioQuestion(question) {
 }
 
 function deleteRadio(question) {
-    // question.radios = [-1];  // Clear choice data
-
-    // question.lastRadioIndex = question.radios.length - 2;
+    if (question.lastRadioIndex  >= 1) {
+        question.radios.splice(question, 1)
+        question.lastRadioIndex = question.radios.length - 1; // update radio index
+    }
 }
 
 function clearQuestionType(question) {
@@ -172,10 +173,11 @@ const submit = () => {
                                     <div class="flex items-center mb-2">
                                         &#x2022;
                                         <input type="text" v-model="radio.pilih" :name="'radio-' + question.id"
-                                            :id="'radio-' + question.id" placeholder="Insert single choice here"
+                                            :id="'radio-' + (index + 1) + 'q' + (question.id)"
+                                            placeholder="Insert single choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" @click="deleteRadio"
+                                            stroke-width="1.5" stroke="currentColor" @click="deleteRadio(question)"
                                             class="size-6 text-red-600 cursor-pointer">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />

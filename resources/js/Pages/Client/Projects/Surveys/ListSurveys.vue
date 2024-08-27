@@ -54,8 +54,16 @@ const filteredSurveys = computed(() => {
     });
 });
 
-const isVisible = ref()
+// const isVisible = ref()
 
+// function popupShow() {
+//     setTimeout(() => {
+//         this.isVisible = false;
+//     }, 5000);
+// }
+// onMounted(() => {
+//     this.popupShow();
+// })
 </script>
 
 <template>
@@ -67,7 +75,7 @@ const isVisible = ref()
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <div v-if="$page.props.flash.question_added"    
+                <div v-if="$page.props.flash.question_added" @click="$page.props.flash.question_added = false"
                     class="fixed z-50 bottom-10 right-10 bg-ijo-terang w-1/4 h-20 flex justify-center items-center rounded-lg">
                     <p class="text-center text-white font-medium text-lg">
                         {{ $page.props.flash.question_added }}
