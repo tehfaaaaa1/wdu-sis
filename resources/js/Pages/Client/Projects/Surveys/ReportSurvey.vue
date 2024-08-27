@@ -11,7 +11,8 @@ const props = defineProps({
     listquestion: Array,
     choice: Array,
     responses:Array,
-    answer:Array
+    answer:Array,
+    user: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -31,8 +32,7 @@ console.log(hasil.value)
                     <div class="border-b-2 p-5 border-gray-500">
                         <p class="text-base text-justify line-clamp-3">{{ props.surveys.desc }}</p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
-                            <h2 class="font-semibold text-lg">Summary</h2>
-                            <p class="font-medium">XX Responses</p>
+                            <h2 class="font-semibold text-lg">{{props.user.name}}</h2>
                         </div>
                     </div>
                     <div class="p-5 flex w-full">

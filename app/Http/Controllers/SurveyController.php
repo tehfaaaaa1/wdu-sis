@@ -158,11 +158,12 @@ class SurveyController extends Controller
     {
         $survey =  Survey::findOrFail($surveyid);
         $question = Question::where('survey_id', $surveyid)->get();
-        $response = Response::where('survey_id', $surveyid )->where('id', $responseId)->get();
+        $response = Response::where('survey_id', $surveyid )->where('id', $responseId)->firstOrFail();
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $choice = QuestionChoice::all();
         $answer = Answer::where('response_id', $responseId)->get();
+        $user = $response->user;
         return Inertia::render(
             'Client/Projects/Surveys/ReportSurvey',
             [
@@ -173,6 +174,7 @@ class SurveyController extends Controller
                 'choice' => $choice,
                 'responses' => $response,
                 'answer' => $answer,
+                'user' => $user
             ]
         );
     }
