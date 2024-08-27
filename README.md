@@ -1,19 +1,25 @@
 ## To Be Added
-**Questions & Answers in Surveys**
-- Finish AddQuestion.vue
+**Surveys**
+- Drag & Drop Form Builder (Elementor-like)
+- Biodata Respondent
+<!-- (Age, Address, Phone Number, Instance) -->
+- Logic Boolean in Surveys
+- Region & Target Number of Survey Respondents
+- Verify Respondent Region
+- 
 
 **Misc**
 - Add Icons to buttons
 - change to indonesian language
-- More Dashboard Content
 - better UI/UX
+- More Dashboard Content
 - More Admin Panel Content
-- Updated Documentation (Fadel)
+<!-- - Updated Documentation (Fadel)
   - ERD Survey Database (V)
-  - Activity Diagram (V)
+  - Activity Diagram (V) -->
 
 ## Need bug fix
-- EditProject doesn't update image
+- N/A
 
 ## Changelog
 ### 22 Aug 2024

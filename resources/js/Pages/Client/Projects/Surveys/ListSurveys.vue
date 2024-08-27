@@ -54,6 +54,16 @@ const filteredSurveys = computed(() => {
     });
 });
 
+// const isVisible = ref()
+
+// function popupShow() {
+//     setTimeout(() => {
+//         this.isVisible = false;
+//     }, 5000);
+// }
+// onMounted(() => {
+//     this.popupShow();
+// })
 </script>
 
 <template>
@@ -66,7 +76,7 @@ const filteredSurveys = computed(() => {
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div v-if="$page.props.flash.question_added" @click="$page.props.flash.question_added = false"
-                    class="fixed z-50 bottom-10 right-10 bg-ijo-terang w-1/4 h-20 flex justify-center items-center rounded-lg cursor-pointer">
+                    class="fixed z-50 bottom-10 right-10 bg-ijo-terang w-1/4 h-20 flex justify-center items-center rounded-lg">
                     <p class="text-center text-white font-medium text-lg">
                         {{ $page.props.flash.question_added }}
                     </p>
@@ -80,11 +90,10 @@ const filteredSurveys = computed(() => {
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_surveys', [clientSlug, projectSlug])"
                             v-if="$page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                            class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
                             Add Survey
                         </NavLink>
                         <NavLink :href="route('projects', [clientSlug])"
-                            v-if="$page.props.auth.user.usertype !== 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
                             Back to Project
                         </NavLink>
@@ -136,7 +145,7 @@ const filteredSurveys = computed(() => {
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                         Isi Survey
                                     </NavLink>
-                                    <NavLink :href="route('submission_surveys', [clientSlug, projectSlug, survey.id])"
+                                    <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])"
                                         v-if="$page.props.auth.user.current_team_id !== 1 || $page.props.auth.user.usertype !== 'user'"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                         Cek Respon

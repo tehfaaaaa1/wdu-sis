@@ -40,10 +40,12 @@ const filteredClients = computed(() => {
     return props.clients.filter(clients => {
         return (
             clients.client_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            clients.alamat.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
             clients.desc.toLowerCase().includes(searchQuery.value.toLowerCase())
         );
     });
 });
+
 </script>
 
 <template>
@@ -71,15 +73,27 @@ const filteredClients = computed(() => {
                 </div>
 
                 <!-- May need to make this a component -->
-                <div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center content-stretch">
+                <div
+                    class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center content-stretch">
                     <div v-for="client in filteredClients" :key="client.id"
-                        class="grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0">
+                        :class="client.id == $page.props.auth.user.client_id || $page.props.auth.user.usertype === 'superadmin' ? 'grid grid-cols-1 gap-2 content-between rounded-md shadow-lg outline outline-2 outline-gray-300 h-auto bg-white mx-5 sm:mx-0' : 'hidden'">
                         <div class="">
                             <img :src="'../img/' + client.image" alt=""
                                 class="h-40 w-full object-scale-down border-b-1 border-gray-400">
                             <div class="px-4 mt-3">
                                 <h1 class="text-xl mb-1 font-medium truncate">{{ client.client_name }}</h1>
-                                <p class=" text-base text-justify line-clamp-3 leading-5 tracking-wide">
+                                <div class="flex items-center mb-1.5 gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-5 text-gray-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                    </svg>
+                                    <h1 class="text-base font-medium truncate text-gray-500">{{ client.alamat }}
+                                    </h1>
+                                </div>
+                                <p class=" text-lg text-justify line-clamp-3 leading-5 tracking-wide text-gray-600">
                                     {{ client.desc }}
                                 </p>
                             </div>

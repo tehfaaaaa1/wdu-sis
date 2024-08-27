@@ -22,7 +22,7 @@ class Survey extends Model
         return $this->BelongsTo(Project::class, 'project_id');
     }
 
-    public function Question():  Hasmany{
+    public function question():  Hasmany{
         return $this->hasMany(Question::class);
     }
 }

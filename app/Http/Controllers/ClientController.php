@@ -18,6 +18,7 @@ class ClientController extends Controller
                 return [
                     'id' => $client->id,
                     'client_name' => $client->client_name,
+                    'alamat' => $client->alamat,
                     'image' => $client->image,
                     'desc' => $client->desc,
                     'slug' => $client->slug,

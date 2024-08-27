@@ -22,6 +22,9 @@ class Question extends Model
     public function choice(): HasMany{
         return $this->hasMany(QuestionChoice::class);
     }
+    public function answer(): HasMany{
+        return $this->hasMany(Answer::class);
+    }
     public function survey(): BelongsTo{
         return $this->belongsTo(Survey::class);
     }
