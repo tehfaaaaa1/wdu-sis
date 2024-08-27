@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use URL;
+use Auth;
 use Inertia\Inertia;
+use App\Models\Answer;
 use App\Models\Client;
 use App\Models\Survey;
 use App\Models\Project;
 use App\Models\Question;
+use App\Models\Response;
 use Illuminate\Http\Request;
 use App\Models\QuestionChoice;
 use Illuminate\Support\Facades\DB;
@@ -151,14 +154,16 @@ class SurveyController extends Controller
         );
     }
 
-    public function report(Survey $survey, $clientSlug, $projectSlug, $id)
+    public function report(Survey $survey, $clientSlug, $projectSlug, $surveyid, $responseId)
     {
-        $survey =  Survey::findOrFail($id);
-        $question = DB::table('questions')->where('survey_id', $id)->get();
+        $survey =  Survey::findOrFail($surveyid);
+        $question = Question::where('survey_id', $surveyid)->get();
+        $response = Response::where('survey_id', $surveyid )->where('id', $responseId)->firstOrFail();
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $choice = QuestionChoice::all();
-        // dump($survey);
+        $answer = Answer::where('response_id', $responseId)->get();
+        $user = $response->user;
         return Inertia::render(
             'Client/Projects/Surveys/ReportSurvey',
             [
@@ -166,7 +171,10 @@ class SurveyController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'listquestion' => $question,
-                'choice' => $choice
+                'choice' => $choice,
+                'responses' => $response,
+                'answer' => $answer,
+                'user' => $user
             ]
         );
     }

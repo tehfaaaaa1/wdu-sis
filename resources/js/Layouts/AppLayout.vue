@@ -103,7 +103,7 @@ const logout = () => {
 
                                             <!-- Team Settings -->
                                             <DropdownLink
-                                                :href="route('teams.show', $page.props.auth.user.current_team)">
+                                                :href="route('teams.show', $page.props.auth.user.current_team, $page.props.auth.user.usertype === 'superadmin')">
                                                 Team Settings
                                             </DropdownLink>
 
