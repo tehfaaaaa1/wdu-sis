@@ -1,16 +1,17 @@
 <?php
 
-use App\Http\Controllers\AnswerController;
-use App\Http\Controllers\ClientController;
-use App\Http\Controllers\QuestionController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ResponseController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -75,8 +76,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['ableSurvey']);
                 
                 Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
-                Route::get('/{id}/report',[SurveyController::class, 'report'])->name('report_surveys');
+
+                Route::get('/{Survey:id}/report/{Response:id}',[SurveyController::class, 'report'])->name('report_surveys');
+
                 Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');
+                
+                Route::get('/{id}/response',[ResponseController::class, 'index'])->name('response');
                 
                 Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
                 
