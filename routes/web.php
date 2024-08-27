@@ -77,6 +77,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 
                 Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
 
+                Route::get('/{Survey:id}/biodata/{user:id}',[SurveyController::class, 'bio'])->name('boidata');
+                Route::post('/{Survey:id}/add-biodata/{user:id}',[SurveyController::class, 'addBio'])->name('add_bio');
+
                 Route::get('/{Survey:id}/report/{Response:id}',[SurveyController::class, 'report'])->name('report_surveys');
 
                 Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');

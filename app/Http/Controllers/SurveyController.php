@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Biodata;
 use URL;
 use Auth;
 use Inertia\Inertia;
@@ -28,6 +29,7 @@ class SurveyController extends Controller
             ->where('slug', $clientSlug)
             ->get();
         $s = $surveyall->survey;
+        $user = Auth::user();
         // dump($survey);
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
@@ -178,7 +180,44 @@ class SurveyController extends Controller
             ]
         );
     }
+    public function bio(Survey $survey, $clientSlug, $projectSlug, $surveyid, $userId)
+    {
+        $user = Auth::user();
+        $survey =  Survey::findOrFail($surveyid); 
+        $project = DB::table('projects')->where('slug', $projectSlug)->get();
+        $client = DB::table('clients')->where('slug', $clientSlug)->get();
+        return Inertia::render(
+            'Client/Projects/Surveys/biodata',
+            [
+                'surveys' => $survey,
+                'projects' => $project,
+                'clients' => $client,
+                'user' => $user,
+            ]
+        );
+    }
 
+    public function addBio(Biodata $biodata, $clientSlug, $projectSlug, $surveyid, $userId, Request $request)
+    {
+        $clientSlug = $request->client_slug;
+        $projectSlug = $request->project_slug;
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:255',
+            'instansi' => 'required|string|max:255'
+        ]);
+
+        Biodata::create([
+            'nama_responden' => $validated['nama'],
+            'alamat' => $validated['alamat'],
+            'no_hp' => $validated['no_hp'],
+            'instansi' =>$validated['instansi'],
+            'user_id' => Auth::user()->id
+        ]);
+                
+        return redirect(route('submission_surveys',[$clientSlug, $projectSlug, $surveyid]));
+    }
     public function question(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
