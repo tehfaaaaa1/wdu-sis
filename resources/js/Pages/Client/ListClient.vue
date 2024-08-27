@@ -101,9 +101,14 @@ const filteredClients = computed(() => {
                         <div class="pb-3 px-3 mx-5 sm:mx-0">
                             <div class="flex justify-center mt-3">
                                 <NavLink
+                                    class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition mr-4"
+                                    :href="route('profile_client', client.id)">
+                                    Profile
+                                </NavLink>
+                                <NavLink    
                                     class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
                                     :href="route('projects', client.slug)">
-                                    See projects
+                                    See Projects
                                 </NavLink>
                             </div>
                             <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
