@@ -18,7 +18,7 @@
   - Activity Diagram (V) -->
 
 ## Need bug fix
-- N/A
+- Edit Client
 
 ## Changelog
 ### 27 Aug 2024
