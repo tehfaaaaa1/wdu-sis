@@ -18,9 +18,18 @@
   - Activity Diagram (V) -->
 
 ## Need bug fix
-- Edit Client
+- Edit Client can't update
+- Drag & Drop Question needs some polishing
 
 ## Changelog
+### 28 Aug 2024
+- CRUD Biodata Respondent
+- Survey Complete Status
+- Added wilayah in list response
+- Drag & Drop Question (WIP)
+- Expanding Profile Client (WIP)
+- Bug fixes
+
 ### 27 Aug 2024
 - Biodata WIP (Daud)
 - List Response & Response Detail WIP (Daud)
