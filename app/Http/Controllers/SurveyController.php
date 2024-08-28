@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Biodata;
-use App\Models\User;
 use URL;
-use Auth;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Answer;
 use App\Models\Client;
 use App\Models\Survey;
+use App\Models\Biodata;
 use App\Models\Project;
 use App\Models\Question;
 use App\Models\Response;
 use Illuminate\Http\Request;
 use App\Models\QuestionChoice;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use DB;
 class SurveyController extends Controller
@@ -26,12 +26,10 @@ class SurveyController extends Controller
         $projectall = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
-        $client = DB::table('clients')
-            ->where('slug', $clientSlug)
-            ->get();
+        $client = Client::where('slug', $clientSlug)->get();
         $s = $surveyall->survey;
         $user = Auth::user();
-        // dump($survey);
+        
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
@@ -47,7 +45,9 @@ class SurveyController extends Controller
                 }),
                 'projects' => $projectall,
                 'clients' => $client,
-                'user' => $user
+                'user' => $user,
+                'response' => $response,
+                'target' => $target
             ]
         );
     }

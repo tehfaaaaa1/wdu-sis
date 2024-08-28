@@ -1,61 +1,60 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
-import Checkbox from '@/Components/Checkbox.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
+import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import draggableComponent from 'vuedraggable';
+import { VueDraggable } from 'vue-draggable-plus';
 
 const props = defineProps({ surveys: Object, projects: Object, clients: Object })
 const project = props.projects[0];
 const client = props.clients[0];
 
 // Note: Customize the functions below if needed
-const questions = ref([{ id: 1, soal: [], texts: [], radios: [], types: [] }])
+const questions = ref([{ id: 1, soal: '', texts: [], radios: [], types: [] }]);
 const questionsType = ref([
-  {types: 'Text', name: 'Text'},
-  {types: 'Radio', name: 'Single Choice'},
-  {types: 'Checkbox', name: 'Multiple Choice'},
+    { types: 'Text', name: 'Text', texts: '' },
+    { types: 'Radio', name: 'Single Choice', radios: '' },
+    // { id: 2, types: 'Checkbox', name: 'Multiple Choice' },
 ]);
 
-const newQuestions = []
-questions.value.forEach((element) => {
-    const newQuestion = {
-        id: element.id + 1, soal: [], texts: [], radios: [], types: []
-    }
-    newQuestions.push(newQuestion)
-})
+// Generate unique IDs
+// const generateUniqueId = () => {
+//     return questions.value.length ? questions.value[questions.value.length - 1].id + 1 : 0;
+// };
 
-questions.value.push(...newQuestions)
+const clone = (event) => {
+    console.log(event)
+    // const droppedType = event.item.types;
+    // const newId = generateUniqueId();
+
+    const newQuestion = {
+        id: questions.value.length + 1 ,
+        soal: '',
+        texts: [{isi: ''}],
+        radios: [],
+        types: ['Text'],
+    };
+
+    // if (droppedType === 'Text') {
+    //     newQuestion.texts.push({ isi: '' });
+    // } else if (droppedType === 'Radio') {
+    //     newQuestion.radios.push({ pilih: '' });
+    // }
+
+    questions.value.push(newQuestion);
+    console.log('New Question Added:', JSON.stringify(newQuestion, null, 2));
+};
+
+const logUpdate = (newQuestions) => {
+    console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
+};
 
 const log = (evt) => {
     console.log(evt);
 };
 
-
-const radios = ref([])
-const texts = ref([])
 const MAX_RADIO_CHOICES = 5;
-
-function addQuestion(question_type) {
-    // questions.value.push({ id: questions.value.length + 1, soal: [], texts: [], radios: [], types: [] });
-    if (question_type === 'text') {
-        const text = { isi: '' }
-        questions.value.push({ id: questions.value.length + 1, soal: [], texts: [text], radios: [], types: ['text'] });
-    }
-    if (question_type === 'radio') {
-        questions.value.push({ id: questions.value.length + 1, soal: [], texts: [], radios: [{ pilih: '' }], types: ['radio'] });
-        alert(questions.value[1].radios)
-    }
-}
 
 function textQuestion(question) {
     if (question.types.length > 0 && !question.types.includes('Text')) {
@@ -138,25 +137,23 @@ const submit = () => {
     <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen relative">
-            <aside class="sticky bg-gray-200 w-1/6 min-h-full top-0">
+            <aside class="sticky bg-gray-200 w-1/6 min-h-full top-0 z-50">
                 <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add Questions
                 </h1>
-                <draggableComponent :list="questionsType" :item-key="types" :group="{ name: 'questionTypes', pull: 'clone', put: false }" :sort="false"
-                class="list-group">
-                    <template #item="{element}">
-                        <div
-                            class="list-group-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-pointer">
-                            <span>{{ element.name }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-gray-500">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                        </div>
-                    </template>
-                </draggableComponent>
+                <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }" :animation="150"
+                    :clone="clone" :sort="false" class="list-group">
+                    <div v-for="item in questionsType" :key="item.id" class="list-group-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
+                        items-center cursor-pointer">
+                        <span>{{ item.name }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 text-gray-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                </VueDraggable>
             </aside>
-            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8 relative -top-40">
+            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                     <h2>{{ props.surveys.title }}</h2>
                 </div>
@@ -167,89 +164,90 @@ const submit = () => {
                         </p>
                     </div>
                     <form action="" @submit.prevent=submit>
-                        <draggableComponent :list="questions" :item-key="id" :group="{ name: 'questions' }" @change="log" class="list-group"><!-- v-for here -->
-                            <template #item="{element}">
-                                <div class="list-group-item">
-                                    <div class="p-5 flex items-center">
-                                        <!-- Order of question -->
-                                        <p>{{ element.id }}</p>
-    
-                                        <!-- Insert text here -->
-                                        <input v-model="element.soal" type="text" placeholder="Insert question here"
-                                            class="text-sm w-full mx-4 rounded-md">
-    
-                                        <!-- Question types -->
-                                        <Dropdown align="right" width="48">
-                                            <template #trigger>
-                                                <button type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                                    Question Type
-                                                    <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                        stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                                    </svg>
-                                                </button>
-                                            </template>
-    
-                                            <template #content>
-                                                <div @click="textQuestion(element)"
-                                                    class="block px-4 py-2 text-sm cursor-pointer">
-                                                    Text
-                                                </div>
-                                                <div @click="radioQuestion(element)"
-                                                    class="block px-4 py-2 text-sm cursor-pointer">
-                                                    Single Choice
-                                                </div>
-                                                <div class="block px-4 py-2 text-sm cursor-pointer">
-                                                    Multiple Choice
-                                                </div>
-                                            </template>
-                                        </Dropdown>
+                        <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate" :animation="150"
+                            class="list-group">
+                            <div v-for="item in questions" :key="item.id" class="list-group-item">
+                                <div class="p-5 flex items-center">
+                                    <!-- Order of question -->
+                                    <p>{{ item.id }}</p>
+
+                                    <!-- Insert text here -->
+                                    <input v-model="item.soal" type="text" placeholder="Insert question here"
+                                        class="text-sm w-full mx-4 rounded-md">
+
+                                    <!-- Question types -->
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <button type="button"
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                                Question Type
+                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </button>
+                                        </template>
+
+                                        <template #content>
+                                            <div @click="textQuestion(item)"
+                                                class="block px-4 py-2 text-sm cursor-pointer">
+                                                Text
+                                            </div>
+                                            <div @click="radioQuestion(item)"
+                                                class="block px-4 py-2 text-sm cursor-pointer">
+                                                Single Choice
+                                            </div>
+                                            <div class="block px-4 py-2 text-sm cursor-pointer">
+                                                Multiple Choice
+                                            </div>
+                                        </template>
+                                    </Dropdown>
+                                </div>
+
+                                <!-- text -->
+                                <div class="px-5" v-for="(text, index) in item.texts" :key="index">
+                                    <textarea v-model="text.isi" :name="'text-' + item.id" :id="'text-' + item.id"
+                                        placeholder="Jawaban" class="w-full text-sm rounded-md bg-gray-200" disabled />
+                                </div>
+                                <!-- single choice -->
+                                <div class="px-5" v-for="(radio, index) in item.radios" :key="index">
+                                    <div class="flex items-center mb-2">
+                                        &#x2022;
+                                        <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
+                                            :id="'radio' + (index + 1) + '-q' + (item.id)"
+                                            placeholder="Insert single choice here"
+                                            class="text-sm mx-4 rounded-md block w-1/4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" @click="deleteRadio(item, index)"
+                                            class="size-6 text-red-600 cursor-pointer">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
                                     </div>
-    
-                                    <!-- text -->
-                                    <div class="px-5" v-for="(text, index) in element.texts" :key="index">
-                                        <textarea v-model="text.isi" :name="'text-' + element.id"
-                                            :id="'text-' + element.id" placeholder="Jawaban"
-                                            class="w-full text-sm rounded-md bg-gray-200" disabled />
-                                    </div>
-                                    <!-- single choice -->
-                                    <div class="px-5" v-for="(radio, index) in element.radios" :key="index">
-                                        <div class="flex items-center mb-2">
-                                            &#x2022;
-                                            <input type="text" v-model="radio.pilih" :name="'radio-' + element.id"
-                                                :id="'radio-' + (index + 1) + 'q' + (element.id)"
-                                                placeholder="Insert single choice here"
-                                                class="text-sm mx-4 rounded-md block w-1/4">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" @click="deleteRadio(element)"
-                                                class="size-6 text-red-600 cursor-pointer">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
-    
-                                        </div>
-                                        <div class="ml-6"
-                                            v-if="index === element.lastRadioIndex && element.radios.length < MAX_RADIO_CHOICES">
-                                            <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
-                                                @click="AddRadioOption(element)">
-                                                Add Options
-                                            </a>
-                                        </div>
+                                    <div class="ml-6"
+                                        v-if="index === item.radios.length - 1 && item.radios.length < MAX_RADIO_CHOICES">
+                                        <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddRadioOption(item)">
+                                            Add Options
+                                        </a>
                                     </div>
                                 </div>
-                            </template>
-                        </draggableComponent>
-                        <!-- End question -->
+                            </div>
+                        </VueDraggable>
 
-                        <!-- <div class="pt-2 flex justify-center">
-                            <a class="w-1/4 mb-10 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
-                                @click="addQuestion">
-                                Add Questions
-                            </a>
-                        </div> -->
+                        <!-- Drop Zone at the bottom -->
+                        <!-- <VueDraggable :list="[]" group="questions" @change="log"
+                            class="list-group dropzone p-5 border-t border-gray-300 text-center min-h-20 bg-gray-300 hover:bg-gray-400">
+                            <template #item="">
+                                <div class="text-sm text-black">
+                                    Drop here to add a new question at the end
+                                </div>
+                            </template>
+                        </VueDraggable> -->
+
                         <div class="border-b-2 border-gray-300" />
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"

@@ -12,11 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('client_id');
-            $table->foreignId('client_id')->nullable()->constrained(
-                table: 'clients',
-                indexName: 'users_client_id',
-            )->onDelete('set null');
+            $table->bigInteger('biodata_id')->nullable();
         });
     }
 
