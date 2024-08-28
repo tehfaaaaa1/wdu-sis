@@ -80,7 +80,7 @@ console.log(props.response.length)
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div v-if="$page.props.flash.question_added" @click="$page.props.flash.question_added = false"
-                    class="fixed z-50 bottom-10 right-10 bg-ijo-terang w-1/4 h-20 flex justify-center items-center rounded-lg">
+                    class="fixed z-50 bottom-10 right-10 bg-ijo-terang w-1/4 h-20 flex justify-center items-center rounded-lg cursor-pointer">
                     <p class="text-center text-white font-medium text-lg">
                         {{ $page.props.flash.question_added }}
                     </p>
@@ -161,7 +161,7 @@ console.log(props.response.length)
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-span-2" v-if="props.response.length === 0 ">
+                                    <div class="" v-if="props.response.length === 0 ">
                                         <NavLink :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])":class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''" class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"  v-if="props.user.biodata_id == null">
                                                 Isi Survey
                                         </NavLink>
