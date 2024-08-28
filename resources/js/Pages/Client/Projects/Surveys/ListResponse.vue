@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Biodata from './biodata.vue';
 
 
 const props = defineProps({
@@ -10,13 +11,14 @@ const props = defineProps({
     projects: Object,
     clients: Object,
     response:Object,
-    totalres:Object
+    totalres:Object,
+    biodata:Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
 const clientSlug = client.slug;
 const projectSlug = project.slug;
-console.log(projectSlug)
+console.log(props.response, props.biodata)
 </script>
 
 <template>
@@ -58,7 +60,11 @@ console.log(projectSlug)
                                 {{ responses.user.email }}
                                 </td>
                             <td class="px-6 py-4">
-                                Futuh
+                                <div class="" v-for="bio in biodata">
+                                    <div class="" v-if="bio.user_id === responses.user_id">
+                                        {{ bio.alamat }}
+                                    </div>
+                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"

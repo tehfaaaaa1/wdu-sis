@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BiodataController;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -80,8 +81,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 
                 Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
 
-                Route::get('/{Survey:id}/biodata/{user:id}',[SurveyController::class, 'bio'])->name('boidata');
-                Route::post('/{Survey:id}/add-biodata/{user:id}',[SurveyController::class, 'addBio'])->name('add_bio');
+                Route::get('/{Survey:id}/biodata/{user:id}',[BiodataController::class, 'bio'])->name('biodata');
+                Route::get('/{Survey:id}/edbiodata/{user:id}',[BiodataController::class, 'editbio'])->name('edit_bio');
+                Route::post('/{Survey:id}/add-biodata/{user:id}',[BiodataController::class, 'addBio'])->name('add_bio');
+                Route::put('/{Survey:id}/update-biodata/{user:id}',[BiodataController::class, 'updbio'])->name('update_bio');
 
                 Route::get('/{Survey:id}/report/{Response:id}',[SurveyController::class, 'report'])->name('report_surveys');
 
