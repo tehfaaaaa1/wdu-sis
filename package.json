@@ -20,6 +20,6 @@
         "vue": "^3.3.13"
     },
     "dependencies": {
-        "vuedraggable": "^4.1.0"
+        "vue-draggable-plus": "^0.5.3"
     }
 }
