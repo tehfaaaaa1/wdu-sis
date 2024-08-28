@@ -146,7 +146,7 @@ console.log(props.response.length)
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
                                     <div class="" :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''" >
                                         <div class="" v-for="res in response" :class="res.survey_id === survey.id ? '' : 'hidden'" >
-                                                <div class="" v-if="res.user_id === $page.props.auth.user.id">
+                                                <div class="text-center" v-if="res.user_id === $page.props.auth.user.id">
                                                     <p>Anda telah Mengerjakan Survey Ini</p>
                                                 </div>
                                         </div>

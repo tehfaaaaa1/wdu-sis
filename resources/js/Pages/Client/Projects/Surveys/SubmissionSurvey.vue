@@ -56,7 +56,7 @@ const submit = () => {
                     </div>
                     <div class="p-5 flex w-full">
                         <form @submit.prevent="submit">
-                            <div class="">|
+                            <div class="">
                             </div>
                             <div v-for="(question, index) in props.listquestion" :key="index">
                                 <div class="block">
