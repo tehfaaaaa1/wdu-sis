@@ -11,7 +11,8 @@ const props = defineProps({
     projects: Array,
     clients: Array,
     user:Object,
-    response:Object
+    response:Object,
+    target:Object
 })
 const form = useForm({
     search: '',
@@ -125,7 +126,7 @@ console.log(props.response.length)
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-1/4">Survey Title</th>
                                 <th scope="col" class="px-6 py-3">Description</th>
-                                <th scope="col" class="px-6 py-3 w-1/6">Responses</th>
+                                <th scope="col" class="px-6 py-3 w-1/4">Target Responden</th>
                                 <!-- <th scope="col" class="px-6 py-3 w-1/6" >Status</th> -->
                                 <th scope="col" class="px-6 py-3 md:w-1/4 text-center">Action</th>
                             </tr>
@@ -140,7 +141,7 @@ console.log(props.response.length)
                                     {{ survey.desc }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    100
+                                    {{ props.target }}
                                 </td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
                                     <div class="" :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''" >
