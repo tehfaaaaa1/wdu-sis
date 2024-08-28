@@ -72,24 +72,25 @@ class BiodataController extends Controller
         );
     }
 
-    public function updbio(Survey $survey, $clientSlug, $projectSlug, $surveyid, $userId, Request $request){
+    public function updbio($clientSlug, $projectSlug, $surveyid, $userId, Request $request){
         $clientSlug = $request->client_slug;
-        $projectSlug = $request->project;
-        
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'alamat' => 'required|string|max:255',
-            'no_hp' => 'required|string|max:20',
-            'instansi' => 'required|string|max:255'
+        $projectSlug = $request->project_slug;
+        $userId = Auth::user()->id;
+        // dd($request->all());
+        $request->validate([
+            'nama' => 'required',
+            'alamat' => 'required',
+            'no_hp' => 'required',
+            'instansi' => 'required'
         ]);
-
         Biodata::where('user_id', $userId)->update([
-            'nama' => $validated['nama'],
-            'alamat' => $validated['alamat'],
-            'no_hp' => $validated['no_hp'],
-            'instansi' => $validated['instansi'],
+            'nama_responden' => $request->nama,
+            'alamat' => $request->alamat,
+            'no_hp' => $request->no_hp,
+            'instansi' => $request->instansi,
+            'user_id' => $userId,
         ]);
 
-        return redirect()->route('submission_surveys', [$clientSlug, $projectSlug, $surveyid])->with('succes', 'Update Biodata');
+        return redirect()->route('submission_surveys', [$clientSlug, $projectSlug, $surveyid])->with('success', 'Bio updated successfully.');
     }
 }
