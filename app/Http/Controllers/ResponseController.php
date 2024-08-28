@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Biodata;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Survey;
@@ -18,6 +19,7 @@ class ResponseController extends Controller
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $totalRes = count($response);
+        $biodata = Biodata::all();
         return Inertia::render(
             'Client/Projects/Surveys/ListResponse',
             [
@@ -25,6 +27,7 @@ class ResponseController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'totalres' => $totalRes,
+                'biodata' => $biodata,
                 'response' =>collect($response)->map(function ($res) {
                     return [
                         'id' => $res->id,
@@ -33,6 +36,7 @@ class ResponseController extends Controller
                         'user' => $res->user,
                         'status' => $res->status,
                     ];
+
                 })
             ]
         );

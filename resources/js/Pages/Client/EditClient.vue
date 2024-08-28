@@ -69,7 +69,7 @@ const submit = () => {
                             Background.</p>
                     </div>
                     <div class="my-4 text-center">
-                        <PrimaryButton class="w-full justify-center mt-2 " :class="{ 'opacity-25': form.processing }"
+                        <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
                             Edit Client
                         </PrimaryButton>
