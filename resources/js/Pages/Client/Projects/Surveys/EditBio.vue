@@ -79,9 +79,9 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />
                     </div>
                         <div class="pt-5 flex justify-center">
-                            <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
+                            <PrimaryButton class="w-1/2 my-5 p-5 justify-center " :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
-                            Edit Bio
+                            Konfirmasi Biodata
                         </PrimaryButton>
                         </div>
                     </form>

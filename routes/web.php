@@ -81,10 +81,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 
                 Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
 
-                Route::get('/{Survey:id}/biodata/{Biodata:id}',[BiodataController::class, 'bio'])->name('biodata');
-                Route::get('/{Survey:id}/edbiodata/{Biodata:id}',[BiodataController::class, 'editbio'])->name('edit_bio');
-                Route::post('/{Survey:id}/add-biodata/{Biodata:id}',[BiodataController::class, 'addBio'])->name('add_bio');
-                Route::put('/{Survey:id}/update-biodata/{Biodata:id}',[BiodataController::class, 'updbio'])->name('update_bio');
+                Route::get('/{Survey:id}/biodata/{User:id}',[BiodataController::class, 'bio'])->name('biodata');
+                Route::get('/{Survey:id}/edbiodata/{User:id}',[BiodataController::class, 'editbio'])->name('edit_bio');
+                Route::post('/{Survey:id}/add-biodata/{User:id}',[BiodataController::class, 'addBio'])->name('add_bio');
+                Route::put('/{Survey:id}/update-biodata/{User:id}',[BiodataController::class, 'updbio'])->name('update_bio');
 
                 Route::get('/{Survey:id}/report/{Response:id}',[SurveyController::class, 'report'])->name('report_surveys');
 

@@ -31,6 +31,7 @@ class SurveyController extends Controller
             ->get();
         $s = $surveyall->survey;
         $user = Auth::user();
+        $response = Response::where('user_id', $user->id)->get();
         // dump($survey);
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
@@ -47,7 +48,8 @@ class SurveyController extends Controller
                 }),
                 'projects' => $projectall,
                 'clients' => $client,
-                'user' => $user
+                'user' => $user,
+                'response' => $response
             ]
         );
     }
