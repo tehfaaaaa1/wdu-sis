@@ -31,7 +31,7 @@ class SurveyController extends Controller
             ->get();
         $s = $surveyall->survey;
         $user = Auth::user();
-        // dump($survey);
+        
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
