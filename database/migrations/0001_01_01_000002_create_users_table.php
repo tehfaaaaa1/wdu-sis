@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignId('client_id')->nullable()->constrained(
                 table: 'clients',
                 indexName: 'users_client_id',
-            )->onDelete('set null');
+            )->nullOnDelete();
             $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
         });

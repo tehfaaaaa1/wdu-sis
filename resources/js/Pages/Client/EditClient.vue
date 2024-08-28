@@ -10,7 +10,7 @@ import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 
-const props = defineProps({ clients: Array })
+const props = defineProps({ clients: Object })
 
 const form = useForm({
     client_name: props.clients.client_name,
@@ -60,7 +60,7 @@ const submit = () => {
                         <!-- Below input throws validation required for all text inputs above.  -->
                         <!-- <input @input="form.image = $event.target.files[0]" -->
                         <!-- Turns all the inputs to null. Why -->
-                        <input @input="form.image = $event.target.files[1]"
+                        <input @input="form.image = $event.target.files[0]"
                             class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" id="file_input"
                             type="file" accept=".png, .jpg, .jpeg">
