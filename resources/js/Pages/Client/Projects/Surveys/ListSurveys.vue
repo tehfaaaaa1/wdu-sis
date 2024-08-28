@@ -142,7 +142,7 @@ const filteredSurveys = computed(() => {
                                     100
                                 </td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
-                                    <NavLink :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                    <NavLink :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.biodata_id])"
                                         :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"  v-if="props.user.biodata_id == null">
                                         Isi Survey

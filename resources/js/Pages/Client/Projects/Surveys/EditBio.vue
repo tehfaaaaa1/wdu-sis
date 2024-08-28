@@ -30,11 +30,10 @@ const form = useForm({
 const submit = () => {
     form.put(route('update_bio', [form.client_slug, form.project_slug,props.surveys.id, props.user.id]));
 }
-console.log(props.biodata)
 </script>
 
 <template>
-    <AppLayout title="Isi Survey">
+    <AppLayout title="Edit BIodata">
         <main class="min-h-screen">
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
@@ -47,7 +46,7 @@ console.log(props.biodata)
                             <h2 class="font-semibold text-lg">Biodata</h2>
                         </div>
                     </div>
-                    <form action="" @submit.prevent=submit>
+                    <form  @submit.prevent="submit" enctype="multipart/form-data">
                         <div class="relative px-5 mt-3">
                             <label for="">Nama</label>
                         <TextInput v-model="form.nama" type="text" placeholder="Nama"
@@ -80,10 +79,10 @@ console.log(props.biodata)
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />
                     </div>
                         <div class="pt-5 flex justify-center">
-                            <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
-                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Submit Questions
-                            </PrimaryButton>
+                            <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing">
+                            Edit Bio
+                        </PrimaryButton>
                         </div>
                     </form>
                 </div>
