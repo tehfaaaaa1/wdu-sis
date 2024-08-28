@@ -26,11 +26,14 @@ class SurveyController extends Controller
         $projectall = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
-        $client = DB::table('clients')
-            ->where('slug', $clientSlug)
-            ->get();
+        $client = Client::where('slug', $clientSlug)->get();
         $s = $surveyall->survey;
         $user = Auth::user();
+        $c= $client[0];
+        $userClient = User::where('client_id', $c->id)->get();
+        $target = count($userClient);
+
+        $response = Response::where('user_id', $user->id)->get();
         // dump($survey);
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
@@ -47,7 +50,9 @@ class SurveyController extends Controller
                 }),
                 'projects' => $projectall,
                 'clients' => $client,
-                'user' => $user
+                'user' => $user,
+                'response' => $response,
+                'target' => $target
             ]
         );
     }

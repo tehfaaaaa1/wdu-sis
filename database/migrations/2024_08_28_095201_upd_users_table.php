@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('client_id')->nullable()->constrained(
                 table: 'clients',
                 indexName: 'users_client_id',
-            )->onDelete('set null');
+            )->nullOnDelete();
         });
     }
 
