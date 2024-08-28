@@ -75,5 +75,21 @@ class BiodataController extends Controller
     public function updbio(Survey $survey, $clientSlug, $projectSlug, $surveyid, $userId, Request $request){
         $clientSlug = $request->client_slug;
         $projectSlug = $request->project;
+        
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:20',
+            'instansi' => 'required|string|max:255'
+        ]);
+
+        Biodata::where('user_id', $userId)->update([
+            'nama' => $validated['nama'],
+            'alamat' => $validated['alamat'],
+            'no_hp' => $validated['no_hp'],
+            'instansi' => $validated['instansi'],
+        ]);
+
+        return redirect()->route('submission_surveys', [$clientSlug, $projectSlug, $surveyid])->with('succes', 'Update Biodata');
     }
 }

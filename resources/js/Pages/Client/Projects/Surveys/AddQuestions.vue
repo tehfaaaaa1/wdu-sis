@@ -115,7 +115,7 @@ const submit = () => {
 </script>
 
 <template>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js'></script>
+    <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js'></script> -->
 
     <AppLayout title="Tambah Pertanyaan Survey">
 
