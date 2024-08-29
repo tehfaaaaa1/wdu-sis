@@ -108,6 +108,7 @@ class ClientController extends Controller
                 'desc' => $client->desc,
                 'image' => $client->image,
                 'date' => $client->created_at->format('j F Y'),
+                'slug' => $client->slug
             ],
             'project' => $project->map(function ($project) {
                 return [

@@ -14,7 +14,7 @@ const formatDate = (dateString) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return date.toLocaleDateString(undefined, options);
 };
-
+console.log(client)
 </script>
 
 <template>
@@ -46,11 +46,11 @@ const formatDate = (dateString) => {
                                 <li v-for="project in projects" :key="project.id" class="mb-2">
                                     <div class="flex items-center space-x-2">
                                         <strong>{{ project.project_name }}</strong>
-                                             <!-- <NavLink :href="route('listsurvey', [clientSlug, project.slug])"> -->
+                                             <NavLink :href="route('listsurvey', [clientSlug, project.slug])">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                                             </svg>
-                                            <!--  </NavLink> -->
+                                             </NavLink>
                                     </div>
                                     <div class="text-sm text-gray-600">
                                         {{ project.desc }}
