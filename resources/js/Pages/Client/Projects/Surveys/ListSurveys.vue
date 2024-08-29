@@ -71,10 +71,8 @@ console.log(props.surveys)
 
 <template>
     <AppLayout title="List Survey">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <b class="text-ijo-terang">Project</b> {{ project.project_name }}
-            </h2>
+        <template #header >
+                <NavLink :href="route('projects', clientSlug)" class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang"><span class="text-black">Project&nbsp;</span> {{ project.project_name }}</NavLink> 
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -121,12 +119,13 @@ console.log(props.surveys)
                             </div>
                             <div class="border-b-2 border-gray-300"></div>
                         </caption>
+
                         <thead class="text-xs text-white uppercase bg-primary">
                             <tr>
-                                <th scope="col" class="px-6 py-3 w-1/4">Survey Title</th>
-                                <th scope="col" class="px-6 py-3">Description</th>
-                                <th scope="col" class="px-6 py-3 w-1/4">Target Responden</th>
-                                <th scope="col" class="px-6 py-3 w-1/6" >Status</th>
+                                <th scope="col" class="px-6 py-3 w-1/5">Survey Title</th>
+                                <th scope="col" class="px-6 py-3 w-1/4">Description</th>
+                                <th scope="col" class="px-6 py-3 ">Target</th>
+                                <th scope="col" class="px-6 py-3 " >Status</th>
                                 <th scope="col" class="px-6 py-3 md:w-1/4 text-center">Action</th>
                             </tr>
                         </thead>
@@ -140,10 +139,10 @@ console.log(props.surveys)
                                     {{ survey.desc }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ props.target }}
+                                    {{ props.target }} Orang
                                 </td>
                                 <td class="px-6 py-4">
-                                    Sudah Bisa Dikerjakan
+                                    Dibuka
                                 </td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
                                     <div class=""

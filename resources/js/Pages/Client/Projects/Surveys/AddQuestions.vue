@@ -243,7 +243,6 @@ const submit = () => {
                                                 </svg>
                                             </button>
                                         </template>
-
                                         <template #content>
                                             <div @click="textQuestion(item)"
                                                 class="block px-4 py-2 text-sm cursor-pointer">
