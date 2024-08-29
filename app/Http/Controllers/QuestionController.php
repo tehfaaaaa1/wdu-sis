@@ -67,13 +67,19 @@ class QuestionController extends Controller
                 } elseif($Typee === 'Radio'){
                     $question_type = 2;
                     $tipe = $data['radios'];
-                    if($tipe){
+                    if($tipe === null || $tipe ===[] || $tipe === ''){
                         abort(403, "Belum Mengisi Pilihan");
+                    } elseif (count($tipe) < 2){
+                        abort(403, 'pilihannya kurang daari 2');
                     }
-                }
-                elseif($Typee === 'checkbox'){
+                }elseif($Typee === 'Checkbox'){
                     $question_type = 3;
                     $tipe = $data['checkbox'];
+                    if($tipe === null || $tipe ===[] || $tipe === ''){
+                        abort(403, "Belum Mengisi Pilihan");
+                    } elseif (count($tipe) < 2){
+                        abort(403, 'pilihannya kurang daari 2');
+                    }
                 }
             }
             $newQuestion = new Question;
