@@ -18,7 +18,7 @@ const project = props.projects[0]
 const client = props.clients[0]
 const clientSlug = client.slug;
 const projectSlug = project.slug;
-console.log(props.response, props.biodata)
+console.log(props.surveys)
 </script>
 
 <template>
