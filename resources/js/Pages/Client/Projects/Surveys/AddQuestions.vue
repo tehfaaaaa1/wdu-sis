@@ -178,9 +178,10 @@ const submit = () => {
     <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen relative">
-            <aside class="sticky bg-gray-200 w-1/6 min-h-full top-0 z-50">
-                <div class="absolute">
-                    <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add Questions
+            <aside class="sticky bg-gray-200 min-h-full top-0 z-50">
+                <div class="absolute lg:w-1/5">
+                    <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add
+                        Questions
                     </h1>
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                         :animation="150" :clone="clone" :sort="false" class="list-qtype">
@@ -196,7 +197,7 @@ const submit = () => {
                     </VueDraggable>
                 </div>
             </aside>
-            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="mx-auto lg:max-w-2xl xl:max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                     <h2>{{ props.surveys.title }}</h2>
                 </div>
@@ -209,7 +210,6 @@ const submit = () => {
                     <form action="" @submit.prevent=submit>
                         <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate"
                             :animation="150" class="list-questions" handle=".handle">
-                            <h2 class="mt-3 text-center font-medium text-xl">Tambah Pertanyaan</h2>
                             <div v-for="(item, index) in questions" :key="item.id" class="list-questions-item">
                                 <div class="p-5 gap-2 flex items-center">
                                     <!-- Order of question -->
@@ -282,7 +282,9 @@ const submit = () => {
                                             class="text-sm mx-4 rounded-md block w-1/4">
 
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-6 text-red-600 cursor-pointer" @click="deleteRadio(item, index)">
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="size-6 text-red-600 cursor-pointer"
+                                            @click="deleteRadio(item, index)">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
@@ -307,7 +309,9 @@ const submit = () => {
                                             class="text-sm mx-4 rounded-md block w-1/4">
 
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="size-6 text-red-600 cursor-pointer" @click="deleteCheckbox(item, index)">
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="size-6 text-red-600 cursor-pointer"
+                                            @click="deleteCheckbox(item, index)">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
