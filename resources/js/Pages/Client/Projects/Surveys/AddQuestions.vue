@@ -179,20 +179,22 @@ const submit = () => {
 
         <main class="min-h-screen relative">
             <aside class="sticky bg-gray-200 w-1/6 min-h-full top-0 z-50">
-                <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add Questions
-                </h1>
-                <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                    :animation="150" :clone="clone" :sort="false" class="list-qtype">
-                    <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                        items-center cursor-pointer">
-                        <span>{{ item.name }}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 text-gray-500">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                    </div>
-                </VueDraggable>
+                <div class="absolute">
+                    <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add Questions
+                    </h1>
+                    <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
+                        :animation="150" :clone="clone" :sort="false" class="list-qtype">
+                        <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
+                            items-center cursor-pointer">
+                            <span>{{ item.name }}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-gray-500">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+                        </div>
+                    </VueDraggable>
+                </div>
             </aside>
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
