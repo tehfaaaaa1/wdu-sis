@@ -38,7 +38,7 @@ const formatDate = (dateString) => {
                             <div>Instansi</div>
                             <div class="font-bold">{{ client.client_name }}</div>
                             <div>Alamat</div>
-                            <div class="font-bold">{{ client.alamat n }}</div>
+                            <div class="font-bold">{{ client.alamat}}</div>
                             <div>Tanggal Tender</div>
                             <div class="font-bold">{{ formatDate(client.date) }}</div>
                             <div>Project</div>
