@@ -11,7 +11,6 @@ const props = defineProps({
     projects: Array,
     clients: Array,
     user: Object,
-    response: Object,
     target: Object
 })
 const form = useForm({
@@ -67,7 +66,7 @@ const filteredSurveys = computed(() => {
 // onMounted(() => {
 //     this.popupShow();
 // })
-console.log(props.response.length)
+console.log(props.surveys)
 </script>
 
 <template>
@@ -127,7 +126,7 @@ console.log(props.response.length)
                                 <th scope="col" class="px-6 py-3 w-1/4">Survey Title</th>
                                 <th scope="col" class="px-6 py-3">Description</th>
                                 <th scope="col" class="px-6 py-3 w-1/4">Target Responden</th>
-                                <!-- <th scope="col" class="px-6 py-3 w-1/6" >Status</th> -->
+                                <th scope="col" class="px-6 py-3 w-1/6" >Status</th>
                                 <th scope="col" class="px-6 py-3 md:w-1/4 text-center">Action</th>
                             </tr>
                         </thead>
@@ -143,36 +142,23 @@ console.log(props.response.length)
                                 <td class="px-6 py-4">
                                     {{ props.target }}
                                 </td>
+                                <td class="px-6 py-4">
+                                    Sudah Bisa Dikerjakan
+                                </td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
                                     <div class=""
                                         :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''">
                                         <!-- Sudah Mengisi Survey -->
-                                        <div class="" v-for="res in response"
-                                            :class="res.survey_id === survey.id ? '' : 'hidden'">
-                                            <div class="my-3" v-if="res.user_id === $page.props.auth.user.id">
-                                                <p>Anda Sudah Mengisi Survey Ini</p>
+                                        <div class="" v-for="res in survey.response">
+                                            <div class="" v-if="res.survey_id === survey.id ">
+                                                <div class="my-3" v-if="res.user_id === props.user.id">
+                                                    <p>Anda Sudah Mengisi Survey Ini</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <!-- Belum mengisi survey(Sudah mengisi Survey Lain) -->
-                                        <div class="" v-for="res in response"
-                                            :class="res.survey_id !== survey.id ? '' : 'hidden'">
-                                            <div class="" v-if="res.user_id === $page.props.auth.user.id">
-                                                <NavLink
-                                                    :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                    class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
-                                                    v-if="props.user.biodata_id == null">
-                                                    Isi Survey
-                                                </NavLink>
-                                                <NavLink
-                                                    :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                    class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
-                                                    v-if="props.user.biodata_id != null">
-                                                    Isi Survey
-                                                </NavLink>
-                                            </div>
-                                        </div>
+
+                                        </div>             
                                         <!-- Belum Mengisi survey Apapun -->
-                                        <div class="" v-if="props.response.length === 0">
+                                        <div class="" v-if="survey.response.length === 0">
                                             <NavLink
                                                 :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
                                                 :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"

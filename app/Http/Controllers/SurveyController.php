@@ -45,12 +45,12 @@ class SurveyController extends Controller
                         'project_id' => $survey->project_id,
                         'created_at' => $survey->created_at->format('j F Y H:i:s'),
                         'updated_at' => $survey->updated_at->format('j F Y H:i:s'),
+                        'response' => $survey->response
                     ];
                 }),
                 'projects' => $projectall,
                 'clients' => $client,
                 'user' => $user,
-                'response' => $response,
                 'target' => $target,
             ]
         );
