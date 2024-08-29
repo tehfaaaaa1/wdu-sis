@@ -7,6 +7,7 @@ import NavLink from '@/Components/NavLink.vue';
 const { props } = usePage();
 const client = props.client;
 const projects = props.project;
+const clientSlug = client.slug;
 
 const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -14,7 +15,6 @@ const formatDate = (dateString) => {
     return date.toLocaleDateString(undefined, options);
 };
 
-const clientSlug = client.slug;
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const clientSlug = client.slug;
                             <div>Instansi</div>
                             <div class="font-bold">{{ client.client_name }}</div>
                             <div>Alamat</div>
-                            <div class="font-bold">{{ client.alamat }}</div>
+                            <div class="font-bold">{{ client.alamat n }}</div>
                             <div>Tanggal Tender</div>
                             <div class="font-bold">{{ formatDate(client.date) }}</div>
                             <div>Project</div>
@@ -66,4 +66,3 @@ const clientSlug = client.slug;
         </div>
     </AppLayout>
 </template>
- 

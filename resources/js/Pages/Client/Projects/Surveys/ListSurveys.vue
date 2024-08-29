@@ -10,9 +10,9 @@ const props = defineProps({
     surveys: Array,
     projects: Array,
     clients: Array,
-    user:Object,
-    response:Object,
-    target:Object
+    user: Object,
+    response: Object,
+    target: Object
 })
 const form = useForm({
     search: '',
@@ -154,10 +154,16 @@ console.log(props.response.length)
                                         <!-- Belum mengisi survey(Sudah mengisi Survey Lain) -->
                                         <div class="" v-for="res in response" :class="res.survey_id !== survey.id ? '' : 'hidden'">
                                             <div class="" v-if="res.user_id === $page.props.auth.user.id">
-                                                <NavLink :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"  v-if="props.user.biodata_id == null">
+                                                <NavLink
+                                                    :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                                    class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
+                                                    v-if="props.user.biodata_id == null">
                                                     Isi Survey
                                                 </NavLink>
-                                                <NavLink :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200" v-if="props.user.biodata_id != null">
+                                                <NavLink
+                                                    :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                                    class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
+                                                    v-if="props.user.biodata_id != null">
                                                     Isi Survey
                                                 </NavLink>
                                             </div>
@@ -167,8 +173,12 @@ console.log(props.response.length)
                                             <NavLink :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])":class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''" class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"  v-if="props.user.biodata_id == null">
                                                     Isi Survey
                                             </NavLink>
-                                            <NavLink :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])":class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''" class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200" v-if="props.user.biodata_id != null">
-                                                    Isi Survey
+                                            <NavLink
+                                                :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                                :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
+                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
+                                                v-if="props.user.biodata_id != null">
+                                                Isi Survey
                                             </NavLink>
                                         </div>
                                     </div>
