@@ -37,17 +37,17 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::prefix('/client')->group(function (){
         Route::get('/list-client', [ClientController::class, 'index'])->name('listclient');
 
-        Route::get('/create-client', [ClientController::class, 'create'])->name('create_client_page');
+        Route::get('/create-client', [ClientController::class, 'create'])->name('create_client_page')->middleware('admin');;
 
-        Route::get('/{id}/edit-client', [ClientController::class, 'edit'])->name('edit_client');
+        Route::get('/{id}/edit-client', [ClientController::class, 'edit'])->name('edit_client')->middleware('admin');;
     
-        Route::post('/createclient', [ClientController::class, 'store'])->name('create_client');
+        Route::post('/createclient', [ClientController::class, 'store'])->name('create_client')->middleware('admin');;
 
-        Route::put('{id}/update-client/', [ClientController::class, 'update'])->name('update_client');
+        Route::put('{id}/update-client/', [ClientController::class, 'update'])->name('update_client')->middleware('admin');;
 
         Route::get('{id}/profile-client/', [ClientController::class, 'profile'])->name('profile_client');
     
-        Route::get('/{id}/delete',[ClientController::class, 'destroy'])->name('delete_client');
+        Route::get('/{id}/delete',[ClientController::class, 'destroy'])->name('delete_client')->middleware('admin');;
         
         // Projects
         Route::prefix('{Client:slug}/projects')->group(function () {
@@ -90,15 +90,15 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
                 Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');
                 
-                Route::get('/{id}/response',[ResponseController::class, 'index'])->name('response');
+                Route::get('/{id}/list-response',[ResponseController::class, 'index'])->name('response');
                 
                 Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
                 
                 Route::resource('surveys', SurveyController::class);
                 // question
-                Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys');
+                Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys')->middleware('admin');
                 
-                Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store');
+                Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store')->middleware('admin');;
                 
             });
        });
