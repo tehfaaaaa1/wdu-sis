@@ -205,11 +205,11 @@ const submit = () => {
                         <p class="text-base text-justify line-clamp-3">
                             {{ props.surveys.desc }}
                         </p>
+                        <h2 class="mt-3 text-center font-medium text-xl">Tambah Pertanyaan</h2>
                     </div>
                     <form action="" @submit.prevent=submit>
                         <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate"
                             :animation="150" class="list-questions" handle=".handle">
-                            <h2 class="mt-3 text-center font-medium text-xl">Tambah Pertanyaan</h2>
                             <div v-for="(item, index) in questions" :key="item.id" class="list-questions-item">
                                 <div class="p-5 gap-2 flex items-center">
                                     <!-- Order of question -->
