@@ -50,8 +50,15 @@ class QuestionController extends Controller
             $type = $data['types'];
             $question_type = null;
             $req = false;
-            $tipe = null;
-            
+            $tipe = null;   
+            if($soal === null && $type === []){
+                abort(403, "Belum Mengisi Soal dan Memilih Tipe Soal");
+            }elseif($type === []){
+                abort(403, "Belum Memilih Tipe Soal");
+            }elseif($soal === null){
+                abort(403, "Belum mengisi Soal ");
+            }
+        
             foreach($type as $Typee){
                 if($Typee === "Text"){
                     $question_type = 1;
@@ -60,8 +67,15 @@ class QuestionController extends Controller
                 } elseif($Typee === 'Radio'){
                     $question_type = 2;
                     $tipe = $data['radios'];
+                    if($tipe){
+                        abort(403, "Belum Mengisi Pilihan");
+                    }
                 }
-            }       
+                elseif($Typee === 'checkbox'){
+                    $question_type = 3;
+                    $tipe = $data['checkbox'];
+                }
+            }
             $newQuestion = new Question;
             $newQuestion->question_text = $soal;
             $newQuestion->survey_id = $idSurvey;
