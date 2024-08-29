@@ -9,42 +9,43 @@ import { VueDraggable } from 'vue-draggable-plus';
 const props = defineProps({ surveys: Object, projects: Object, clients: Object })
 const project = props.projects[0];
 const client = props.clients[0];
+const MAX_RADIO_CHOICES = 5;
 
 // Note: Customize the functions below if needed
-const questions = ref([{ id: 1, soal: '', texts: [], radios: [], types: [] }]);
+const questions = ref([{ id: 1, soal: '', texts: [], radios: [], checkbox: [], types: [] }]);
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
     { types: 'Radio', name: 'Single Choice', radios: '' },
-    // { id: 2, types: 'Checkbox', name: 'Multiple Choice' },
+    { types: 'Checkbox', name: 'Multiple Choice', checkbox: '' },
+    { types: 'Radio', name: 'Yes / No', radios: '' },
 ]);
 
-// Generate unique IDs
-// const generateUniqueId = () => {
-//     return questions.value.length ? questions.value[questions.value.length - 1].id + 1 : 0;
-// };
+function clone(element) {
+    const len = questions.value.length + 1;
+    let texts = []
+    let radios = []
+    let checkbox = []
+    switch (element.name) {
+        case 'Text':
+            texts = [{ isi: '' }]
+            break;
+        case 'Single Choice':
+            radios = [{ pilih: '' }]
+            break;
+        case 'Yes / No':
+            radios = [{ pilih: 'Yes' }, { pilih: 'No' }]
+            break;
+        case 'Multiple Choice':
+            checkbox = [{ pilih: '' }]
+            break;
 
-const clone = (event) => {
-    console.log(event)
-    // const droppedType = event.item.types;
-    // const newId = generateUniqueId();
-
-    const newQuestion = {
-        id: questions.value.length + 1 ,
-        soal: '',
-        texts: [{isi: ''}],
-        radios: [],
-        types: ['Text'],
+        default:
+            break;
+    }
+    return {
+        id: len, soal: '', texts: texts, radios: radios, checkbox: checkbox, types: [element.types],
     };
-
-    // if (droppedType === 'Text') {
-    //     newQuestion.texts.push({ isi: '' });
-    // } else if (droppedType === 'Radio') {
-    //     newQuestion.radios.push({ pilih: '' });
-    // }
-
-    questions.value.push(newQuestion);
-    console.log('New Question Added:', JSON.stringify(newQuestion, null, 2));
-};
+}
 
 const logUpdate = (newQuestions) => {
     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
@@ -54,8 +55,7 @@ const log = (evt) => {
     console.log(evt);
 };
 
-const MAX_RADIO_CHOICES = 5;
-
+// Text
 function textQuestion(question) {
     if (question.types.length > 0 && !question.types.includes('Text')) {
         // Clear previous type and data if it isn't Text
@@ -68,6 +68,7 @@ function textQuestion(question) {
     }
 }
 
+// Radio
 function radioQuestion(question) {
     if (question.types.length > 0 && !question.types.includes('Radio')) {
         // Clear previous type and data if it isn't Text
@@ -81,23 +82,59 @@ function radioQuestion(question) {
         question.lastRadioIndex = question.radios.length - 1; // update radio index
     }
 }
-function AddRadioOption(question) {
-    if (question.lastRadioIndex < MAX_RADIO_CHOICES) {
-        const radio = { pilih: '' };
-        question.radios.push(radio);
-        question.types.push('Radio'); // Track the type
 
-        question.lastRadioIndex = question.radios.length - 1;
-    }
-    else {
-        alert('Max Option Limit Reached!')
-    }
+function AddRadioOption(question) {
+    const radio = { pilih: '' };
+    question.radios.push(radio);
+    question.types.push('Radio'); // Track the type
+
+    question.lastRadioIndex = question.radios.length - 1;
+    // if (question.lastRadioIndex < MAX_RADIO_CHOICES) {
+    // }
+    // else {
+    //     alert('Max Option Limit Reached!')
+    // }
 }
 
 function deleteRadio(question) {
     if (question.lastRadioIndex >= 1) {
         question.radios.splice(question, 1)
         question.lastRadioIndex = question.radios.length - 1; // update radio index
+    }
+}
+
+// Checkbox
+function checkboxQuestion(question) {
+    if (question.types.length > 0 && !question.types.includes('Checkbox')) {
+        // Clear previous type and data if it isn't Text
+        clearQuestionType(question);
+    }
+    if (!question.types.includes('Checkbox')) {
+        const checkbox = { pilih: '' };
+        question.checkbox.push(checkbox);
+        question.types.push('Checkbox'); // Track the type
+
+        question.lastCheckboxIndex = question.checkbox.length - 1; // update radio index
+    }
+}
+
+function AddCheckboxOption(question) {
+    const checkbox = { pilih: '' };
+    question.checkbox.push(checkbox);
+    question.types.push('Checkbox'); // Track the type
+
+    question.lastCheckboxIndex = question.checkbox.length - 1;
+    // if (question.lastRadioIndex < MAX_RADIO_CHOICES) {
+    // }
+    // else {
+    //     alert('Max Option Limit Reached!')
+    // }
+}
+
+function deleteCheckbox(question) {
+    if (question.lastCheckboxIndex >= 1) {
+        question.checkbox.splice(question, 1)
+        question.lastCheckboxIndex = question.checkbox.length - 1; // update radio index
     }
 }
 
@@ -115,6 +152,10 @@ function clearQuestionType(question) {
 
 function isTypeAdded(question, type) {
     return question.types.includes(type);
+}
+
+function remove(index) {
+    questions.value.splice(index, 1);
 }
 
 const form = useForm({
@@ -140,9 +181,9 @@ const submit = () => {
             <aside class="sticky bg-gray-200 w-1/6 min-h-full top-0 z-50">
                 <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add Questions
                 </h1>
-                <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }" :animation="150"
-                    :clone="clone" :sort="false" class="list-group">
-                    <div v-for="item in questionsType" :key="item.id" class="list-group-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
+                <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
+                    :animation="150" :clone="clone" :sort="false" class="list-qtype">
+                    <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
                         items-center cursor-pointer">
                         <span>{{ item.name }}</span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -164,16 +205,24 @@ const submit = () => {
                         </p>
                     </div>
                     <form action="" @submit.prevent=submit>
-                        <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate" :animation="150"
-                            class="list-group">
-                            <div v-for="item in questions" :key="item.id" class="list-group-item">
-                                <div class="p-5 flex items-center">
+                        <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate"
+                            :animation="150" class="list-questions" handle=".handle">
+                            <h2 class="mt-3 text-center font-medium text-xl">Tambah Pertanyaan</h2>
+                            <div v-for="(item, index) in questions" :key="item.id" class="list-questions-item">
+                                <div class="p-5 gap-2 flex items-center">
                                     <!-- Order of question -->
-                                    <p>{{ item.id }}</p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor"
+                                        class="size-10 cursor-move handle border-2 rounded-md border-gray-800">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                    </svg>
+
+                                    <p class="ml-2">{{ index + 1 }}.</p>
 
                                     <!-- Insert text here -->
                                     <input v-model="item.soal" type="text" placeholder="Insert question here"
-                                        class="text-sm w-full mx-4 rounded-md">
+                                        class="text-sm w-full mx-1 rounded-md">
 
                                     <!-- Question types -->
                                     <Dropdown align="right" width="48">
@@ -204,26 +253,36 @@ const submit = () => {
                                             </div>
                                         </template>
                                     </Dropdown>
+
+                                    <!-- delete question -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" @click="remove(index)"
+                                        class="size-10 text-red-600 cursor-pointer">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                    </svg>
                                 </div>
 
+                                <!-- Question Choices -->
                                 <!-- text -->
                                 <div class="px-5" v-for="(text, index) in item.texts" :key="index">
                                     <textarea v-model="text.isi" :name="'text-' + item.id" :id="'text-' + item.id"
                                         placeholder="Jawaban" class="w-full text-sm rounded-md bg-gray-200" disabled />
                                 </div>
+
                                 <!-- single choice -->
                                 <div class="px-5" v-for="(radio, index) in item.radios" :key="index">
                                     <div class="flex items-center mb-2">
-                                        &#x2022;
+                                        <span class="select-none">O</span>
                                         <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
                                             :id="'radio' + (index + 1) + '-q' + (item.id)"
                                             placeholder="Insert single choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
+
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" @click="deleteRadio(item, index)"
-                                            class="size-6 text-red-600 cursor-pointer">
+                                            stroke-width="1.5" stroke="currentColor" class="size-6 text-red-600 cursor-pointer" @click="deleteRadio(item, index)">
                                             <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
 
                                     </div>
@@ -231,6 +290,31 @@ const submit = () => {
                                         v-if="index === item.radios.length - 1 && item.radios.length < MAX_RADIO_CHOICES">
                                         <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
                                             @click="AddRadioOption(item)">
+                                            Add Options
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- multiple choice -->
+                                <div class="px-5" v-for="(checkbox, index) in item.checkbox" :key="index">
+                                    <div class="flex items-center mb-2">
+                                        <span class="select-none">&#9634;</span>
+                                        <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
+                                            :id="'radio' + (index + 1) + '-q' + (item.id)"
+                                            placeholder="Insert multiple choice here"
+                                            class="text-sm mx-4 rounded-md block w-1/4">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="size-6 text-red-600 cursor-pointer" @click="deleteCheckbox(item, index)">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="ml-6"
+                                        v-if="index === item.checkbox.length - 1 && item.checkbox.length < MAX_RADIO_CHOICES">
+                                        <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddCheckboxOption(item)">
                                             Add Options
                                         </a>
                                     </div>
@@ -248,7 +332,7 @@ const submit = () => {
                             </template>
                         </VueDraggable> -->
 
-                        <div class="border-b-2 border-gray-300" />
+                        <div class="border-b-2 border-gray-300 mt-6" />
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing">

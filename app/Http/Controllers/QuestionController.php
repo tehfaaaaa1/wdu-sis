@@ -39,49 +39,49 @@ class QuestionController extends Controller
     {
         // $surveyid = Survey::where('id', $id);
 
-        $allRequest =$request->all();
+        $allRequest = $request->all();
         $allData = $allRequest['data'];
         $idSurvey = $request['survey'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
-        
-        foreach ($allData as $data){
+
+        foreach ($allData as $data) {
             $soal = $data['soal'];
             $type = $data['types'];
             $question_type = null;
             $req = false;
-            $tipe = null;   
-            if($soal === null && $type === []){
-                abort(403, "Belum Mengisi Soal dan Memilih Tipe Soal");
-            }elseif($type === []){
-                abort(403, "Belum Memilih Tipe Soal");
-            }elseif($soal === null){
-                abort(403, "Belum mengisi Soal ");
-            }
-        
-            foreach($type as $Typee){
-                if($Typee === "Text"){
-                    $question_type = 1;
-                    $req = true;
-                    $tipe = null;
-                } elseif($Typee === 'Radio'){
-                    $question_type = 2;
-                    $tipe = $data['radios'];
-                    if($tipe === null || $tipe ===[] || $tipe === ''){
-                        abort(403, "Belum Mengisi Pilihan");
-                    } elseif (count($tipe) < 2){
-                        abort(403, 'pilihannya kurang daari 2');
-                    }
-                }elseif($Typee === 'Checkbox'){
-                    $question_type = 3;
-                    $tipe = $data['checkbox'];
-                    if($tipe === null || $tipe ===[] || $tipe === ''){
-                        abort(403, "Belum Mengisi Pilihan");
-                    } elseif (count($tipe) < 2){
-                        abort(403, 'pilihannya kurang daari 2');
+            $tipe = null;
+            if ($soal !== null && $type !== []) {
+                foreach ($type as $Typee) {
+                    switch ($Typee) {
+                        case 'Text':
+                            $question_type = 1;
+                            $req = true;
+                            $tipe = null;
+                            break;
+                        case 'Radio':
+                            $question_type = 2;
+                            $tipe = $data['radios'];
+                            if (count($tipe) < 2) {
+                                abort(403, "Isilah Minimal 2 Pilihan !!");
+                            }
+                            break;
+                        case 'Checkbox':
+                            $question_type = 3;
+                            $tipe = $data['checkbox'];
+                            if (count($tipe) < 2) {
+                                abort(403, "Isilah Minimal 2 Pilihan !!");
+                            }
+                            break;
+
+                        default:
+                            break;
                     }
                 }
+            } else {
+                abort(403, "Belum Mengisi Soal dan Memilih Tipe Soal");
             }
+
             $newQuestion = new Question;
             $newQuestion->question_text = $soal;
             $newQuestion->survey_id = $idSurvey;
@@ -89,21 +89,19 @@ class QuestionController extends Controller
             $newQuestion->order = random_int(1, 10000);
             $newQuestion->required = $req;
             $newQuestion->save();
-            if($tipe !== null ){
-                foreach($tipe as $choice){
+            if ($tipe !== null) {
+                foreach ($tipe as $choice) {
                     $value = $choice['pilih'];
 
                     QuestionChoice::Create([
-                        'value' => $value, 
-                        'question_id' => $newQuestion->id, 
+                        'value' => $value,
+                        'question_id' => $newQuestion->id,
                         'order' => random_int(1, 10000),
                     ]);
                 }
             } else {
-
             }
-
-        }   
+        }
 
         // session()->flash('question_added', 'Questions added!');
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('question_added', 'Question added successfully.');
