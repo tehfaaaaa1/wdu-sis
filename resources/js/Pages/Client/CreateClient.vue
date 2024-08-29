@@ -13,6 +13,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 const form = useForm({
     client_name: '',
     alamat: '',
+    phone: '',
     desc: '',
     image: '',
 });
@@ -23,9 +24,7 @@ const submit = () => {
 </script>
 
 <template>
-
     <AppLayout title="Create Client">
-
         <div class="mt-6 sm:mt-0 px-4">
             <AuthenticationCard>
                 <template #logo>
@@ -36,14 +35,20 @@ const submit = () => {
                     <div class="relative">
                         <InputLabel for="client_name" />
                         <TextInput id="client_name" v-model="form.client_name" type="text" placeholder="Client Name"
-                            class="" required autofocus autocomplete="client_name" />
+                            required autofocus autocomplete="client_name" />
                         <InputError class="mt-2" :message="form.errors.client_name" />
                     </div>
                     <div class="mt-4 relative">
                         <InputLabel for="alamat" />
                         <TextInput id="alamat" v-model="form.alamat" type="text" placeholder="Alamat"
-                            class="" required autofocus autocomplete="alamat" />
+                            required autofocus autocomplete="alamat" />
                         <InputError class="mt-2" :message="form.errors.alamat" />
+                    </div>
+                    <div class="mt-4 relative">
+                        <InputLabel for="phone" />
+                        <TextInput id="phone" v-model="form.phone" type="text" placeholder="Contact Person"
+                            required autofocus autocomplete="phone" />
+                        <InputError class="mt-2" :message="form.errors.phone" />
                     </div>
                     <div class="mt-4 relative">
                         <textarea id="desc" v-model="form.desc" placeholder="Description"
@@ -54,14 +59,14 @@ const submit = () => {
                     <div class="mt-4 relative">
                         <label class="block mb-2 text-base font-medium text-primary"
                             for="file_input">Upload photo</label>
-                        <input @input="form.image =$event.target.files[0]"
+                        <input @input="form.image = $event.target.files[0]"
                             class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white"
                             id="file_input" type="file" accept=".png, .jpg, .jpeg">
-                            <p class="mt-1 text-sm text-gray-500" id="file_input_help">PNG, JPG/JPEG (max file size : 2 MB). Transparent Background.</p>
+                        <p class="mt-1 text-sm text-gray-500" id="file_input_help">PNG, JPG/JPEG (max file size: 2 MB). Transparent Background.</p>
                     </div>
                     <div class="my-4 text-center">
-                        <PrimaryButton class="w-full justify-center mt-2 " :class="{ 'opacity-25': form.processing }"
+                        <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
                             Add client
                         </PrimaryButton>
@@ -69,12 +74,13 @@ const submit = () => {
                 </form>
             </AuthenticationCard>
         </div>
-
-        <!-- <div class="hidden">
-                <img src="/img/Group 63.png" alt="">
-            </div> -->
-
     </AppLayout>
-
-
 </template>
+
+<style scoped>
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>

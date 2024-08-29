@@ -26,6 +26,7 @@ const hapus = (id) => {
 };*/
 const client = props.clients[0];
 const clientSlug = client.slug;
+const clientImage = client.image;
 
 const hapus = (slug, id) => {
     selectedProjectId.value = id;

@@ -14,6 +14,7 @@ class Client extends Model
         'client_name',
         'image',
         'alamat',
+        'phone',
         'slug',
         'desc',
     ];

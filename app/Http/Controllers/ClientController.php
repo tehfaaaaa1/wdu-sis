@@ -19,6 +19,7 @@ class ClientController extends Controller
                     'id' => $client->id,
                     'client_name' => $client->client_name,
                     'alamat' => $client->alamat,
+                    'phone' => $client->phone,
                     'image' => $client->image,
                     'desc' => $client->desc,
                     'slug' => $client->slug,
@@ -52,32 +53,33 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
+            'phone' => 'required|max:20',
             'desc' => 'required',
             'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
+    
         if ($request->hasFile('image')) {
             $fileName = date('YmdHi') . $request->file('image')->getClientOriginalName();
-
             $request->file('image')->move(public_path('img'), $fileName);
         }
-
+    
         $client = Client::create([
             'client_name' => $validated['client_name'],
             'image' => $fileName,
             'alamat' => $validated['alamat'],
+            'phone' => $validated['phone'],
             'slug' => Str::slug($validated['client_name']),
             'desc' => $validated['desc'],
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
-        Log::info('client created:', $client->toArray());
-
-        return redirect()->route('listclient')->with('success', 'Project created successfully.');
+    
+        Log::info('Phone field:', ['phone' => $request->phone]);
+        Log::info('Validated data:', $validated);
+        return redirect()->route('listclient')->with('success', 'Client created successfully.');
     }
 
     public function edit($id)
@@ -90,6 +92,7 @@ class ClientController extends Controller
                 'desc' => $client->desc,
                 'image' => $client->image,
                 'alamat' => $client->alamat,
+                'phone' => $client->phone,
                 'slug' => $client->slug,
                 'updated_at' => $client->update_at,
             ]
@@ -105,6 +108,7 @@ class ClientController extends Controller
             'client' => [
                 'client_name' => $client->client_name,
                 'alamat' => $client->alamat,
+                'phone'=> $client->phone,
                 'desc' => $client->desc,
                 'image' => $client->image,
                 'date' => $client->created_at->format('j F Y'),
@@ -130,6 +134,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
+            'phone' => 'required|max:255',
             'image' => 'sometimes|mimes:png,jpg,jpeg,gif|max:2048',
             'desc' => 'required',
         ]);
@@ -142,6 +147,7 @@ class ClientController extends Controller
             'client_name' => $validated['client_name'],
             'desc' => $validated['desc'],
             'alamat' => $validated['alamat'],
+            'phone' => $validated['phone'],
             'slug' => $slug,
             'updated_at' => now(),
         ]);
