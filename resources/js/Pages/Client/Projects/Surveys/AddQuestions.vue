@@ -206,6 +206,7 @@ const submit = () => {
                         <p class="text-base text-justify line-clamp-3">
                             {{ props.surveys.desc }}
                         </p>
+                        <h2 class="mt-3 text-center font-medium text-xl">Tambah Pertanyaan</h2>
                     </div>
                     <form action="" @submit.prevent=submit>
                         <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate"
