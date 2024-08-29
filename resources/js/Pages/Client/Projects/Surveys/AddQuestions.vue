@@ -301,7 +301,7 @@ const submit = () => {
                                         <span class="select-none">&#9634;</span>
                                         <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
                                             :id="'radio' + (index + 1) + '-q' + (item.id)"
-                                            placeholder="Insert single choice here"
+                                            placeholder="Insert multiple choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
 
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
