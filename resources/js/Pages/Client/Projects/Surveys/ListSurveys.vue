@@ -152,57 +152,57 @@ console.log(props.response.length)
                                                 v-if="res.user_id === $page.props.auth.user.id">
                                                 <p>Anda telah Mengerjakan Survey Ini</p>
                                             </div>
-                                            <div class="" v-for="res in response"
-                                                :class="res.survey_id !== survey.id ? '' : 'hidden'">
-                                                <div class="" v-if="res.user_id === $page.props.auth.user.id">
-                                                    <NavLink
-                                                        :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
-                                                        v-if="props.user.biodata_id == null">
-                                                        Isi Survey
-                                                    </NavLink>
-                                                    <NavLink
-                                                        :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
-                                                        v-if="props.user.biodata_id != null">
-                                                        Isi Survey
-                                                    </NavLink>
-                                                </div>
-                                            </div>
-                                            <div class="" v-if="props.response.length === 0">
+                                        </div>
+                                        <div class="" v-for="res in response"
+                                            :class="res.survey_id !== survey.id ? '' : 'hidden'">
+                                            <div class="" v-if="res.user_id === $page.props.auth.user.id">
                                                 <NavLink
                                                     :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                    :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
                                                     class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
                                                     v-if="props.user.biodata_id == null">
                                                     Isi Survey
                                                 </NavLink>
                                                 <NavLink
                                                     :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                    :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
                                                     class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
                                                     v-if="props.user.biodata_id != null">
                                                     Isi Survey
                                                 </NavLink>
                                             </div>
                                         </div>
-                                        <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])"
-                                            v-if="$page.props.auth.user.current_team_id !== 1 || $page.props.auth.user.usertype !== 'user'"
-                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
-                                            Cek Respon
-                                        </NavLink>
-                                        <NavLink :href="route('question_surveys', [clientSlug, projectSlug, survey.id])"
-                                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                                            class="col-span-2 w-full flex justify-center py-2.5 my-0 text-white bg-primary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
-                                            Tambah pertanyaan
-                                        </NavLink>
-                                        <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                                            class="mt-5 text-center col-span-2">
-                                            <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
-                                                class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                            <a @click.prevent="hapus(clientSlug, projectSlug, survey.id)"
-                                                class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
+                                        <div class="" v-if="props.response.length === 0">
+                                            <NavLink
+                                                :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                                :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
+                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
+                                                v-if="props.user.biodata_id == null">
+                                                Isi Survey
+                                            </NavLink>
+                                            <NavLink
+                                                :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                                :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
+                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
+                                                v-if="props.user.biodata_id != null">
+                                                Isi Survey
+                                            </NavLink>
                                         </div>
+                                    </div>
+                                    <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])"
+                                        v-if="$page.props.auth.user.current_team_id !== 1 || $page.props.auth.user.usertype !== 'user'"
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                                        Cek Respon
+                                    </NavLink>
+                                    <NavLink :href="route('question_surveys', [clientSlug, projectSlug, survey.id])"
+                                        v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                        class="col-span-2 w-full flex justify-center py-2.5 my-0 text-white bg-primary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                                        Tambah pertanyaan
+                                    </NavLink>
+                                    <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                        class="mt-5 text-center col-span-2">
+                                        <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
+                                            class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
+                                        <a @click.prevent="hapus(clientSlug, projectSlug, survey.id)"
+                                            class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                                     </div>
                                 </td>
                             </tr>
