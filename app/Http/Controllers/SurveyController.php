@@ -29,7 +29,11 @@ class SurveyController extends Controller
         $client = Client::where('slug', $clientSlug)->get();
         $s = $surveyall->survey;
         $user = Auth::user();
-        
+        $c= $client[0];
+        $userClient = User::where('client_id', $c->id)->get();
+        $target = count($userClient);
+
+        $response = Response::where('user_id', $user->id)->get();
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
