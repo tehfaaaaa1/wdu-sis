@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('client_name');
             $table->string('image');
             $table->string('alamat');
+            $table->string('phone')->nullable(false);
             $table->string('slug')->unique();
             $table->text('desc');
             $table->timestamps();
