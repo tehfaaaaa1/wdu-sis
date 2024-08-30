@@ -133,9 +133,9 @@ class ClientController extends Controller
         $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
-            'phone' => 'required|max:255',
+            // 'phone' => 'required|max:255',
             'desc' => 'required',
-            'image' => 'sometimes|required|mimes:png,jpg,jpeg,gif|max:2048',
+            // 'image' => 'sometimes|required|mimes:png,jpg,jpeg,gif|max:2048',
         ]);
 
         // Generate the slug from the client name
@@ -146,7 +146,7 @@ class ClientController extends Controller
             'client_name' => $request->client_name,
             'desc' =>$request->desc,
             'alamat' =>  $request->alamat,
-            'phone' => $request->phone,
+            'phone' => '08249',
             'slug' => $slug,
             'updated_at' => now(),
         ]);
@@ -159,7 +159,7 @@ class ClientController extends Controller
         }
 
         return redirect()->route('listclient')->with('success', 'Client updated successfully.');
-    }
+        }
 
     public function destroy($id)
     {
