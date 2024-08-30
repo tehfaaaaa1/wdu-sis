@@ -52,6 +52,7 @@ class SurveyController extends Controller
                 'clients' => $client,
                 'user' => $user,
                 'target' => $target,
+                'response' => $response
             ]
         );
     }
