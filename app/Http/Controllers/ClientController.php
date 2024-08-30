@@ -135,7 +135,7 @@ class ClientController extends Controller
             'alamat' => 'required|max:255',
             'phone' => 'required|max:255',
             'desc' => 'required',
-            'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048',
+            'image' => 'sometimes|required|mimes:png,jpg,jpeg,gif|max:2048',
         ]);
 
         // Generate the slug from the client name

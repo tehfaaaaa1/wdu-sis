@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Client;
 use App\Models\User;
 use App\Models\Team; 
 use Inertia\Inertia;
@@ -20,6 +21,7 @@ class UserController extends Controller
                     'email' => $user->email,
                     'usertype' => $user->usertype,
                     'team' => $user->currentTeam ? $user->currentTeam->name : 'No Team',
+                    'client' => $user->client ? $user->client->client_name : 'No Client'
                 ];
             }),
         ]);
@@ -44,8 +46,10 @@ class UserController extends Controller
     {
         // Fetch teams for the view
         $teams = Team::all();
+        $client = Client::all();
         return Inertia::render('Users/CreateUsers', [
             'teams' => $teams,
+            'client' => $client
         ]);
     }
 
@@ -56,7 +60,8 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|string|confirmed',
             'usertype' => 'required|string',
-            'team_id' => 'nullable|exists:teams,id', 
+            'team_id' => 'nullable|exists:teams,id',
+            'client_id' => 'required' 
         ]);
 
         // Create the user
@@ -65,7 +70,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'usertype' => $request->usertype,
-            'client_id' => 1,
+            'client_id' => $request->client_id,
         ]);
 
         // Assign team if provided
