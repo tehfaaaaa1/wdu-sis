@@ -21,7 +21,7 @@ const answers = ref([]);
 
 // Initialize the form using useForm
 const form = useForm({
-    answer: [],
+    answer: [],    
     question: props.listquestion,
     project_slug: project['slug'],
     client_slug: client['slug'],
@@ -80,8 +80,8 @@ console.log(props.choice)
                                     <div v-if="question.question_type_id == 3">
                                         <div v-for="(list, i) in props.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="checkbox"
-                                                :id="'option' + (i + 1)" :value="list.value" :checked="checked"
-                                                :name="'question' + (i + 1)" v-model="form.answer[index + i]" />
+                                                :id="'option' + (i + 1)" :true-value="list.value"
+                                                :name="`question-${question.id}` + (i + 1)" v-model="form.answer[index +  i]" />
                                             <label v-if="list.question_id === question.id" class="px-3"
                                                 :for="'option' + (i + 1)">
                                                 {{ list.value }}

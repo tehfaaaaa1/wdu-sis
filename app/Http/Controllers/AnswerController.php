@@ -17,7 +17,7 @@ class AnswerController extends Controller
     {
         $survey =  Survey::findOrFail($id);
 
-        $question = DB::table('questions')->where('survey_id', $id)->get();
+        $question = $request['question'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
         $all = $request->all();
