@@ -71,8 +71,10 @@ console.log(props.surveys)
 
 <template>
     <AppLayout title="List Survey">
-        <template #header >
-                <NavLink :href="route('projects', clientSlug)" class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang"><span class="text-black">Project&nbsp;</span> {{ project.project_name }}</NavLink> 
+        <template #header>
+            <NavLink :href="route('projects', clientSlug)"
+                class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang"><span
+                    class="text-black">Project&nbsp;</span> {{ project.project_name }}</NavLink>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -125,7 +127,7 @@ console.log(props.surveys)
                                 <th scope="col" class="px-6 py-3 w-1/5">Survey Title</th>
                                 <th scope="col" class="px-6 py-3 w-1/4">Description</th>
                                 <th scope="col" class="px-6 py-3 ">Target</th>
-                                <th scope="col" class="px-6 py-3 " >Status</th>
+                                <th scope="col" class="px-6 py-3 ">Status</th>
                                 <th scope="col" class="px-6 py-3 md:w-1/4 text-center">Action</th>
                             </tr>
                         </thead>
@@ -149,28 +151,21 @@ console.log(props.surveys)
                                         :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''">
                                         <!-- Sudah Mengisi Survey -->
                                         <div class="" v-for="res in survey.response">
-                                            <div class="" v-if="res.survey_id === survey.id ">
-                                                <div class="my-3" v-if="res.user_id === props.user.id">
-                                                    <p>Anda Sudah Mengisi Survey Ini</p>
+                                            <div class="" v-if="res.user_id === $page.props.auth.user.id">
+                                                <div class="my-3">
+                                                    <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
                                                 </div>
                                             </div>
 
-                                        </div>             
+                                        </div>
                                         <!-- Belum Mengisi survey Apapun -->
-                                        <div class="" v-if="survey.response.length === 0">
+                                        <div class="">
                                             <NavLink
-                                                :href="route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                                :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
                                                 :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
-                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
-                                                v-if="props.user.biodata_id == null">
+                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
                                                 Isi Survey
-                                            </NavLink>
-                                            <NavLink
-                                                :href="route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
-                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200"
-                                                v-if="props.user.biodata_id != null">
-                                                Isi Survey
+                                                <!-- {{ console.log(props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])) }} -->
                                             </NavLink>
                                         </div>
                                     </div>

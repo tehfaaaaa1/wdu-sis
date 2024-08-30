@@ -107,7 +107,7 @@ console.log(props.client)
                         <h2 class="text-primary font-semibold text-lg mb-4">Client Select</h2>                                       
                                 <div class="py-1" v-for="c in client">    
                                     <input type="radio" :id="'client_' + c.id" name="client_id" class="checked:text-primary" v-model="form.client_id" :value="c.id">
-                                    <label :for="'clietn_'+c.id" class="ml-2">{{ c.client_name }}</label>
+                                    <label :for="'client_'+c.id" class="ml-2">{{ c.client_name }}</label>
                                 </div>
 
 

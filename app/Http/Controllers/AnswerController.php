@@ -22,7 +22,7 @@ class AnswerController extends Controller
         $projectSlug = $request['project_slug'];
         $all = $request->all();
         $allAnswer = $all['answer'];
-        dd($all);
+        // dd($all);
         $response = new Response;
         $response->user_id = Auth::user()->id;
         $response->survey_id = $id;
@@ -34,6 +34,7 @@ class AnswerController extends Controller
             // Assume answers are provided in the same order as questions
             $questionAnswerMap[$q->id] = $allAnswer[$index];
         }
+        dd($questionAnswerMap);
 
         foreach ($questionAnswerMap as $questionId => $answer) {
             $jawab = new Answer;
