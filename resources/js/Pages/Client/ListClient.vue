@@ -93,7 +93,7 @@ const filteredClients = computed(() => {
                                     <h1 class="text-base font-medium truncate text-gray-500">{{ client.alamat }}
                                     </h1>
                                 </div>
-                                <p class="text-lg text-justify line-clamp-3 leading-5 tracking-wide text-gray-600">
+                                <p class="text-lg md:text-base text-justify line-clamp-3 leading-5 tracking-wide text-gray-600">
                                     {{ client.desc }}
                                 </p>
                             </div>
