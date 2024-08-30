@@ -21,7 +21,7 @@ class UserController extends Controller
                     'email' => $user->email,
                     'usertype' => $user->usertype,
                     'team' => $user->currentTeam ? $user->currentTeam->name : 'No Team',
-                    'client' => $user->client ? $user->client->client_name : 'No Client'
+                    'client' => $user->client ? $user->client->client_name : 'No Client         '
                 ];
             }),
         ]);

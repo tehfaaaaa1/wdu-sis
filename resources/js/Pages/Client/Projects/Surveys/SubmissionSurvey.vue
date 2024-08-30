@@ -9,9 +9,9 @@ const props = defineProps({
     surveys: Object,
     projects: Object,
     clients: Object,
-    listquestion: Array,
-    choice: Array,
-    totalrespon: Object
+    listquestion: Object,
+    totalrespon: Object,
+    choice:Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -38,6 +38,7 @@ onMounted(() => {
 const submit = () => {
     form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]));
 };
+console.log(props.choice)
 </script>
 
 <template>
@@ -58,7 +59,7 @@ const submit = () => {
                         <form @submit.prevent="submit">
                             <div class="">
                             </div>
-                            <div v-for="(question, index) in props.listquestion" :key="index">
+                            <div v-for="(question, index) in listquestion" :key="index">
                                 <div class="block">
                                     <p>{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
 
@@ -66,8 +67,21 @@ const submit = () => {
                                     <div v-if="question.question_type_id == 2">
                                         <div v-for="(list, i) in props.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="radio"
-                                                :id="'option' + (i + 1)" :value="list.value"
+                                                :id="'option' + (i + 1)" :value="list.value" 
                                                 :name="`question-${question.id}`" v-model="form.answer[index]" />
+                                            <label v-if="list.question_id === question.id" class="px-3"
+                                                :for="'option' + (i + 1)">
+                                                {{ list.value }}
+                                            </label>
+                                        </div>
+                                    </div>
+
+
+                                    <div v-if="question.question_type_id == 3">
+                                        <div v-for="(list, i) in props.choice" :key="i">
+                                            <input v-if="list.question_id === question.id" type="checkbox"
+                                                :id="'option' + (i + 1)" :value="list.value" :checked="checked"
+                                                :name="'question' + (i + 1)" v-model="form.answer[index + i]" />
                                             <label v-if="list.question_id === question.id" class="px-3"
                                                 :for="'option' + (i + 1)">
                                                 {{ list.value }}

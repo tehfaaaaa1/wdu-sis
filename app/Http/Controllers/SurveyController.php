@@ -147,7 +147,9 @@ class SurveyController extends Controller
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $response = DB::table('responses')->where('survey_id', $id)->get();
         $totalRes = count($response);
-        $choice = QuestionChoice::all();
+        $choice = Question::where('survey_id', $id)->firstOrFail();
+        $c = $choice->choice;
+        
         // dump($survey);
         return Inertia::render(
             'Client/Projects/Surveys/SubmissionSurvey',
@@ -156,7 +158,7 @@ class SurveyController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'listquestion' => $question,
-                'choice' => $choice,
+                'choice' => $c,
                 'totalrespon' => $totalRes,
             ]
         );
