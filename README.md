@@ -1,27 +1,33 @@
 ## To Be Added
 **Surveys**
-- Drag & Drop Form Builder (Elementor-like)
-- Biodata Respondent
+- Drag & Drop Survey Form Builder (Debugging)
+<!-- Add Edit Questions -->
+- Biodata Respondent (Debugging)
 <!-- (Age, Address, Phone Number, Instance) -->
-- Logic Boolean in Surveys
-- Region & Target Number of Survey Respondents
-- Verify Respondent Region
+- Logic Boolean in Surveys (TBA)
+- Region & Target Number of Survey Respondents (TBA)
+- Verify Respondent Region (TBA)
 
 **Misc**
-- Add Icons to buttons
-- change to indonesian language
+- Add Icons to needed elements
+- Change to / Add Indonesian Language
 - better UI/UX
-- More Dashboard Content
-- More Admin Panel Content
+- Dashboard Content
 <!-- - Updated Documentation (Fadel)
   - ERD Survey Database (V)
   - Activity Diagram (V) -->
 
 ## Need bug fix
-- Edit Client can't update
-- Drag & Drop Question needs some polishing
+- Edit Client can't update (image breaks the form when added)
 
 ## Changelog
+### 29 Aug 2024
+- Updated AddQuestion
+  - Now uses drag & drop feature
+  - Added checkbox / multiple choice
+- Expanding Profile Client (WIP)
+- Many bug fixes
+
 ### 28 Aug 2024
 - CRUD Biodata Respondent
 - Survey Complete Status

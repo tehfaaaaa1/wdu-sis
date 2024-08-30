@@ -144,6 +144,8 @@ function clearQuestionType(question) {
         question.texts = [];  // Clear text data
     } else if (question.types.includes('Radio')) {
         question.radios = [];  // Clear choice data
+    } else if (question.types.includes('Checkbox')) {
+        question.checkbox = [];  // Clear choice data
     }
 
     // Clear the type
@@ -250,7 +252,8 @@ const submit = () => {
                                                 class="block px-4 py-2 text-sm cursor-pointer">
                                                 Single Choice
                                             </div>
-                                            <div class="block px-4 py-2 text-sm cursor-pointer">
+                                            <div @click="checkboxQuestion(item)"
+                                            class="block px-4 py-2 text-sm cursor-pointer">
                                                 Multiple Choice
                                             </div>
                                         </template>
@@ -290,7 +293,7 @@ const submit = () => {
                                         </svg>
 
                                     </div>
-                                    <div class="ml-6"
+                                    <div class="ml-7"
                                         v-if="index === item.radios.length - 1 && item.radios.length < MAX_RADIO_CHOICES">
                                         <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
                                             @click="AddRadioOption(item)">
@@ -304,7 +307,7 @@ const submit = () => {
                                     <div class="flex items-center mb-2">
                                         <span class="select-none">&#9634;</span>
                                         <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
-                                            :id="'radio' + (index + 1) + '-q' + (item.id)"
+                                            :id="'checkbox' + (index + 1) + '-q' + (item.id)"
                                             placeholder="Insert multiple choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
 
@@ -317,7 +320,7 @@ const submit = () => {
                                         </svg>
 
                                     </div>
-                                    <div class="ml-6"
+                                    <div class="ml-7"
                                         v-if="index === item.checkbox.length - 1 && item.checkbox.length < MAX_RADIO_CHOICES">
                                         <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
                                             @click="AddCheckboxOption(item)">
