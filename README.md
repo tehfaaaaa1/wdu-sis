@@ -21,6 +21,9 @@
 - Edit Client can't update (image breaks the form when added)
 
 ## Changelog
+### 30 Aug 2024
+- Testing & Debugging
+
 ### 29 Aug 2024
 - Updated AddQuestion
   - Now uses drag & drop feature
