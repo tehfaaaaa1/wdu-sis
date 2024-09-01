@@ -1,9 +1,7 @@
 ## To Be Added
 **Surveys**
-- Drag & Drop Survey Form Builder (Debugging)
-<!-- Add Edit Questions -->
-- Biodata Respondent (Debugging)
-<!-- (Age, Address, Phone Number, Instance) -->
+- Drag & Drop Survey Form Builder (Debugging) <!-- Add Edit Questions -->
+- Biodata Respondent (Debugging) <!-- (Age, Address, Phone Number, Instance) -->
 - Logic Boolean in Surveys (TBA)
 - Region & Target Number of Survey Respondents (TBA)
 - Verify Respondent Region (TBA)
