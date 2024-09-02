@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-
+use File;
 class ClientController extends Controller
 {
     public function index()
@@ -135,28 +135,34 @@ class ClientController extends Controller
             'alamat' => 'required|max:255',
             // 'phone' => 'required|max:255',
             'desc' => 'required',
-            // 'image' => 'sometimes|required|mimes:png,jpg,jpeg,gif|max:2048',
+            // 'image' => 'mimes:png,jpg,jpeg,gif|max:2048',
         ]);
 
         // Generate the slug from the client name
         
+        $data = Client::findOrFail($id);
+        if ($request->hasFile('image')) {
+            $oldImage = public_path("/img/".$data->image);
+            if(File::exists($oldImage)){
+                File::delete($oldImage);
+            }
+            $image = $request->file('image');
+            $filenname = date('YmdHi') . $image->getClientOriginalExtension();
+            $image->move(public_path('img'), $filenname);
+        } else{
+            $filenname = $data->image;
+        }
+        // dd($request->file('image')) ;
         $slug = Str::slug($request->client_name);
-
         Client::where('id', $id)->update([
             'client_name' => $request->client_name,
             'desc' =>$request->desc,
             'alamat' =>  $request->alamat,
             'phone' => '08249',
+            'image' => $filenname,
             'slug' => $slug,
             'updated_at' => now(),
         ]);
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-
-            $filenname = date('YmdHi') . $image->getClientOriginalExtension();
-            $image->move(public_path('img'), $filenname);
-            Client::where('id', $id)->update(['image' => $filenname]);
-        }
 
         return redirect()->route('listclient')->with('success', 'Client updated successfully.');
         }

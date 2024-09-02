@@ -62,7 +62,7 @@ console.log(props.listquestion)
                             <div v-for="(question, index) in listquestion" :key="index">
                                 <div class="block">
                                     <p>{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
-
+                                    
                                     <!-- Handling radio inputs for question type 2 -->
                                     <div v-if="question.question_type_id == 2">
                                         <div v-for="(list, i) in question.choice" :key="i">
