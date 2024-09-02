@@ -51,7 +51,7 @@ class QuestionController extends Controller
             $question_type = null;
             $req = false;
             $tipe = null;
-            if ($soal !== null && $type !== []) {
+            if ($soal !== null && $type !== []) {   
                 foreach ($type as $Typee) {
                     switch ($Typee) {
                         case 'Text':
@@ -91,7 +91,6 @@ class QuestionController extends Controller
             if ($tipe !== null) {
                 foreach ($tipe as $choice) {
                     $value = $choice['pilih'];
-
                     QuestionChoice::Create([
                         'value' => $value,
                         'question_id' => $newQuestion->id,
