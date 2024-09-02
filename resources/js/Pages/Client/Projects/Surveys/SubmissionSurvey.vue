@@ -11,27 +11,17 @@ const props = defineProps({
     clients: Object,
     listquestion: Object,
     totalrespon: Object,
-    choice:Object
+    choice: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
 
-// Initialize the answers array
-const answers = ref([]);
-
 // Initialize the form using useForm
 const form = useForm({
-    answer: [],    
+    answer: [],
     question: props.listquestion,
     project_slug: project['slug'],
     client_slug: client['slug'],
-});
-
-// On component mount, initialize the answers array based on the listquestion prop
-onMounted(() => {
-    answers.value = props.listquestion.map(() => ({
-        jawaban: [] // Initialize based on question type
-    }));
 });
 
 // Submit handler for the form
@@ -47,9 +37,9 @@ console.log(props.listquestion)
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                     <h2>{{ props.surveys.title }}</h2>
-                        <div class="">
-                            {{ props.totalrespon }}
-                        </div>
+                    <div class="">
+                        {{ props.totalrespon }}
+                    </div>
                 </div>
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
@@ -57,37 +47,9 @@ console.log(props.listquestion)
                     </div>
                     <div class="p-5 flex w-full">
                         <form @submit.prevent="submit">
-                            <div class="">
-                            </div>
                             <div v-for="(question, index) in listquestion" :key="index">
                                 <div class="block">
                                     <p>{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
-                                    
-                                    <!-- Handling radio inputs for question type 2 -->
-                                    <div v-if="question.question_type_id == 2">
-                                        <div v-for="(list, i) in question.choice" :key="i">
-                                            <input v-if="list.question_id === question.id" type="radio"
-                                                :id="'option' + (i + 1)" :value="list.value" 
-                                                :name="`question-${question.id}`" v-model="form.answer[index]" />
-                                            <label v-if="list.question_id === question.id" class="px-3"
-                                                :for="'option' + (i + 1)">
-                                                {{ list.value }}
-                                            </label>
-                                        </div>
-                                    </div>
-
-
-                                    <div v-if="question.question_type_id == 3">
-                                        <div v-for="(list, i) in question.choice" :key="i">
-                                            <input v-if="list.question_id === question.id" type="checkbox"
-                                                :id="'option' + (i + 1)" :true-value="list.value "
-                                                :name="`question-${question.id}` + (i + 1)" v-model="form.answer[list.id]" />
-                                            <label v-if="list.question_id === question.id" class="px-3"
-                                                :for="'option' + (i + 1)">
-                                                {{ list.value }}
-                                            </label>
-                                        </div>
-                                    </div>
 
                                     <!-- Handling textarea for question type 1 -->
                                     <div v-if="question.question_type_id == 1">
@@ -95,11 +57,38 @@ console.log(props.listquestion)
                                         <textarea title="Answer" placeholder="Jawaban open-ended" class="text-sm"
                                             v-model="form.answer[index]" />
                                     </div>
+
+                                    <!-- Handling radio inputs for question type 2 -->
+                                    <div v-if="question.question_type_id == 2">
+                                        <div v-for="(list, i) in choice" :key="i">
+                                            <input v-if="list.question_id === question.id" type="radio"
+                                                :id="'qradio' + (i + 1)" :value="list.value"
+                                                :name="`qradio-${question.id}`" v-model="form.answer[index]" />
+                                            <label v-if="list.question_id === question.id" class="px-3"
+                                                :for="'qradio' + (i + 1)">
+                                                {{ list.value }}
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Handling checkbox for question type 3 -->
+                                    <div v-if="question.question_type_id == 3">
+                                        <div v-for="(list, i) in choice" :key="i">
+                                            <input v-if="list.question_id === question.id" type="checkbox"
+                                                :id="'qcheck' + (i + 1)" :true-value="list.value"
+                                                :name="`qcheck-${question.id}` + (i + 1)"
+                                                v-model="form.answer[index + i]" />
+                                            <label class="px-3" :for="'qcheck' + (i + 1)">
+                                                {{ list.value }}
+                                            </label>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
 
                             <!-- Display answers for debugging -->
-                            <!-- <pre>{{ form.answer }}</pre> -->
+                            <pre>{{ form.answer }}</pre>
 
                             <!-- Submit Button -->
                             <PrimaryButton class="flex justify-center md:mb-6 text-center"

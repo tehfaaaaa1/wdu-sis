@@ -51,10 +51,6 @@ const logUpdate = (newQuestions) => {
     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
 };
 
-const log = (evt) => {
-    console.log(evt);
-};
-
 // Text
 function textQuestion(question) {
     if (question.types.length > 0 && !question.types.includes('Text')) {

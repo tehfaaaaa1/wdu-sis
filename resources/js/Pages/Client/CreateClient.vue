@@ -46,7 +46,7 @@ const submit = () => {
                     </div>
                     <div class="mt-4 relative">
                         <InputLabel for="phone" />
-                        <TextInput id="phone" v-model="form.phone" type="text" placeholder="Contact Person"
+                        <TextInput id="phone" v-model="form.phone" type="number " placeholder="Contact Person"
                             required autofocus autocomplete="phone" />
                         <InputError class="mt-2" :message="form.errors.phone" />
                     </div>

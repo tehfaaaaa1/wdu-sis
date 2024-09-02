@@ -56,17 +56,9 @@ const filteredSurveys = computed(() => {
     });
 });
 
-// const isVisible = ref()
-
-// function popupShow() {
-//     setTimeout(() => {
-//         this.isVisible = false;
-//     }, 5000);
-// }
-// onMounted(() => {
-//     this.popupShow();
-// })
-console.log(props.surveys)
+const hasFilledSurvey = (survey) => {
+    return survey.response.some(res => res.user_id === props.user.id);
+};
 </script>
 
 <template>
@@ -152,22 +144,19 @@ console.log(props.surveys)
                                         <!-- Sudah Mengisi Survey -->
                                         <div class="" v-for="res in survey.response">
                                             <div class="" v-if="res.user_id === $page.props.auth.user.id">
-                                                <div class="my-3">
+                                                <div class="my-3" id="ableSurvey">
                                                     <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
                                                 </div>
                                             </div>
-
                                         </div>
                                         <!-- Belum Mengisi survey Apapun -->
-                                        <div class="">
-                                            <NavLink
-                                                :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
-                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
-                                                Isi Survey
-                                                <!-- {{ console.log(props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])) }} -->
-                                            </NavLink>
-                                        </div>
+                                        <NavLink v-if="!hasFilledSurvey(survey)"
+                                            :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                            :class="$page.props.auth.user.current_team_id === 1 && $page.props.auth.user.usertype === 'user' ? 'col-span-2' : ''"
+                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
+                                            Isi Survey
+                                        </NavLink>
+
                                     </div>
                                     <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])"
                                         v-if="$page.props.auth.user.current_team_id !== 1 || $page.props.auth.user.usertype !== 'user'"

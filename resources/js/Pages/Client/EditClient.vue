@@ -17,12 +17,16 @@ const handleImage = (event) => {
 const form = useForm({
     client_name: props.clients.client_name,
     alamat: props.clients.alamat,
+    phone: props.clients.phone,
     desc: props.clients.desc,
-    image: props.clients.image,
+    image: null,
 });
 
 const submit = () => {
-    form.put(route('update_client', props.clients.id));
+    form.put(route('update_client', props.clients.id), {
+        preserveScroll: true,
+        onSuccess: () => form.reset()
+    });
 };
 </script>
 
@@ -48,6 +52,12 @@ const submit = () => {
                         <TextInput id="alamat" v-model="form.alamat" type="text" placeholder="Alamat" class="" required
                             autofocus autocomplete="alamat" />
                         <InputError class="mt-2" :message="form.errors.alamat" />
+                    </div>
+                    <div class="mt-4 relative">
+                    <InputLabel for="phone" value="Phone"/>
+                        <TextInput id="phone" v-model="form.phone" type="number" placeholder="Phone" class="" required
+                            autofocus autocomplete="phone" />
+                        <InputError class="mt-2" :message="form.errors.phone" />
                     </div>
                     <div class="mt-4 relative">
                         <textarea id="desc" v-model="form.desc" placeholder="Description"
@@ -86,3 +96,11 @@ const submit = () => {
 
     </AppLayout>
 </template>
+
+<style scoped>
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+</style>
