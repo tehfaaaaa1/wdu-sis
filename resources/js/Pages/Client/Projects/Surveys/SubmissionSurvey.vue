@@ -38,7 +38,7 @@ onMounted(() => {
 const submit = () => {
     form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]));
 };
-console.log(props.choice)
+console.log(props.listquestion)
 </script>
 
 <template>
@@ -65,7 +65,7 @@ console.log(props.choice)
 
                                     <!-- Handling radio inputs for question type 2 -->
                                     <div v-if="question.question_type_id == 2">
-                                        <div v-for="(list, i) in props.choice" :key="i">
+                                        <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="radio"
                                                 :id="'option' + (i + 1)" :value="list.value" 
                                                 :name="`question-${question.id}`" v-model="form.answer[index]" />
@@ -78,10 +78,10 @@ console.log(props.choice)
 
 
                                     <div v-if="question.question_type_id == 3">
-                                        <div v-for="(list, i) in props.choice" :key="i">
+                                        <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="checkbox"
                                                 :id="'option' + (i + 1)" :true-value="list.value "
-                                                :name="`question-${question.id}` + (i + 1)" v-model="form.answer[index +  i]" />
+                                                :name="`question-${question.id}` + (i + 1)" v-model="form.answer[list.id]" />
                                             <label v-if="list.question_id === question.id" class="px-3"
                                                 :for="'option' + (i + 1)">
                                                 {{ list.value }}
