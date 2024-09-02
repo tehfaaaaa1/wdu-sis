@@ -129,41 +129,38 @@ class ClientController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($request);
-
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
-            'phone' => 'required|max:255',
-            'image' => 'sometimes|mimes:png,jpg,jpeg,gif|max:2048',
+            'phone' => 'required|max:20',
             'desc' => 'required',
+            'image' => 'sometimes|mimes:png,jpg,jpeg,gif|max:2048', 
         ]);
+
         $client = Client::findOrFail($id);
 
-        // Generate the slug from the client name
-        $slug = Str::slug($validated['client_name']);
-
-        Client::where('id', $id)->update([
+        $client->update([
             'client_name' => $validated['client_name'],
-            'desc' => $validated['desc'],
             'alamat' => $validated['alamat'],
             'phone' => $validated['phone'],
-            'slug' => $slug,
-            'updated_at' => now(),
+            'desc' => $validated['desc'],
+            'slug' => Str::slug($validated['client_name']),
         ]);
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
+            $filename = date('YmdHi') . '.' . $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->move(public_path('img'), $filename);
 
-            $filenname = date('YmdHi') . $image->getClientOriginalExtension();
-            $image->move(public_path('img'), $filenname);
-            Client::where('id', $id)->update(['image' => $filenname]);
-        } else {
-            unset($request->image);
+            if ($client->image && file_exists(public_path('img/' . $client->image))) {
+                unlink(public_path('img/' . $client->image));
+            }
+
+            $client->update(['image' => $filename]);
         }
 
         return redirect()->route('listclient')->with('success', 'Client updated successfully.');
     }
+
 
     public function destroy($id)
     {
