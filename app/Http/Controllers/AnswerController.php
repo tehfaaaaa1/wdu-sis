@@ -34,7 +34,7 @@ class AnswerController extends Controller
             // Assume answers are provided in the same order as questions
             $questionAnswerMap[$q->id] = $allAnswer[$index];
         }
-        dd($questionAnswerMap);
+        // dd($questionAnswerMap);
 
         foreach ($questionAnswerMap as $questionId => $answer) {
             $jawab = new Answer;
