@@ -22,7 +22,6 @@ class AnswerController extends Controller
         $projectSlug = $request['project_slug'];
         $all = $request->all();
         $allAnswer = $all['answer'];
-        // dd($all);
         $response = new Response;
         $response->user_id = Auth::user()->id;
         $response->survey_id = $id;
