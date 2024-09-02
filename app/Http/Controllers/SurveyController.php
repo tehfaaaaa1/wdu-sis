@@ -158,8 +158,8 @@ class SurveyController extends Controller
                 'clients' => $client,
                 'listquestion' => collect($question)->map(function ($q){
                     return [
-                        'id'=> $q->id,
-                        'question_text'=> $q->question_text,
+                        'id' => $q->id,
+                        'question_text' =>  $q->question_text,
                         'question_type_id' => $q->question_type_id,
                         'survey_id' => $q->survey_id,
                         'order' => $q->order,
@@ -167,7 +167,7 @@ class SurveyController extends Controller
                         'created_at' => $q->created_at,
                         'updated_at' => $q->updated_at,
                         'choice' => $q->choice
-                    ];
+                ];
                 }),
                 'totalrespon' => $totalRes,
             ]
