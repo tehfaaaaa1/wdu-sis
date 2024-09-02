@@ -156,9 +156,18 @@ class SurveyController extends Controller
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
-                'listquestion' => $question,
-                'choice' => collect($question)->map(function ($c){
-                    return ['c' => $c->choice];
+                'listquestion' => collect($question)->map(function ($q){
+                    return [
+                        'id' => $q->id,
+                        'question_text' =>  $q->question_text,
+                        'question_type_id' => $q->question_type_id,
+                        'survey_id' => $q->survey_id,
+                        'order' => $q->order,
+                        'required' => $q->required,
+                        'created_at' => $q->created_at,
+                        'updated_at' => $q->updated_at,
+                        'choice' => $q->choice
+                ];
                 }),
                 'totalrespon' => $totalRes,
             ]
