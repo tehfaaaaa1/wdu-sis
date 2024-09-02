@@ -44,7 +44,7 @@ class QuestionController extends Controller
         $idSurvey = $request['survey'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
-
+        // dd($allData);
         foreach ($allData as $data) {
             $soal = $data['soal'];
             $type = $data['types'];
@@ -73,7 +73,6 @@ class QuestionController extends Controller
                                 abort(403, "Isilah Minimal 2 Pilihan !!");
                             }
                             break;
-
                         default:
                             break;
                     }
