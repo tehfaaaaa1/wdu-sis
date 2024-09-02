@@ -52,6 +52,7 @@ class SurveyController extends Controller
                 'clients' => $client,
                 'user' => $user,
                 'target' => $target,
+                'response' => $response
             ]
         );
     }
@@ -142,12 +143,11 @@ class SurveyController extends Controller
     public function submission(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
-        $question = DB::table('questions')->where('survey_id', $id)->get();
+        $question = Question::where('survey_id', $id)->get();
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $response = DB::table('responses')->where('survey_id', $id)->get();
         $totalRes = count($response);
-        $choice = QuestionChoice::all();
         // dump($survey);
         return Inertia::render(
             'Client/Projects/Surveys/SubmissionSurvey',
@@ -156,7 +156,9 @@ class SurveyController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'listquestion' => $question,
-                'choice' => $choice,
+                'choice' => collect($question)->map(function ($c){
+                    return ['c' => $c->choice];
+                }),
                 'totalrespon' => $totalRes,
             ]
         );

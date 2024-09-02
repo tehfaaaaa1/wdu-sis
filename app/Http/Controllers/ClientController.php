@@ -146,7 +146,6 @@ class ClientController extends Controller
             'desc' => $validated['desc'],
             'slug' => Str::slug($validated['client_name']),
         ]);
-
         if ($request->hasFile('image')) {
             $filename = date('YmdHi') . '.' . $request->file('image')->getClientOriginalExtension();
             $request->file('image')->move(public_path('img'), $filename);
@@ -159,7 +158,7 @@ class ClientController extends Controller
         }
 
         return redirect()->route('listclient')->with('success', 'Client updated successfully.');
-    }
+        }
 
 
     public function destroy($id)

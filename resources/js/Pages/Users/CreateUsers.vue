@@ -7,9 +7,10 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-
+import Dropdown from '@/Components/Dropdown.vue';
 const props = defineProps({
     teams: Array, 
+    client: Array
 });
 
 const form = useForm({
@@ -19,7 +20,7 @@ const form = useForm({
     password_confirmation: '',
     usertype: 'user',
     team_id: null, 
-    client_id: 1, 
+    client_id: '', 
 });
 
 const isAdmin = ref(false);
@@ -32,6 +33,7 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
+console.log(props.client)
 </script>
 
 <template>
@@ -100,6 +102,15 @@ const submit = () => {
                             </div>
                         </div>
                         <InputError class="mt-2" :message="form.errors.team_id" />
+                    </div>
+                    <div class="mt-4 relative">
+                        <h2 class="text-primary font-semibold text-lg mb-4">Client Select</h2>                                       
+                                <div class="py-1" v-for="c in client">    
+                                    <input type="radio" :id="'client_' + c.id" name="client_id" class="checked:text-primary" v-model="form.client_id" :value="c.id">
+                                    <label :for="'client_'+c.id" class="ml-2">{{ c.client_name }}</label>
+                                </div>
+
+
                     </div>
 
                     <div class="my-4 text-center">

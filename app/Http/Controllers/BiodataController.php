@@ -54,6 +54,7 @@ class BiodataController extends Controller
                 
         return redirect(route('submission_surveys',[$clientSlug, $projectSlug, $surveyid]));
     }
+    
     public function editbio(Survey $survey, $clientSlug, $projectSlug, $surveyid, $userId)  {
         $user = Auth::user();
         $survey =  Survey::findOrFail($surveyid); 

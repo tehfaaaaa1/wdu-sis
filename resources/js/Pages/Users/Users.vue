@@ -38,10 +38,12 @@ const filteredUsers = computed(() => {
             user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
             user.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
             user.usertype.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            user.team.toLowerCase().includes(searchQuery.value.toLowerCase())
+            user.team.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            user.client.toLowerCase().includes(searchQuery.value.toLocaleLowerCase())
         );
     });
 });
+console.log(props.users)
 </script>
 
 
@@ -60,32 +62,11 @@ const filteredUsers = computed(() => {
                         Add User
                     </NavLink>
                 </div>
-                <Dropdown align="right">
-                    <template #trigger>
-                        <span class="inline-flex rounded-md">
-                            <button type="button"
-                                class="inline-flex items-center px-16 py-3 border border-primary text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                Filter
-                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
-                            </button>
-                        </span>
-                    </template>
-
-                    <template #content>
-                        <div class="block px-4 py-2 text-xs text-gray-400">
-                            Filter Users
-                        </div>
-                        <div class="flex items-center px-4 py-2 text-sm">
+                <div class="flex items-center px-4 py-2 text-sm">
                             <input type="text" v-model="searchQuery"
                                 class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
                                 placeholder="Search">
-                        </div>
-                    </template>
-                </Dropdown>
+                </div>
             </div>
 
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -96,6 +77,7 @@ const filteredUsers = computed(() => {
                             <th scope="col" class="px-6 py-3">Email</th>
                             <th scope="col" class="px-6 py-3">User Type</th>
                             <th scope="col" class="px-6 py-3">Team</th>
+                            <th scope="col" class="px-6 py-3">Client</th>
                             <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
                         </tr>
                     </thead>
@@ -112,6 +94,9 @@ const filteredUsers = computed(() => {
                             </td>
                             <td class="px-6 py-4">
                                 {{ user.team }}
+                            </td>
+                            <td class="px-6 py-4">
+                                {{ user.client }}
                             </td>
                             <td class="px-6 py-4">
                                 <a :href="route('edit_user', user.id)"   

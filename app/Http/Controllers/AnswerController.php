@@ -17,12 +17,11 @@ class AnswerController extends Controller
     {
         $survey =  Survey::findOrFail($id);
 
-        $question = DB::table('questions')->where('survey_id', $id)->get();
+        $question = $request['question'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
         $all = $request->all();
         $allAnswer = $all['answer'];
-
         $response = new Response;
         $response->user_id = Auth::user()->id;
         $response->survey_id = $id;
@@ -34,6 +33,7 @@ class AnswerController extends Controller
             // Assume answers are provided in the same order as questions
             $questionAnswerMap[$q->id] = $allAnswer[$index];
         }
+        dd($questionAnswerMap);
 
         foreach ($questionAnswerMap as $questionId => $answer) {
             $jawab = new Answer;

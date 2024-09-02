@@ -47,7 +47,7 @@ console.log(hasil.value)
                                     <p>{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
 
                                     <!-- Handling radio inputs for question type 2 -->
-                                    <div v-if="question.question_type_id == 2">
+                                    <div v-if="question.question_type_id == 2 || question.question_type_id ===3">
                                         <div class="ps-5" v-for="answe in answer">
                                             <div v-if="answe.question_id === question.id" v-for="(list, i) in props.choice" :key="i">
                                             <ul class="list-disc">
