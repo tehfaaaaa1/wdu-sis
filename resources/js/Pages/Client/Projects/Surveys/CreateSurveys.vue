@@ -15,6 +15,7 @@ const client = props.clients[0];
 const form = useForm({
     title: '',
     desc: '',
+    target_response: '',
     project_id: project['id'],
     project_slug: project['slug'],
     client_slug: client['slug'],
@@ -43,7 +44,6 @@ const submit = () => {
                             required autofocus autocomplete="title" />
                         <InputError class="mt-2" :message="form.errors.title" />
                     </div>
-
                     <div class="mt-4 relative">
                         <textarea id="desc" v-model="form.desc"
                             placeholder="Description"
@@ -51,6 +51,12 @@ const submit = () => {
                             required autocomplete="desc" />
 
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                    </div>
+                    <div class="mt-4 relative">
+                        <InputLabel for="target_response" />
+                        <TextInput id="target_response" v-model="form.target_response" type="number" placeholder="Target Responden"
+                            required autofocus autocomplete="target_response" />
+                        <InputError class="mt-2" :message="form.errors.title" />
                     </div>
 
 

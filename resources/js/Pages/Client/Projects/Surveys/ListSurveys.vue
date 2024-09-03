@@ -11,7 +11,8 @@ const props = defineProps({
     projects: Array,
     clients: Array,
     user: Object,
-    target: Object
+    target: Object,
+    target_response: Object
 })
 const form = useForm({
     search: '',
@@ -133,7 +134,7 @@ const hasFilledSurvey = (survey) => {
                                     {{ survey.desc }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ props.target }} Orang
+                                    {{ props.target }} / {{ survey.target_response }}
                                 </td>
                                 <td class="px-6 py-4">
                                     Dibuka
