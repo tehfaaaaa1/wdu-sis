@@ -143,7 +143,7 @@ class SurveyController extends Controller
 
     public function submission(Survey $surveyModel, $clientSlug, $projectSlug, $id)
     {
-        // Fetch survey, questions, project, client, and response count
+        // Fetch survey, questions, project, client
         $survey = Survey::findOrFail($id);
         $questions = Question::where('survey_id', $id)->get();
         $project = DB::table('projects')->where('slug', $projectSlug)->first();
@@ -174,27 +174,28 @@ class SurveyController extends Controller
         );
     }
 
-    public function report(Survey $survey, $clientSlug, $projectSlug, $surveyid, $responseId)
+    public function report(Survey $surveyModel, $clientSlug, $projectSlug, $surveyId, $responseId)
     {
-        $survey =  Survey::findOrFail($surveyid);
-        $question = Question::where('survey_id', $surveyid)->get();
-        $response = Response::where('survey_id', $surveyid)->where('id', $responseId)->firstOrFail();
-        $project = DB::table('projects')->where('slug', $projectSlug)->get();
-        $client = DB::table('clients')->where('slug', $clientSlug)->get();
-        $choice = QuestionChoice::all();
-        $answer = Answer::where('response_id', $responseId)->get();
+        $survey = Survey::findOrFail($surveyId);
+        $questions = Question::where('survey_id', $surveyId)->get();
+        $response = Response::with('user')->where('survey_id', $surveyId)->findOrFail($responseId);
+        $project = DB::table('projects')->where('slug', $projectSlug)->first();
+        $client = DB::table('clients')->where('slug', $clientSlug)->first();
+        $choices = QuestionChoice::all();
+        $answers = Answer::where('response_id', $responseId)->get();
         $user = $response->user;
+
         return Inertia::render(
             'Client/Projects/Surveys/ReportSurvey',
             [
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
-                'listquestion' => $question,
-                'choice' => $choice,
+                'listquestion' => $questions,
+                'choice' => $choices,
                 'responses' => $response,
-                'answer' => $answer,
-                'user' => $user
+                'answer' => $answers,
+                'user' => $user,
             ]
         );
     }
