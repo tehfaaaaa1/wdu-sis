@@ -47,7 +47,7 @@ function clone(element) {
     };
 }
 
-            // Log Update
+// Log Update
 // const logUpdate = (newQuestions) => {
 //     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
 // };
@@ -158,7 +158,7 @@ const submit = () => {
         survey: props.surveys.id,
         project_slug: project['slug'],
         client_slug: client['slug'],
-    })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]));
+    })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
 
 </script>
@@ -240,7 +240,7 @@ const submit = () => {
                                                 Single Choice
                                             </div>
                                             <div @click="checkboxQuestion(item)"
-                                            class="block px-4 py-2 text-sm cursor-pointer">
+                                                class="block px-4 py-2 text-sm cursor-pointer">
                                                 Multiple Choice
                                             </div>
                                         </template>
