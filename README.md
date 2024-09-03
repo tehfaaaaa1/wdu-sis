@@ -1,10 +1,10 @@
 ## To Be Added
 **Surveys**
 - Drag & Drop Survey Form Builder (Debugging) <!-- Add Edit Questions -->
-- Biodata Respondent (Debugging) <!-- (Age, Address, Phone Number, Instance) -->
 - Logic Boolean in Surveys (TBA)
 - Region & Target Number of Survey Respondents (TBA)
 - Verify Respondent Region (TBA)
+<!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
 
 **Misc**
 - Add Icons to needed elements
@@ -19,6 +19,13 @@
 - Edit Client can't update (image breaks the form when added)
 
 ## Changelog
+### 2 Sep 2024
+- Fixed Submission Survey involving checkboxes
+- Updated List survey : 
+  - If a respondent has submitted a form, they cannot do it again
+  - Respondent includes regular user and enumerator
+  - Only korlap can edit answer. Not implemented yet
+
 ### 30 Aug 2024
 - Testing & Debugging
 

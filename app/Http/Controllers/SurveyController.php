@@ -30,7 +30,7 @@ class SurveyController extends Controller
         $s = $surveyall->survey;
 
         $user = Auth::user();
-        $c= $client[0];
+        $c = $client[0];
         $userClient = User::where('client_id', $c->id)->get();
         $target = count($userClient);
 
@@ -79,8 +79,8 @@ class SurveyController extends Controller
     public function store(Request $request, $clientSlug, $projectSlug)
     {
         $id = $request->project_id;
-            // $clientSlug = $request->client_slug;
-            // $projectSlug = $request->project_slug;
+        // $clientSlug = $request->client_slug;
+        // $projectSlug = $request->project_slug;
 
 
         $request->validate([
@@ -141,35 +141,35 @@ class SurveyController extends Controller
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Update successfully.');
     }
 
-    public function submission(Survey $survey, $clientSlug, $projectSlug, $id)
+    public function submission(Survey $surveyModel, $clientSlug, $projectSlug, $id)
     {
-        $survey =  Survey::findOrFail($id);
-        $question = Question::where('survey_id', $id)->get();
-        $project = DB::table('projects')->where('slug', $projectSlug)->get();
-        $client = DB::table('clients')->where('slug', $clientSlug)->get();
-        $response = DB::table('responses')->where('survey_id', $id)->get();
-        $totalRes = count($response);
-        // dump($survey);
+        // Fetch survey, questions, project, client, and response count
+        $survey = Survey::findOrFail($id);
+        $questions = Question::where('survey_id', $id)->get();
+        $project = DB::table('projects')->where('slug', $projectSlug)->first();
+        $client = DB::table('clients')->where('slug', $clientSlug)->first();
+
+        // Prepare data to pass to the view
+        $formattedQuestions = $questions->map(function ($q) {
+            return [
+                'id' => $q->id,
+                'question_text' => $q->question_text,
+                'question_type_id' => $q->question_type_id,
+                'survey_id' => $q->survey_id,
+                'order' => $q->order,
+                'required' => $q->required,
+                'choice' => $q->choice,
+            ];
+        });
+
+        // Render the view
         return Inertia::render(
             'Client/Projects/Surveys/SubmissionSurvey',
             [
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
-                'listquestion' => collect($question)->map(function ($q){
-                    return [
-                        'id' => $q->id,
-                        'question_text' =>  $q->question_text,
-                        'question_type_id' => $q->question_type_id,
-                        'survey_id' => $q->survey_id,
-                        'order' => $q->order,
-                        'required' => $q->required,
-                        'created_at' => $q->created_at,
-                        'updated_at' => $q->updated_at,
-                        'choice' => $q->choice
-                ];
-                }),
-                'totalrespon' => $totalRes,
+                'listquestion' => $formattedQuestions,
             ]
         );
     }
@@ -178,7 +178,7 @@ class SurveyController extends Controller
     {
         $survey =  Survey::findOrFail($surveyid);
         $question = Question::where('survey_id', $surveyid)->get();
-        $response = Response::where('survey_id', $surveyid )->where('id', $responseId)->firstOrFail();
+        $response = Response::where('survey_id', $surveyid)->where('id', $responseId)->firstOrFail();
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $choice = QuestionChoice::all();
@@ -198,7 +198,7 @@ class SurveyController extends Controller
             ]
         );
     }
-   
+
     public function question(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
@@ -219,7 +219,7 @@ class SurveyController extends Controller
             ]
         );
     }
-    
+
     public function destroy($clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);

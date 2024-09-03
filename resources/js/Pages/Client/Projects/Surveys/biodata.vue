@@ -27,7 +27,6 @@ const form = useForm({
 const submit = () => {
     form.post(route('add_bio', [form.client_slug, form.project_slug,props.surveys.id, props.user.id]));
 }
-console.log(props.user.id)
 </script>
 
 <template>
