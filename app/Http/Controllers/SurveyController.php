@@ -146,8 +146,8 @@ class SurveyController extends Controller
         // Fetch survey, questions, project, client
         $survey = Survey::findOrFail($id);
         $questions = Question::where('survey_id', $id)->get();
-        $project = DB::table('projects')->where('slug', $projectSlug)->first();
-        $client = DB::table('clients')->where('slug', $clientSlug)->first();
+        $project = DB::table('projects')->where('slug', $projectSlug)->get();
+        $client = DB::table('clients')->where('slug', $clientSlug)->get();
 
         // Prepare data to pass to the view
         $formattedQuestions = $questions->map(function ($q) {
