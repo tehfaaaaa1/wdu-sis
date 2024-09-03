@@ -47,7 +47,7 @@ console.log(hasil.value)
                                     <p>{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
 
                                     <!-- Handling radio inputs for question type 2 -->
-                                    <div v-if="question.question_type_id == 2 || question.question_type_id ===3">
+                                    <div v-if="question.question_type_id == 2">
                                         <div class="ps-5" v-for="answe in answer">
                                             <div v-if="answe.question_id === question.id" v-for="(list, i) in props.choice" :key="i">
                                             <ul class="list-disc">
@@ -58,6 +58,25 @@ console.log(hasil.value)
                                         </div>
                                     </div>
 
+                                    <div class="" v-if="question.question_type_id === 3">
+                                       <div class="ps-5" v-for="(list,i) in choice" :key="i">
+                                            <div class="" v-if="list.question_id === question.id">
+                                                <ul class="list-square">
+                                                    <li>{{ list.value }}</li>
+                                                </ul>
+                                            </div>
+                                       </div>
+                                       <div class="">
+                                            <p>Jawaban : </p>
+                                            <div class="ps-5" v-for="answe in answer">
+                                                <ul class="list-square">
+                                                    <li v-if="answe.question_id === question.id ">
+                                                        {{ answe.answer }}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <!-- Handling textarea for question type 1 -->
                                     <div v-if="question.question_type_id == 1">
                                         <!-- Conditional rendering to ensure v-model only binds when the value exists -->

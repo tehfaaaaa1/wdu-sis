@@ -25,6 +25,12 @@ export default {
             spacing: {
                 330: "21.875rem",
               },
+              listStyleType: {
+                none: 'none',
+                disc: 'disc',
+                decimal: 'decimal',
+                square: 'square',
+              }
         },
     },
 

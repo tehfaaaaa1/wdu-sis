@@ -134,7 +134,7 @@ class ClientController extends Controller
             'alamat' => 'required|max:255',
             'phone' => 'required|max:20',
             'desc' => 'required',
-            'image' => 'sometimes|mimes:png,jpg,jpeg,gif|max:2048', 
+            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:2048', 
         ]);
 
         $client = Client::findOrFail($id);
