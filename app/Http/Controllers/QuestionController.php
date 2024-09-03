@@ -49,14 +49,13 @@ class QuestionController extends Controller
             $soal = $data['soal'];
             $type = $data['types'];
             $question_type = null;
-            $req = false;
+            $req = $data['required'];
             $tipe = null;
             if ($soal !== null && $type !== []) {   
                 foreach ($type as $Typee) {
                     switch ($Typee) {
                         case 'Text':
                             $question_type = 1;
-                            $req = true;
                             $tipe = null;
                             break;
                         case 'Radio':

@@ -12,7 +12,7 @@ const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
 
 // Note: Customize the functions below if needed
-const questions = ref([{ id: 1, soal: '', texts: [], radios: [], checkbox: [], types: [] }]);
+const questions = ref([{ id: 1, soal: '', texts: [], radios: [], checkbox: [], types: [], required: 0 }]);
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
     { types: 'Radio', name: 'Single Choice', radios: '' },
@@ -25,6 +25,7 @@ function clone(element) {
     let texts = []
     let radios = []
     let checkbox = []
+    let required = 0
     switch (element.name) {
         case 'Text':
             texts = [{ isi: '' }]
@@ -43,7 +44,7 @@ function clone(element) {
             break;
     }
     return {
-        id: len, soal: '', texts: texts, radios: radios, checkbox: checkbox, types: [element.types],
+        id: len, soal: '', texts: texts, radios: radios, checkbox: checkbox, types: [element.types], required
     };
 }
 
@@ -245,7 +246,10 @@ const submit = () => {
                                             </div>
                                         </template>
                                     </Dropdown>
-
+                                    <div class="flex justify-center mx-auto">
+                                        <input type="checkbox" v-model="item.required" true-value="1" false-value="0">
+                                        <label for="">Required</label>
+                                    </div>
                                     <!-- delete question -->
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" @click="remove(index)"

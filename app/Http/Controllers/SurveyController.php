@@ -34,6 +34,7 @@ class SurveyController extends Controller
         $userClient = User::where('client_id', $c->id)->get();
         $target = count($userClient);
 
+
         $response = Response::where('user_id', $user->id)->get();
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
@@ -46,14 +47,15 @@ class SurveyController extends Controller
                         'project_id' => $survey->project_id,
                         'created_at' => $survey->created_at->format('j F Y H:i:s'),
                         'updated_at' => $survey->updated_at->format('j F Y H:i:s'),
-                        'response' => $survey->response
+                        'response' => $survey->response,
+                        'target_response' => $survey->target_response
                     ];
                 }),
                 'projects' => $projectall,
                 'clients' => $client,
                 'user' => $user,
                 'target' => $target,
-                'response' => $response
+                'response' => $response,
             ]
         );
     }
@@ -86,12 +88,14 @@ class SurveyController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
+            'target_response' => 'required'
 
         ]);
 
         Survey::create([
             'title' => $request->title,
             'desc' => $request->desc,
+            'target_response' => $request->target_response,
             'project_id' => $id,
             'created_at' => now(),
             'updated_at' => now(),
@@ -131,10 +135,12 @@ class SurveyController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
+            'target_response' => 'required'
         ]);
         Survey::where('id', $survey['id'])->update([
             'title' => $request->title,
             'desc' => $request->desc,
+            'target_response' => $request->target_response,
             'project_id' => $project_id,
             'updated_at' => now()
         ]);
@@ -179,8 +185,8 @@ class SurveyController extends Controller
         $survey = Survey::findOrFail($surveyId);
         $questions = Question::where('survey_id', $surveyId)->get();
         $response = Response::with('user')->where('survey_id', $surveyId)->findOrFail($responseId);
-        $project = DB::table('projects')->where('slug', $projectSlug)->first();
-        $client = DB::table('clients')->where('slug', $clientSlug)->first();
+        $project = DB::table('projects')->where('slug', $projectSlug)->get();
+        $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $choices = QuestionChoice::all();
         $answers = Answer::where('response_id', $responseId)->get();
         $user = $response->user;
