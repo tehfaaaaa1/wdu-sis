@@ -192,11 +192,12 @@ const submit = () => {
                     <h2>{{ props.surveys.title }}</h2>
                 </div>
                 <div class="bg-white rounded-b-md">
-                    <div class="border-b-2 p-5 border-gray-300">
+                    <div class="p-5 border-gray-300">
                         <p class="text-base text-justify line-clamp-3">
                             {{ props.surveys.desc }}
                         </p>
-                        <h2 class="mt-3 text-center font-medium text-xl">Tambah Pertanyaan</h2>
+                        <h2 class="mt-3 pt-3 border-t-2 border-gray-300 text-center font-medium text-xl">Tambah
+                            Pertanyaan</h2>
                     </div>
                     <form action="" @submit.prevent=submit>
                         <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate"
@@ -213,7 +214,7 @@ const submit = () => {
 
                                     <p class="ml-2">{{ index + 1 }}.</p>
 
-                                    <!-- Insert text here -->
+                                    <!-- Insert question here -->
                                     <input v-model="item.soal" type="text" placeholder="Insert question here"
                                         class="text-sm w-full mx-1 rounded-md">
 
@@ -244,12 +245,14 @@ const submit = () => {
                                                 class="block px-4 py-2 text-sm cursor-pointer">
                                                 Multiple Choice
                                             </div>
+                                            <div class="block border-t border-gray-300 py-2 text-center">
+                                                <input type="checkbox" v-model="item.required" true-value="1"
+                                                    false-value="0" :id="'q' + index + '-required'" class="cursor-pointer">
+                                                <label :for="'q' + index + '-required'"
+                                                    class="pl-2 cursor-pointer select-none w-full">Required</label>
+                                            </div>
                                         </template>
                                     </Dropdown>
-                                    <div class="flex justify-center mx-auto">
-                                        <input type="checkbox" v-model="item.required" true-value="1" false-value="0">
-                                        <label for="">Required</label>
-                                    </div>
                                     <!-- delete question -->
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" @click="remove(index)"
@@ -258,6 +261,9 @@ const submit = () => {
                                             d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
                                 </div>
+
+                                <!-- Required notification -->
+                                <div v-if="item.required == 1" class="px-5 mb-2 text-red-500">* Required</div>
 
                                 <!-- Question Choices -->
                                 <!-- text -->
@@ -321,17 +327,7 @@ const submit = () => {
                                 </div>
                             </div>
                         </VueDraggable>
-
-                        <!-- Drop Zone at the bottom -->
-                        <!-- <VueDraggable :list="[]" group="questions" @change="log"
-                            class="list-group dropzone p-5 border-t border-gray-300 text-center min-h-20 bg-gray-300 hover:bg-gray-400">
-                            <template #item="">
-                                <div class="text-sm text-black">
-                                    Drop here to add a new question at the end
-                                </div>
-                            </template>
-                        </VueDraggable> -->
-
+                        
                         <div class="border-b-2 border-gray-300 mt-6" />
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
