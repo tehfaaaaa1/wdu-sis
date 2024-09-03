@@ -9,7 +9,7 @@ const props = defineProps({
     surveys: Object,
     projects: Object,
     clients: Object,
-    user:Object
+    user: Object
 });
 
 const project = props.projects[0]
@@ -24,7 +24,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('add_bio', [form.client_slug, form.project_slug,props.surveys.id, props.user.id]));
+    form.post(route('add_bio', [form.client_slug, form.project_slug, props.surveys.id, props.user.id]));
 }
 </script>
 
@@ -45,39 +45,38 @@ const submit = () => {
                     <form action="" @submit.prevent=submit>
                         <div class="relative px-5 mt-3">
                             <label for="">Nama</label>
-                        <TextInput v-model="form.nama" type="text" placeholder="Nama"
-                            class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
-                            required />
-                        <InputError class="mt-2" :message="form.errors.name" />
-                    </div>
-                    <div class="mt-4 relative px-5">
-                        <label for="">Alamat</label>
-                        <TextInput v-model="form.alamat" type="text" placeholder="Alamat"
-                            class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
-                            required />
-                        <InputError class="mt-2" :message="form.errors.email" />
-                    </div>
+                            <TextInput v-model="form.nama" type="text" placeholder="Nama"
+                                class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
+                                required />
+                            <InputError class="mt-2" :message="form.errors.name" />
+                        </div>
+                        <div class="mt-4 relative px-5">
+                            <label for="">Alamat</label>
+                            <TextInput v-model="form.alamat" type="text" placeholder="Alamat"
+                                class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
+                                required />
+                            <InputError class="mt-2" :message="form.errors.email" />
+                        </div>
 
-                    <div class="mt-4 relative px-5">
-                        <label for="">Nomor Handphone</label>
-                        <TextInput v-model="form.no_hp" type="number" placeholder="No Hp"
-                            class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
-                            required />
-                        <InputError class="mt-2" :message="form.errors.password" />
-                    </div>
+                        <div class="mt-4 relative px-5">
+                            <label for="">Nomor Handphone</label>
+                            <TextInput v-model="form.no_hp" type="number" placeholder="No Hp"
+                                class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
+                                required />
+                            <InputError class="mt-2" :message="form.errors.password" />
+                        </div>
 
-                    <div class="mt-4 relative px-5">
-                        <label for="">Nama Instansi</label>
-                        <TextInput v-model="form.instansi" type="text"
-                            placeholder="Instansi"
-                            class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
-                            required />
-                        <InputError class="mt-2" :message="form.errors.password_confirmation" />
-                    </div>
+                        <div class="mt-4 relative px-5">
+                            <label for="">Nama Instansi</label>
+                            <TextInput v-model="form.instansi" type="text" placeholder="Instansi"
+                                class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 pr-10"
+                                required />
+                            <InputError class="mt-2" :message="form.errors.password_confirmation" />
+                        </div>
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Submit Questions
+                                Submit Biodata
                             </PrimaryButton>
                         </div>
                     </form>

@@ -10,14 +10,14 @@ const props = defineProps({
     clients: Object,
     listquestion: Array,
     choice: Array,
-    responses:Array,
-    answer:Array,
+    responses: Array,
+    answer: Array,
     user: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
 
-const hasil = ref([{soal:[]}])
+const hasil = ref([{ soal: [] }])
 console.log(hasil.value)
 </script>
 
@@ -32,47 +32,46 @@ console.log(hasil.value)
                     <div class="border-b-2 p-5 border-gray-500">
                         <p class="text-base text-justify line-clamp-3">{{ props.surveys.desc }}</p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
-                            <h2 class="font-semibold text-lg">{{props.user.name}}</h2>
+                            <h2 class="font-semibold text-lg">{{ props.user.name }}</h2>
                         </div>
                     </div>
                     <div class="p-5 flex w-full">
-                        <form>
-                            <div class="p-5" v-for="(jawab, index) in answer" :key="index">
-                                <p>{{ index + 1 }}</p>
-                                <p class="text-black">{{ jawab }}</p>
-            
-                            </div>
+                        <form class="w-full">
                             <div v-for="(question, index) in props.listquestion" :key="index">
-                                <div class="block">
-                                    <p>{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
+                                <div class="block mb-2">
+                                    <p class="font-semibold">{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
 
                                     <!-- Handling radio inputs for question type 2 -->
                                     <div v-if="question.question_type_id == 2">
                                         <div class="ps-5" v-for="answe in answer">
-                                            <div v-if="answe.question_id === question.id" v-for="(list, i) in props.choice" :key="i">
-                                            <ul class="list-disc">
-                                                <li v-if="list.question_id === question.id && answe.question_id === question.id" >{{ list.value }}</li>
-                                            </ul>
+                                            <div v-if="answe.question_id === question.id"
+                                                v-for="(list, i) in props.choice" :key="i">
+                                                <ul class="list-disc">
+                                                    <li
+                                                        v-if="list.question_id === question.id && answe.question_id === question.id">
+                                                        {{ list.value }}</li>
+                                                </ul>
                                             </div>
-                                            <p v-if="answe.question_id === question.id"> jawaban: {{ answe.answer }}</p>    
+                                            <p v-if="answe.question_id === question.id" class="font-semibold">Jawaban :
+                                                {{ answe.answer }}</p>
                                         </div>
                                     </div>
 
+                                    <!-- Handle checkbox for question type 3 -->
                                     <div class="" v-if="question.question_type_id === 3">
-                                       <div class="ps-5" v-for="(list,i) in choice" :key="i">
+                                        <div class="ps-5" v-for="(list, i) in choice" :key="i">
                                             <div class="" v-if="list.question_id === question.id">
                                                 <ul class="list-square">
                                                     <li>{{ list.value }}</li>
                                                 </ul>
                                             </div>
-                                       </div>
-                                       <div class="">
+                                        </div>
+                                        <div class="">
                                             <p>Jawaban : </p>
                                             <div class="ps-5" v-for="answe in answer">
                                                 <ul class="list-square">
-                                                    <li v-if="answe.question_id === question.id ">
-                                                        {{ answe.answer }}
-                                                    </li>
+                                                    <p v-if="answe.question_id === question.id" class="font-semibold">
+                                                        {{ answe.answer }}</p>
                                                 </ul>
                                             </div>
                                         </div>
@@ -81,7 +80,8 @@ console.log(hasil.value)
                                     <div v-if="question.question_type_id == 1">
                                         <!-- Conditional rendering to ensure v-model only binds when the value exists -->
                                         <div class="ps-5" v-for="answe in answer">
-                                            <p v-if="answe.question_id === question.id"> Jawaban : {{ answe.answer }}</p>
+                                            <p v-if="answe.question_id === question.id" class="font-semibold">Jawaban :
+                                                {{ answe.answer }}</p>
                                         </div>
                                     </div>
                                 </div>
