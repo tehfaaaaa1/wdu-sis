@@ -47,13 +47,10 @@ function clone(element) {
     };
 }
 
-const logUpdate = (newQuestions) => {
-    console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
-};
-
-const log = (evt) => {
-    console.log(evt);
-};
+            // Log Update
+// const logUpdate = (newQuestions) => {
+//     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
+// };
 
 // Text
 function textQuestion(question) {
@@ -89,11 +86,6 @@ function AddRadioOption(question) {
     question.types.push('Radio'); // Track the type
 
     question.lastRadioIndex = question.radios.length - 1;
-    // if (question.lastRadioIndex < MAX_RADIO_CHOICES) {
-    // }
-    // else {
-    //     alert('Max Option Limit Reached!')
-    // }
 }
 
 function deleteRadio(question) {
@@ -124,11 +116,6 @@ function AddCheckboxOption(question) {
     question.types.push('Checkbox'); // Track the type
 
     question.lastCheckboxIndex = question.checkbox.length - 1;
-    // if (question.lastRadioIndex < MAX_RADIO_CHOICES) {
-    // }
-    // else {
-    //     alert('Max Option Limit Reached!')
-    // }
 }
 
 function deleteCheckbox(question) {
