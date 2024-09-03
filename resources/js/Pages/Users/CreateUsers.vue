@@ -33,7 +33,6 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
-console.log(props.client)
 </script>
 
 <template>

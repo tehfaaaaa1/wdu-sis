@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -9,7 +8,6 @@ const props = defineProps({
     projects: Object,
     clients: Object,
     listquestion: Array,
-    totalrespon: Number,
 });
 
 const project = props.projects[0];
@@ -31,26 +29,21 @@ const form = useForm({
 const submit = () => {
     form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]));
 };
-
-console.log(props.listquestion);
 </script>
 
 <template>
     <AppLayout title="Isi Survey">
         <main class="min-h-screen">
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
+                <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md select-none">
                     <h2>{{ props.surveys.title }}</h2>
-                    <div class="">
-                        {{ props.totalrespon }}
-                    </div>
                 </div>
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
-                        <p class="text-base text-justify line-clamp-3">{{ props.surveys.desc }}</p>
+                        <p class="text-base text-justify select-none">{{ props.surveys.desc }}</p>
                     </div>
                     <div class="p-5 flex w-full">
-                        <form @submit.prevent="submit">
+                        <form @submit.prevent="submit" class="w-full">
                             <div v-for="(question, index) in props.listquestion" :key="index" class="block mb-4">
                                 <p>{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
 
@@ -72,10 +65,8 @@ console.log(props.listquestion);
                                     <div v-for="(list, i) in question.choice" :key="i">
                                         <input v-if="list.question_id === question.id" type="checkbox"
                                             :id="'qcheck' + (list.question_id) + '-option' + (i + 1)"
-                                            :value="list.value"
-                                            v-model="form.answer[index].checkboxes" />
-                                        <label class="px-3"
-                                            :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
+                                            :value="list.value" v-model="form.answer[index].checkboxes" />
+                                        <label class="px-3" :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
                                             {{ list.value }}
                                         </label>
                                     </div>
@@ -83,13 +74,13 @@ console.log(props.listquestion);
 
                                 <!-- Handling textarea for question type 1 -->
                                 <div v-if="question.question_type_id == 1">
-                                    <textarea title="Answer" placeholder="Jawaban open-ended" class="text-sm"
+                                    <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
                                         v-model="form.answer[index].texts" />
                                 </div>
                             </div>
 
                             <!-- Display answers for debugging -->
-                            <pre>{{ form.answer }}</pre>
+                            <!-- <pre>{{ form.answer }}</pre> -->
 
                             <!-- Submit Button -->
                             <PrimaryButton class="flex justify-center md:mb-6 text-center"

@@ -43,7 +43,6 @@ const filteredUsers = computed(() => {
         );
     });
 });
-console.log(props.users)
 </script>
 
 
