@@ -22,7 +22,7 @@
 ### 2 Sep 2024
 - Fixed Submission Survey involving checkboxes
 - Updated List survey : 
-  - If a respondent has submitted a form, they couldn't do it again
+  - If a respondent has submitted a form, they cannot do it again
   - Respondent includes regular user and enumerator
   - Only korlap can edit answer. Not implemented yet
 
