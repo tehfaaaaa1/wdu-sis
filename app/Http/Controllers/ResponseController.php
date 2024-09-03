@@ -20,7 +20,7 @@ class ResponseController extends Controller
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $totalRes = count($response);
         $biodata = Biodata::all();
-        return Inertia::render(
+        return Inertia::render( 
             'Client/Projects/Surveys/ListResponse',
             [
                 'surveys' => $survey,

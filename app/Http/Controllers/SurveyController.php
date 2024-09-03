@@ -185,8 +185,8 @@ class SurveyController extends Controller
         $survey = Survey::findOrFail($surveyId);
         $questions = Question::where('survey_id', $surveyId)->get();
         $response = Response::with('user')->where('survey_id', $surveyId)->findOrFail($responseId);
-        $project = DB::table('projects')->where('slug', $projectSlug)->first();
-        $client = DB::table('clients')->where('slug', $clientSlug)->first();
+        $project = DB::table('projects')->where('slug', $projectSlug)->get();
+        $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $choices = QuestionChoice::all();
         $answers = Answer::where('response_id', $responseId)->get();
         $user = $response->user;
