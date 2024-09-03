@@ -45,12 +45,12 @@ class AnswerController extends Controller
         if (!empty($answer['checkboxes'])) {
             foreach ($answer['checkboxes'] as $checkboxAnswer) {
                 $this->createAnswer($responseId, $questionId, $checkboxAnswer);
-            }
-        } 
-        // Handle text and radio answers
-        elseif (!empty($answer['texts'])) {
-            $this->createAnswer($responseId, $questionId, $answer['texts']);
-        } 
+                }
+            } 
+            // Handle text and radio answers
+            elseif (!empty($answer['texts'])) {
+                $this->createAnswer($responseId, $questionId, $answer['texts']);
+            } 
         elseif (!empty($answer['radios'])) {
             $this->createAnswer($responseId, $questionId, $answer['radios']);
         } 

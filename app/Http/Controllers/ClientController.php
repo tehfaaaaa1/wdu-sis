@@ -90,7 +90,7 @@ class ClientController extends Controller
                 'id' => $client->id,
                 'client_name' => $client->client_name,
                 'desc' => $client->desc,
-                'image' => $client->image,
+                //'image' => $client->image,
                 'alamat' => $client->alamat,
                 'phone' => $client->phone,
                 'slug' => $client->slug,
@@ -135,11 +135,11 @@ class ClientController extends Controller
             'alamat' => 'required|max:255',
             'phone' => 'required|max:20',
             'desc' => 'required',
-            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:2048'
+            //'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
 
         $client = Client::findOrFail($id);
-        $fileName = $client->image;
+        /*$fileName = $client->image;
 
         if ($request->hasFile('image')) {
             // Delete old image if it exists
@@ -151,10 +151,10 @@ class ClientController extends Controller
             Storage::putFileAs('public/img', $request->file('image'), $fileName);
             $fileName = 'public/img/' . $fileName;
         }
-
+        */
         $client->update([
             'client_name' => $validated['client_name'],
-            'image' => $fileName,
+            //'image' => $fileName,
             'alamat' => $validated['alamat'],
             'phone' => $validated['phone'],
             'desc' => $validated['desc'],
