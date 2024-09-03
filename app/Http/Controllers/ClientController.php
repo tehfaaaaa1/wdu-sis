@@ -127,40 +127,45 @@ class ClientController extends Controller
         ]);
     }
 
+
     public function update(Request $request, $id)
-    {
+    {   
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
             'phone' => 'required|max:20',
             'desc' => 'required',
-            'image' => 'sometimes|mimes:png,jpg,jpeg,gif|max:2048', 
+            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
 
         $client = Client::findOrFail($id);
+        $fileName = $client->image;
+
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists
+            if ($client->image && Storage::exists($client->image)) {
+                Storage::delete($client->image);
+            }
+
+            $fileName = date('YmdHi') . Str::slug($request->client_name) . '.' . $request->file('image')->getClientOriginalExtension();
+            Storage::putFileAs('public/img', $request->file('image'), $fileName);
+            $fileName = 'public/img/' . $fileName;
+        }
 
         $client->update([
             'client_name' => $validated['client_name'],
+            'image' => $fileName,
             'alamat' => $validated['alamat'],
             'phone' => $validated['phone'],
             'desc' => $validated['desc'],
-            'slug' => Str::slug($validated['client_name']),
+            'updated_at' => now(),
         ]);
-        if ($request->hasFile('image')) {
-            $filename = date('YmdHi') . '.' . $request->file('image')->getClientOriginalExtension();
-            $request->file('image')->move(public_path('img'), $filename);
 
-            if ($client->image && file_exists(public_path('img/' . $client->image))) {
-                unlink(public_path('img/' . $client->image));
-            }
-
-            $client->update(['image' => $filename]);
-        }
-
+        Log::info('Phone field:', ['phone' => $request->phone]);
+        Log::info('Validated data:', $validated);
         return redirect()->route('listclient')->with('success', 'Client updated successfully.');
-        }
-
-
+    }
+    
     public function destroy($id)
     {
         $client = Client::where('id', $id)->first();

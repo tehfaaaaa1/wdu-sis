@@ -38,7 +38,9 @@ console.log(client)
                             <div>Instansi</div>
                             <div class="font-bold">{{ client.client_name }}</div>
                             <div>Alamat</div>
-                            <div class="font-bold">{{ client.alamat}}</div>
+                            <div class="font-bold">{{ client.alamat }}</div>
+                            <div>Kontak</div>
+                            <div class="font-bold">{{ client.phone }}</div>
                             <div>Tanggal Tender</div>
                             <div class="font-bold">{{ formatDate(client.date) }}</div>
                             <div>Project</div>
