@@ -71,14 +71,13 @@ function clone(element) {
     let texts = []
     let radios = []
     let checkbox = []
-    const rlen =  questions.value.length + props.lastId +1;
     let required = 0
     switch (element.name) {
         case 'Text':
             texts = [{ isi: '' }]
             break;
         case 'Single Choice':
-            radios = [{ pilih: '',  cId: rlen}]
+            radios = [{ pilih: ''}]
             break;
         case 'Yes / No':
             radios = [{ pilih: 'Yes' }, { pilih: 'No' }]
@@ -130,8 +129,7 @@ function radioQuestion(question) {
 }
 
 function AddRadioOption(question) {
-    const rlen = questions.value.length + props.lastId + 1;
-    const radio = { pilih: '' , cId :rlen};
+    const radio = { pilih: '' };
     question.radios.push(radio);
     question.types.push('Radio'); // Track the type
 
