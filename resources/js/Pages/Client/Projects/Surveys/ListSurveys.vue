@@ -134,7 +134,9 @@ const hasFilledSurvey = (survey) => {
                                     {{ survey.desc }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ props.target }} / {{ survey.target_response }}
+                                    {{ props.target }} / {{ survey.target_response }} <br>
+                                    Target Location: (details click here) <br>
+                                    DKI Jakarta, Kota Bogor, Kabupaten Bogor
                                 </td>
                                 <td class="px-6 py-4">
                                     Dibuka
