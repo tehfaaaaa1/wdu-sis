@@ -1,19 +1,40 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import { debounce } from 'lodash';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
-
-const props = defineProps({ surveys: Object, projects: Object, clients: Object })
+import { debounce } from 'lodash';
+const props = defineProps({ surveys: Object, projects: Object, clients: Object, listquestions:Object, lastId:Object, c_lastId:Object  })
 const project = props.projects[0];
 const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
 
 // Note: Customize the functions below if needed
-const questions = ref([{ id: 1, soal: '', texts: [], radios: [], checkbox: [], types: [], required: 0 }]);
+const questions = ref(props.listquestions.map((item) => {
+    let tipe = []
+    let text = []
+    let radio = []
+    let checkbox = []
+    // pilihan = []
+    if (item.question_type_id == 2) {
+        tipe = ['Radio']
+        radio = item.choice.map((isi) => {
+            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+        })
+        // pilihan = [{pilih : item.choice.value}]
+    } else if(item.question_type_id == 3) {
+        tipe = ['Checkbox'] 
+        checkbox = item.choice.map((isi)=>{
+            return{pilih: isi.value, cId: isi.id, c_order: isi.order}
+        })
+        // pilihan = [{pilih : item.choice.value}]
+    } else if (item.question_type_id == 1) {
+        tipe = ['Text']
+        text = [{ isi: '' }]
+    }
+    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, radios: radio, checkbox: checkbox }
+}))
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
     { types: 'Radio', name: 'Single Choice', radios: '' },
@@ -21,8 +42,30 @@ const questionsType = ref([
     { types: 'Radio', name: 'Yes / No', radios: '' },
 ]);
 
+// testing
+// const a = ref(props.listquestions.map((item)=> {
+//     let tipe = []
+//     let radio = []
+//     let checkbox =[]
+//     // pilihan = []
+//     if(item.question_type_id == 2){
+//         tipe = ['Radio'] 
+//         radio = item.choice
+//         // pilihan = [{pilih : item.choice.value}]
+//     } else if(item.question_type_id == 3) {
+//         tipe = ['Checkbox'] 
+//         checkbox = item.choice
+//         // pilihan = [{pilih : item.choice.value}]
+//     }else if(item.question_type_id == 1) {
+//         tipe = ['Text']
+
+//     }
+//    return {id : item.id, soal: item.question_text, texts: [], types : tipe, required: item.required, radios: radio, checkbox: checkbox}
+// }))
+
+
 function clone(element) {
-    const len = questions.value.length + 1;
+    const len = questions.value.length + props.lastId + 1;
     let texts = []
     let radios = []
     let checkbox = []
@@ -32,7 +75,7 @@ function clone(element) {
             texts = [{ isi: '' }]
             break;
         case 'Single Choice':
-            radios = [{ pilih: '' }]
+            radios = [{ pilih: ''}]
             break;
         case 'Yes / No':
             radios = [{ pilih: 'Yes' }, { pilih: 'No' }]
@@ -50,9 +93,9 @@ function clone(element) {
 }
 
 // Log Update
-// const logUpdate = (newQuestions) => {
-//     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
-// };
+const logUpdate = (newQuestions) => {
+    console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
+};
 
 // QUESTIONS OVER HERE
 // Text
@@ -75,7 +118,7 @@ function radioQuestion(question) {
         clearQuestionType(question);
     }
     if (!question.types.includes('Radio')) {
-        const radio = { pilih: '' };
+        const radio = { pilih: ''  };
         question.radios.push(radio);
         question.types.push('Radio'); // Track the type
 
@@ -114,7 +157,8 @@ function checkboxQuestion(question) {
 }
 
 function AddCheckboxOption(question) {
-    const checkbox = { pilih: '' };
+    const rlen = questions.value.length + props.lastId + 1;
+    const checkbox = { pilih: '', cId:rlen };
     question.checkbox.push(checkbox);
     question.types.push('Checkbox'); // Track the type
 
@@ -193,7 +237,7 @@ const submit = () => {
         client_slug: client['slug'],
     })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
-console.log(questions.value)
+console.log(questions.value, props.lastId)
 </script>
 
 <template>
@@ -202,8 +246,22 @@ console.log(questions.value)
         <main class="min-h-screen relative">
             <aside class="sticky bg-gray-200 min-h-full top-0 z-50">
                 <div class="absolute lg:w-1/5">
-                    <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add
-                        Questions
+                    <!-- <div class="bg-white flex justify-between items-center border-b border-gray-300">
+                        <a :href="route('listsurvey', [client['slug'], project['slug']])"
+                            class="flex justify-center items-center font-semibold text-white bg-red-500 py-2 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="size-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                            </svg>
+                            Back
+                        </a>
+                        <button type="submit"
+                            class="flex justify-center items-center font-semibold text-white bg-ijo-terang py-2 ps-4 pe-8 gap-1 hover:bg-primary transition">
+                            Publish
+                        </button>
+                    </div> -->
+                    <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang select-none">
+                        Add Questions
                     </h1>
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                         :animation="150" :clone="clone" :sort="false" class="list-qtype">
@@ -219,7 +277,7 @@ console.log(questions.value)
                     </VueDraggable>
                     <form class="bg-white" @submit.prevent="submitForm">
                         <button type="submit"
-                            class="px-4 py-2 w-full text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2">
+                            class="px-4 py-2 w-full text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="size-5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -324,7 +382,7 @@ console.log(questions.value)
                                     <div class="flex items-center mb-2">
                                         <span class="select-none">O</span>
                                         <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
-                                            :id="'radio' + (index + 1) + '-q' + (item.id)"
+                                            :id="'radio' + (index + 1) + '-q' + (item.id)" :value="radio.pilih"
                                             placeholder="Insert single choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
 
@@ -351,7 +409,7 @@ console.log(questions.value)
                                     <div class="flex items-center mb-2">
                                         <span class="select-none">&#9634;</span>
                                         <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
-                                            :id="'checkbox' + (index + 1) + '-q' + (item.id)"
+                                            :id="'checkbox' + (index + 1) + '-q' + (item.id)" :value="checkbox.pilih"
                                             placeholder="Insert multiple choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
 
@@ -376,12 +434,6 @@ console.log(questions.value)
                         </VueDraggable>
 
                         <div class="border-b-2 border-gray-300 mt-6" />
-                        <div class="pt-5 flex justify-center">
-                            <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
-                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Submit Questions
-                            </PrimaryButton>
-                        </div>
                     </form>
                 </div>
             </div>

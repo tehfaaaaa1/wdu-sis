@@ -7,6 +7,7 @@
 <!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
 
 **Misc**
+- Pagination in table list (list project, list survey, list user)
 - Add Icons to needed elements
 - Change to / Add Indonesian Language
 - better UI/UX

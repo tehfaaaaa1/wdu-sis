@@ -7,63 +7,26 @@ use App\Models\QuestionChoice;
 use App\Models\Survey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\Unique;
 use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
-    public function manualSave(Request $request, $clientSlug, $projectSlug, $id) {
-        // Validate the incoming request data
-        // dd($request['data']);
-        $validatedData = $request->validate([
-            'data' => 'required|array',
-            'data.*.soal' => 'required|string|max:255',
-            'data.*.types' => 'required|array',
-            'data.*.required' => 'required|boolean'
-            // Add additional validation rules for the questions
-        ]);
-
-        $survey = Survey::findOrFail($request->survey);
-        // Save or update the questions
-        foreach ($validatedData['data'] as $questionData) {
-            // dd($questionData['required']);
-            $question_type = null;
-            foreach($questionData['types'] as $type){
-                switch ($type) {
-                    case 'Text':
-                        $question_type = 1;
-                        $tipe = null;
-                        break;
-                    case 'Radio':
-                        $question_type = 2;
-                        break;
-                    case 'Checkbox':
-                        $question_type = 3;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            Question::updateOrCreate(
-                ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id,'required' => $questionData['required'],'order'=> random_int(1,10000) ,'question_text' => $questionData['soal'], 'question_type_id' => $question_type],
-                $questionData
-            );
-        }
-        // Additional logic for final submission, such as notifications or marking survey as complete
-        return response()->json(['status' => 'success']);
-    }
     
     public function question(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
-        $question = DB::table('questions')->where('survey_id', $id)->get();
-
+        $question = Question::where('survey_id', $id)->get();
         $project = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
         $client = DB::table('clients')
             ->where('slug', $clientSlug)
             ->get();
-        // dump($survey);
+        $last = Question::all()->last();
+        $lastId = $last->id;
+        $c_last = QuestionChoice::all()->last();
+        $c_lastId = $c_last->id;
         return Inertia::render(
             'Client/Projects/Surveys/AddQuestions',
             [
@@ -71,7 +34,11 @@ class QuestionController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'listquestions' => $question,
-
+                'choice' => collect($question)->map(function ($q){
+                    return ['choice'=> $q->choice];
+                }),
+                'lastId' => $lastId,
+                'c_lastId' => $c_lastId
             ]
         );
     }
@@ -84,7 +51,7 @@ class QuestionController extends Controller
         $idSurvey = $request['survey'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
-        // dd($allData);
+        dd($allData);
         foreach ($allData as $data) {
             dd($data);
             $soal = $data['soal'];
@@ -143,5 +110,77 @@ class QuestionController extends Controller
 
         // session()->flash('question_added', 'Questions added!');
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('question_added', 'Question added successfully.');
+    }
+
+    public function manualSave(Request $request, $clientSlug, $projectSlug, $id) {
+        // Validate the incoming request data
+        // dd($request['data']);
+        $validatedData = $request->validate([
+            'data' => 'required|array',
+            'data.*.soal' => 'required|string|max:255',
+            'data.*.types' => 'required|array',
+            'data.*.required' => 'required|boolean',
+            'data.*.radios' => 'array',
+            'data.*.checkbox' => 'array',
+            'data.*.id' => 'required',
+            'data.*.order' => 'integer',
+            // Add additional validation rules for the questions
+        ]);
+
+        $survey = Survey::findOrFail($request->survey);
+        // Save or update the questions
+        foreach ($validatedData['data'] as $questionData) {
+            // dd($questionData);
+            $question_type = null;
+            $tipe = null;
+            foreach($questionData['types'] as $type){
+                switch ($type) {
+                    case 'Text':
+                        $question_type = 1;
+                        $tipe = null;
+                        break;
+                    case 'Radio':
+                        $question_type = 2;
+                        $tipe = $questionData['radios'];
+                        if (count($tipe) < 2) {
+                            abort(403, "Isilah Minimal 2 Pilihan !!");
+                        }
+                        break;
+                    case 'Checkbox':
+                        $question_type = 3;
+                        $tipe = $questionData['checkbox'];
+                        if (count($tipe) < 2) {
+                            abort(403, "Isilah Minimal 2 Pilihan !!");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            $save_question = Question::firstOrNew(
+                ['id' => $questionData['id'], 'survey_id' => $survey->id]
+            );
+            $save_question->required = $questionData['required'];
+            $save_question->order =  $questionData['order'] ?? random_int(1,10000);
+            $save_question->question_text = $questionData['soal'];
+            $save_question->question_type_id = $question_type;
+            $save_question->save();
+            if($tipe != null || $tipe != []){
+                foreach ($tipe as $choice) {
+                    // dd($questionData['id']);
+                    $value = $choice['pilih'];
+                    $c_order = $choice['c_order'] ?? random_int(1,10000);
+                    $new = new QuestionChoice;
+                    $newId = $new->id;
+                    $save_qChoice = QuestionChoice::firstOrNew(['id' => $choice['cId'] ?? $newId ]);
+                    $save_qChoice->value = $value;
+                    $save_qChoice->question_id = $save_question->id;
+                    $save_qChoice->order = $c_order ;
+                    $save_qChoice->save();
+                }
+            } 
+        }
+        // Additional logic for final submission, such as notifications or marking survey as complete
+        return response()->json(['status' => 'success']);
     }
 }
