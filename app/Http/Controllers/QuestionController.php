@@ -25,6 +25,8 @@ class QuestionController extends Controller
             ->get();
         $last = Question::all()->last();
         $lastId = $last->id;
+        $c_last = QuestionChoice::all()->last();
+        $c_lastId = $c_last->id;
         return Inertia::render(
             'Client/Projects/Surveys/AddQuestions',
             [
@@ -35,7 +37,8 @@ class QuestionController extends Controller
                 'choice' => collect($question)->map(function ($q){
                     return ['choice'=> $q->choice];
                 }),
-                'lastId' => $lastId
+                'lastId' => $lastId,
+                'c_lastId' => $c_lastId
             ]
         );
     }
@@ -130,7 +133,6 @@ class QuestionController extends Controller
             // dd($questionData);
             $question_type = null;
             $tipe = null;
-            $cId = null;
             foreach($questionData['types'] as $type){
                 switch ($type) {
                     case 'Text':
@@ -167,12 +169,13 @@ class QuestionController extends Controller
                 foreach ($tipe as $choice) {
                     // dd($questionData['id']);
                     $value = $choice['pilih'];
-                    $cId = $choice['cId'];
-                    $c_order = $choice['c_order'];
-                    $save_qChoice = QuestionChoice::firstOrNew(['id' => $cId]);
+                    $c_order = $choice['c_order'] ?? random_int(1,10000);
+                    $newID = new QuestionChoice;
+                    $p = $newID->id;
+                    $save_qChoice = QuestionChoice::firstOrNew(['id' => $choice['cId'] ?? $p ]);
                     $save_qChoice->value = $value;
                     $save_qChoice->question_id = $save_question->id;
-                    $save_qChoice->order = $c_order ?? random_int(1,10000);
+                    $save_qChoice->order = $c_order ;
                     $save_qChoice->save();
                 }
             } 

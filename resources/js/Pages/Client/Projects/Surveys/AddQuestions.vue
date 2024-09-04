@@ -5,7 +5,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { debounce } from 'lodash';
-const props = defineProps({ surveys: Object, projects: Object, clients: Object, listquestions: Object, lastId: Object })
+const props = defineProps({ surveys: Object, projects: Object, clients: Object, listquestions:Object, lastId:Object, c_lastId:Object  })
 const project = props.projects[0];
 const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
@@ -23,10 +23,10 @@ const questions = ref(props.listquestions.map((item) => {
             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
         })
         // pilihan = [{pilih : item.choice.value}]
-    } else if (item.question_type_id == 3) {
-        tipe = ['Checkbox']
-        checkbox = item.choice.map((isi) => {
-            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+    } else if(item.question_type_id == 3) {
+        tipe = ['Checkbox'] 
+        checkbox = item.choice.map((isi)=>{
+            return{pilih: isi.value, cId: isi.id ?? c_lastId + 1, c_order: isi.order}
         })
         // pilihan = [{pilih : item.choice.value}]
     } else if (item.question_type_id == 1) {
@@ -43,25 +43,25 @@ const questionsType = ref([
 ]);
 
 // testing
-const a = ref(props.listquestions.map((item) => {
-    let tipe = []
-    let radio = []
-    let checkbox = []
-    // pilihan = []
-    if (item.question_type_id == 2) {
-        tipe = ['Radio']
-        radio = item.choice
-        // pilihan = [{pilih : item.choice.value}]
-    } else if (item.question_type_id == 3) {
-        tipe = ['Checkbox']
-        checkbox = item.choice
-        // pilihan = [{pilih : item.choice.value}]
-    } else if (item.question_type_id == 1) {
-        tipe = ['Text']
+// const a = ref(props.listquestions.map((item)=> {
+//     let tipe = []
+//     let radio = []
+//     let checkbox =[]
+//     // pilihan = []
+//     if(item.question_type_id == 2){
+//         tipe = ['Radio'] 
+//         radio = item.choice
+//         // pilihan = [{pilih : item.choice.value}]
+//     } else if(item.question_type_id == 3) {
+//         tipe = ['Checkbox'] 
+//         checkbox = item.choice
+//         // pilihan = [{pilih : item.choice.value}]
+//     }else if(item.question_type_id == 1) {
+//         tipe = ['Text']
 
-    }
-    return { id: item.id, soal: item.question_text, texts: [], types: tipe, required: item.required, radios: radio, checkbox: checkbox }
-}))
+//     }
+//    return {id : item.id, soal: item.question_text, texts: [], types : tipe, required: item.required, radios: radio, checkbox: checkbox}
+// }))
 
 
 function clone(element) {
@@ -75,7 +75,7 @@ function clone(element) {
             texts = [{ isi: '' }]
             break;
         case 'Single Choice':
-            radios = [{ pilih: '' }]
+            radios = [{ pilih: ''}]
             break;
         case 'Yes / No':
             radios = [{ pilih: 'Yes' }, { pilih: 'No' }]
@@ -118,7 +118,7 @@ function radioQuestion(question) {
         clearQuestionType(question);
     }
     if (!question.types.includes('Radio')) {
-        const radio = { pilih: '' };
+        const radio = { pilih: ''  };
         question.radios.push(radio);
         question.types.push('Radio'); // Track the type
 
@@ -157,7 +157,8 @@ function checkboxQuestion(question) {
 }
 
 function AddCheckboxOption(question) {
-    const checkbox = { pilih: '' };
+    const rlen = questions.value.length + props.lastId + 1;
+    const checkbox = { pilih: '', cId:rlen };
     question.checkbox.push(checkbox);
     question.types.push('Checkbox'); // Track the type
 
@@ -236,7 +237,7 @@ const submit = () => {
         client_slug: client['slug'],
     })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
-console.log(questions.value, a.value, props.lastId)
+console.log(questions.value, props.lastId)
 </script>
 
 <template>
