@@ -1,28 +1,26 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { debounce } from 'lodash';
-import { forEach } from 'lodash';
 const props = defineProps({ surveys: Object, projects: Object, clients: Object, listquestions:Object, lastId:Object, c_lastId:Object  })
 const project = props.projects[0];
 const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
 
 // Note: Customize the functions below if needed
-const questions = ref(props.listquestions.map((item)=> {
+const questions = ref(props.listquestions.map((item) => {
     let tipe = []
-    let text= []
+    let text = []
     let radio = []
-    let checkbox =[]
+    let checkbox = []
     // pilihan = []
-    if(item.question_type_id == 2){
-        tipe = ['Radio'] 
-        radio = item.choice.map((isi)=>{
-            return{pilih: isi.value, cId: isi.id, c_order: isi.order}
+    if (item.question_type_id == 2) {
+        tipe = ['Radio']
+        radio = item.choice.map((isi) => {
+            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
         })
         // pilihan = [{pilih : item.choice.value}]
     } else if(item.question_type_id == 3) {
@@ -31,11 +29,11 @@ const questions = ref(props.listquestions.map((item)=> {
             return{pilih: isi.value, cId: isi.id, c_order: isi.order}
         })
         // pilihan = [{pilih : item.choice.value}]
-    }else if(item.question_type_id == 1) {
+    } else if (item.question_type_id == 1) {
         tipe = ['Text']
-        text = [{isi: ''}]
+        text = [{ isi: '' }]
     }
-   return {id : item.id ,soal: item.question_text,order : item.order ,texts: text, types : tipe, required: item.required, radios: radio, checkbox: checkbox}
+    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, radios: radio, checkbox: checkbox }
 }))
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
@@ -248,8 +246,22 @@ console.log(questions.value, props.lastId)
         <main class="min-h-screen relative">
             <aside class="sticky bg-gray-200 min-h-full top-0 z-50">
                 <div class="absolute lg:w-1/5">
-                    <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang">Add
-                        Questions
+                    <!-- <div class="bg-white flex justify-between items-center border-b border-gray-300">
+                        <a :href="route('listsurvey', [client['slug'], project['slug']])"
+                            class="flex justify-center items-center font-semibold text-white bg-red-500 py-2 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="size-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                            </svg>
+                            Back
+                        </a>
+                        <button type="submit"
+                            class="flex justify-center items-center font-semibold text-white bg-ijo-terang py-2 ps-4 pe-8 gap-1 hover:bg-primary transition">
+                            Publish
+                        </button>
+                    </div> -->
+                    <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang select-none">
+                        Add Questions
                     </h1>
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                         :animation="150" :clone="clone" :sort="false" class="list-qtype">
@@ -265,7 +277,7 @@ console.log(questions.value, props.lastId)
                     </VueDraggable>
                     <form class="bg-white" @submit.prevent="submitForm">
                         <button type="submit"
-                            class="px-4 py-2 w-full text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2">
+                            class="px-4 py-2 w-full text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="size-5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -422,15 +434,9 @@ console.log(questions.value, props.lastId)
                         </VueDraggable>
 
                         <div class="border-b-2 border-gray-300 mt-6" />
-                        <!-- <div class="pt-5 flex justify-center">
-                            <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
-                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                            Submit Questions
-                        </PrimaryButton>
-                    </div> -->
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
         </main>
     </AppLayout>
 </template>
