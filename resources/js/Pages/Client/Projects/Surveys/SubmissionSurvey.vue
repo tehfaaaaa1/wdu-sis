@@ -27,7 +27,7 @@ const form = useForm({
 
 // Submit handler for the form
 const submit = () => {
-    form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]));
+    form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]), { preserveState: true });
 };
 </script>
 
