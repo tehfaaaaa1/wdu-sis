@@ -78,7 +78,7 @@ const submit = () => {
 
 <template>
     <AppLayout title="Create Survey">
-        <div class="mt-6 sm:mt-4 px-4">
+        <div class="px-4">
             <AuthenticationCard>
                 <template #logo>
                     <AuthenticationCardLogo />
@@ -92,7 +92,7 @@ const submit = () => {
                     </div>
                     <div class="mt-4 relative">
                         <textarea id="desc" v-model="form.desc" placeholder="Description" required autocomplete="desc"
-                            class="block text-primary placeholder-primary w-full h-28 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6" />
+                            class="block placeholder-primary w-full h-28 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6" />
                         <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
                     <div class="mt-4 relative">
