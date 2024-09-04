@@ -19,6 +19,12 @@
 - Edit Client can't update (image breaks the form when added)
 
 ## Changelog
+### 3 Sep 2024
+- Target Respondent in Surveys (WIP)
+- Added required questions
+- Profile client fixes
+- Implementing save question function (WIP)
+
 ### 2 Sep 2024
 - Fixed Submission Survey involving checkboxes
 - Updated List survey : 
