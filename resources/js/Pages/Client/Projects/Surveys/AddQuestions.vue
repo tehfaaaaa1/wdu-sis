@@ -28,7 +28,7 @@ const questions = ref(props.listquestions.map((item)=> {
     } else if(item.question_type_id == 3) {
         tipe = ['Checkbox'] 
         checkbox = item.choice.map((isi)=>{
-            return{pilih: isi.value, cId: isi.id ?? c_lastId + 1, c_order: isi.order}
+            return{pilih: isi.value, cId: isi.id, c_order: isi.order}
         })
         // pilihan = [{pilih : item.choice.value}]
     }else if(item.question_type_id == 1) {
@@ -422,12 +422,12 @@ console.log(questions.value, props.lastId)
                         </VueDraggable>
 
                         <div class="border-b-2 border-gray-300 mt-6" />
-                        <div class="pt-5 flex justify-center">
+                        <!-- <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
                             :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                             Submit Questions
                         </PrimaryButton>
-                    </div>
+                    </div> -->
                 </form>
             </div>
         </div>
