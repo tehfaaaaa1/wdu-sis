@@ -13,6 +13,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ResponseController;
+use App\Http\Controllers\LocationController;
 
 Route::get('/', function () {
     if (Auth::check()) {

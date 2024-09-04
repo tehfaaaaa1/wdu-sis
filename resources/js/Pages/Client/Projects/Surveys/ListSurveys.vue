@@ -60,7 +60,6 @@ const filteredSurveys = computed(() => {
 const hasFilledSurvey = (survey) => {
     return survey.response.some(res => res.user_id === props.user.id);
 };
-console.log(props.surveys)
 </script>
 
 <template>
@@ -126,7 +125,7 @@ console.log(props.surveys)
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="survey in filteredSurveys" :key="survey.id"  
+                            <tr v-for="survey in filteredSurveys" :key="survey.id"
                                 class="bg-white border-b hover:bg-gray-50">
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900">
                                     {{ survey.title }}
