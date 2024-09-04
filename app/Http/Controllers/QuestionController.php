@@ -12,6 +12,47 @@ use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
+    public function manualSave(Request $request, $clientSlug, $projectSlug, $id) {
+        // Validate the incoming request data
+        // dd($request['data']);
+        $validatedData = $request->validate([
+            'data' => 'required|array',
+            'data.*.soal' => 'required|string|max:255',
+            'data.*.types' => 'required|array',
+            'data.*.required' => 'required|boolean'
+            // Add additional validation rules for the questions
+        ]);
+
+        $survey = Survey::findOrFail($request->survey);
+        // Save or update the questions
+        foreach ($validatedData['data'] as $questionData) {
+            // dd($questionData['required']);
+            $question_type = null;
+            foreach($questionData['types'] as $type){
+                switch ($type) {
+                    case 'Text':
+                        $question_type = 1;
+                        $tipe = null;
+                        break;
+                    case 'Radio':
+                        $question_type = 2;
+                        break;
+                    case 'Checkbox':
+                        $question_type = 3;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            Question::updateOrCreate(
+                ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id,'required' => $questionData['required'],'order'=> random_int(1,10000) ,'question_text' => $questionData['soal'], 'question_type_id' => $question_type],
+                $questionData
+            );
+        }
+        // Additional logic for final submission, such as notifications or marking survey as complete
+        return response()->json(['status' => 'success']);
+    }
+    
     public function question(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
@@ -42,7 +83,6 @@ class QuestionController extends Controller
     public function store(Request $request, $clientSlug, $projectSlug, $id)
     {
         // $surveyid = Survey::where('id', $id);
-
         $allRequest = $request->all();
         $allData = $allRequest['data'];
         $idSurvey = $request['survey'];
@@ -50,6 +90,7 @@ class QuestionController extends Controller
         $projectSlug = $request['project_slug'];
         dd($allData);
         foreach ($allData as $data) {
+            dd($data);
             $soal = $data['soal'];
             $type = $data['types'];
             $question_type = null;
