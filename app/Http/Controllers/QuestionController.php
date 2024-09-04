@@ -170,9 +170,9 @@ class QuestionController extends Controller
                     // dd($questionData['id']);
                     $value = $choice['pilih'];
                     $c_order = $choice['c_order'] ?? random_int(1,10000);
-                    $newID = new QuestionChoice;
-                    $p = $newID->id;
-                    $save_qChoice = QuestionChoice::firstOrNew(['id' => $choice['cId'] ?? $p ]);
+                    $new = new QuestionChoice;
+                    $newId = $new->id;
+                    $save_qChoice = QuestionChoice::firstOrNew(['id' => $choice['cId'] ?? $newId ]);
                     $save_qChoice->value = $value;
                     $save_qChoice->question_id = $save_question->id;
                     $save_qChoice->order = $c_order ;
