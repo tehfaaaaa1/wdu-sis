@@ -13,6 +13,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ResponseController;
+use App\Http\Controllers\LocationController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -129,3 +130,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 });
 
 Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('team-members.store');
+
+Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+Route::get('/locations/cities/{provinceId}', [LocationController::class, 'cities']);
+Route::get('/locations/regencies/{provinceId}', [LocationController::class, 'regencies']);
