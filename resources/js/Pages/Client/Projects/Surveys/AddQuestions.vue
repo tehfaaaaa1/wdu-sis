@@ -1,18 +1,42 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
-
-const props = defineProps({ surveys: Object, projects: Object, clients: Object })
+import { debounce } from 'lodash';
+import { forEach } from 'lodash';
+const props = defineProps({ surveys: Object, projects: Object, clients: Object, listquestions:Object, lastId:Object  })
 const project = props.projects[0];
 const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
 
 // Note: Customize the functions below if needed
-const questions = ref([{ id: 1, soal: '', texts: [], radios: [], checkbox: [], types: [], required: 0 }]);
+const questions = ref(props.listquestions.map((item)=> {
+    let tipe = []
+    let text= []
+    let radio = []
+    let checkbox =[]
+    // pilihan = []
+    if(item.question_type_id == 2){
+        tipe = ['Radio'] 
+        radio = item.choice.map((isi)=>{
+            return{pilih: isi.value, cId: isi.id, c_order: isi.order}
+        })
+        // pilihan = [{pilih : item.choice.value}]
+    } else if(item.question_type_id == 3) {
+        tipe = ['Checkbox'] 
+        checkbox = item.choice.map((isi)=>{
+            return{pilih: isi.value, cId: isi.id, c_order: isi.order}
+        })
+        // pilihan = [{pilih : item.choice.value}]
+    }else if(item.question_type_id == 1) {
+        tipe = ['Text']
+        text = [{isi: ''}]
+    }
+   return {id : item.id ,soal: item.question_text,order : item.order ,texts: text, types : tipe, required: item.required, radios: radio, checkbox: checkbox}
+}))
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
     { types: 'Radio', name: 'Single Choice', radios: '' },
@@ -20,8 +44,30 @@ const questionsType = ref([
     { types: 'Radio', name: 'Yes / No', radios: '' },
 ]);
 
+// testing
+const a = ref(props.listquestions.map((item)=> {
+    let tipe = []
+    let radio = []
+    let checkbox =[]
+    // pilihan = []
+    if(item.question_type_id == 2){
+        tipe = ['Radio'] 
+        radio = item.choice
+        // pilihan = [{pilih : item.choice.value}]
+    } else if(item.question_type_id == 3) {
+        tipe = ['Checkbox'] 
+        checkbox = item.choice
+        // pilihan = [{pilih : item.choice.value}]
+    }else if(item.question_type_id == 1) {
+        tipe = ['Text']
+
+    }
+   return {id : item.id, soal: item.question_text, texts: [], types : tipe, required: item.required, radios: radio, checkbox: checkbox}
+}))
+
+
 function clone(element) {
-    const len = questions.value.length + 1;
+    const len = questions.value.length + props.lastId + 1;
     let texts = []
     let radios = []
     let checkbox = []
@@ -49,9 +95,9 @@ function clone(element) {
 }
 
 // Log Update
-// const logUpdate = (newQuestions) => {
-//     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
-// };
+const logUpdate = (newQuestions) => {
+    console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
+};
 
 // Text
 function textQuestion(question) {
@@ -153,6 +199,36 @@ const form = useForm({
     client_slug: client['slug'],
 });
 
+// Save Mechanic
+const savingStatus = ref('')
+const autoSaveForm = debounce(() => {
+    savingStatus.value = 'saving'
+    form.post(route('auto-save-question', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true }, {
+        preserveState: true,
+        onSuccess: () => { savingStatus.value = 'saved' },
+        onError: () => { savingStatus.value = 'error' }
+    })
+}, 2000)
+watch(form, autoSaveForm, { deep: true })
+
+const submitForm = () => {
+    savingStatus.value = 'saving';
+    form.transform(() => ({
+        data: questions.value,
+        survey: props.surveys.id,
+        project_slug: project['slug'],
+        client_slug: client['slug'],
+    })).post(route('manual-save-question', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true }, {
+        preserveState: true,
+        onSuccess: () => {
+            savingStatus.value = 'saved';
+        },
+        onError: () => {
+            savingStatus.value = 'error';
+        },
+    });
+};
+
 const submit = () => {
     form.transform(() => ({
         data: questions.value,
@@ -161,7 +237,7 @@ const submit = () => {
         client_slug: client['slug'],
     })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
-
+console.log(questions.value, a.value, props.lastId)
 </script>
 
 <template>
@@ -185,6 +261,20 @@ const submit = () => {
                             </svg>
                         </div>
                     </VueDraggable>
+                    <form class="bg-white" @submit.prevent="submitForm">
+                        <button type="submit"
+                            class="px-4 py-2 w-full text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            Save Progress
+                        </button>
+                        <p v-if="savingStatus === 'saving'">Saving...</p>
+                        <p v-if="savingStatus === 'saved'">All changes saved.</p>
+                        <p v-if="savingStatus === 'error'">Error saving data.</p>
+                    </form>
                 </div>
             </aside>
             <div class="mx-auto lg:max-w-2xl xl:max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
@@ -271,7 +361,7 @@ const submit = () => {
                                     <div class="flex items-center mb-2">
                                         <span class="select-none">O</span>
                                         <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
-                                            :id="'radio' + (index + 1) + '-q' + (item.id)"
+                                            :id="'radio' + (index + 1) + '-q' + (item.id)" :value="radio.pilih"
                                             placeholder="Insert single choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
 
@@ -298,7 +388,7 @@ const submit = () => {
                                     <div class="flex items-center mb-2">
                                         <span class="select-none">&#9634;</span>
                                         <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
-                                            :id="'checkbox' + (index + 1) + '-q' + (item.id)"
+                                            :id="'checkbox' + (index + 1) + '-q' + (item.id)" :value="checkbox.pilih"
                                             placeholder="Insert multiple choice here"
                                             class="text-sm mx-4 rounded-md block w-1/4">
 
@@ -335,13 +425,23 @@ const submit = () => {
                         <div class="border-b-2 border-gray-300 mt-6" />
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
-                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Submit Questions
-                            </PrimaryButton>
-                        </div>
-                    </form>
+                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                            Submit Questions
+                        </PrimaryButton>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="" v-for="item in a">
+            <p>{{ item.id }}. {{ item.soal }}</p>
+            <div class="" v-if="item.types == 'Radio'">
+                <div class="" v-for="item2 in item.radios">
+                    <ol class="list-disc ps-5" v-if=" item2.question_id === item.id">
+                        <li>{{ item2.value }}</li>
+                    </ol>
                 </div>
             </div>
+        </div>
         </main>
     </AppLayout>
 </template>

@@ -99,7 +99,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys')->middleware('admin');
                 
                 Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store')->middleware('admin');;
-                
+                Route::post('/manual-save-question/{id}',[QuestionController::class, 'manualSave'])->name('manual-save-question');
             });
        });
     });
