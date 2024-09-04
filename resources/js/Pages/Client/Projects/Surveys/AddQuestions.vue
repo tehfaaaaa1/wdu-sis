@@ -1,6 +1,7 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { debounce } from 'lodash';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -53,6 +54,7 @@ function clone(element) {
 //     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
 // };
 
+// QUESTIONS OVER HERE
 // Text
 function textQuestion(question) {
     if (question.types.length > 0 && !question.types.includes('Text')) {
@@ -153,6 +155,36 @@ const form = useForm({
     client_slug: client['slug'],
 });
 
+// Save Mechanic
+const savingStatus = ref('')
+const autoSaveForm = debounce(() => {
+    savingStatus.value = 'saving'
+    form.post(route('auto-save-question', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true }, {
+        preserveState: true,
+        onSuccess: () => { savingStatus.value = 'saved' },
+        onError: () => { savingStatus.value = 'error' }
+    })
+}, 2000)
+watch(form, autoSaveForm, { deep: true })
+
+const submitForm = () => {
+    savingStatus.value = 'saving';
+    form.transform(() => ({
+        data: questions.value,
+        survey: props.surveys.id,
+        project_slug: project['slug'],
+        client_slug: client['slug'],
+    })).post(route('manual-save-question', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true }, {
+        preserveState: true,
+        onSuccess: () => {
+            savingStatus.value = 'saved';
+        },
+        onError: () => {
+            savingStatus.value = 'error';
+        },
+    });
+};
+
 const submit = () => {
     form.transform(() => ({
         data: questions.value,
@@ -161,7 +193,7 @@ const submit = () => {
         client_slug: client['slug'],
     })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
-
+console.log(questions.value)
 </script>
 
 <template>
@@ -185,6 +217,20 @@ const submit = () => {
                             </svg>
                         </div>
                     </VueDraggable>
+                    <form class="bg-white" @submit.prevent="submitForm">
+                        <button type="submit"
+                            class="px-4 py-2 w-full text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                stroke="currentColor" class="size-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            Save Questions
+                        </button>
+                        <p v-if="savingStatus === 'saving'">Saving...</p>
+                        <p v-if="savingStatus === 'saved'">All changes saved.</p>
+                        <p v-if="savingStatus === 'error'">Error saving data.</p>
+                    </form>
                 </div>
             </aside>
             <div class="mx-auto lg:max-w-2xl xl:max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
@@ -207,7 +253,7 @@ const submit = () => {
                                     <!-- Order of question -->
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor"
-                                        class="size-10 cursor-move handle border-2 rounded-md border-gray-800">
+                                        class="size-10 cursor-grab handle border-2 rounded-md border-gray-800">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
@@ -247,7 +293,8 @@ const submit = () => {
                                             </div>
                                             <div class="block border-t border-gray-300 py-2 text-center">
                                                 <input type="checkbox" v-model="item.required" true-value="1"
-                                                    false-value="0" :id="'q' + index + '-required'" class="cursor-pointer">
+                                                    false-value="0" :id="'q' + index + '-required'"
+                                                    class="cursor-pointer">
                                                 <label :for="'q' + index + '-required'"
                                                     class="pl-2 cursor-pointer select-none w-full">Required</label>
                                             </div>
@@ -327,7 +374,7 @@ const submit = () => {
                                 </div>
                             </div>
                         </VueDraggable>
-                        
+
                         <div class="border-b-2 border-gray-300 mt-6" />
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"

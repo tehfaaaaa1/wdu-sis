@@ -1,7 +1,7 @@
 ## To Be Added
 **Surveys**
-- Drag & Drop Survey Form Builder (Debugging) <!-- Add Edit Questions -->
-- Logic Boolean in Surveys (TBA)
+- Drag & Drop Survey Form Builder (Adding more features) <!-- Note: Add Edit Questions -->
+- Question Logic in Surveys (TBA)
 - Region & Target Number of Survey Respondents (TBA)
 - Verify Respondent Region (TBA)
 <!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
@@ -19,6 +19,8 @@
 - Edit Client can't update (image breaks the form when added)
 
 ## Changelog
+### 4 Sep 2024
+
 ### 3 Sep 2024
 - Target Respondent in Surveys (WIP)
 - Added required questions
@@ -28,8 +30,8 @@
 ### 2 Sep 2024
 - Fixed Submission Survey involving checkboxes
 - Updated List survey : 
-  - If a respondent has submitted a form, they cannot do it again
-  - Respondent includes regular user and enumerator
+  - A respondent can no longer access the survey after submission.
+  - Respondents includes regular user and enumerator
   - Only korlap can edit answer. Not implemented yet
 
 ### 30 Aug 2024
@@ -53,7 +55,7 @@
 ### 27 Aug 2024
 - Biodata WIP (Daud)
 - List Response & Response Detail WIP (Daud)
-- Drag & Drop questions WIP (Patih)
+- Drag & Drop questions WIP (Pateh)
 - Profile Client (thx mas Fadel)
 - Show Location in client page
 
