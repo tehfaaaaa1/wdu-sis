@@ -21,6 +21,9 @@
 
 ## Changelog
 ### 4 Sep 2024
+- Updated AddQuestions.vue : <!-- this is complex ngl -->
+  - Replaced submit questions with save function
+- Bug Fixing
 
 ### 3 Sep 2024
 - Target Respondent in Surveys (WIP)
