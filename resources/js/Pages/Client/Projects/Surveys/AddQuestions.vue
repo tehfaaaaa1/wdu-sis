@@ -5,7 +5,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { debounce } from 'lodash';
-const props = defineProps({ surveys: Object, projects: Object, clients: Object, listquestions:Object, lastId:Object, c_lastId:Object  })
+const props = defineProps({ surveys: Object, projects: Object, clients: Object, listquestions: Object, lastId: Object, c_lastId: Object })
 const project = props.projects[0];
 const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
@@ -23,10 +23,10 @@ const questions = ref(props.listquestions.map((item) => {
             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
         })
         // pilihan = [{pilih : item.choice.value}]
-    } else if(item.question_type_id == 3) {
-        tipe = ['Checkbox'] 
-        checkbox = item.choice.map((isi)=>{
-            return{pilih: isi.value, cId: isi.id, c_order: isi.order}
+    } else if (item.question_type_id == 3) {
+        tipe = ['Checkbox']
+        checkbox = item.choice.map((isi) => {
+            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
         })
         // pilihan = [{pilih : item.choice.value}]
     } else if (item.question_type_id == 1) {
@@ -75,7 +75,7 @@ function clone(element) {
             texts = [{ isi: '' }]
             break;
         case 'Single Choice':
-            radios = [{ pilih: ''}]
+            radios = [{ pilih: '' }]
             break;
         case 'Yes / No':
             radios = [{ pilih: 'Yes' }, { pilih: 'No' }]
@@ -118,7 +118,7 @@ function radioQuestion(question) {
         clearQuestionType(question);
     }
     if (!question.types.includes('Radio')) {
-        const radio = { pilih: ''  };
+        const radio = { pilih: '' };
         question.radios.push(radio);
         question.types.push('Radio'); // Track the type
 
@@ -158,7 +158,7 @@ function checkboxQuestion(question) {
 
 function AddCheckboxOption(question) {
     const rlen = questions.value.length + props.lastId + 1;
-    const checkbox = { pilih: '', cId:rlen };
+    const checkbox = { pilih: '', cId: rlen };
     question.checkbox.push(checkbox);
     question.types.push('Checkbox'); // Track the type
 
@@ -237,30 +237,31 @@ const submit = () => {
         client_slug: client['slug'],
     })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
-console.log(questions.value, props.lastId)
 </script>
 
 <template>
     <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen relative">
+            <header class="bg-white flex justify-between items-center border-b border-gray-300">
+                <a :href="route('listsurvey', [client['slug'], project['slug']])"
+                    class="flex justify-center items-center font-semibold text-white bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="size-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
+                    Back
+                </a>
+                <h2 class="text-center font-semibold text-xl">Tambah Pertanyaan</h2>
+                <button type="submit"
+                    class="py-2.5 px-8 gap-1 flex justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
+                    Publish
+                </button>
+            </header>
             <aside class="sticky bg-gray-200 min-h-full top-0 z-50">
                 <div class="absolute lg:w-1/5">
-                    <!-- <div class="bg-white flex justify-between items-center border-b border-gray-300">
-                        <a :href="route('listsurvey', [client['slug'], project['slug']])"
-                            class="flex justify-center items-center font-semibold text-white bg-red-500 py-2 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="size-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                            </svg>
-                            Back
-                        </a>
-                        <button type="submit"
-                            class="flex justify-center items-center font-semibold text-white bg-ijo-terang py-2 ps-4 pe-8 gap-1 hover:bg-primary transition">
-                            Publish
-                        </button>
-                    </div> -->
-                    <h1 class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang select-none">
+                    <h1
+                        class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang select-none">
                         Add Questions
                     </h1>
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
@@ -296,17 +297,16 @@ console.log(questions.value, props.lastId)
                     <h2>{{ props.surveys.title }}</h2>
                 </div>
                 <div class="bg-white rounded-b-md">
-                    <div class="p-5 border-gray-300">
+                    <div class="p-5 border-b border-gray-300">
                         <p class="text-base text-justify line-clamp-3">
                             {{ props.surveys.desc }}
                         </p>
-                        <h2 class="mt-3 pt-3 border-t-2 border-gray-300 text-center font-medium text-xl">Tambah
-                            Pertanyaan</h2>
                     </div>
                     <form action="" @submit.prevent=submit>
                         <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate"
                             :animation="150" class="list-questions" handle=".handle">
                             <div v-for="(item, index) in questions" :key="item.id" class="list-questions-item">
+                                <p v-if="questions.length === 0" key="2000">Ass</p>
                                 <div class="p-5 gap-2 flex items-center">
                                     <!-- Order of question -->
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -440,3 +440,19 @@ console.log(questions.value, props.lastId)
         </main>
     </AppLayout>
 </template>
+
+<style scoped>
+.list-questions:empty {
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: center;
+    background-color: grey;
+}
+
+.list-questions:empty:before {
+    content: 'Tambah Pertanyaan Baru';
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+</style>
