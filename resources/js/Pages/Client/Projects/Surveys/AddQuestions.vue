@@ -421,23 +421,7 @@ console.log(questions.value, a.value, props.lastId)
                         </VueDraggable>
 
                         <div class="border-b-2 border-gray-300 mt-6" />
-                        <div class="pt-5 flex justify-center">
-                            <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
-                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                            Submit Questions
-                        </PrimaryButton>
-                    </div>
                 </form>
-            </div>
-        </div>
-        <div class="" v-for="item in a">
-            <p>{{ item.id }}. {{ item.soal }}</p>
-            <div class="" v-if="item.types == 'Radio'">
-                <div class="" v-for="item2 in item.radios">
-                    <ol class="list-disc ps-5" v-if=" item2.question_id === item.id">
-                        <li>{{ item2.value }}</li>
-                    </ol>
-                </div>
             </div>
         </div>
         </main>
