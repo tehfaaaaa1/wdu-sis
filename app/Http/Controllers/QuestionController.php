@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
-    
+
     public function question(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
@@ -34,8 +34,8 @@ class QuestionController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'listquestions' => $question,
-                'choice' => collect($question)->map(function ($q){
-                    return ['choice'=> $q->choice];
+                'choice' => collect($question)->map(function ($q) {
+                    return ['choice' => $q->choice];
                 }),
                 'lastId' => $lastId,
                 'c_lastId' => $c_lastId
@@ -59,7 +59,7 @@ class QuestionController extends Controller
             $question_type = null;
             $req = $data['required'];
             $tipe = null;
-            if ($soal !== null && $type !== []) {   
+            if ($soal !== null && $type !== []) {
                 foreach ($type as $Typee) {
                     switch ($Typee) {
                         case 'Text':
@@ -112,9 +112,9 @@ class QuestionController extends Controller
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('question_added', 'Question added successfully.');
     }
 
-    public function manualSave(Request $request, $clientSlug, $projectSlug, $id) {
+    public function manualSave(Request $request, $clientSlug, $projectSlug, $id)
+    {
         // Validate the incoming request data
-        // dd($request['data']);
         $validatedData = $request->validate([
             'data' => 'required|array',
             'data.*.soal' => 'required|string|max:255',
@@ -124,16 +124,22 @@ class QuestionController extends Controller
             'data.*.checkbox' => 'array',
             'data.*.id' => 'required',
             'data.*.order' => 'integer',
-            // Add additional validation rules for the questions
         ]);
 
         $survey = Survey::findOrFail($request->survey);
+
+        // Retrieve existing questions for the survey
+        $existingQuestions = Question::where('survey_id', $survey->id)->get()->keyBy('id');
+
+        // Track the question IDs that are being processed
+        $processedQuestionIds = [];
+
         // Save or update the questions
         foreach ($validatedData['data'] as $questionData) {
-            // dd($questionData);
             $question_type = null;
             $tipe = null;
-            foreach($questionData['types'] as $type){
+
+            foreach ($questionData['types'] as $type) {
                 switch ($type) {
                     case 'Text':
                         $question_type = 1;
@@ -157,29 +163,41 @@ class QuestionController extends Controller
                         break;
                 }
             }
+
+            // Save or update the question
             $save_question = Question::firstOrNew(
                 ['id' => $questionData['id'], 'survey_id' => $survey->id]
             );
             $save_question->required = $questionData['required'];
-            $save_question->order =  $questionData['order'] ?? random_int(1,10000);
+            $save_question->order = $questionData['order'] ?? random_int(1, 10000);
             $save_question->question_text = $questionData['soal'];
             $save_question->question_type_id = $question_type;
             $save_question->save();
-            if($tipe != null || $tipe != []){
+
+            // Add the question ID to the processed list
+            $processedQuestionIds[] = $save_question->id;
+
+            // Save or update the question choices
+            if ($tipe != null && !empty($tipe)) {
                 foreach ($tipe as $choice) {
-                    // dd($questionData['id']);
                     $value = $choice['pilih'];
-                    $c_order = $choice['c_order'] ?? random_int(1,10000);
+                    $c_order = $choice['c_order'] ?? random_int(1, 10000);
                     $new = new QuestionChoice;
                     $newId = $new->id;
-                    $save_qChoice = QuestionChoice::firstOrNew(['id' => $choice['cId'] ?? $newId ]);
+                    $save_qChoice = QuestionChoice::firstOrNew(['id' => $choice['cId'] ?? $newId]);
                     $save_qChoice->value = $value;
                     $save_qChoice->question_id = $save_question->id;
-                    $save_qChoice->order = $c_order ;
+                    $save_qChoice->order = $c_order;
                     $save_qChoice->save();
                 }
-            } 
+            }
         }
+
+        // Delete the questions that were not processed
+        $existingQuestions->except($processedQuestionIds)->each(function ($question) {
+            $question->delete();
+        });
+
         // Additional logic for final submission, such as notifications or marking survey as complete
         return response()->json(['status' => 'success']);
     }
