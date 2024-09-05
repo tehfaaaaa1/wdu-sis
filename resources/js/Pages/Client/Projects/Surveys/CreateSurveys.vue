@@ -87,7 +87,10 @@ const submit = () => {
                             class="block text-primary placeholder-primary w-full h-28 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6" />
                         <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
-                    
+
+                    <div class="mt-4 relative">
+                        <h2 class="text-primary font-semibold text-1xl text-left mb-1">Survey Target:</h2>
+                    </div>
                     <div class="mt-4 relative">
                         <InputLabel for="province_id" />
                         <select v-model="form.province_id" class="block w-full rounded-md shadow-sm">
