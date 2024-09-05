@@ -16,24 +16,27 @@ const questions = ref(props.listquestions.map((item) => {
     let text = []
     let radio = []
     let checkbox = []
+    let lastCindex = ''
     // pilihan = []
     if (item.question_type_id == 2) {
         tipe = ['Radio']
         radio = item.choice.map((isi) => {
             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
         })
+        lastCindex = radio.length -1
         // pilihan = [{pilih : item.choice.value}]
     } else if (item.question_type_id == 3) {
         tipe = ['Checkbox']
         checkbox = item.choice.map((isi) => {
             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
         })
+        lastCindex = checkbox.length - 1
         // pilihan = [{pilih : item.choice.value}]
     } else if (item.question_type_id == 1) {
         tipe = ['Text']
         text = [{ isi: '' }]
     }
-    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, radios: radio, checkbox: checkbox }
+    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, radios: radio, checkbox: checkbox, lastChoiceIndex :lastCindex}
 }))
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
@@ -70,25 +73,29 @@ function clone(element) {
     let radios = []
     let checkbox = []
     let required = 0
+    let lastCindex = ''
     switch (element.name) {
         case 'Text':
             texts = [{ isi: '' }]
             break;
         case 'Single Choice':
             radios = [{ pilih: '' }]
+            lastCindex = radios.length -1
             break;
         case 'Yes / No':
             radios = [{ pilih: 'Yes' }, { pilih: 'No' }]
+            lastCindex = radios.length -1
             break;
         case 'Multiple Choice':
             checkbox = [{ pilih: '' }]
+            lastCindex = checkbox.length -1
             break;
 
         default:
             break;
     }
     return {
-        id: len, soal: '', texts: texts, radios: radios, checkbox: checkbox, types: [element.types], required
+        id: len, soal: '', texts: texts, radios: radios, checkbox: checkbox, types: [element.types], required, lastChoiceIndex: lastCindex
     };
 }
 
@@ -121,8 +128,6 @@ function radioQuestion(question) {
         const radio = { pilih: '' };
         question.radios.push(radio);
         question.types.push('Radio'); // Track the type
-
-        question.lastRadioIndex = question.radios.length - 1; // update radio index
     }
 }
 
@@ -131,13 +136,14 @@ function AddRadioOption(question) {
     question.radios.push(radio);
     question.types.push('Radio'); // Track the type
 
-    question.lastRadioIndex = question.radios.length - 1;
+    question.lastChoiceIndex = question.radios.length - 1;
 }
 
-function deleteRadio(question) {
-    if (question.lastRadioIndex >= 1) {
-        question.radios.splice(question, 1)
-        question.lastRadioIndex = question.radios.length - 1; // update radio index
+function deleteRadio(question,index) {
+    console.log(question)
+    if (question.lastChoiceIndex >= 1) {
+        question.radios.splice(index, 1)
+        question.lastChoiceIndex = question.radios.length - 1; // update radio index
     }
 }
 
@@ -152,7 +158,7 @@ function checkboxQuestion(question) {
         question.checkbox.push(checkbox);
         question.types.push('Checkbox'); // Track the type
 
-        question.lastCheckboxIndex = question.checkbox.length - 1; // update radio index
+        question.lastChoiceIndex = question.checkbox.length - 1; // update radio index
     }
 }
 
@@ -162,13 +168,13 @@ function AddCheckboxOption(question) {
     question.checkbox.push(checkbox);
     question.types.push('Checkbox'); // Track the type
 
-    question.lastCheckboxIndex = question.checkbox.length - 1;
+    question.lastChoiceIndex = question.checkbox.length - 1;
 }
 
-function deleteCheckbox(question) {
-    if (question.lastCheckboxIndex >= 1) {
-        question.checkbox.splice(question, 1)
-        question.lastCheckboxIndex = question.checkbox.length - 1; // update radio index
+function deleteCheckbox(question, index) {
+    if (question.lastChoiceIndex >= 1) {
+        question.checkbox.splice(index, 1)
+        question.lastChoiceIndex = question.checkbox.length - 1; // update radio index
     }
 }
 
@@ -237,6 +243,7 @@ const submit = () => {
         client_slug: client['slug'],
     })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
+// console.log(questions.value)
 </script>
 
 <template>

@@ -130,9 +130,12 @@ class QuestionController extends Controller
 
         // Retrieve existing questions for the survey
         $existingQuestions = Question::where('survey_id', $survey->id)->get()->keyBy('id');
-
-        // Track the question IDs that are being processed
+        foreach ($existingQuestions as $exQ)(
+            $existingQuestionChoice = $exQ->choice
+        );
         $processedQuestionIds = [];
+        $processedQuestionCIds = [];
+        // Track the question IDs that are being processed
 
         // Save or update the questions
         foreach ($validatedData['data'] as $questionData) {
@@ -189,10 +192,15 @@ class QuestionController extends Controller
                     $save_qChoice->question_id = $save_question->id;
                     $save_qChoice->order = $c_order;
                     $save_qChoice->save();
+
+                    $processedQuestionCIds[] = $save_qChoice->id;
+
+                    $existingQuestionChoice->except($processedQuestionCIds)->each(function ($qchoice) {
+                       $qchoice->delete(); 
+                    });
                 }
             }
         }
-
         // Delete the questions that were not processed
         $existingQuestions->except($processedQuestionIds)->each(function ($question) {
             $question->delete();
