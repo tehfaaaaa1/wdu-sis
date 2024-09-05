@@ -17,6 +17,10 @@ return new class extends Migration
                 table: 'surveys',
                 indexName: 'questions_survey_id',
             )->onDelete('cascade');
+            $table->foreignId('question_page_id')->after('survey_id')->nullable()->constrained(
+                table: 'question_pages',
+                indexName: 'questions_question_page_id',
+            )->onDelete('cascade');
             $table->string('question_text', 255);
             $table->foreignId('question_type_id')->constrained(
                 table: 'question_types',
