@@ -40,6 +40,7 @@ const questions = ref(props.listquestions.map((item) => {
     }
     return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, radios: radio, checkbox: checkbox, lastChoiceIndex :lastCindex}
 }))
+
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
     { types: 'Radio', name: 'Single Choice', radios: '' },
@@ -307,7 +308,7 @@ const submit = () => {
                 <div class="pb-6 rounded-md bg-white" v-for="(page, page_index) in pages" :key="page.id">
                     <div class="p-5 rounded-t-md border-b border-gray-300 bg-ijo-terang">
                         <p class="text-base text-white font-medium text-justify line-clamp-3">
-                            {{ page.name }}
+                            <input type="text" id="page-name" class="border-white ring-0 focus:ring-0 focus:border-white text-black">
                         </p>
                     </div>
                     <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate" :animation="150"

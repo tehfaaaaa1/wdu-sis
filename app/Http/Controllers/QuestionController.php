@@ -130,23 +130,32 @@ class QuestionController extends Controller
 
         // Retrieve existing questions for the survey
         $existingQuestions = Question::where('survey_id', $survey->id)->get()->keyBy('id');
-        foreach ($existingQuestions as $exQ)(
-            $existingQuestionChoice = $exQ->choice
-        );
-        $processedQuestionIds = [];
-        $processedQuestionCIds = [];
+
         // Track the question IDs that are being processed
+        $processedQuestionIds = [];
 
         // Save or update the questions
         foreach ($validatedData['data'] as $questionData) {
             $question_type = null;
             $tipe = null;
 
+            // Identify the existing choices for the question, if it exists
+            $existingQuestionChoices = [];
+            if (isset($questionData['id'])) {
+                $existingQuestionChoices = QuestionChoice::where('question_id', $questionData['id'])->get();
+            }
+
             foreach ($questionData['types'] as $type) {
                 switch ($type) {
                     case 'Text':
                         $question_type = 1;
                         $tipe = null;
+                        // If the question type is changed to Text, delete all associated choices
+                        if ($existingQuestionChoices->isNotEmpty()) {
+                            foreach ($existingQuestionChoices as $choice) {
+                                $choice->delete();
+                            }
+                        }
                         break;
                     case 'Radio':
                         $question_type = 2;
@@ -181,7 +190,8 @@ class QuestionController extends Controller
             $processedQuestionIds[] = $save_question->id;
 
             // Save or update the question choices
-            if ($tipe != null && !empty($tipe)) {
+            $processedQuestionCIds = [];
+            if (!empty($tipe)) {
                 foreach ($tipe as $choice) {
                     $value = $choice['pilih'];
                     $c_order = $choice['c_order'] ?? random_int(1, 10000);
@@ -194,13 +204,15 @@ class QuestionController extends Controller
                     $save_qChoice->save();
 
                     $processedQuestionCIds[] = $save_qChoice->id;
-
-                    $existingQuestionChoice->except($processedQuestionCIds)->each(function ($qchoice) {
-                       $qchoice->delete(); 
-                    });
                 }
+
+                // Delete any choices that were not part of the processed ones
+                $existingQuestionChoices->whereNotIn('id', $processedQuestionCIds)->each(function ($qchoice) {
+                    $qchoice->delete();
+                });
             }
         }
+
         // Delete the questions that were not processed
         $existingQuestions->except($processedQuestionIds)->each(function ($question) {
             $question->delete();
