@@ -21,6 +21,8 @@ return new class extends Migration
                 indexName: 'surveys_project_id',
             )->onDelete('cascade');
             $table->integer('total_response')->nullable();
+            $table->integer('target_response')->default(0);
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }

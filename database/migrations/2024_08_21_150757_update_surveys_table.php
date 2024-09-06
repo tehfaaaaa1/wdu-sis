@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('surveys', function (Blueprint $table) {
-            $table->string('slug')->after('desc');
+            $table->boolean('status')->default(0);
         });
     }
 
@@ -21,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('surveys', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };
