@@ -88,15 +88,15 @@ function clone(element) {
             break;
         case 'Single Choice':
             choice = [{ pilih: '' }]
-            lastCindex = choice.length -1
+            lastCindex = choice.length - 1
             break;
         case 'Yes / No':
             choice = [{ pilih: 'Yes' }, { pilih: 'No' }]
-            lastCindex = choice.length -1
+            lastCindex = choice.length - 1
             break;
         case 'Multiple Choice':
             choice = [{ pilih: '' }]
-            lastCindex = choice.length -1
+            lastCindex = choice.length - 1
             break;
 
         default:
@@ -108,7 +108,8 @@ function clone(element) {
 }
 
 function addNewPage() {
-
+    const len = pages.value.length
+    pages.value.push({ id: len + 1, name: form.page_name })
 }
 
 // Log Update
@@ -134,8 +135,8 @@ function radioQuestion(question) {
         // Clear previous type and data if it isn't Text
         clearQuestionType(question);
     }
-    if (!question.types.includes('Radio') ) {
-        if(!question.choices.length){
+    if (!question.types.includes('Radio')) {
+        if (!question.choices.length) {
             const checkbox = { pilih: '' };
             question.choices.push(checkbox);
         }
@@ -147,8 +148,8 @@ function checkboxQuestion(question) {
         // Clear previous type and data if it isn't Text
         clearQuestionType(question);
     }
-    if (!question.types.includes('Checkbox') ) {
-        if(!question.choices.length){
+    if (!question.types.includes('Checkbox')) {
+        if (!question.choices.length) {
             const checkbox = { pilih: '' };
             question.choices.push(checkbox);
         }
@@ -158,7 +159,7 @@ function checkboxQuestion(question) {
     }
 }
 // add
-function AddRadioOption(question) { 
+function AddRadioOption(question) {
     const radio = { pilih: '' };
     question.choices.push(radio);
     // question.types.push('Radio'); // Track the type
@@ -166,7 +167,7 @@ function AddRadioOption(question) {
     question.lastChoiceIndex = question.choices.length - 1;
 }
 function AddCheckboxOption(question) {
-    const checkbox = { pilih: ''};
+    const checkbox = { pilih: '' };
     question.choices.push(checkbox);
     // question.types.push('Checkbox'); // Track the type
 
@@ -174,7 +175,7 @@ function AddCheckboxOption(question) {
 }
 
 // delete
-function deleteRadio(question,index) {
+function deleteRadio(question, index) {
     console.log(question)
     if (question.lastChoiceIndex >= 1) {
         question.choices.splice(index, 1)
@@ -192,9 +193,9 @@ function clearQuestionType(question) {
     // Clear the existing type and its associated data
     if (question.types.includes('Text')) {
         question.texts = [];  // Clear text data
-    } else if (question.types.includes('Radio') || question.types.includes('Checkbox')){
+    } else if (question.types.includes('Radio') || question.types.includes('Checkbox')) {
         question.choices = question.choices;  // Clear choice data
-    } 
+    }
 
     // Clear the type
     question.types = [];
@@ -209,6 +210,7 @@ function remove(index) {
 }
 
 const form = useForm({
+    page_name: '',
     project_slug: project['slug'],
     client_slug: client['slug'],
 });
@@ -310,14 +312,15 @@ const submit = () => {
                         enter-from-class="transform scale-95" enter-to-class="transform opacity-100 scale-100"
                         leave-active-class="transition ease-in duration-75"
                         leave-from-class="transform opacity-100 scale-100" leave-to-class="transform scale-95">
-                        <form action="" v-if="showAddPage"
+                        <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"    
                             class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
-                            <input type="text" id="showAddPage"
+                            <input type="text" id="showAddPage" v-model="form.page_name"
                                 class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
                                 placeholder="Enter page name">
                             <button type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6 transition hover:text-sky-500">
+                                    stroke-width="1.5" stroke="currentColor"
+                                    class="size-6 transition hover:text-sky-500">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                                 </svg>
@@ -345,14 +348,14 @@ const submit = () => {
                 </div>
             </aside>
             <form class="mx-auto lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="pb-6 rounded-md bg-white" v-for="(page, page_index) in pages" :key="page.id">
+                <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page.id">
                     <div class="p-5 rounded-t-md border-b border-gray-300 bg-ijo-terang">
                         <p class="text-base text-white font-medium text-justify line-clamp-3">
                             {{ page.name }}
                         </p>
                     </div>
                     <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate" :animation="150"
-                        class="list-questions" handle=".handle">
+                        class="list-questions" :class="'bg-white pb-8 rounded-md'" handle=".handle">
                         <div v-for="(item, index) in questions" :key="item.id" class="list-questions-item">
                             <p v-if="questions.length === 0" key="2000">Ass</p>
                             <div class="p-5 gap-2 flex items-center">
@@ -426,7 +429,8 @@ const submit = () => {
                             </div>
 
                             <!-- single choice -->
-                            <div class="px-5" v-for="(radio, index) in item.choices" :key="index" v-if="item.types.includes('Radio')">
+                            <div class="px-5" v-for="(radio, index) in item.choices" :key="index"
+                                v-if="item.types.includes('Radio')">
                                 <div class="flex items-center mb-2">
                                     <span class="select-none">O</span>
                                     <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
@@ -452,7 +456,8 @@ const submit = () => {
                             </div>
 
                             <!-- multiple choice -->
-                            <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index" v-if="item.types.includes('Checkbox')">
+                            <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index"
+                                v-if="item.types.includes('Checkbox')">
                                 <div class="flex items-center mb-2">
                                     <span class="select-none">&#9634;</span>
                                     <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
@@ -478,6 +483,7 @@ const submit = () => {
                             </div>
                         </div>
                     </VueDraggable>
+                    <div class="border border-gray-500 mt-8 mb-3" v-if="pages.length > 1"></div>
                 </div>
             </form>
         </main>
