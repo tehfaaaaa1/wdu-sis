@@ -81,27 +81,6 @@ const questionsType = ref([
     { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
     { types: 'Radio', name: 'Yes / No', choices: '' },
 ]);
-
-// testing
-// const a = ref(props.listquestions.map((item)=> {
-//     let tipe = []
-//     let radio = []
-//     let checkbox =[]
-//     // pilihan = []
-//     if(item.question_type_id == 2){
-//         tipe = ['Radio'] 
-//         radio = item.choice
-//         // pilihan = [{pilih : item.choice.value}]
-//     } else if(item.question_type_id == 3) {
-//         tipe = ['Checkbox'] 
-//         checkbox = item.choice
-//         // pilihan = [{pilih : item.choice.value}]
-//     }else if(item.question_type_id == 1) {
-//         tipe = ['Text']
-
-//     }
-//    return {id : item.id, soal: item.question_text, texts: [], types : tipe, required: item.required, radios: radio, checkbox: checkbox}
-// }))
 function clone(element) {
     let texts = []
     let choice = []
