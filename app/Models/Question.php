@@ -30,6 +30,6 @@ class Question extends Model
         return $this->belongsTo(Survey::class);
     }
     public function page(): BelongsTo{
-        return $this->belongsTo(Page::class);
+        return $this->belongsTo(QuestionPage::class);
     }
 }

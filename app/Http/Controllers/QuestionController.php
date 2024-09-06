@@ -122,113 +122,107 @@ class QuestionController extends Controller
     }
 
     public function manualSave(Request $request, $clientSlug, $projectSlug, $id)
-    {
-        dd($request['data']);
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'data' => 'required|array',
-            'data.*.soal' => 'required|string|max:255',
-            'data.*.types' => 'required|array',
-            'data.*.required' => 'required|boolean',
-            'data.*.choices' => 'array',
-            'data.*.id' => 'required',
-            'data.*.order' => 'integer',
-        ]);
+{
+    // Validate the incoming request data
+    $validatedData = $request->validate([
+        'data' => 'required|array',
+        'data.*.question' => 'required|array',
+        'data.*.id' => 'nullable|numeric',
+        'data.*.name' => 'required|string',
+        'data.*.question.*.soal' => 'required|string|max:255',
+        'data.*.question.*.types' => 'required|array',
+        'data.*.question.*.required' => 'required|boolean',
+        'data.*.question.*.choices' => 'array',
+        'data.*.question.*.id' => 'nullable|numeric',
+        'data.*.question.*.order' => 'nullable|integer',
+    ]);
+    // dd($validatedData);
+    $survey = Survey::findOrFail($request->survey);
 
-        $survey = Survey::findOrFail($request->survey);
-
-        // Retrieve existing questions for the survey
-        $existingQuestions = Question::where('survey_id', $survey->id)->get()->keyBy('id');
+    // Save or update the questions
+    foreach ($validatedData['data'] as $pageData) {
+        $newPage = new QuestionPage;
+        $savePage = QuestionPage::firstOrNew(
+            ['id' => $pageData['id'] ?? $newPage->id, 'survey_id' => $survey->id]
+        );
+        $savePage->page_name = $pageData['name'];
+        $savePage->save();
+            
+        // Retrieve existing questions for the page
+        $existingQuestions = Question::where('question_page_id', $savePage->id)
+            ->get()
+            ->keyBy('id');
 
         // Track the question IDs that are being processed
         $processedQuestionIds = [];
 
-        // Save or update the questions
-        foreach ($validatedData['data'] as $questionData) {
-            $question_type = null;
-            $tipe = null;
+        foreach ($pageData['question'] as $questionData) {
+            $questionType = null;
+            $choices = [];
 
-            // Identify the existing choices for the question, if it exists
-            $existingQuestionChoices = [];
-            if (isset($questionData['id'])) {
-                $existingQuestionChoices = QuestionChoice::where('question_id', $questionData['id'])->get();
-            }
-
-            foreach ($questionData['types'] as $type){
+            // Process the question types and handle choices
+            foreach ($questionData['types'] as $type) {
                 switch ($type) {
                     case 'Text':
-                        $question_type = 1;
-                        $tipe = null;
-                        // If the question type is changed to Text, delete all associated choices
-                        if ($existingQuestionChoices->isNotEmpty()) {
-                            foreach ($existingQuestionChoices as $choice) {
-                                $choice->delete();
-                            }
-                        }
+                        $questionType = 1;
+                        $choices = []; // Clear any existing choices for Text type
                         break;
                     case 'Radio':
-                        $question_type = 2;
-                        $tipe = $questionData['choices'];
-                        if (count($tipe) < 2) {
-                            abort(403, "Isilah Minimal 2 Pilihan !!");
-                        }
-                        break;
                     case 'Checkbox':
-                        $question_type = 3;
-                        $tipe = $questionData['choices'];
-                        if (count($tipe) < 2) {
+                        $questionType = $type === 'Radio' ? 2 : 3;
+                        $choices = $questionData['choices'] ?? [];
+                        if (count($choices) < 2) {
                             abort(403, "Isilah Minimal 2 Pilihan !!");
                         }
                         break;
                     default:
+                        // Handle other types or do nothing
                         break;
                 }
             }
 
             // Save or update the question
-            $q = new Question;
-            $save_question = Question::firstOrNew(
-                ['id' => $questionData['id'] ?? $q->id, 'survey_id' => $survey->id]
+            $saveQuestion = Question::firstOrNew(
+                ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id, 'question_page_id' => $savePage->id]
             );
-            $save_question->required = $questionData['required'];
-            $save_question->order = $questionData['order'] ?? random_int(1, 10000);
-            $save_question->question_text = $questionData['soal'];
-            $save_question->question_type_id = $question_type;
-            $save_question->save();
+            $saveQuestion->required = $questionData['required'];
+            $saveQuestion->order = $questionData['order'] ?? random_int(1, 10000);
+            $saveQuestion->question_text = $questionData['soal'];
+            $saveQuestion->question_type_id = $questionType;
+            $saveQuestion->save();
 
-            // Add the question ID to the processed list
-            $processedQuestionIds[] = $save_question->id;
+            $processedQuestionIds[] = $saveQuestion->id;
 
             // Save or update the question choices
-            $processedQuestionCIds = [];
-            if (!empty($tipe)) {
-                foreach ($tipe as $choice) {
-                    $value = $choice['pilih'];
-                    $c_order = $choice['c_order'] ?? random_int(1, 10000);
-                    $new = new QuestionChoice;
-                    $newId = $new->id;
-                    $save_qChoice = QuestionChoice::firstOrNew(['id' => $choice['cId'] ?? $newId]);
-                    $save_qChoice->value = $value;
-                    $save_qChoice->question_id = $save_question->id;
-                    $save_qChoice->order = $c_order;
-                    $save_qChoice->save();
+            $existingQuestionChoices = QuestionChoice::where('question_id', $saveQuestion->id)->get()->keyBy('id');
+            $processedChoiceIds = [];
 
-                    $processedQuestionCIds[] = $save_qChoice->id;
-                }
+            foreach ($choices as $choice) {
+                $saveChoice = QuestionChoice::firstOrNew(
+                    ['id' => $choice['cId'] ?? null]
+                );
+                $saveChoice->value = $choice['pilih'];
+                $saveChoice->question_id = $saveQuestion->id;
+                $saveChoice->order = $choice['c_order'] ?? random_int(1, 10000);
+                $saveChoice->save();
 
-                // Delete any choices that were not part of the processed ones
-                $existingQuestionChoices->whereNotIn('id', $processedQuestionCIds)->each(function ($qchoice) {
-                    $qchoice->delete();
-                });
+                $processedChoiceIds[] = $saveChoice->id;
             }
+
+            // Delete any existing choices that were not processed
+            $existingQuestionChoices->except($processedChoiceIds)->each(function ($choice) {
+                $choice->delete();
+            });
         }
 
-        // Delete the questions that were not processed
+        // Delete any existing questions that were not processed
         $existingQuestions->except($processedQuestionIds)->each(function ($question) {
             $question->delete();
         });
-
-        // Additional logic for final submission, such as notifications or marking survey as complete
-        return response()->json(['status' => 'success']);
     }
+
+    // Additional logic for final submission, such as notifications or marking survey as complete
+    return response()->json(['status' => 'success']);
+}
+
 }
