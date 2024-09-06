@@ -20,10 +20,18 @@
 - Edit Client can't update (image breaks the form when added)
 
 ## Changelog
+### 6 Sep 2024
+- Updated AddQuestions :
+  - Insert page
+  - Need to fix submission survey after this ;-;
+- Change Survey Open/Close Status
+- Provinces and Target Respondent (WIP) <!-- no cities/regencies yet -->
+- Bug Fixes
+
 ### 4 Sep 2024
 - Updated AddQuestions.vue : <!-- this is complex ngl -->
   - Replaced submit questions with save function
-- Bug Fixing
+- Bug Fix
 
 ### 3 Sep 2024
 - Target Respondent in Surveys (WIP)
