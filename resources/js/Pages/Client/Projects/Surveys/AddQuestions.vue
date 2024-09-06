@@ -1,21 +1,21 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
-import { debounce } from 'lodash';
-const props = defineProps({ 
-    surveys: Object, 
-    projects: Object, 
-    clients: Object, 
-    listquestions: Object, 
-    lastId: Object, 
-    c_lastId: Object 
+const props = defineProps({
+    surveys: Object,
+    projects: Object,
+    clients: Object,
+    listquestions: Object,
+    lastId: Object,
+    c_lastId: Object
 })
 const project = props.projects[0];
 const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
+let showAddPage = ref(false)
 
 // Note: Customize the functions below if needed
 const pages = ref([{ id: 1, name: 'Starter' }])
@@ -31,7 +31,7 @@ const questions = ref(props.listquestions.map((item) => {
         choice = item.choice.map((isi) => {
             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
         })
-        lastCindex = choice.length -1
+        lastCindex = choice.length - 1
         // pilihan = [{pilih : item.choice.value}]
     } else if (item.question_type_id == 3) {
         tipe = ['Checkbox']
@@ -44,7 +44,7 @@ const questions = ref(props.listquestions.map((item) => {
         tipe = ['Text']
         text = [{ isi: '' }]
     }
-    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices :choice, lastChoiceIndex :lastCindex}
+    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
 }))
 
 const questionsType = ref([
@@ -105,6 +105,10 @@ function clone(element) {
     return {
         id: len, soal: '', texts: texts, choices: choice, types: [element.types], required, lastChoiceIndex: lastCindex
     };
+}
+
+function addNewPage() {
+
 }
 
 // Log Update
@@ -247,7 +251,6 @@ const submit = () => {
         client_slug: client['slug'],
     })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
-console.log(questions.value)
 </script>
 
 <template>
@@ -280,7 +283,7 @@ console.log(questions.value)
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                         :animation="150" :clone="clone" :sort="false" class="list-qtype">
                         <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                            items-center cursor-grab">
+                            items-center cursor-move">
                             <span>{{ item.name }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6 text-gray-500">
@@ -289,15 +292,38 @@ console.log(questions.value)
                             </svg>
                         </div>
                     </VueDraggable>
-                    <button class="bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                    items-center w-full">
+                    <button type="button" class="bg-white border-gray-300 py-2 px-4 flex justify-between
+                    items-center w-full" @click="showAddPage = !showAddPage" :class="!showAddPage ? 'border-b' : ''">
                         Add Page
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 text-gray-500">
+                            stroke="currentColor" class="size-6 text-gray-500" v-if="!showAddPage">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                         </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 text-gray-500" v-else>
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
                     </button>
+                    <transition enter-active-class="transition ease-out duration-200"
+                        enter-from-class="transform scale-95" enter-to-class="transform opacity-100 scale-100"
+                        leave-active-class="transition ease-in duration-75"
+                        leave-from-class="transform opacity-100 scale-100" leave-to-class="transform scale-95">
+                        <form action="" v-if="showAddPage"
+                            class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
+                            <input type="text" id="showAddPage"
+                                class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
+                                placeholder="Enter page name">
+                            <button type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6 transition hover:text-sky-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                </svg>
+                            </button>
+                        </form>
+                    </transition>
                     <!-- <form action=""> -->
                     <!-- <input type="text" name="" id=""> -->
                     <!-- <button></button> -->
@@ -322,8 +348,7 @@ console.log(questions.value)
                 <div class="pb-6 rounded-md bg-white" v-for="(page, page_index) in pages" :key="page.id">
                     <div class="p-5 rounded-t-md border-b border-gray-300 bg-ijo-terang">
                         <p class="text-base text-white font-medium text-justify line-clamp-3">
-                            <input type="text" id="page-name"
-                                class="border-white ring-0 focus:ring-0 focus:border-white text-black">
+                            {{ page.name }}
                         </p>
                     </div>
                     <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate" :animation="150"
@@ -351,7 +376,7 @@ console.log(questions.value)
                                         <button type="button"
                                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                             <p v-for="type in item.types">
-                                                {{type ?? 'Question Type'}}
+                                                {{ type ?? 'Question Type' }}
                                             </p>
                                             <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                 fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -406,8 +431,8 @@ console.log(questions.value)
                                     <span class="select-none">O</span>
                                     <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
                                         :id="'radio' + (index + 1) + '-q' + (item.id)" :value="radio.pilih"
-                                        placeholder="Insert single choice here"
-                                        class="text-sm mx-4 rounded-md block w-1/4">
+                                        placeholder="Insert single choice"
+                                        class="text-sm mx-4 block w-1/4 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
 
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor"
