@@ -88,15 +88,15 @@ function clone(element) {
             break;
         case 'Single Choice':
             choice = [{ pilih: '' }]
-            lastCindex = radios.length -1
+            lastCindex = choice.length -1
             break;
         case 'Yes / No':
             choice = [{ pilih: 'Yes' }, { pilih: 'No' }]
-            lastCindex = radios.length -1
+            lastCindex = choice.length -1
             break;
         case 'Multiple Choice':
             choice = [{ pilih: '' }]
-            lastCindex = checkbox.length -1
+            lastCindex = choi.length -1
             break;
 
         default:
@@ -113,7 +113,7 @@ const logUpdate = (newQuestions) => {
 };
 
 // QUESTIONS OVER HERE
-// Text
+// Question 
 function textQuestion(question) {
     if (question.types.length > 0 && !question.types.includes('Text')) {
         // Clear previous type and data if it isn't Text
@@ -125,28 +125,51 @@ function textQuestion(question) {
         question.types.push('Text');
     }
 }
-
-// Radio
 function radioQuestion(question) {
     if (question.types.length > 0 && !question.types.includes('Radio')) {
         // Clear previous type and data if it isn't Text
         clearQuestionType(question);
     }
-    if (!question.types.includes('Radio')) {
-        // const radio = { pilih: '' };
-        // question.choices.push(radio);
+    if (!question.types.includes('Radio') ) {
+        if(!question.choices.length){
+            const checkbox = { pilih: '' };
+            question.choices.push(checkbox);
+        }
         question.types.push('Radio'); // Track the type
     }
 }
+function checkboxQuestion(question) {
+    if (question.types.length > 0 && !question.types.includes('Checkbox')) {
+        // Clear previous type and data if it isn't Text
+        clearQuestionType(question);
+    }
+    if (!question.types.includes('Checkbox') ) {
+        if(!question.choices.length){
+            const checkbox = { pilih: '' };
+            question.choices.push(checkbox);
+        }
+        question.types.push('Checkbox'); // Track the type
 
-function AddRadioOption(question) {
-    // const radio = { pilih: '' };
-    // question.choices.push(radio);
-    question.types.push('Radio'); // Track the type
+        question.lastChoiceIndex = question.choices.length - 1; // update radio index
+    }
+}
+// add
+function AddRadioOption(question) { 
+    const radio = { pilih: '' };
+    question.choices.push(radio);
+    // question.types.push('Radio'); // Track the type
+
+    question.lastChoiceIndex = question.choices.length - 1;
+}
+function AddCheckboxOption(question) {
+    const checkbox = { pilih: ''};
+    question.choices.push(checkbox);
+    // question.types.push('Checkbox'); // Track the type
 
     question.lastChoiceIndex = question.choices.length - 1;
 }
 
+// delete
 function deleteRadio(question,index) {
     console.log(question)
     if (question.lastChoiceIndex >= 1) {
@@ -154,30 +177,6 @@ function deleteRadio(question,index) {
         question.lastChoiceIndex = question.choices.length - 1; // update radio index
     }
 }
-
-// Checkbox
-function checkboxQuestion(question) {
-    if (question.types.length > 0 && !question.types.includes('Checkbox')) {
-        // Clear previous type and data if it isn't Text
-        clearQuestionType(question);
-    }
-    if (!question.types.includes('Checkbox')) {
-        // const checkbox = { pilih: '' };
-        // question.choices.push(checkbox);
-        question.types.push('Checkbox'); // Track the type
-
-        question.lastChoiceIndex = question.choices.length - 1; // update radio index
-    }
-}
-
-function AddCheckboxOption(question) {
-    // const checkbox = { pilih: ''};
-    // question.choices.push(checkbox);
-    question.types.push('Checkbox'); // Track the type
-
-    question.lastChoiceIndex = question.choices.length - 1;
-}
-
 function deleteCheckbox(question, index) {
     if (question.lastChoiceIndex >= 1) {
         question.choices.splice(index, 1)
@@ -189,8 +188,8 @@ function clearQuestionType(question) {
     // Clear the existing type and its associated data
     if (question.types.includes('Text')) {
         question.texts = [];  // Clear text data
-    } else if (question.types.includes('Radio') && question.types.includes('Checkbox')) {
-        question.choices = [];  // Clear choice data
+    } else if (question.types.includes('Radio') || question.types.includes('Checkbox')){
+        question.choices = question.choices;  // Clear choice data
     } 
 
     // Clear the type
@@ -388,7 +387,7 @@ console.log(questions.value)
                             </div>
 
                             <!-- single choice -->
-                            <div class="px-5" v-for="(radio, index) in item.choices" :key="index" v-if="item.types == 'Radio'">
+                            <div class="px-5" v-for="(radio, index) in item.choices" :key="index" v-if="item.types.includes('Radio')">
                                 <div class="flex items-center mb-2">
                                     <span class="select-none">O</span>
                                     <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
@@ -414,7 +413,7 @@ console.log(questions.value)
                             </div>
 
                             <!-- multiple choice -->
-                            <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index" v-if="item.types == 'Checkbox'">
+                            <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index" v-if="item.types.includes('Checkbox')">
                                 <div class="flex items-center mb-2">
                                     <span class="select-none">&#9634;</span>
                                     <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
