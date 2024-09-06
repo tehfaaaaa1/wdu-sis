@@ -28,8 +28,8 @@ const form = useForm({
 });
 
 const provinces = ref([]);
-const cities = ref([]);
-const regencies = ref([]);
+//const cities = ref([]);
+//const regencies = ref([]);
 
 axios.get(route('provinces.index')).then(response => {
     provinces.value = response.data;
@@ -37,21 +37,8 @@ axios.get(route('provinces.index')).then(response => {
 
 watch(() => form.province_id, (newProvinceId) => {
     if (newProvinceId) {
-        axios.get(route('cities.index', newProvinceId)).then(response => {
-            cities.value = response.data;
-            regencies.value = [];
-            form.city_id = '';
-            form.regency_id = '';
-        });
-    }
-});
-
-watch(() => form.city_id, (newCityId) => {
-    if (newCityId) {
-        axios.get(route('regencies.index', newCityId)).then(response => {
-            regencies.value = response.data;
-            form.regency_id = '';
-        });
+        const selectedProvince = provinces.value.find(province => province.id === newProvinceId);
+        form.target_response = selectedProvince ? selectedProvince.target_response : '';
     }
 });
 
@@ -59,9 +46,7 @@ const submit = () => {
     form.post(route('create_survey', [form.client_slug, form.project_slug]), {
         data: {
             target_response: form.target_response,
-            province_id: form.province_id,
-            city_id: form.city_id,
-            regency_id: form.regency_id
+            province_id: form.province_id
         },
     });
 };
@@ -98,24 +83,6 @@ const submit = () => {
                             <option v-for="province in provinces" :key="province.id" :value="province.id">{{ province.name }}</option>
                         </select>
                         <InputError class="mt-2" :message="form.errors.province_id" />
-                    </div>
-
-                    <div class="mt-4 relative" v-if="cities.length > 0">
-                        <InputLabel for="city_id" />
-                        <select v-model="form.city_id" class="block w-full rounded-md shadow-sm">
-                            <option value="">Select City</option>
-                            <option v-for="city in cities" :key="city.id" :value="city.id">{{ city.name }}</option>
-                        </select>
-                        <InputError class="mt-2" :message="form.errors.city_id" />
-                    </div>
-
-                    <div class="mt-4 relative" v-if="regencies.length > 0">
-                        <InputLabel for="regency_id" />
-                        <select v-model="form.regency_id" class="block w-full rounded-md shadow-sm">
-                            <option value="">Select Regency</option>
-                            <option v-for="regency in regencies" :key="regency.id" :value="regency.id">{{ regency.name }}</option>
-                        </select>
-                        <InputError class="mt-2" :message="form.errors.regency_id" />
                     </div>
                     
                     <div class="mt-4 relative">

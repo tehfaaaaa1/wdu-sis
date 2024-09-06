@@ -17,6 +17,9 @@ class Survey extends Model
         'desc',
         'project_id',
         'target_response',
+        'province_id',
+        'city_id',
+        'regency_id',
     ];
 
     public function project(): BelongsTo {
