@@ -13,6 +13,7 @@ class Question extends Model
 
     protected $fillable =[
         'survey_id', 
+        'question_page_id',
         'question_text',
         'question_type_id',
         'order',
@@ -29,6 +30,6 @@ class Question extends Model
         return $this->belongsTo(Survey::class);
     }
     public function page(): BelongsTo{
-        return $this->belongsTo(Page::class);
+        return $this->belongsTo(QuestionPage::class);
     }
 }

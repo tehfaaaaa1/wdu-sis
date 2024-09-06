@@ -16,38 +16,39 @@ const props = defineProps({
 const project = props.projects[0];
 const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
+let question;
 let showAddPage = ref(false)
 
 // Note: Customize the functions below if needed
 const pages = ref(props.page.map((page) => {
-    let question  = page.question.map((item) => {
-    let tipe = []
-    let text = []
-    let choice = []
-    let lastCindex = ''
-    // pilihan = []
-    if (item.question_type_id == 2) {
-        tipe = ['Radio']
-        choice = item.choice.map((isi) => {
-            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-        })
-        lastCindex = choice.length - 1
-        // pilihan = [{pilih : item.choice.value}]
-    } else if (item.question_type_id == 3) {
-        tipe = ['Checkbox']
-        choice = item.choice.map((isi) => {
-            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-        })
-        lastCindex = choice.length - 1
-        // pilihan = [{pilih : item.choice.value}]
-    } else if (item.question_type_id == 1) {
-        tipe = ['Text']
-        text = [{ isi: '' }]
-    }
-    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
-})
+    question = page.question.map((item) => {
+        let tipe = []
+        let text = []
+        let choice = []
+        let lastCindex = ''
+        // pilihan = []
+        if (item.question_type_id == 2) {
+            tipe = ['Radio']
+            choice = item.choice.map((isi) => {
+                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+            })
+            lastCindex = choice.length - 1
+            // pilihan = [{pilih : item.choice.value}]
+        } else if (item.question_type_id == 3) {
+            tipe = ['Checkbox']
+            choice = item.choice.map((isi) => {
+                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+            })
+            lastCindex = choice.length - 1
+            // pilihan = [{pilih : item.choice.value}]
+        } else if (item.question_type_id == 1) {
+            tipe = ['Text']
+            text = [{ isi: '' }]
+        }
+        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
+    })
 
-    return {id : page.id, name: page.page_name, question: question}
+    return { id: page.id, name: page.page_name, question: question }
 }))
 
 const questions = ref(props.listquestions.map((item) => {
@@ -130,13 +131,13 @@ function clone(element) {
             break;
     }
     return {
-     soal: '', texts: texts, choices: choice, types: [element.types], required, lastChoiceIndex: lastCindex
+        soal: '', texts: texts, choices: choice, types: [element.types], required, lastChoiceIndex: lastCindex
     };
 }
 
 function addNewPage() {
-    const len = pages.value.length
-    pages.value.push({ id: len + 1, name: form.page_name, question: []})
+    pages.value.push({ name: form.page_name, question: [] })
+    form.reset('page_name')
 }
 
 // Log Update
@@ -232,8 +233,8 @@ function isTypeAdded(question, type) {
     return question.types.includes(type);
 }
 
-function remove(index) {
-    questions.value.splice(index, 1);
+function remove(page, index) {
+    page.question.splice(index, 1)
 }
 
 const form = useForm({
@@ -340,7 +341,7 @@ console.log(pages.value)
                         enter-from-class="transform scale-95" enter-to-class="transform opacity-100 scale-100"
                         leave-active-class="transition ease-in duration-75"
                         leave-from-class="transform opacity-100 scale-100" leave-to-class="transform scale-95">
-                        <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"    
+                        <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"
                             class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
                             <input type="text" id="showAddPage" v-model="form.page_name"
                                 class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
@@ -376,16 +377,15 @@ console.log(pages.value)
                 </div>
             </aside>
             <form class="mx-auto lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page.id">
+                <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page_index">
                     <div class="p-5 rounded-t-md border-b border-gray-300 bg-ijo-terang">
                         <p class="text-base text-white font-medium text-justify line-clamp-3">
                             {{ page.name }}
                         </p>
                     </div>
-                    <VueDraggable v-model="page.question" group="questions" @update:modelValue="logUpdate" :animation="150"
-                        class="list-questions" :class="'bg-white pb-8 rounded-md'" handle=".handle">
+                    <VueDraggable v-model="page.question" group="questions" @update:modelValue="logUpdate"
+                        :animation="150" class="list-questions" :class="'bg-white pb-8 rounded-md'" handle=".handle">
                         <div v-for="(item, index) in page.question" :key="item.id" class="list-questions-item">
-                            <p v-if="questions.length === 0" key="2000">Ass</p>
                             <div class="p-5 gap-2 flex items-center">
                                 <!-- Order of question -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -439,7 +439,7 @@ console.log(pages.value)
                                 </Dropdown>
                                 <!-- delete question -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" @click="remove(index)"
+                                    stroke-width="1.5" stroke="currentColor" @click="remove(page, index)"
                                     class="size-10 text-red-600 cursor-pointer">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
