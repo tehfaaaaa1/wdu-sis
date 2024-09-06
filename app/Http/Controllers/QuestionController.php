@@ -123,7 +123,7 @@ class QuestionController extends Controller
 
     public function manualSave(Request $request, $clientSlug, $projectSlug, $id)
     {
-        // dd($request['data']);
+        dd($request['data']);
         // Validate the incoming request data
         $validatedData = $request->validate([
             'data' => 'required|array',
@@ -186,8 +186,9 @@ class QuestionController extends Controller
             }
 
             // Save or update the question
+            $q = new Question;
             $save_question = Question::firstOrNew(
-                ['id' => $questionData['id'], 'survey_id' => $survey->id]
+                ['id' => $questionData['id'] ?? $q->id, 'survey_id' => $survey->id]
             );
             $save_question->required = $questionData['required'];
             $save_question->order = $questionData['order'] ?? random_int(1, 10000);

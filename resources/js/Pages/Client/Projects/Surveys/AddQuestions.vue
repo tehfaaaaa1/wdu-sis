@@ -20,7 +20,7 @@ let showAddPage = ref(false)
 
 // Note: Customize the functions below if needed
 const pages = ref(props.page.map((page) => {
-    let question  =  page.question.map((item) => {
+    let question  = page.question.map((item) => {
     let tipe = []
     let text = []
     let choice = []
@@ -104,10 +104,7 @@ const questionsType = ref([
 //     }
 //    return {id : item.id, soal: item.question_text, texts: [], types : tipe, required: item.required, radios: radio, checkbox: checkbox}
 // }))
-
-
 function clone(element) {
-    const len = pages.question.value.length + props.lastId + 1;
     let texts = []
     let choice = []
     let required = 0
@@ -133,13 +130,13 @@ function clone(element) {
             break;
     }
     return {
-        id: len, soal: '', texts: texts, choices: choice, types: [element.types], required, lastChoiceIndex: lastCindex
+     soal: '', texts: texts, choices: choice, types: [element.types], required, lastChoiceIndex: lastCindex
     };
 }
 
 function addNewPage() {
     const len = pages.value.length
-    pages.value.push({ id: len + 1, name: form.page_name })
+    pages.value.push({ id: len + 1, name: form.page_name, question: []})
 }
 
 // Log Update
@@ -260,7 +257,7 @@ const savingStatus = ref('')
 const submitForm = () => {
     savingStatus.value = 'saving';
     form.transform(() => ({
-        data: questions.value,
+        data: pages.value,
         survey: props.surveys.id,
         project_slug: project['slug'],
         client_slug: client['slug'],
@@ -385,7 +382,7 @@ console.log(pages.value)
                             {{ page.name }}
                         </p>
                     </div>
-                    <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate" :animation="150"
+                    <VueDraggable v-model="page.question" group="questions" @update:modelValue="logUpdate" :animation="150"
                         class="list-questions" :class="'bg-white pb-8 rounded-md'" handle=".handle">
                         <div v-for="(item, index) in page.question" :key="item.id" class="list-questions-item">
                             <p v-if="questions.length === 0" key="2000">Ass</p>
