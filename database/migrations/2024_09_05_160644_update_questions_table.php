@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('surveys', function (Blueprint $table) {
-            $table->integer('total_response')->nullable()->change();
+        Schema::table('questions', function (Blueprint $table) {
+            $table->foreignId('question_page_id')->after('survey_id')->nullable()->constrained(
+                table: 'question_pages',
+                indexName: 'questions_question_page_id',
+            )->onDelete('cascade');
         });
     }
 
