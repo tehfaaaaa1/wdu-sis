@@ -11,7 +11,7 @@ class LocationController extends Controller
 {
     public function getProvinces()
     {
-        return response()->json(Province::all());
+        return response()->json(Province::select('id', 'name', 'target_response')->get());
     }
 
     public function getCitiesByProvince($province_id)
