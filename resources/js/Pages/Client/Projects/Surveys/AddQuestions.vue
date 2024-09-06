@@ -96,7 +96,7 @@ function clone(element) {
             break;
         case 'Multiple Choice':
             choice = [{ pilih: '' }]
-            lastCindex = choi.length -1
+            lastCindex = choice.length -1
             break;
 
         default:

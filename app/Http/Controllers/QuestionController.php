@@ -145,7 +145,7 @@ class QuestionController extends Controller
                 $existingQuestionChoices = QuestionChoice::where('question_id', $questionData['id'])->get();
             }
 
-            foreach ($questionData['types'] as $type) {
+            foreach ($questionData['types'] as $type){
                 switch ($type) {
                     case 'Text':
                         $question_type = 1;
