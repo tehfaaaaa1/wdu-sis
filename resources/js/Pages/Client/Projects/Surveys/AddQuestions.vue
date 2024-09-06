@@ -8,10 +8,7 @@ const props = defineProps({
     surveys: Object,
     projects: Object,
     clients: Object,
-    listquestions: Object,
     page: Object,
-    lastId: Object,
-    c_lastId: Object
 })
 const project = props.projects[0];
 const client = props.clients[0];
@@ -50,32 +47,32 @@ const pages = ref(props.page.map((page) => {
     return {id : page.id, name: page.page_name, question: question}
 }))
 
-const questions = ref(props.listquestions.map((item) => {
-    let tipe = []
-    let text = []
-    let choice = []
-    let lastCindex = ''
-    // pilihan = []
-    if (item.question_type_id == 2) {
-        tipe = ['Radio']
-        choice = item.choice.map((isi) => {
-            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-        })
-        lastCindex = choice.length - 1
-        // pilihan = [{pilih : item.choice.value}]
-    } else if (item.question_type_id == 3) {
-        tipe = ['Checkbox']
-        choice = item.choice.map((isi) => {
-            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-        })
-        lastCindex = choice.length - 1
-        // pilihan = [{pilih : item.choice.value}]
-    } else if (item.question_type_id == 1) {
-        tipe = ['Text']
-        text = [{ isi: '' }]
-    }
-    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
-}))
+// const questions = ref(props.listquestions.map((item) => {
+//     let tipe = []
+//     let text = []
+//     let choice = []
+//     let lastCindex = ''
+//     // pilihan = []
+//     if (item.question_type_id == 2) {
+//         tipe = ['Radio']
+//         choice = item.choice.map((isi) => {
+//             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+//         })
+//         lastCindex = choice.length - 1
+//         // pilihan = [{pilih : item.choice.value}]
+//     } else if (item.question_type_id == 3) {
+//         tipe = ['Checkbox']
+//         choice = item.choice.map((isi) => {
+//             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+//         })
+//         lastCindex = choice.length - 1
+//         // pilihan = [{pilih : item.choice.value}]
+//     } else if (item.question_type_id == 1) {
+//         tipe = ['Text']
+//         text = [{ isi: '' }]
+//     }
+//     return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
+// }))
 
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
@@ -135,8 +132,7 @@ function clone(element) {
 }
 
 function addNewPage() {
-    const len = pages.value.length
-    pages.value.push({ id: len + 1, name: form.page_name, question: []})
+    pages.value.push({name: form.page_name, question: []})
 }
 
 // Log Update
@@ -385,7 +381,6 @@ console.log(pages.value)
                     <VueDraggable v-model="page.question" group="questions" @update:modelValue="logUpdate" :animation="150"
                         class="list-questions" :class="'bg-white pb-8 rounded-md'" handle=".handle">
                         <div v-for="(item, index) in page.question" :key="item.id" class="list-questions-item">
-                            <p v-if="questions.length === 0" key="2000">Ass</p>
                             <div class="p-5 gap-2 flex items-center">
                                 <!-- Order of question -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
