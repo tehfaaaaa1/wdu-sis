@@ -28,4 +28,7 @@ class Question extends Model
     public function survey(): BelongsTo{
         return $this->belongsTo(Survey::class);
     }
+    public function page(): BelongsTo{
+        return $this->belongsTo(Page::class);
+    }
 }

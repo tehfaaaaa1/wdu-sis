@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
-use App\Models\QuestionChoice;
+use App\Models\QuestionPage;
+use Inertia\Inertia;
 use App\Models\Survey;
+use App\Models\Question;
 use Illuminate\Http\Request;
+use App\Models\QuestionChoice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Unique;
-use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
@@ -17,6 +18,7 @@ class QuestionController extends Controller
     {
         $survey =  Survey::findOrFail($id);
         $question = Question::where('survey_id', $id)->get();
+        $page = QuestionPage::where('survey_id', $id)->get();
         $project = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
@@ -33,10 +35,17 @@ class QuestionController extends Controller
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
-                'listquestions' => $question,
-                'choice' => collect($question)->map(function ($q) {
+                'page' => $page,
+                'listquestions' => collect($page)->map(function ($p)  {
+                    return [
+                    'listquestion' => $p->question,
+                    'choice' => collect($p->question)->map(function ($q) {
                     return ['choice' => $q->choice];
                 }),
+                            
+                ];
+                }),
+                
                 'lastId' => $lastId,
                 'c_lastId' => $c_lastId
             ]
