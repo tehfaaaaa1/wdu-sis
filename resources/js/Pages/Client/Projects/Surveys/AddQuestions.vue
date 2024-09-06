@@ -280,7 +280,7 @@ console.log(questions.value)
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                         :animation="150" :clone="clone" :sort="false" class="list-qtype">
                         <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                            items-center cursor-pointer">
+                            items-center cursor-grab">
                             <span>{{ item.name }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6 text-gray-500">
@@ -288,7 +288,20 @@ console.log(questions.value)
                                     d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </div>
-                    </VueDraggable>    
+                    </VueDraggable>
+                    <button class="bg-white border-b border-gray-300 py-2 px-4 flex justify-between
+                    items-center w-full">
+                        Add Page
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 text-gray-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </button>
+                    <!-- <form action=""> -->
+                    <!-- <input type="text" name="" id=""> -->
+                    <!-- <button></button> -->
+                    <!-- </form> -->
                     <form class="bg-white" @submit.prevent="submitForm">
                         <button type="submit"
                             class="px-4 py-2 w-full text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
@@ -305,11 +318,12 @@ console.log(questions.value)
                     </form>
                 </div>
             </aside>
-            <form class="mx-auto lg:max-w-2xl xl:max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+            <form class="mx-auto lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="pb-6 rounded-md bg-white" v-for="(page, page_index) in pages" :key="page.id">
                     <div class="p-5 rounded-t-md border-b border-gray-300 bg-ijo-terang">
                         <p class="text-base text-white font-medium text-justify line-clamp-3">
-                            <input type="text" id="page-name" class="border-white ring-0 focus:ring-0 focus:border-white text-black">
+                            <input type="text" id="page-name"
+                                class="border-white ring-0 focus:ring-0 focus:border-white text-black">
                         </p>
                     </div>
                     <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate" :animation="150"

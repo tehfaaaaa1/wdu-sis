@@ -12,10 +12,14 @@ use App\Models\Biodata;
 use App\Models\Project;
 use App\Models\Question;
 use App\Models\Response;
+use App\Models\Province;
+use App\Models\City;
+use App\Models\Regency;
 use Illuminate\Http\Request;
 use App\Models\QuestionChoice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\raw;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use DB;
 class SurveyController extends Controller
@@ -31,11 +35,16 @@ class SurveyController extends Controller
 
         $user = Auth::user();
         $c = $client[0];
-        $userClient = User::where('client_id', $c->id)->get();
-        $target = count($userClient);
 
+        $userTarget = Response::select('survey_id', DB::raw('count(*) as submissions'))
+        ->groupBy('survey_id')
+        ->get()
+        ->mapWithKeys(function ($response) {
+            return [$response->survey_id => $response->submissions];
+        });
 
         $response = Response::where('user_id', $user->id)->get();
+
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
@@ -48,13 +57,16 @@ class SurveyController extends Controller
                         'created_at' => $survey->created_at->format('j F Y H:i:s'),
                         'updated_at' => $survey->updated_at->format('j F Y H:i:s'),
                         'response' => $survey->response,
-                        'target_response' => $survey->target_response
+                        'target_response' => $survey->target_response,
+                        'province_id' => $survey->province_id,
+                        'city_id' => $survey->city_id,
+                        'regency_id' => $survey->regency_id,
                     ];
                 }),
                 'projects' => $projectall,
                 'clients' => $client,
                 'user' => $user,
-                'target' => $target,
+                'userTarget' => $userTarget,
                 'response' => $response,
             ]
         );
@@ -69,11 +81,14 @@ class SurveyController extends Controller
         $client = DB::table('clients')
             ->where('slug', $clientSlug)
             ->get();
+
+        $provinces = Province::all();
         return Inertia::render(
             'Client/Projects/Surveys/CreateSurveys',
             [
                 'projects' => $project,
                 'clients' => $client,
+                'provinces' => $provinces,
             ]
         );
     }
@@ -88,8 +103,10 @@ class SurveyController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
-            'target_response' => 'required'
-
+            'target_response' => 'required',
+            'province_id' => 'required|exists:provinces,id',
+            'city_id' => 'nullable|exists:cities,id',
+            'regency_id' => "nullable|exists:regencies,id"
         ]);
 
         Survey::create([
@@ -97,6 +114,9 @@ class SurveyController extends Controller
             'desc' => $request->desc,
             'target_response' => $request->target_response,
             'project_id' => $id,
+            'province_id' => $request->province_id,
+            'city_id' => $request->city_id,
+            'regency_id' => $request->regency_id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -113,6 +133,8 @@ class SurveyController extends Controller
         $client = DB::table('clients')
             ->where('slug', $clientSlug)
             ->get();
+
+        $provinces = Province::all();
         // dump($survey);
         return Inertia::render(
             'Client/Projects/Surveys/EditSurveys',
@@ -120,6 +142,7 @@ class SurveyController extends Controller
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
+                'provinces' => $provinces,
             ]
         );
     }
@@ -135,13 +158,20 @@ class SurveyController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
-            'target_response' => 'required'
+            'target_response' => 'required',
+            'province_id' => 'required|exists:provinces,id',
+            'city_id' => 'nullable|exists:cities,id',
+            'regency_id' => 'nullable|exists:regencies,id',
+
         ]);
         Survey::where('id', $survey['id'])->update([
             'title' => $request->title,
             'desc' => $request->desc,
             'target_response' => $request->target_response,
             'project_id' => $project_id,
+            'province_id' => $request->province_id,
+            'city_id' => $request->city_id,
+            'regency_id' => $request->regency_id,
             'updated_at' => now()
         ]);
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Update successfully.');
@@ -216,6 +246,8 @@ class SurveyController extends Controller
         $client = DB::table('clients')
             ->where('slug', $clientSlug)
             ->get();
+
+        $provinces = Province::all();
         // dump($survey);
         return Inertia::render(
             'Client/Projects/Surveys/AddQuestions',
@@ -223,6 +255,7 @@ class SurveyController extends Controller
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
+                'provinces' => $provinces,
             ]
         );
     }
