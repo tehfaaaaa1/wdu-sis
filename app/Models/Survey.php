@@ -32,4 +32,7 @@ class Survey extends Model
     public function response():  Hasmany{
         return $this->hasMany(Response::class);
     }
+    public function page():  Hasmany{
+        return $this->hasMany(Page::class);
+    }
 }

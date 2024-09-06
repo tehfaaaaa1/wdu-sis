@@ -9,6 +9,7 @@ const props = defineProps({
     projects: Object,
     clients: Object,
     listquestions: Object,
+    page: Object,
     lastId: Object,
     c_lastId: Object
 })
@@ -18,7 +19,36 @@ const MAX_RADIO_CHOICES = 5;
 let showAddPage = ref(false)
 
 // Note: Customize the functions below if needed
-const pages = ref([{ id: 1, name: 'Starter' }])
+const pages = ref(props.page.map((page) => {
+    let question  =  page.question.map((item) => {
+    let tipe = []
+    let text = []
+    let choice = []
+    let lastCindex = ''
+    // pilihan = []
+    if (item.question_type_id == 2) {
+        tipe = ['Radio']
+        choice = item.choice.map((isi) => {
+            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+        })
+        lastCindex = choice.length - 1
+        // pilihan = [{pilih : item.choice.value}]
+    } else if (item.question_type_id == 3) {
+        tipe = ['Checkbox']
+        choice = item.choice.map((isi) => {
+            return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+        })
+        lastCindex = choice.length - 1
+        // pilihan = [{pilih : item.choice.value}]
+    } else if (item.question_type_id == 1) {
+        tipe = ['Text']
+        text = [{ isi: '' }]
+    }
+    return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
+})
+
+    return {id : page.id, name: page.page_name, question: question}
+}))
 
 const questions = ref(props.listquestions.map((item) => {
     let tipe = []
@@ -77,7 +107,7 @@ const questionsType = ref([
 
 
 function clone(element) {
-    const len = questions.value.length + props.lastId + 1;
+    const len = pages.question.value.length + props.lastId + 1;
     let texts = []
     let choice = []
     let required = 0
@@ -253,6 +283,7 @@ const submit = () => {
         client_slug: client['slug'],
     })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
 };
+console.log(pages.value)
 </script>
 
 <template>
@@ -356,7 +387,7 @@ const submit = () => {
                     </div>
                     <VueDraggable v-model="questions" group="questions" @update:modelValue="logUpdate" :animation="150"
                         class="list-questions" :class="'bg-white pb-8 rounded-md'" handle=".handle">
-                        <div v-for="(item, index) in questions" :key="item.id" class="list-questions-item">
+                        <div v-for="(item, index) in page.question" :key="item.id" class="list-questions-item">
                             <p v-if="questions.length === 0" key="2000">Ass</p>
                             <div class="p-5 gap-2 flex items-center">
                                 <!-- Order of question -->
