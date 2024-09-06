@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use URL;
+use App\Models\City;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Answer;
@@ -10,16 +11,16 @@ use App\Models\Client;
 use App\Models\Survey;
 use App\Models\Biodata;
 use App\Models\Project;
+use App\Models\Regency;
+use App\Models\Province;
 use App\Models\Question;
 use App\Models\Response;
-use App\Models\Province;
-use App\Models\City;
-use App\Models\Regency;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\raw;
 use App\Models\QuestionChoice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\raw;
 // use Illuminate\Database\Eloquent\Relations\BelongsTo;
 // use DB;
 class SurveyController extends Controller
@@ -112,6 +113,7 @@ class SurveyController extends Controller
         Survey::create([
             'title' => $request->title,
             'desc' => $request->desc,
+            'slug' => Str::slug($request->title),
             'target_response' => $request->target_response,
             'project_id' => $id,
             'province_id' => $request->province_id,

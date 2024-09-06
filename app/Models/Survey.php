@@ -15,6 +15,7 @@ class Survey extends Model
     protected $fillable = [
         'title',
         'desc',
+        'slug',
         'project_id',
         'target_response',
         'province_id',
@@ -33,6 +34,6 @@ class Survey extends Model
         return $this->hasMany(Response::class);
     }
     public function page():  Hasmany{
-        return $this->hasMany(Page::class);
+        return $this->hasMany(QuestionPage::class);
     }
 }
