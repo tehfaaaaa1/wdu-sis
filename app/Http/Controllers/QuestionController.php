@@ -114,14 +114,14 @@ class QuestionController extends Controller
 
     public function manualSave(Request $request, $clientSlug, $projectSlug, $id)
     {
+        // dd($request['data']);
         // Validate the incoming request data
         $validatedData = $request->validate([
             'data' => 'required|array',
             'data.*.soal' => 'required|string|max:255',
             'data.*.types' => 'required|array',
             'data.*.required' => 'required|boolean',
-            'data.*.radios' => 'array',
-            'data.*.checkbox' => 'array',
+            'data.*.choices' => 'array',
             'data.*.id' => 'required',
             'data.*.order' => 'integer',
         ]);
@@ -159,14 +159,14 @@ class QuestionController extends Controller
                         break;
                     case 'Radio':
                         $question_type = 2;
-                        $tipe = $questionData['radios'];
+                        $tipe = $questionData['choices'];
                         if (count($tipe) < 2) {
                             abort(403, "Isilah Minimal 2 Pilihan !!");
                         }
                         break;
                     case 'Checkbox':
                         $question_type = 3;
-                        $tipe = $questionData['checkbox'];
+                        $tipe = $questionData['choices'];
                         if (count($tipe) < 2) {
                             abort(403, "Isilah Minimal 2 Pilihan !!");
                         }
