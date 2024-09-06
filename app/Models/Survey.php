@@ -16,6 +16,7 @@ class Survey extends Model
         'title',
         'desc',
         'slug',
+        'status',
         'project_id',
         'target_response',
         'province_id',

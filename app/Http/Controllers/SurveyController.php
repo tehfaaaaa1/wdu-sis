@@ -62,7 +62,8 @@ class SurveyController extends Controller
                         'province_id' => $survey->province_id,
                         'city_id' => $survey->city_id,
                         'regency_id' => $survey->regency_id,
-                    ];
+                        'status' => $survey->status
+                    ]; 
                 }),
                 'projects' => $projectall,
                 'clients' => $client,
@@ -275,5 +276,18 @@ class SurveyController extends Controller
         $survey->delete();
 
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Survey deleted successfully.');
+    }
+
+    public function statusChange($clientSlug, $projectSlug, $id, Request $request){
+        $status = $request->surveyStatus;
+        $id = $request->surveyId;
+
+        if($status == 0){
+            Survey::where('id', $id)->update(['status' => 1]);
+        } elseif ($status ==1){
+            
+            Survey::where('id', $id)->update(['status' => 0]);
+        }
+        return back()->with('succes', 'change Status');
     }
 }

@@ -248,15 +248,12 @@ const submitForm = () => {
         },
     });
 };
-
-const submit = () => {
-    form.transform(() => ({
-        data: questions.value,
-        survey: props.surveys.id,
-        project_slug: project['slug'],
-        client_slug: client['slug'],
-    })).post(route('question_store', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true });
-};
+const status = () =>{
+    form.transform(()=>({
+        surveyId: props.surveys.id,
+        surveyStatus: props.surveys.status 
+    })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
+}
 console.log(pages.value)
 </script>
 
@@ -276,10 +273,12 @@ console.log(pages.value)
                 <h2 class="text-center font-semibold text-xl">
                     {{ props.surveys.title }} - Tambah Pertanyaan
                 </h2>
-                <button type="submit"
-                    class="py-2.5 px-8 gap-1 flex justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
-                    Publish
-                </button>
+                <form action="" @submit.prevent="status">
+                    <button type="submit"
+                        class="py-2.5 px-8 gap-1 flex justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition" >
+                        {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
+                    </button>
+                </form>
             </header>
             <aside class="sticky bg-gray-200 min-h-full top-11 z-50">
                 <div class="absolute lg:w-1/5">

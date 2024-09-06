@@ -142,7 +142,10 @@ const getSurveySubmissions = (surveyId) => {
                                         {{ getProvinceName(survey.province_id) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">Dibuka</td>
+                                <td class="px-6 py-4">
+                                    <p v-if="survey.status == 0"> Ditutup</p>
+                                    <p v-if="survey.status == 1"> Dibuka</p>
+                                </td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
                                     <div v-if="hasFilledSurvey(survey)">
                                         <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
