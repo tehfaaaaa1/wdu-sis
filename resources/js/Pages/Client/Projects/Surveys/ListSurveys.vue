@@ -143,7 +143,7 @@ const getSurveySubmissions = (surveyId) => {
                                 <td class="px-6 py-4">Dibuka</td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
                                     <div v-if="hasFilledSurvey(survey)">
-                                        <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
+                                        <p class="text-center mt-3">Anda Sudah Mengisi Survey Ini</p>
                                     </div>
                                     <NavLink v-if="!hasFilledSurvey(survey)"
                                         :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
