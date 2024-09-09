@@ -42,19 +42,19 @@ console.log(props.page)
                                         <div v-if="question.question_type_id == 2">
                                             <!-- <div class="ps-5" v-for="answe in question.answer"> -->
                                                 <div v-for="(list, i) in question.choice" :key="i">
-                                                    <input type="radio" :name="'radio'+ list.id" :id="'radio'+ list.id" :checked="question.answer[i]">
+                                                    <input type="radio" :name="'radio'+ list.id" :id="'radio'+ list.id" :checked="question.answer[i]" disabled>
                                                     <label :for="'radio'+list.id">{{list.value}}</label>
                                                     <!-- {{ question.answer[i] }} -->
                                                 </div>
                                                 <!-- <p class="font-semibold">Jawaban :
                                                     {{ answe.answer }}</p>
-                                            </div> -->
+                                            </div> -->  
                                         </div>
     
                                         <!-- Handle checkbox for question type 3 -->
                                         <div class="" v-if="question.question_type_id === 3">
                                             <div class="" v-for="(list, i) in question.choice" :key="i">
-                                                <input type="checkbox" :name="'checkbox'+list.id" :id="'checkbox'+list.id" :checked="question.answer[i]">
+                                                <input type="checkbox" :name="'checkbox'+list.id" :id="'checkbox'+list.id" :checked="question.answer[i]" disabled>
                                                 <label :for="'checkbox'+list.id">{{ list.value }}</label>
                                                 <!-- {{ question.answer[i] }} -->
                                             </div>  

@@ -46,7 +46,7 @@ class SurveyController extends Controller
             });
 
         $response = Response::where('user_id', $user->id)->get();
-
+        $provinces = Province::all();
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
@@ -71,6 +71,7 @@ class SurveyController extends Controller
                 'user' => $user,
                 'userTarget' => $userTarget,
                 'response' => $response,
+                'provinces' => $provinces,
             ]
         );
     }
