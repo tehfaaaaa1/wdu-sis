@@ -245,6 +245,7 @@ class SurveyController extends Controller
                         'order' => $q->order,
                         'required' => $q->required,
                         'choice' => $q->choice,
+                        'answer' => $q->answer
                     ];
                 }),
             ];
