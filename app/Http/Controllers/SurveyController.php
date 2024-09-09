@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\QuestionPage;
 use URL;
 use App\Models\City;
 use App\Models\User;
@@ -184,22 +185,29 @@ class SurveyController extends Controller
     {
         // Fetch survey, questions, project, client
         $survey = Survey::findOrFail($id);
-        $questions = Question::where('survey_id', $id)->get();
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
-
+        $page = QuestionPage::where('survey_id', $id)->get();
         // Prepare data to pass to the view
-        $formattedQuestions = $questions->map(function ($q) {
+        $formattedPage = $page->map(function ($p){
             return [
-                'id' => $q->id,
-                'question_text' => $q->question_text,
-                'question_type_id' => $q->question_type_id,
-                'survey_id' => $q->survey_id,
-                'order' => $q->order,
-                'required' => $q->required,
-                'choice' => $q->choice,
+                'id' => $p->id,
+                'page_name' => $p->page_name,
+                'survey_id' => $p->survey_id,
+                'question' =>$p->question->map(function ($q) {
+                    return [
+                        'id' => $q->id,
+                        'question_text' => $q->question_text,
+                        'question_type_id' => $q->question_type_id,
+                        'survey_id' => $q->survey_id,
+                        'order' => $q->order,
+                        'required' => $q->required,
+                        'choice' => $q->choice,
+                    ];
+                }),
             ];
         });
+        
 
         // Render the view
         return Inertia::render(
@@ -208,7 +216,7 @@ class SurveyController extends Controller
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
-                'listquestion' => $formattedQuestions,
+                'page' => $formattedPage,
             ]
         );
     }
@@ -216,22 +224,38 @@ class SurveyController extends Controller
     public function report(Survey $surveyModel, $clientSlug, $projectSlug, $surveyId, $responseId)
     {
         $survey = Survey::findOrFail($surveyId);
-        $questions = Question::where('survey_id', $surveyId)->get();
         $response = Response::with('user')->where('survey_id', $surveyId)->findOrFail($responseId);
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
-        $choices = QuestionChoice::all();
         $answers = Answer::where('response_id', $responseId)->get();
         $user = $response->user;
-
+        $page = QuestionPage::where('survey_id', $surveyId)->get();
+        // Prepare data to pass to the view
+        $formattedPage = $page->map(function ($p){
+            return [
+                'id' => $p->id,
+                'page_name' => $p->page_name,
+                'survey_id' => $p->survey_id,
+                'question' => $p->question->map(function ($q) {
+                    return [
+                        'id' => $q->id,
+                        'question_text' => $q->question_text,
+                        'question_type_id' => $q->question_type_id,
+                        'survey_id' => $q->survey_id,
+                        'order' => $q->order,
+                        'required' => $q->required,
+                        'choice' => $q->choice,
+                    ];
+                }),
+            ];
+        });
         return Inertia::render(
             'Client/Projects/Surveys/ReportSurvey',
             [
                 'surveys' => $survey,
                 'projects' => $project,
                 'clients' => $client,
-                'listquestion' => $questions,
-                'choice' => $choices,
+                'page' => $formattedPage,
                 'responses' => $response,
                 'answer' => $answers,
                 'user' => $user,
