@@ -144,7 +144,6 @@ const getSurveySubmissions = (surveyId) => {
                                     <p v-if="survey.status == 0"> Ditutup</p>
                                     <p v-if="survey.status == 1"> Dibuka</p>
                                 </td>
-                                <td class="px-6 py-4">Dibuka</td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
                                     <div v-if="hasFilledSurvey(survey)" class="my-3">
                                         <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
