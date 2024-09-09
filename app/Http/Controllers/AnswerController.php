@@ -13,12 +13,11 @@ class AnswerController extends Controller
     {
         // Fetch the survey
         $survey = Survey::findOrFail($id);
-
-        // Get form data from the request
-        $questions = $request['question'];
+        // dd($request->all());
+            // Get form data from the request
+        $page = $request['page'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
-        $answers = $request->input('answer'); // Get all answers
 
         // Create a new response
         $response = new Response;
@@ -26,13 +25,16 @@ class AnswerController extends Controller
         $response->survey_id = $id;
         $response->status = 1;
         $response->save();
-
-        // Iterate through the questions and answers
-        foreach ($questions as $index => $question) {
-            $answer = $answers[$index];
-
-            // Save the answer based on its type
-            $this->saveAnswer($response->id, $question['id'], $answer);
+        foreach($page as $p){
+            $questions = $p['question'];
+            $answers = $p['answer']; // Get all answers
+            // Iterate through the questions and answers
+            foreach ($questions as $index => $question) {
+                $answer = $answers[$index];
+    
+                // Save the answer based on its type
+                $this->saveAnswer($response->id, $question['id'], $answer);
+            }
         }
 
         // Redirect after successful submission
