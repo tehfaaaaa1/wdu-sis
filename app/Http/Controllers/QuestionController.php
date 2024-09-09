@@ -140,6 +140,15 @@ class QuestionController extends Controller
         $survey = Survey::findOrFail($request->survey);
 
         // Save or update the questions
+
+        // Retrieve existing questions for the page
+        $existingPages = QuestionPage::where('survey_id', $survey->id)
+            ->get()
+            ->keyBy('id');
+
+        // Track the question IDs that are being processed
+        $processedPageIds = [];
+
         foreach ($validatedData['data'] as $pageData) {
             $newPage = new QuestionPage;
             $savePage = QuestionPage::firstOrNew(
@@ -147,6 +156,8 @@ class QuestionController extends Controller
             );
             $savePage->page_name = $pageData['name'];
             $savePage->save();
+
+            $processedPageIds[] = $savePage->id;
 
             // Retrieve existing questions for the page
             $existingQuestions = Question::where('question_page_id', $savePage->id)
@@ -221,8 +232,11 @@ class QuestionController extends Controller
             });
         }
 
+        $existingPages->except($processedPageIds)->each(function ($page) {
+            $page->delete();
+        });
+
         // Additional logic for final submission, such as notifications or marking survey as complete
         return redirect()->route('question_surveys', [$clientSlug, $projectSlug, $id])->with('success', 'Survey created successfully.');
-
     }
 }

@@ -244,6 +244,11 @@ const savingStatus = ref('')
 //     })
 // }, 2000)
 // watch(form, autoSaveForm, { deep: true })
+const handleBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = ''; // This is required for the alert to be shown in some browsers
+    return '';
+};
 
 const submitForm = () => {
     savingStatus.value = 'saving';
@@ -262,6 +267,7 @@ const submitForm = () => {
             }, 3000); // 3000ms = 3 seconds
             console.log('success')
             savingStatus.value = 'saved';
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         },
         onError: (error) => {
             console.error('Error saving:', error);
@@ -276,12 +282,6 @@ const status = () => {
         surveyStatus: props.surveys.status
     })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
 }
-
-const handleBeforeUnload = (event) => {
-    event.preventDefault();
-    event.returnValue = ''; // This is required for the alert to be shown in some browsers
-    return '';
-};
 
 onMounted(() => {
     // Attach the event listener when the component is mounted
