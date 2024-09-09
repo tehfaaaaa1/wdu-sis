@@ -10,8 +10,8 @@ const props = defineProps({
     projects: Array,
     clients: Array,
     user: Object,
-    userTarget: Array,
-    provinces: Array,
+    userTarget: Array,  
+    provinces: Array,   
     cities: Array,
     regencies: Array
 });
@@ -20,7 +20,6 @@ const form = useForm({ search: '' });
 const submit = () => form.get(route('surveys'));
 
 const selectedProvince = ref(null);
-
 const selectedSurveyId = ref(null);
 const showDeleteModal = ref(false);
 
@@ -56,19 +55,17 @@ const hasFilledSurvey = (survey) => {
     return survey.response.some(res => res.user_id === props.user.id);
 };
 
-// Method to get province name from ID
 const getProvinceName = (provinceId) => {
-    console.log('Looking for province with ID:', provinceId);
     const province = props.provinces.find(p => p.id === provinceId);
-    console.log('Found province:', province);
     return province ? province.name : 'Unknown Province';
 };
 
 const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
 };
-</script>
 
+
+</script>
 
 <template>
     <AppLayout title="List Survey">
@@ -137,17 +134,15 @@ const getSurveySubmissions = (surveyId) => {
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900">{{ survey.title }}</td>
                                 <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
-                                    {{ getSurveySubmissions(survey.id) }} / {{ survey.target_response }}<br>Target Lokasi:
-                                    <span v-if="selectedProvince !== null">
+                                    {{ getSurveySubmissions(survey.id) }} / {{ survey.target_response }}<br>
+                                    Target Lokasi:
+                                    <span>
                                         {{ getProvinceName(survey.province_id) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <p v-if="survey.status == 0"> Ditutup</p>
-                                    <p v-if="survey.status == 1"> Dibuka</p>
-                                </td>
+                                <td class="px-6 py-4">Dibuka</td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
-                                    <div v-if="hasFilledSurvey(survey)" class="my-3">
+                                    <div v-if="hasFilledSurvey(survey)">
                                         <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
                                     </div>
                                     <NavLink v-if="!hasFilledSurvey(survey)"
@@ -171,7 +166,7 @@ const getSurveySubmissions = (surveyId) => {
                                         class="mt-5 text-center col-span-2">
                                         <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
                                             class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
+                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline">Delete</a>
                                     </div>
                                 </td>
                             </tr>
