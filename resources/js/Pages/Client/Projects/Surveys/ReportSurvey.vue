@@ -24,13 +24,12 @@ console.log(hasil.value)
     <AppLayout title="Hasil Survey">
         <main class="min-h-screen">
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
-                    <h2>{{ props.surveys.title }}</h2>
-                </div>
-                <div class="" v-for="(page, ind) in page" :key="ind">
+                <div class="mb-5" v-for="(page, ind) in page" :key="ind">
+                    <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
+                        <h2>{{ page.page_name }}</h2>
+                    </div>
                     <div class="bg-white rounded-b-md">
                         <div class="border-b-2 p-5 border-gray-500">
-                            <p class="text-base text-justify line-clamp-3">{{ page.page_name }}</p>
                             <div class="p-5 mt-2 border-2 border-gray-400">
                                 <h2 class="font-semibold text-lg">{{ props.user.name }}</h2>
                             </div>
