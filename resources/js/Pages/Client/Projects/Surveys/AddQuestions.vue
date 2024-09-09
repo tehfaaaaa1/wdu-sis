@@ -240,21 +240,28 @@ const submitForm = () => {
         client_slug: client['slug'],
     })).post(route('manual-save-question', [props.surveys.id, form.client_slug, form.project_slug]), {
         preserveState: true,
+        preserveScroll: true,
         onSuccess: () => {
+            // Automatically clear the status after 3 seconds
+            setTimeout(() => {
+                savingStatus.value = '';
+            }, 3000); // 3000ms = 3 seconds
+            console.log('success')
             savingStatus.value = 'saved';
         },
-        onError: () => {
+        onError: (error) => {
             savingStatus.value = 'error';
         },
     });
+
 };
-const status = () =>{
-    form.transform(()=>({
+const status = () => {
+    form.transform(() => ({
         surveyId: props.surveys.id,
-        surveyStatus: props.surveys.status 
+        surveyStatus: props.surveys.status
     })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
 }
-console.log(pages.value)
+// console.log(pages.value)
 </script>
 
 <template>
@@ -271,11 +278,11 @@ console.log(pages.value)
                     Back
                 </a>
                 <h2 class="text-center font-semibold text-xl">
-                    {{ props.surveys.title }} - Tambah Pertanyaan
+                    {{ props.surveys.title }}
                 </h2>
                 <form action="" @submit.prevent="status">
                     <button type="submit"
-                        class="py-2.5 px-8 gap-1 flex justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition" >
+                        class="py-2.5 px-8 gap-1 flex justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
                         {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
                     </button>
                 </form>
@@ -345,13 +352,13 @@ console.log(pages.value)
                             </svg>
                             Save Questions
                         </button>
-                        <!-- <p v-if="savingStatus === 'saving'">Saving...</p>
-                        <p v-if="savingStatus === 'saved'">All changes saved.</p>
-                        <p v-if="savingStatus === 'error'">Error saving data.</p> -->
+                        <p v-if="savingStatus === 'saving'" class="text-center">Saving...</p>
+                        <p v-if="savingStatus === 'saved'" class="text-center font-semibold">All changes saved.</p>
+                        <p v-if="savingStatus === 'error'">Error saving data.</p>
                     </form>
                 </div>
             </aside>
-            <form class="mx-auto lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
+            <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page_index">
                     <div class="p-5 rounded-t-md border-b border-gray-300 bg-ijo-terang">
                         <p class="text-base text-white font-medium text-justify line-clamp-3">
@@ -486,7 +493,8 @@ console.log(pages.value)
                             </div>
                         </div>
                     </VueDraggable>
-                    <div class="border border-gray-500 mt-8 mb-3" v-if="pages.length > 1"></div>
+                    <div class="border border-gray-500 mt-8 mb-3"
+                        v-if="pages.length > 1 && page_index != pages.length - 1"></div>
                 </div>
             </form>
         </main>

@@ -36,16 +36,16 @@ class QuestionController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'page' => $page,
-                'listquestions' => collect($page)->map(function ($p)  {
+                'listquestions' => collect($page)->map(function ($p) {
                     return [
-                    'listquestion' => $p->question,
-                    'choice' => collect($p->question)->map(function ($q) {
-                    return ['choice' => $q->choice];
+                        'listquestion' => $p->question,
+                        'choice' => collect($p->question)->map(function ($q) {
+                            return ['choice' => $q->choice];
+                        }),
+
+                    ];
                 }),
-                            
-                ];
-                }),
-                
+
                 'lastId' => $lastId,
                 'c_lastId' => $c_lastId
             ]
@@ -121,108 +121,108 @@ class QuestionController extends Controller
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('question_added', 'Question added successfully.');
     }
 
-    public function manualSave(Request $request, $clientSlug, $projectSlug, $id)
-{
-    // Validate the incoming request data
-    $validatedData = $request->validate([
-        'data' => 'required|array',
-        'data.*.question' => 'required|array',
-        'data.*.id' => 'nullable|numeric',
-        'data.*.name' => 'required|string',
-        'data.*.question.*.soal' => 'required|string|max:255',
-        'data.*.question.*.types' => 'required|array',
-        'data.*.question.*.required' => 'required|boolean',
-        'data.*.question.*.choices' => 'array',
-        'data.*.question.*.id' => 'nullable|numeric',
-        'data.*.question.*.order' => 'nullable|integer',
-    ]);
-    // dd($validatedData);
-    $survey = Survey::findOrFail($request->survey);
+    public function manualSave(Request $request, $id, $clientSlug, $projectSlug)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'data' => 'required|array',
+            'data.*.question' => 'required|array',
+            'data.*.id' => 'nullable|numeric',
+            'data.*.name' => 'required|string',
+            'data.*.question.*.soal' => 'required|string|max:255',
+            'data.*.question.*.types' => 'required|array',
+            'data.*.question.*.required' => 'required|boolean',
+            'data.*.question.*.choices' => 'array',
+            'data.*.question.*.id' => 'nullable|numeric',
+            'data.*.question.*.order' => 'nullable|integer',
+        ]);
+        // dd($validatedData);
+        $survey = Survey::findOrFail($request->survey);
 
-    // Save or update the questions
-    foreach ($validatedData['data'] as $pageData) {
-        $newPage = new QuestionPage;
-        $savePage = QuestionPage::firstOrNew(
-            ['id' => $pageData['id'] ?? $newPage->id, 'survey_id' => $survey->id]
-        );
-        $savePage->page_name = $pageData['name'];
-        $savePage->save();
-            
-        // Retrieve existing questions for the page
-        $existingQuestions = Question::where('question_page_id', $savePage->id)
-            ->get()
-            ->keyBy('id');
-
-        // Track the question IDs that are being processed
-        $processedQuestionIds = [];
-
-        foreach ($pageData['question'] as $questionData) {
-            $questionType = null;
-            $choices = [];
-
-            // Process the question types and handle choices
-            foreach ($questionData['types'] as $type) {
-                switch ($type) {
-                    case 'Text':
-                        $questionType = 1;
-                        $choices = []; // Clear any existing choices for Text type
-                        break;
-                    case 'Radio':
-                    case 'Checkbox':
-                        $questionType = $type === 'Radio' ? 2 : 3;
-                        $choices = $questionData['choices'] ?? [];
-                        if (count($choices) < 2) {
-                            abort(403, "Isilah Minimal 2 Pilihan !!");
-                        }
-                        break;
-                    default:
-                        // Handle other types or do nothing
-                        break;
-                }
-            }
-
-            // Save or update the question
-            $saveQuestion = Question::firstOrNew(
-                ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id, 'question_page_id' => $savePage->id]
+        // Save or update the questions
+        foreach ($validatedData['data'] as $pageData) {
+            $newPage = new QuestionPage;
+            $savePage = QuestionPage::firstOrNew(
+                ['id' => $pageData['id'] ?? $newPage->id, 'survey_id' => $survey->id]
             );
-            $saveQuestion->required = $questionData['required'];
-            $saveQuestion->order = $questionData['order'] ?? random_int(1, 10000);
-            $saveQuestion->question_text = $questionData['soal'];
-            $saveQuestion->question_type_id = $questionType;
-            $saveQuestion->save();
+            $savePage->page_name = $pageData['name'];
+            $savePage->save();
 
-            $processedQuestionIds[] = $saveQuestion->id;
+            // Retrieve existing questions for the page
+            $existingQuestions = Question::where('question_page_id', $savePage->id)
+                ->get()
+                ->keyBy('id');
 
-            // Save or update the question choices
-            $existingQuestionChoices = QuestionChoice::where('question_id', $saveQuestion->id)->get()->keyBy('id');
-            $processedChoiceIds = [];
+            // Track the question IDs that are being processed
+            $processedQuestionIds = [];
 
-            foreach ($choices as $choice) {
-                $saveChoice = QuestionChoice::firstOrNew(
-                    ['id' => $choice['cId'] ?? null]
+            foreach ($pageData['question'] as $questionData) {
+                $questionType = null;
+                $choices = [];
+
+                // Process the question types and handle choices
+                foreach ($questionData['types'] as $type) {
+                    switch ($type) {
+                        case 'Text':
+                            $questionType = 1;
+                            $choices = []; // Clear any existing choices for Text type
+                            break;
+                        case 'Radio':
+                        case 'Checkbox':
+                            $questionType = $type === 'Radio' ? 2 : 3;
+                            $choices = $questionData['choices'] ?? [];
+                            if (count($choices) < 2) {
+                                abort(403, "Isilah Minimal 2 Pilihan !!");
+                            }
+                            break;
+                        default:
+                            // Handle other types or do nothing
+                            break;
+                    }
+                }
+
+                // Save or update the question
+                $saveQuestion = Question::firstOrNew(
+                    ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id, 'question_page_id' => $savePage->id]
                 );
-                $saveChoice->value = $choice['pilih'];
-                $saveChoice->question_id = $saveQuestion->id;
-                $saveChoice->order = $choice['c_order'] ?? random_int(1, 10000);
-                $saveChoice->save();
+                $saveQuestion->required = $questionData['required'];
+                $saveQuestion->order = $questionData['order'] ?? random_int(1, 10000);
+                $saveQuestion->question_text = $questionData['soal'];
+                $saveQuestion->question_type_id = $questionType;
+                $saveQuestion->save();
 
-                $processedChoiceIds[] = $saveChoice->id;
+                $processedQuestionIds[] = $saveQuestion->id;
+
+                // Save or update the question choices
+                $existingQuestionChoices = QuestionChoice::where('question_id', $saveQuestion->id)->get()->keyBy('id');
+                $processedChoiceIds = [];
+
+                foreach ($choices as $choice) {
+                    $saveChoice = QuestionChoice::firstOrNew(
+                        ['id' => $choice['cId'] ?? null]
+                    );
+                    $saveChoice->value = $choice['pilih'];
+                    $saveChoice->question_id = $saveQuestion->id;
+                    $saveChoice->order = $choice['c_order'] ?? random_int(1, 10000);
+                    $saveChoice->save();
+
+                    $processedChoiceIds[] = $saveChoice->id;
+                }
+
+                // Delete any existing choices that were not processed
+                $existingQuestionChoices->except($processedChoiceIds)->each(function ($choice) {
+                    $choice->delete();
+                });
             }
 
-            // Delete any existing choices that were not processed
-            $existingQuestionChoices->except($processedChoiceIds)->each(function ($choice) {
-                $choice->delete();
+            // Delete any existing questions that were not processed
+            $existingQuestions->except($processedQuestionIds)->each(function ($question) {
+                $question->delete();
             });
         }
 
-        // Delete any existing questions that were not processed
-        $existingQuestions->except($processedQuestionIds)->each(function ($question) {
-            $question->delete();
-        });
+        // Additional logic for final submission, such as notifications or marking survey as complete
+        return redirect()->route('question_surveys', [$clientSlug, $projectSlug, $id])->with('success', 'Survey created successfully.');
+
     }
-
-    // Additional logic for final submission, such as notifications or marking survey as complete
-    return response()->json(['status' => 'success']);
-}
-
 }

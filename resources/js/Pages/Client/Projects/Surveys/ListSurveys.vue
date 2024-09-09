@@ -171,7 +171,7 @@ const getSurveySubmissions = (surveyId) => {
                                         class="mt-5 text-center col-span-2">
                                         <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
                                             class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline">Delete</a>
+                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                                     </div>
                                 </td>
                             </tr>
