@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
@@ -250,6 +250,7 @@ const submitForm = () => {
             savingStatus.value = 'saved';
         },
         onError: (error) => {
+            console.error('Error saving:', error);
             savingStatus.value = 'error';
         },
     });
@@ -261,7 +262,22 @@ const status = () => {
         surveyStatus: props.surveys.status
     })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
 }
-// console.log(pages.value)
+
+const handleBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = ''; // This is required for the alert to be shown in some browsers
+    return '';
+};
+
+onMounted(() => {
+    // Attach the event listener when the component is mounted
+    window.addEventListener('beforeunload', handleBeforeUnload);
+});
+
+onBeforeUnmount(() => {
+    // Remove the event listener when the component is unmounted
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+});
 </script>
 
 <template>
@@ -360,10 +376,10 @@ const status = () => {
             </aside>
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page_index">
-                    <div class="p-5 rounded-t-md border-b border-gray-300 bg-ijo-terang">
-                        <p class="text-base text-white font-medium text-justify line-clamp-3">
-                            {{ page.name }}
-                        </p>
+                    <div class="p-5 rounded-t-md border-b border-gray-300 bg-primary">
+                        <input type="text" :id="'page-name-' + page_index" v-model="page.name"
+                            placeholder="Click here to edit this text" class="bg-transparent text-white border-0 font-semibold 
+                            placeholder:font-normal" />
                     </div>
                     <VueDraggable v-model="page.question" group="questions" @update:modelValue="logUpdate"
                         :animation="150" class="list-questions" :class="'bg-white pb-8 rounded-md'" handle=".handle">
