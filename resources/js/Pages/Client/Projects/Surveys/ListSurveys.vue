@@ -54,7 +54,9 @@ const filteredSurveys = computed(() => {
 const hasFilledSurvey = (survey) => {
     return survey.response.some(res => res.user_id === props.user.id);
 };
-
+const hasPubllish = (survey) => {
+    return survey.status ==  0;
+};
 const getProvinceName = (provinceId) => {
     const province = props.provinces.find(p => p.id === provinceId);
     return province ? province.name : 'Unknown Province';
@@ -64,7 +66,7 @@ const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
 };
 
-
+console.log(props.user)
 </script>
 
 <template>
@@ -145,16 +147,19 @@ const getSurveySubmissions = (surveyId) => {
                                     <p v-if="survey.status == 1"> Dibuka</p>
                                 </td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
-                                    <div v-if="hasFilledSurvey(survey)">
-                                        <p class="text-center mt-3">Anda Sudah Mengisi Survey Ini</p>
+                                    <div class="m-auto" v-if="hasFilledSurvey(survey)">
+                                        <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
                                     </div>
-                                    <NavLink v-if="!hasFilledSurvey(survey)"
+                                    <div class="m-auto" v-if="hasPubllish(survey) && !hasFilledSurvey(survey)">
+                                        <p class="text-center">Survey Ditutup</p>
+                                    </div>
+                                    <NavLink v-if="!hasFilledSurvey(survey) &&  !hasPubllish(survey)"
                                         :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
                                         Isi Survey
                                     </NavLink>
 
-                                    <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])"
+                                    <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
                                         Cek Respon
                                     </NavLink>
