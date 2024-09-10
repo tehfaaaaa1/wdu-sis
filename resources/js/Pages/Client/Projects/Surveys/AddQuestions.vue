@@ -46,12 +46,12 @@ const pages = ref(props.page.map((page) => {
         }
         return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
     })
-    
+
     return { id: page.id, name: page.page_name, question: question }
 }))
 
-if(pages.value.length == 0){
-    pages.value.push({ name: 'title' , question: [] })
+if (pages.value.length == 0) {
+    pages.value.push({ name: 'title', question: [] })
 }
 
 const questionsType = ref([
@@ -95,15 +95,16 @@ function addNewPage() {
     pages.value.push({ name: form.page_name, question: [] })
     form.reset('page_name')
 }
-
-const hapus = () => {
+const deletePageId = ref(null);
+const hapus = (index) => {
+    deletePageId.value = index;
     showDeleteModal.value = true;
 };
-const confirmDeletion = (page, index) => {
-    // console.log(page, index)
-    page.splice(index, 1);
+const confirmDeletion = (page) => {
+    page.splice(deletePageId.value, 1);
     showDeleteModal.value = false;
 };
+// console.log(pages)
 const cancelDeletion = () => (showDeleteModal.value = false);
 
 // Log Update
@@ -170,7 +171,6 @@ function AddCheckboxOption(question) {
 
 // delete
 function deleteRadio(question, index) {
-    console.log(question)
     if (question.lastChoiceIndex >= 1) {
         question.choices.splice(index, 1)
         question.lastChoiceIndex = question.choices.length - 1; // update radio index
@@ -200,7 +200,6 @@ function isTypeAdded(question, type) {
 }
 
 function remove(page, index) {
-    // console.log(page.question, index)
     page.question.splice(index, 1);
 }
 
@@ -247,6 +246,9 @@ const submitForm = () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
         },
         onError: (error) => {
+            setTimeout(() => {
+                savingStatus.value = '';
+            }, 3000); // 3000ms = 3 seconds
             console.error('Error saving:', error);
             savingStatus.value = 'error';
         },
@@ -305,7 +307,7 @@ onBeforeUnmount(() => {
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                         :animation="150" :clone="clone" :sort="false" class="list-qtype">
                         <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                            items-center cursor-move">
+                            items-center cursor-move hover:font-semibold">
                             <span>{{ item.name }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6 text-gray-500">
@@ -315,17 +317,12 @@ onBeforeUnmount(() => {
                         </div>
                     </VueDraggable>
                     <button type="button" class="bg-white border-gray-300 py-2 px-4 flex justify-between
-                    items-center w-full" @click="showAddPage = !showAddPage" :class="!showAddPage ? 'border-b' : ''">
+                    items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
+                        :class="!showAddPage ? 'border-b' : ''">
                         Add Page
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 text-gray-500" v-if="!showAddPage">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 text-gray-500" v-else>
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            stroke="currentColor" class="size-6 text-gray-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </button>
                     <transition enter-active-class="transition ease-out duration-200"
@@ -363,7 +360,7 @@ onBeforeUnmount(() => {
                         </button>
                         <p v-if="savingStatus === 'saving'" class="text-center">Saving...</p>
                         <p v-if="savingStatus === 'saved'" class="text-center font-semibold">All changes saved.</p>
-                        <p v-if="savingStatus === 'error'">Error saving data.</p>
+                        <p v-if="savingStatus === 'error'" class="text-center font-semibold">Error saving data.</p>
                     </form>
                 </div>
             </aside>
@@ -373,7 +370,7 @@ onBeforeUnmount(() => {
                         <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
                             class="w-full bg-transparent text-white border-0 border-b border-white
                             placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
-                        <div @click="hapus(page, page_index)"
+                        <div @click="hapus(page_index)"
                             class="cursor-pointer absolute -right-16 bg-white p-3 rounded-full border border-gray-300 shadow-md">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6 text-red-500">
@@ -381,6 +378,8 @@ onBeforeUnmount(() => {
                                     d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                             </svg>
                         </div>
+                        <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
+                            @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
                     </div>
                     <!-- vue draggable : @update:modelValue="logUpdate" -->
                     <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
@@ -513,8 +512,6 @@ onBeforeUnmount(() => {
                     </VueDraggable>
                     <div class="border border-gray-500 mt-8 mb-3"
                         v-if="pages.length > 1 && page_index != pages.length - 1"></div>
-                    <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
-                        @confirm="confirmDeletion(pages, page_index)" @cancel="cancelDeletion" />
                 </div>
             </form>
         </main>
