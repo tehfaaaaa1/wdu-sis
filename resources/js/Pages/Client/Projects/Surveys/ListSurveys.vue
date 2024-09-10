@@ -180,6 +180,8 @@ console.log(props.user)
                                             class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
                                         <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                                     </div>
+                                    </div>
+                                       
                                 </td>
                             </tr>
                         </tbody>
