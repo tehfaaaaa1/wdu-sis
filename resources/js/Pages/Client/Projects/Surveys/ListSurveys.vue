@@ -154,7 +154,8 @@ console.log(props.user)
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
                                             <p class="text-center mt-3">Anda Sudah Mengisi Survey Ini</p>
                                         </div>
-                                        <div class="m-auto" v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)">
+                                        <div class="m-auto" v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
+                                            :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
                                             <p class="text-center">Survey Ditutup</p>
                                         </div>
                                         <NavLink v-else
