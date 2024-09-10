@@ -46,36 +46,13 @@ const pages = ref(props.page.map((page) => {
         }
         return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
     })
-
+    
     return { id: page.id, name: page.page_name, question: question }
 }))
 
-// const questions = ref(props.listquestions.map((item) => {
-//     let tipe = []
-//     let text = []
-//     let choice = []
-//     let lastCindex = ''
-//     // pilihan = []
-//     if (item.question_type_id == 2) {
-//         tipe = ['Radio']
-//         choice = item.choice.map((isi) => {
-//             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-//         })
-//         lastCindex = choice.length - 1
-//         // pilihan = [{pilih : item.choice.value}]
-//     } else if (item.question_type_id == 3) {
-//         tipe = ['Checkbox']
-//         choice = item.choice.map((isi) => {
-//             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-//         })
-//         lastCindex = choice.length - 1
-//         // pilihan = [{pilih : item.choice.value}]
-//     } else if (item.question_type_id == 1) {
-//         tipe = ['Text']
-//         text = [{ isi: '' }]
-//     }
-//     return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
-// }))
+if(pages.value.length == 0){
+    pages.value.push({ name: 'title' , question: [] })
+}
 
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
