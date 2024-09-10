@@ -103,7 +103,13 @@ const hapus = (index) => {
 const confirmDeletion = (page) => {
     page.splice(deletePageId.value, 1);
     showDeleteModal.value = false;
+    p(pages)
 };
+const p =(page) => {
+    if(page.value.length == 0){
+        pages.value.push({name: 'title', question:[]})
+    }
+}
 // console.log(pages)
 const cancelDeletion = () => (showDeleteModal.value = false);
 
