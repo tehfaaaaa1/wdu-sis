@@ -10,8 +10,8 @@ const props = defineProps({
     projects: Array,
     clients: Array,
     user: Object,
-    userTarget: Array,
-    provinces: Array,
+    userTarget: Array,  
+    provinces: Array,   
     cities: Array,
     regencies: Array
 });
@@ -55,7 +55,7 @@ const hasFilledSurvey = (survey) => {
     return survey.response.some(res => res.user_id === props.user.id);
 };
 const hasPubllish = (survey) => {
-    return survey.status == 0;
+    return survey.status ==  0;
 };
 const getProvinceName = (provinceId) => {
     const province = props.provinces.find(p => p.id === provinceId);
@@ -72,8 +72,7 @@ console.log(props.user)
 <template>
     <AppLayout title="List Survey">
         <template #header>
-            <NavLink :href="route('projects', clientSlug)"
-                class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang">
+            <NavLink :href="route('projects', clientSlug)" class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang">
                 <span class="text-black">Project&nbsp;</span> {{ project.project_name }}
             </NavLink>
         </template>
@@ -133,8 +132,7 @@ console.log(props.user)
                         </thead>
 
                         <tbody>
-                            <tr v-for="survey in filteredSurveys" :key="survey.id"
-                                class="bg-white border-b hover:bg-gray-50">
+                            <tr v-for="survey in filteredSurveys" :key="survey.id" class="bg-white border-b hover:bg-gray-50">
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900">{{ survey.title }}</td>
                                 <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
@@ -148,49 +146,42 @@ console.log(props.user)
                                     <p v-if="survey.status == 0"> Ditutup</p>
                                     <p v-if="survey.status == 1"> Dibuka</p>
                                 </td>
-                                <td class="px-6 py-6">
-                                    <div class="grid grid-cols-2 gap-x-2 justify-center content-center">
-                                        <div v-if="hasFilledSurvey(survey)"
-                                            :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
-                                            <p class="text-center mt-3">Anda Sudah Mengisi Survey Ini</p>
-                                        </div>
-                                        <div class="m-auto" v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)">
-                                            <p class="text-center">Survey Ditutup</p>
-                                        </div>
-                                        <NavLink v-else
-                                            :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition"
-                                            :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
-                                            Isi Survey
-                                        </NavLink>
+                                <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
+                                    <div class="m-auto" v-if="hasFilledSurvey(survey)">
+                                        <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
+                                    </div>
+                                    <div class="m-auto" v-if="hasPubllish(survey) && !hasFilledSurvey(survey)">
+                                        <p class="text-center">Survey Ditutup</p>
+                                    </div>
+                                    <NavLink v-if="!hasFilledSurvey(survey) &&  !hasPubllish(survey)"
+                                        :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
+                                        Isi Survey
+                                    </NavLink>
 
-                                        <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])"
-                                            v-if="props.user.current_team_id != 1 || props.user.usertype != 'user'"
-                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
-                                            Cek Respon
-                                        </NavLink>
+                                    <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
+                                        Cek Respon
+                                    </NavLink>
+                                    
+                                    <NavLink :href="route('question_surveys', [clientSlug, projectSlug, survey.id])"
+                                        v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                        class="col-span-2 w-full flex justify-center py-2.5 text-white bg-primary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
+                                        Tambah pertanyaan
+                                    </NavLink>
 
-                                        <NavLink :href="route('question_surveys', [clientSlug, projectSlug, survey.id])"
-                                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                                            class="col-span-2 w-full flex justify-center py-2.5 text-white bg-primary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
-                                            Tambah pertanyaan
-                                        </NavLink>
-
-                                        <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                                            class="mt-5 text-center col-span-2">
-                                            <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
-                                                class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                            <a @click="hapus(clientSlug, projectSlug, survey.id)"
-                                                class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
-                                        </div>
+                                    <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                                        class="mt-5 text-center col-span-2">
+                                        <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
+                                            class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
+                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                                     </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal" @confirm="confirmDeletion"
-                        @cancel="cancelDeletion" />
+                    <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal" @confirm="confirmDeletion" @cancel="cancelDeletion" />
                 </div>
             </div>
         </main>
