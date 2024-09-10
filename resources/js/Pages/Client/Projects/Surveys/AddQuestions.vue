@@ -318,7 +318,8 @@ onBeforeUnmount(() => {
                     </button>
                 </form>
             </header>
-            <aside class="sticky bg-gray-200 min-h-full top-11 z-50">
+            <div class="absolute h-[96.5%] w-full bg-white opacity-50 z-40" v-if="props.surveys.status == 1"></div>
+            <aside class="sticky bg-gray-200 min-h-full top-11 z-30">
                 <div class="absolute lg:w-1/5">
                     <h1
                         class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang select-none">
@@ -535,8 +536,8 @@ onBeforeUnmount(() => {
                     </VueDraggable>
                     <div class="border border-gray-500 mt-8 mb-3"
                         v-if="pages.length > 1 && page_index != pages.length - 1"></div>
-                    <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal" @confirm="confirmDeletion(pages, page_index)"
-                        @cancel="cancelDeletion" />
+                    <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
+                        @confirm="confirmDeletion(pages, page_index)" @cancel="cancelDeletion" />
                 </div>
             </form>
         </main>
