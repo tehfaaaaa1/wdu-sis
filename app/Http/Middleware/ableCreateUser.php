@@ -18,7 +18,7 @@ class ableCreateUser
     public function handle(Request $request, Closure $next): Response
     {
         // return response($user);
-        if(Auth::user()->usertype != 'superadmin' && Auth::user()->current_team_id != 5){
+        if(Auth::user()->usertype != 'superadmin' && Auth::user()->current_team_id != 4){
             abort(403, 'Tidak diizinkan masuk.');
             // return redirect()->back()->withErrors(Auxth::user()->usertype, ' Dilarang Masuk');    
         }
