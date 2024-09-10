@@ -65,8 +65,6 @@ const getProvinceName = (provinceId) => {
 const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
 };
-
-console.log(props.user)
 </script>
 
 <template>
