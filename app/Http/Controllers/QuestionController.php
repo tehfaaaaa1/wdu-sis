@@ -185,13 +185,20 @@ class QuestionController extends Controller
                             if (count($choices) < 2) {
                                 abort(403, "Isilah Minimal 2 Pilihan !!");
                             }
+                            for($i = 0; $i<count($choices);$i++ ){
+                                for($j = $i + 1;$j<count($choices);$j++){
+                                    $intersect = array_intersect($choices[$i], $choices[$j]);
+                                    if(!empty($intersect)){
+                                        abort(403, 'ha');
+                                    }
+                                }
+                            }
                             break;
                         default:
                             // Handle other types or do nothing
                             break;
                     }
                 }
-
                 // Save or update the question
                 $saveQuestion = Question::firstOrNew(
                     ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id, 'question_page_id' => $savePage->id]
