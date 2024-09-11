@@ -3,7 +3,7 @@
 - Question Logic in Surveys (TBA)
 - Region & Target Number of Survey Respondents (TBA)
 - Verify Respondent Region (TBA)
-- Drag & Drop Survey Form Builder (Debugging)
+- Drag & Drop Survey Form Builder (Testing)
 <!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
 
 **Misc**
@@ -22,6 +22,8 @@
 ## Changelog
 ### 11 Sep 2024
 - Finally fixed edit client unable to update images (so long partner)
+- Logic in AddQuestion to check for duplicate question choice in a question
+- Selecting client in CRUD User changed to use dropdown instead
 
 ### 10 Sep 2024
 - No survey edits permitted when it is published
