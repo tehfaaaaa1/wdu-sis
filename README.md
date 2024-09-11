@@ -1,9 +1,9 @@
 ## To Be Added
 **Surveys**
-- Drag & Drop Survey Form Builder (Adding more features) <!-- Note: Add Edit Questions -->
 - Question Logic in Surveys (TBA)
 - Region & Target Number of Survey Respondents (TBA)
 - Verify Respondent Region (TBA)
+<!-- - Drag & Drop Survey Form Builder (Debugging) -->
 <!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
 
 **Misc**
