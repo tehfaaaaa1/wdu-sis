@@ -7,8 +7,10 @@ use App\Models\Client;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use File;
+
 class ClientController extends Controller
 {
     public function index()
@@ -61,13 +63,13 @@ class ClientController extends Controller
             'desc' => 'required',
             'image' => 'required|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
-    
+
         if ($request->hasFile('image')) {
             $fileName = date('YmdHi') . $request->file('image')->getClientOriginalName();
             // dd(public_path('img'), $fileName);
             $request->file('image')->move(public_path('img'), $fileName);
         }
-    
+
         $client = Client::create([
             'client_name' => $validated['client_name'],
             'image' => $fileName,
@@ -78,7 +80,7 @@ class ClientController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-    
+
         Log::info('Phone field:', ['phone' => $request->phone]);
         Log::info('Validated data:', $validated);
         return redirect()->route('listclient')->with('success', 'Client created successfully.');
@@ -110,7 +112,7 @@ class ClientController extends Controller
             'client' => [
                 'client_name' => $client->client_name,
                 'alamat' => $client->alamat,
-                'phone'=> $client->phone,
+                'phone' => $client->phone,
                 'desc' => $client->desc,
                 'image' => $client->image,
                 'date' => $client->created_at->format('j F Y'),
@@ -131,7 +133,7 @@ class ClientController extends Controller
 
 
     public function update(Request $request, $id)
-    {   
+    {
         // dd($request);
         $validated = $request->validate([
             'client_name' => 'required|max:255',
@@ -146,9 +148,9 @@ class ClientController extends Controller
 
         if ($request->hasFile('image')) {
             // Delete old image if it exists
-            if ($client->image && File::exists(public_path('img/').$client->image)) {
-                Storage::disk('public')->delete(public_path('img/').$client->image);
-                unlink(public_path('img/').$client->image);
+            if ($client->image && File::exists(public_path('img/') . $client->image)) {
+                Storage::disk('public')->delete(public_path('img/') . $client->image);
+                unlink(public_path('img/') . $client->image);
             }
 
             $fileName = date('YmdHi') . Str::slug($request->client_name) . '.' . $request->file('image')->getClientOriginalExtension();
@@ -157,7 +159,7 @@ class ClientController extends Controller
         } else {
             $fileName = $client->image;
         }
-        
+
         $client->update([
             'client_name' => $validated['client_name'],
             'image' => $fileName,
@@ -171,7 +173,7 @@ class ClientController extends Controller
         Log::info('Validated data:', $validated);
         return redirect()->route('listclient')->with('success', 'Client updated successfully.');
     }
-    
+
     public function destroy($id)
     {
         $client = Client::where('id', $id)->first();
@@ -182,7 +184,7 @@ class ClientController extends Controller
             ]);
         }
         Storage::disk('public')->delete(public_path('img') . $client['image']);
-        unlink(public_path('img/').$client['image']);
+        unlink(public_path('img/') . $client['image']);
         Client::where('id', $id)->delete();
 
         return redirect()->route('listclient')->with('success', 'Project deleted successfully.');
