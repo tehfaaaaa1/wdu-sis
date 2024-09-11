@@ -3,14 +3,14 @@
 - Question Logic in Surveys (TBA)
 - Region & Target Number of Survey Respondents (TBA)
 - Verify Respondent Region (TBA)
-<!-- - Drag & Drop Survey Form Builder (Debugging) -->
+- Drag & Drop Survey Form Builder (Debugging)
 <!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
 
 **Misc**
 - Pagination in table list (list project, list survey, list user)
 - Add Icons to needed elements
 - Change to / Add Indonesian Language
-- better UI/UX
+- Cleaner & Better UI/UX
 - Dashboard Content
 <!-- - Updated Documentation (Fadel)
   - ERD Survey Database (V)
