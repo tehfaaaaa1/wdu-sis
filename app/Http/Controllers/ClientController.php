@@ -53,6 +53,7 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request);
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
@@ -63,6 +64,7 @@ class ClientController extends Controller
     
         if ($request->hasFile('image')) {
             $fileName = date('YmdHi') . $request->file('image')->getClientOriginalName();
+            // dd(public_path('img'), $fileName);
             $request->file('image')->move(public_path('img'), $fileName);
         }
     
@@ -130,31 +132,35 @@ class ClientController extends Controller
 
     public function update(Request $request, $id)
     {   
+        // dd($request);
         $validated = $request->validate([
             'client_name' => 'required|max:255',
             'alamat' => 'required|max:255',
             'phone' => 'required|max:20',
             'desc' => 'required',
-            //'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:2048'
+            'image' => 'nullable|mimes:png,jpg,jpeg,gif|max:2048'
         ]);
-
+        // dd($request);
         $client = Client::findOrFail($id);
-        /*$fileName = $client->image;
+        $fileName = null;
 
         if ($request->hasFile('image')) {
             // Delete old image if it exists
-            if ($client->image && Storage::exists($client->image)) {
-                Storage::delete($client->image);
+            if ($client->image || Storage::exists($client->image)) {
+                Storage::disk('public')->delete(public_path('img/').$client->image);
+                unlink(public_path('img/').$client->image);
             }
 
             $fileName = date('YmdHi') . Str::slug($request->client_name) . '.' . $request->file('image')->getClientOriginalExtension();
-            Storage::putFileAs('public/img', $request->file('image'), $fileName);
-            $fileName = 'public/img/' . $fileName;
+            // Storage::putFileAs(public_path('img'), $request->file('image'), $fileName);
+            $request->file('image')->move(public_path('img'), $fileName);
+        } else {
+            $fileName = $client->image;
         }
-        */
+        
         $client->update([
             'client_name' => $validated['client_name'],
-            //'image' => $fileName,
+            'image' => $fileName,
             'alamat' => $validated['alamat'],
             'phone' => $validated['phone'],
             'desc' => $validated['desc'],
@@ -169,7 +175,6 @@ class ClientController extends Controller
     public function destroy($id)
     {
         $client = Client::where('id', $id)->first();
-        //        dd($client);
         if (!$client) {
             return response()->json([
                 'status' => '500',
@@ -177,6 +182,7 @@ class ClientController extends Controller
             ]);
         }
         Storage::disk('public')->delete(public_path('img') . $client['image']);
+        unlink(public_path('img/').$client['image']);
         Client::where('id', $id)->delete();
 
         return redirect()->route('listclient')->with('success', 'Project deleted successfully.');

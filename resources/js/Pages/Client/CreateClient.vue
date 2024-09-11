@@ -21,6 +21,7 @@ const form = useForm({
 const submit = () => {
     form.post(route('create_client'));
 };
+// console.log(form)
 </script>
 
 <template>

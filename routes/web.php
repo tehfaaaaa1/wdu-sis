@@ -44,7 +44,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     
         Route::post('/createclient', [ClientController::class, 'store'])->name('create_client')->middleware('admin');;
 
-        Route::put('{id}/update-client/', [ClientController::class, 'update'])->name('update_client')->middleware('admin');;
+        Route::post('{id}/update-client/', [ClientController::class, 'update'])->name('update_client')->middleware('admin');;
 
         Route::get('{id}/profile-client/', [ClientController::class, 'profile'])->name('profile_client');
     
