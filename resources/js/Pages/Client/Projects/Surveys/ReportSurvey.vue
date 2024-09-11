@@ -14,8 +14,8 @@ const props = defineProps({
 const project = props.projects[0]
 const client = props.clients[0]
 const checked = (choice, q) => {
-    console.log(q.answer.some(ans=>ans.answer == choice.value))
-    return q.answer.some(ans=>ans.answer == choice.value) ;
+    console.log(q.answer.some(ans=>ans.answer == choice.value && ans.response_id == props.responses.id ))
+    return q.answer.some(ans=>ans.answer == choice.value && ans.response_id == props.responses.id) ;
 };
 const hasil = ref([{ soal: [] }])
 // console.log(props.page)
@@ -46,7 +46,7 @@ const hasil = ref([{ soal: [] }])
                                                 <div v-for="(list, i) in question.choice" :key="i">
                                                     <input type="radio" :name="'radio'+ list.id" :id="'radio'+ list.id" :checked="checked(list, question)" disabled>
                                                     <label :for="'radio'+list.id">{{list.value}}</label>
-                                                    {{ checked(list,question) }}
+                                                    <!-- {{ question.answer[i] }} -->
     
                                             </div>  
                                         </div>
@@ -56,7 +56,7 @@ const hasil = ref([{ soal: [] }])
                                             <div class="" v-for="(list, i) in question.choice" :key="i">
                                                     <input type="checkbox" :name="'checkbox'+list.id" :id="'checkbox'+list.id" :checked="checked(list, question)" disabled>
                                                     <label :for="'checkbox'+list.id">{{ list.value }}</label>
-                                                    <!-- {{ checked(list,question) }} -->
+                                                    <!-- {{ question.answer[i] }} -->
                                             </div>
                                         </div>
                                         <!-- Handling textarea for question type 1 -->
