@@ -25,7 +25,7 @@ const isAdmin = ref(props.user.usertype === 'admin');
 const form = useForm({
     name: props.user.name || '',
     email: props.user.email || '',
-    client_id:  props.client.id || '',
+    client_id: props.userclient.id ,
     password: '',
     password_confirmation: '',
     usertype: props.user.usertype || 'user',
@@ -41,7 +41,6 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation'),
     });
 };
-// console.log(form.client)
 </script>
 
 <template>
@@ -109,7 +108,6 @@ const submit = () => {
                                 v-model="form.client_id"
                                 >
                                 <option value="" disabled>Choose client</option>
-                                <option value="dassad" selected>testing</option>
                                 <option v-for="c in client" class="ml-2" :value="c.id">{{ c.client_name }}</option>
                             </select>
                         </div>
