@@ -17,10 +17,11 @@
   - Activity Diagram (V) -->
 
 ## Need bug fix
+- My brain
 
 ## Changelog
 ### 11 Sep 2024
-- Finally fixed edit client unable to update images (so long pardner)
+- Finally fixed edit client unable to update images (so long partner)
 
 ### 10 Sep 2024
 - No survey edits permitted when it is published
