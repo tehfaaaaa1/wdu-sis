@@ -146,7 +146,7 @@ class ClientController extends Controller
 
         if ($request->hasFile('image')) {
             // Delete old image if it exists
-            if ($client->image || Storage::exists($client->image)) {
+            if ($client->image && File::exists(public_path('img/').$client->image)) {
                 Storage::disk('public')->delete(public_path('img/').$client->image);
                 unlink(public_path('img/').$client->image);
             }
