@@ -467,7 +467,7 @@ onBeforeUnmount(() => {
                                 <div class="flex items-center mb-2">
                                     <span class="select-none">O</span>
                                     <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
-                                        :id="'radio' + (index + 1) + '-q' + (item.id)" :value="radio.pilih"
+                                        :id="'radio' + (index + 1) + '-q' + (item.id)"
                                         placeholder="Insert single choice"
                                         class="text-sm mx-4 block w-1/4 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
 
@@ -494,7 +494,7 @@ onBeforeUnmount(() => {
                                 <div class="flex items-center mb-2">
                                     <span class="select-none">&#9634;</span>
                                     <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
-                                        :id="'checkbox' + (index + 1) + '-q' + (item.id)" :value="checkbox.pilih"
+                                        :id="'checkbox' + (index + 1) + '-q' + (item.id)"
                                         placeholder="Insert multiple choice here"
                                         class="text-sm mx-4 rounded-md block w-1/4">
 

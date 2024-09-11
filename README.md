@@ -17,9 +17,21 @@
   - Activity Diagram (V) -->
 
 ## Need bug fix
-- Edit Client can't update (image breaks the form when added)
 
 ## Changelog
+### 11 Sep 2024
+- Finally fixed edit client unable to update images (so long pardner)
+
+### 10 Sep 2024
+- No survey edits permitted when it is published
+- Initialize/create a page if there are no pages
+- ListSurvey & ReportSurvey bug fix
+
+### 9 Sep 2024
+- Save Alert in AddQuestion
+- Ability to remove pages in AddQuestions
+- Updated report & submission survey to get pages
+
 ### 6 Sep 2024
 - Updated AddQuestions :
   - Insert page
