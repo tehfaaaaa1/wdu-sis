@@ -25,7 +25,7 @@ const isAdmin = ref(props.user.usertype === 'admin');
 const form = useForm({
     name: props.user.name || '',
     email: props.user.email || '',
-    client_id: props.userclient.id ,
+    client_id: props.userclient.id ?? '' ,
     password: '',
     password_confirmation: '',
     usertype: props.user.usertype || 'user',
@@ -105,8 +105,7 @@ const submit = () => {
                         <div class="py-1">
                             <select :id="'client_id'" name="client_id"
                                 class="w-full rounded_md border-primary rounded-md cursor-pointer"
-                                v-model="form.client_id"
-                                >
+                                v-model="form.client_id">
                                 <option value="" disabled>Choose client</option>
                                 <option v-for="c in client" class="ml-2" :value="c.id">{{ c.client_name }}</option>
                             </select>
