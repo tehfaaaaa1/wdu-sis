@@ -3,7 +3,7 @@
 - Question Logic in Surveys (TBA)
 - Region & Target Number of Survey Respondents (TBA)
 - Verify Respondent Region (TBA)
-<!-- - Drag & Drop Survey Form Builder (Debugging) -->
+- Drag & Drop Survey Form Builder (Debugging)
 <!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
 
 **Misc**
