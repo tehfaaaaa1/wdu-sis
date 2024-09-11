@@ -175,7 +175,6 @@ class ClientController extends Controller
     public function destroy($id)
     {
         $client = Client::where('id', $id)->first();
-        //        dd($client);
         if (!$client) {
             return response()->json([
                 'status' => '500',
@@ -183,6 +182,7 @@ class ClientController extends Controller
             ]);
         }
         Storage::disk('public')->delete(public_path('img') . $client['image']);
+        unlink(public_path('img/').$client['image']);
         Client::where('id', $id)->delete();
 
         return redirect()->route('listclient')->with('success', 'Project deleted successfully.');
