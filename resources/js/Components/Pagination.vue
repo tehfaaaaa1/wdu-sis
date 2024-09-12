@@ -1,24 +1,42 @@
 <template>
-    <div>
+    <div class="flex flex-wrap -mb-1 justify-between space-x-4">
+        <!-- Previous Button -->
+        <Link v-if="links.prev_page_url"
+            class="rounded-md px-5 bg-secondary py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ijo-terang focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition  md:mb-6 text-center"
+            :href="links.prev_page_url"
+            @click.prevent="navigate(links.prev_page_url)"
+        >
+            Previous
+        </Link>
 
-        <div class="flex flex-wrap -mb-1">
-            <template v-for="(link, linkIndex) in links" :key="linkIndex">
-                <div class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded"
-                    v-html="link.label"></div>
-                <Link
-                    class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded hover:bg-white focus:border-indigo-500 inline-block focus:text-indigo-500"
-                    :class="{ 'bg-blue-700 text-white': link.active }" :href="link.url">
-                <span v-html="link.label"></span>
-                </Link>
-            </template>
-        </div>
-
+        <!-- Next Button -->
+        <Link v-if="links.next_page_url"
+            class="rounded-md px-5 bg-secondary py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ijo-terang focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition  md:mb-6 text-center"
+            :href="links.next_page_url"
+            @click.prevent="navigate(links.next_page_url)"
+        >
+            Next
+        </Link>
     </div>
 </template>
 
 <script setup>
 import { Link } from '@inertiajs/vue3';
+import { defineEmits } from 'vue';
+
 defineProps({
-    links: Array
+    links: {
+        type: Object,
+        required: true,
+        default: () => ({
+            prev_page_url: null,
+            next_page_url: null
+        })
+    }
 });
+
+const emit = defineEmits(['navigate']);
+const navigate = (url) => {
+    emit('navigate', url)
+}
 </script>

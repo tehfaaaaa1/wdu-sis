@@ -195,6 +195,7 @@ class SurveyController extends Controller
                 'id' => $p->id,
                 'page_name' => $p->page_name,
                 'survey_id' => $p->survey_id,
+                'link' => $p,
                 'question' => $p->question->map(function ($q) {
                     return [
                         'id' => $q->id,
