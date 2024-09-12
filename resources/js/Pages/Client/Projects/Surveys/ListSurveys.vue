@@ -10,7 +10,7 @@ const props = defineProps({
     projects: Array,
     clients: Array,
     user: Object,
-    userTarget: Array,  
+    userTarget: [Array, Object],  
     provinces: Array,   
     cities: Array,
     regencies: Array
