@@ -375,20 +375,20 @@ onBeforeUnmount(() => {
                     <div class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative">
                         <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title" class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
                         <div class="absolute -right-16 z-10 mt-2 origin-top-right">
-                            <div class="flex flex-col space-y-2">
-                                <button type="button" @click="openDropdown = !openDropdown" class=" block cursor-pointer bg-white p-3 rounded-full border border-gray-300 shadow-md" :class="openDropdown ? 'transition rotate-45': ''">
+                            <div class="flex flex-col space-y-2 group">
+                                <button type="button" @click="openDropdown = !openDropdown" class=" block cursor-pointer bg-white p-3 rounded-full border border-gray-300 shadow-md" :class="openDropdown ? 'transition rotate-45': 'transition rotate-0'">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                         </svg>
                                 </button>
                                 <div class="absolute top-12">
                                     <transition
-                                        enter-active-class="transition ease-out duration-200"
-                                        enter-from-class="transform opacity-0 scale-95"
-                                        enter-to-class="transform opacity-100 scale-100"
+                                        enter-active-class="transition ease-in duration-75"
+                                        enter-from-class="transform opacity-50 -translate-y-4"
+                                        enter-to-class="transform opacity-100 translate-y-0"
                                         leave-active-class="transition ease-in duration-75"
-                                        leave-from-class="transform opacity-100 scale-100"
-                                        leave-to-class="transform opacity-0 scale-95">
+                                        leave-from-class="transform opacity-100 translate-y-0"
+                                        leave-to-class="transform opacity-0 -translate-y-4">
                                             <div v-if="openDropdown" class="flex flex-col space-y-2" @click="open = false">
                                                 <div @click="hapus(page_index)" class="cursor-pointer block bg-white p-3 rounded-full border border-gray-300 shadow-md">
                                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-red-500">
