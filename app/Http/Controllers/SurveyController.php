@@ -188,13 +188,15 @@ class SurveyController extends Controller
         $survey = Survey::findOrFail($id);
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
-        $page = QuestionPage::where('survey_id', $id)->get();
-        // Prepare data to pass to the view
+        $page = QuestionPage::where('survey_id', $id)->simplePaginate(1);
+        // Prepare data to pass to the view\
+        // dd($page);
         $formattedPage = $page->map(function ($p) {
             return [
                 'id' => $p->id,
                 'page_name' => $p->page_name,
                 'survey_id' => $p->survey_id,
+                'link' => $p,
                 'question' => $p->question->map(function ($q) {
                     return [
                         'id' => $q->id,
@@ -217,6 +219,7 @@ class SurveyController extends Controller
                 'projects' => $project,
                 'clients' => $client,
                 'page' => $formattedPage,
+                'pagee' => $page
             ]
         );
     }
