@@ -7,7 +7,6 @@ const props = defineProps({
     clients: Object,
     response: Object,
     totalres: Object,
-    biodata: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -56,11 +55,7 @@ const projectSlug = project.slug;
                                         {{ responses.user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="" v-for="bio in biodata">
-                                            <div class="" v-if="bio.user_id === responses.user_id">
-                                                {{ bio.alamat }}
-                                            </div>
-                                        </div>
+                                        {{ responses.user.biodata.alamat }}
                                     </td>
                                     <td class="px-6 py-4">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
