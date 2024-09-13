@@ -9,7 +9,7 @@ const props = defineProps({
     page: Array,
     responses: Array,
     answer: Array,
-    user: Object
+    biodata: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -32,7 +32,10 @@ const hasil = ref([{ soal: [] }])
                     <div class="bg-white rounded-b-md">
                         <div class="border-b-2 p-5 border-gray-500">
                             <div class="p-5 mt-2 border-2 border-gray-400">
-                                <h2 class="font-semibold text-lg">{{ props.user.name }}</h2>
+                                <h2 class="font-semibold text-lg">Nama Responden: {{ props.biodata.nama_responden }}</h2>
+                                <h2 class="font-semibold text-lg">Alamat: {{ props.biodata.alamat }}</h2>
+                                <h2 class="font-semibold text-lg">Nomor Telp: {{ props.biodata.no_hp }}</h2>
+                                <h2 class="font-semibold text-lg">Instansi: {{ props.biodata.instansi }}</h2>
                             </div>
                         </div>
                         <div class="p-5 flex w-full">

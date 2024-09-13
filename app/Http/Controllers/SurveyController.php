@@ -232,7 +232,7 @@ class SurveyController extends Controller
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $answers = Answer::where('response_id', $responseId)->get();
-        $user = $response->user;
+        $bio = $response->user->biodata;
         $page = QuestionPage::where('survey_id', $surveyId)->get();
         // Prepare data to pass to the view
         $formattedPage = $page->map(function ($p) {
@@ -263,7 +263,7 @@ class SurveyController extends Controller
                 'page' => $formattedPage,
                 'responses' => $response,
                 'answer' => $answers,
-                'user' => $user,
+                'biodata' => $bio,
             ]
         );
     }
