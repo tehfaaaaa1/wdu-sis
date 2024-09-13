@@ -107,6 +107,7 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'usertype' => 'required|string',
             'team_id' => 'nullable|exists:teams,id',
+            'client_id' => 'required'
         ]);
 
         $user = User::findOrFail($id);
@@ -115,6 +116,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => $request->password ? bcrypt($request->password) : $user->password,
             'usertype' => $request->usertype,
+            'client_id' => $request->client_id
         ]);
 
         // Assign team if provided
