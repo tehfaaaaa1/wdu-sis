@@ -148,7 +148,7 @@ const getSurveySubmissions = (surveyId) => {
                                     <div class="grid grid-cols-2 gap-x-2 justify-center content-center">
                                         <div v-if="hasFilledSurvey(survey)"
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
-                                            <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
+                                            <p class="text-center" :class="props.user.usertype == 'superadmin' ? 'mt-3': ''">Anda Sudah Mengisi Survey Ini</p>
                                         </div>
                                         <div class="m-auto" v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
