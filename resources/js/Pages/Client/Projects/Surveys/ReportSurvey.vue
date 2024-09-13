@@ -9,7 +9,7 @@ const props = defineProps({
     page: Array,
     responses: [Array, Object],
     answer: Array,
-    user: Object
+    biodata: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -26,7 +26,10 @@ const checked = (choice, q) => {
                 <div class="bg-white">
                     <div class="p-5 mt-2 border-2 border-gray-300">
                         <h2 class="font-semibold text-lg mb-2">Biodata Responden</h2>
-                        <h3 class="font-medium">Nama Responden : {{ props.user.name }}</h3>
+                        <h3 class="font-medium">Nama Responden: {{ props.biodata.nama_responden }}</h3>
+                        <h3 class="font-medium">Alamat: {{ props.biodata.alamat }}</h3>
+                        <h3 class="font-medium">Nomor Telp: {{ props.biodata.no_hp }}</h3>
+                        <h3 class="font-medium">Instansi: {{ props.biodata.instansi }}</h3>
                     </div>
                 </div>
                 <div class="border w-full border-gray-400 my-6"></div>
