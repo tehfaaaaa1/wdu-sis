@@ -13,14 +13,14 @@ class AnswerController extends Controller
     {
         // Fetch the survey
         $survey = Survey::findOrFail($id);
-        // dd($request['page']);
+        dd($request);
             // Get form data from the request
         $page = $request['page'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
 
         // Create a new response
-        $response = Response::firstOrNew(['id'=> $request['resId']] );
+        $response = new Response;
         $response->user_id = Auth::user()->id;
         $response->survey_id = $id;
         $response->status = 1;

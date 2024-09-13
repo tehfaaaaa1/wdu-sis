@@ -220,7 +220,7 @@ class SurveyController extends Controller
                 'clients' => $client,
                 'page' => $formattedPage,
                 'pagee' => $page,
-                'responses' => $res['id'] ?? null
+                // 'responses' => $res['id'] ?? null
             ]
         );
     }

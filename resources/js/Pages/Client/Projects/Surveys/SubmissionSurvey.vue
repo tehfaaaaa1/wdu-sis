@@ -32,7 +32,7 @@ const form = useForm({
     })),
     project_slug: project['slug'],
     client_slug: client['slug'],
-    resId: props.responses 
+    // resId: props.responses 
 });
 
 // Restore form state from localStorage (if it exists)
@@ -53,7 +53,7 @@ const getAllSurveyData = () => {
     // Loop through localStorage keys and gather survey-related data
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key.startsWith(`survey_1_`)) {
+        if (key.startsWith(`survey_${props.surveys.id}_`)) {
             const surveyData = JSON.parse(localStorage.getItem(key));
             allData.push(...surveyData);  // Combine data from all pages
         }
