@@ -7,7 +7,6 @@ const props = defineProps({
     clients: Object,
     response: Object,
     totalres: Object,
-    biodata: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -27,7 +26,9 @@ const projectSlug = project.slug;
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <h2 class="font-semibold text-lg">Summary</h2>
-                            <p class="font-medium">{{ props.totalres }} Response</p>
+                            <p class="font-medium">Wilayah  : </p>
+                            <p class="font-medium">{{ props.totalres }} Respons / {{ props.surveys.target_response }} Target</p>
+                            <p class="font-medium">Status   : {{ props.surveys.status ? 'Dibuka' : 'Ditutup' }}</p>
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md mt-4">
@@ -36,7 +37,7 @@ const projectSlug = project.slug;
                             <thead class="text-xs text-white uppercase bg-primary">
                                 <tr>
                                     <th scope="col" class="px-6 py-3 w-1/12">No.</th>
-                                    <th scope="col" class="px-6 py-3">Nama</th>
+                                    <th scope="col" class="px-6 py-3">Username</th>
                                     <th scope="col" class="px-6 py-3">Email</th>
                                     <!-- <th scope="col" class="px-6 py-3"></th> -->
                                     <th scope="col" class="px-6 py-3">Wilayah/Daerah</th>
@@ -56,11 +57,7 @@ const projectSlug = project.slug;
                                         {{ responses.user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="" v-for="bio in biodata">
-                                            <div class="" v-if="bio.user_id === responses.user_id">
-                                                {{ bio.alamat }}
-                                            </div>
-                                        </div>
+                                        {{ responses.user.biodata.alamat }}
                                     </td>
                                     <td class="px-6 py-4">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"

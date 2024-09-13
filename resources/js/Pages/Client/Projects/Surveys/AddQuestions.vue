@@ -105,9 +105,9 @@ const confirmDeletion = (page) => {
     showDeleteModal.value = false;
     p(pages)
 };
-const p =(page) => {
-    if(page.value.length == 0){
-        pages.value.push({name: 'title', question:[]})
+const p = (page) => {
+    if (page.value.length == 0) {
+        pages.value.push({ name: 'title', question: [] })
     }
 }
 // console.log(pages)
@@ -324,7 +324,7 @@ onBeforeUnmount(() => {
                     </VueDraggable>
                     <button type="button" class="bg-white border-gray-300 py-2 px-4 flex justify-between
                     items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
-                        :class="!showAddPage ? 'border-b' : ''">
+                        :class="{ 'border-b': !showAddPage }">
                         Add Page
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                             stroke="currentColor" class="size-6 text-gray-500">

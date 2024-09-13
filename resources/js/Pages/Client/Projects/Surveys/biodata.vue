@@ -29,18 +29,15 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout title="Isi Survey">
+    <AppLayout title="Isi Biodata">
         <main class="min-h-screen">
-            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
-                    <h2>a</h2>
+                    <h2>Isi Biodata</h2>
                 </div>
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
-                        <p class="text-base text-justify line-clamp-3"></p>
-                        <div class="p-5 my-2 border-2 border-gray-400">
-                            <h2 class="font-semibold text-lg">Biodata</h2>
-                        </div>
+                        <p class="text-base text-justify line-clamp-3 font-medium">Pastikan Biodata di bawah sudah sesuai!</p>
                     </div>
                     <form action="" @submit.prevent=submit>
                         <div class="relative px-5 mt-3">

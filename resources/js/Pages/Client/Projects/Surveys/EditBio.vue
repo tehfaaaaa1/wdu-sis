@@ -5,6 +5,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Biodata from './biodata.vue';
+import InputError from '@/Components/InputError.vue';
 
 
 const props = defineProps({
@@ -33,18 +34,15 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout title="Edit BIodata">
+    <AppLayout title="Edit Biodata">
         <main class="min-h-screen">
-            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
-                    <h2>a</h2>
+                    <h2>Edit Biodata</h2>
                 </div>
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
-                        <p class="text-base text-justify line-clamp-3"></p>
-                        <div class="p-5 my-2 border-2 border-gray-400">
-                            <h2 class="font-semibold text-lg">Biodata</h2>
-                        </div>
+                        <p class="text-base text-justify line-clamp-3 font-medium">Pastikan Biodata di bawah sudah sesuai!</p>
                     </div>
                     <form @submit.prevent="submit" enctype="multipart/form-data">
                         <div class="relative px-5 mt-3">
@@ -78,7 +76,7 @@ const submit = () => {
                             <InputError class="mt-2" :message="form.errors.password_confirmation" />
                         </div>
                         <div class="pt-5 flex justify-center">
-                            <PrimaryButton class="w-1/2 my-5 p-5 justify-center "
+                            <PrimaryButton class="my-5 p-5 justify-center "
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                                 Konfirmasi Biodata
                             </PrimaryButton>
@@ -93,8 +91,11 @@ const submit = () => {
 <style scoped>
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
+label {
+    color: lightslategray
+}
 </style>

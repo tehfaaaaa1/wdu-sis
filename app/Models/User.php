@@ -75,4 +75,7 @@ class User extends Authenticatable
     public function client():  BelongsTo{
         return $this->belongsTo(Client::class);
     }
+    public function biodata():  BelongsTo{
+        return $this->belongsTo(Biodata::class);
+    }
 }
