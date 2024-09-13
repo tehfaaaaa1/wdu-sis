@@ -125,15 +125,15 @@ const submit = () => {
                                             v-model="form.page[ind].answer[index].texts" />
                                     </div>
                                 </div>
+                                <div class="flex justify-between">
+                                    <Pagination class="flex justify-center md:mb-6 text-center" :links="{ prev_page_url: pagee.prev_page_url, next_page_url: pagee.next_page_url }" />
 
-                                <PrimaryButton class="flex justify-center md:mb-6 text-center"
+                                    <PrimaryButton class="flex justify-center md:mb-6 text-center"
                                     v-if="pagee.next_page_url == null" :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing">
                                     Submit Survey
                                 </PrimaryButton>
-
-                                <Pagination
-                                    :links="{ prev_page_url: pagee.prev_page_url, next_page_url: pagee.next_page_url }" />
+                            </div>
                             </form>
                         </div>
                     </div>
