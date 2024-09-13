@@ -14,7 +14,7 @@ const props = defineProps({
 const project = props.projects[0]
 const client = props.clients[0]
 const checked = (choice, q) => {
-    return q.answer.some(ans => ans.answer == choice.value && ans.response_id == props.responses.id);
+    return q.answer.some(ans => ans.answer == choice.id && ans.response_id == props.responses.id);
 };
 
 </script>

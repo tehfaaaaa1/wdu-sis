@@ -98,7 +98,7 @@ const submit = () => {
                                         <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="radio"
                                                 :id="'qradio' + (list.question_id) + '-option' + (i + 1)"
-                                                :value="list.value" v-model="form.page[ind].answer[index].radios" />
+                                                :value="list.id" v-model="form.page[ind].answer[index].radios" />
                                             <label v-if="list.question_id === question.id" class="px-3"
                                                 :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
                                                 {{ list.value }}
@@ -111,7 +111,7 @@ const submit = () => {
                                         <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="checkbox"
                                                 :id="'qcheck' + (list.question_id) + '-option' + (i + 1)"
-                                                :value="list.value" v-model="form.page[ind].answer[index].checkboxes" />
+                                                :value="list.id" v-model="form.page[ind].answer[index].checkboxes" />
                                             <label class="px-3"
                                                 :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
                                                 {{ list.value }}
