@@ -8,7 +8,8 @@ const props = defineProps({
     projects: Object,
     clients: Object,
     page: Array,
-    pagee: Object
+    pagee: Object,
+    responses: Object
 });
 
 const project = props.projects[0];
@@ -26,6 +27,7 @@ const form = useForm({
     })),
     project_slug: project['slug'],
     client_slug: client['slug'],
+    resId: props.responses 
 });
 
 // Submit handler for the form

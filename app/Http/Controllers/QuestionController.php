@@ -138,7 +138,6 @@ class QuestionController extends Controller
         ]);
         // dd($validatedData);
         $survey = Survey::findOrFail($request->survey);
-
         // Save or update the questions
 
         // Retrieve existing questions for the page
@@ -150,10 +149,10 @@ class QuestionController extends Controller
         $processedPageIds = [];
 
         foreach ($validatedData['data'] as $pageData) {
-            $newPage = new QuestionPage;
             $savePage = QuestionPage::firstOrNew(
-                ['id' => $pageData['id'] ?? $newPage->id, 'survey_id' => $survey->id]
+                ['id' => $pageData['id'] ?? null]
             );
+            $savePage->survey_id = $survey['id'];
             $savePage->page_name = $pageData['name'];
             $savePage->save();
 

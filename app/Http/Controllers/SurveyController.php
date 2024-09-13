@@ -190,6 +190,7 @@ class SurveyController extends Controller
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $page = QuestionPage::where('survey_id', $id)->simplePaginate(1);
         // Prepare data to pass to the view
+        $res = Response::where('survey_id', $id)->where('user_id', Auth::user()->id)->first();
         $formattedPage = $page->map(function ($p) {
             return [
                 'id' => $p->id,
@@ -219,6 +220,7 @@ class SurveyController extends Controller
                 'clients' => $client,
                 'page' => $formattedPage,
                 'pagee' => $page,
+                'responses' => $res['id'] ?? null
             ]
         );
     }
