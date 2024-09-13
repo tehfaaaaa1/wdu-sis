@@ -20,7 +20,7 @@ class AnswerController extends Controller
         $projectSlug = $request['project_slug'];
 
         // Create a new response
-        $response = new Response;
+        $response = Response::firstOrNew(['id'=> $request['resId']] );
         $response->user_id = Auth::user()->id;
         $response->survey_id = $id;
         $response->status = 1;
