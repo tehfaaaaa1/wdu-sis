@@ -1,5 +1,6 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
+import { onMounted, watch } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Pagination from '@/Components/Pagination.vue';
@@ -13,10 +14,14 @@ const props = defineProps({
 
 const project = props.projects[0];
 const client = props.clients[0];
+const pages = props.page[0];
 
-// Initialize the form using useForm
+// LocalStorage key for saving form state
+const storageKey = `survey_${props.surveys.id}_${pages.id}`;
+
 const form = useForm({
     page: props.pagee.data.map((page) => ({
+        page_id: page.id,
         question: page.question,
         answer: page.question.map(() => ({
             texts: '',
@@ -28,11 +33,45 @@ const form = useForm({
     client_slug: client['slug'],
 });
 
-// Submit handler for the form
-const submit = () => {
-    form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]), { preserveState: true });
+// Restore form state from localStorage (if it exists)
+onMounted(() => {
+    const savedForm = localStorage.getItem(storageKey);
+    if (savedForm) {
+        form.page = JSON.parse(savedForm);
+    }
+});
+
+// Watch for form changes and save to localStorage
+watch(form.page, (newVal) => {
+    localStorage.setItem(storageKey, JSON.stringify(newVal));
+}, { deep: true });
+
+const getAllSurveyData = () => {
+    const allData = [];
+    // Loop through localStorage keys and gather survey-related data
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith(`survey_1_`)) {
+            const surveyData = JSON.parse(localStorage.getItem(key));
+            allData.push(...surveyData);  // Combine data from all pages
+        }
+    }
+    return allData;
 };
 
+const submit = () => {
+    const allData = getAllSurveyData();
+
+    form.page = allData;
+
+    form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]), {
+        preserveState: true,
+        onSuccess: () => {
+            localStorage.clear()
+        }
+    });
+
+};
 </script>
 
 <template>
@@ -93,6 +132,7 @@ const submit = () => {
 
                                 <Pagination
                                     :links="{ prev_page_url: pagee.prev_page_url, next_page_url: pagee.next_page_url }" />
+                                <!-- @navigate="goToPage" -->
                                 <!-- Display answers for debugging -->
                                 <!-- <pre>{{ form.answer }}</pre> -->
 

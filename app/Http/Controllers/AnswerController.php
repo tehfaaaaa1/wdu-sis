@@ -13,7 +13,7 @@ class AnswerController extends Controller
     {
         // Fetch the survey
         $survey = Survey::findOrFail($id);
-        // dd($request->all());
+        // dd($request['page']);
             // Get form data from the request
         $page = $request['page'];
         $clientSlug = $request['client_slug'];

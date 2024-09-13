@@ -5,7 +5,7 @@
             class="rounded-md px-5 bg-secondary py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ijo-terang focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition  md:mb-6 text-center"
             :href="links.prev_page_url"
             @click.prevent="navigate(links.prev_page_url)"
-        >
+            >
             Previous
         </Link>
 
@@ -14,7 +14,7 @@
             class="rounded-md px-5 bg-secondary py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ijo-terang focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition  md:mb-6 text-center"
             :href="links.next_page_url"
             @click.prevent="navigate(links.next_page_url)"
-        >
+            >
             Next
         </Link>
     </div>
