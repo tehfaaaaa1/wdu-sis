@@ -72,8 +72,8 @@ const submit = () => {
             localStorage.clear()
         }
     });
-
 };
+
 </script>
 
 <template>
@@ -134,11 +134,6 @@ const submit = () => {
 
                                 <Pagination
                                     :links="{ prev_page_url: pagee.prev_page_url, next_page_url: pagee.next_page_url }" />
-                                <!-- @navigate="goToPage" -->
-                                <!-- Display answers for debugging -->
-                                <!-- <pre>{{ form.answer }}</pre> -->
-
-                                <!-- Submit Button -->
                             </form>
                         </div>
                     </div>
