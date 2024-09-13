@@ -26,7 +26,9 @@ const projectSlug = project.slug;
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <h2 class="font-semibold text-lg">Summary</h2>
-                            <p class="font-medium">{{ props.totalres }} Response</p>
+                            <p class="font-medium">Wilayah  : </p>
+                            <p class="font-medium">{{ props.totalres }} Respons / {{ props.surveys.target_response }} Target</p>
+                            <p class="font-medium">Status   : {{ props.surveys.status ? 'Dibuka' : 'Ditutup' }}</p>
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md mt-4">

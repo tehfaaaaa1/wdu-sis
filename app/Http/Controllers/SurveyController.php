@@ -189,8 +189,10 @@ class SurveyController extends Controller
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $page = QuestionPage::where('survey_id', $id)->simplePaginate(1);
+      
         // Prepare data to pass to the view
         $res = Response::where('survey_id', $id)->where('user_id', Auth::user()->id)->first();
+
         $formattedPage = $page->map(function ($p) {
             return [
                 'id' => $p->id,

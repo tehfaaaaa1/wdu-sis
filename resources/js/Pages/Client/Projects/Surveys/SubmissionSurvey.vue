@@ -131,9 +131,9 @@ const submit = () => {
                                     <PrimaryButton class="flex justify-center md:mb-6 text-center"
                                     v-if="pagee.next_page_url == null" :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing">
-                                    Submit Survey
-                                </PrimaryButton>
-                            </div>
+                                      Submit Survey
+                                  </PrimaryButton>
+                              </div>
                             </form>
                         </div>
                     </div>
