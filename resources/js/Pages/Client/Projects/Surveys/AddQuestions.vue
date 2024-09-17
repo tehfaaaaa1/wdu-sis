@@ -289,7 +289,7 @@ const selectedPage = ref('')
 const selectedQuestion = ref('')
 const selectedChoice = ref('')
 const selectedNextPage = ref('')
-console.log(selectedPage.value)
+const flowName = ref(null)
 </script>
 
 <template>
@@ -407,7 +407,7 @@ console.log(selectedPage.value)
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                     </svg>
-                                    Save Semua Flow
+                                    Simpan Flow
                                 </button>
                             </form>
                         </div>
@@ -598,7 +598,7 @@ console.log(selectedPage.value)
                 <template #content>
                     <div class="border border-gray-300 p-4">
                         <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!</h3>
-                        <div class="flex items-center justify-between mb-3">
+                        <div class="flows-dropdown-label">
                             Halaman Awal
                             <select class="flows-dropdown" v-model="selectedPage"
                                 @change="selectedQuestion = null; selectedNextPage = null">
@@ -606,7 +606,7 @@ console.log(selectedPage.value)
                                 <option :value="page" v-for="page in pages">{{ page.name }}</option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between mb-3" v-if="selectedPage"
+                        <div class="flows-dropdown-label" v-if="selectedPage"
                             @change="selectedChoice = ''">
                             Pertanyaan
                             <select class="flows-dropdown" v-model="selectedQuestion">
@@ -616,7 +616,7 @@ console.log(selectedPage.value)
                                         question.soal }}</option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between mb-3" v-if="selectedQuestion && selectedPage">
+                        <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
                             Pilihan Jawaban
                             <select class="flows-dropdown" v-model="selectedChoice">
                                 <option :value="''" disabled>Pilihan Jawaban</option>
@@ -624,14 +624,18 @@ console.log(selectedPage.value)
                                 </option>
                             </select>
                         </div>
-                        <div class="flex items-center justify-between mb-3" v-if="selectedPage">
-                            Halaman berikutnya
+                        <div class="flows-dropdown-label" v-if="selectedPage">
+                            Halaman Tujuan
                             <select class="flows-dropdown" v-model="selectedNextPage">
                                 <option :value="null" disabled>Tujuan Halaman</option>
                                 <option :value="nextpage"
                                     v-for="nextpage in pages.filter(page => page != selectedPage)">{{ nextpage.name }}
                                 </option>
                             </select>
+                        </div>
+                        <div class="flows-dropdown-label" v-if="selectedPage">
+                            Nama Flow
+                            <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
                         </div>
                     </div>
                 </template>
@@ -689,5 +693,13 @@ console.log(selectedPage.value)
 .flows-dropdown {
     width: 30%;
     cursor: pointer;
+}
+
+.flows-dropdown-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
 }
 </style>
