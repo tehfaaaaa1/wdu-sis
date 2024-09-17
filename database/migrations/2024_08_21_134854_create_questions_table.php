@@ -26,7 +26,7 @@ return new class extends Migration
                 table: 'question_types',
                 indexName: 'questions_question_type_id',
             )->onDelete('cascade');
-            $table->integer('order')->unique()->nullable();
+            $table->integer('order');
             $table->boolean('required');
             $table->timestamps();
         });
