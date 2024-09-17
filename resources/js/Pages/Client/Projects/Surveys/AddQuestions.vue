@@ -92,8 +92,9 @@ function clone(element) {
 
 // Page functions
 function addNewPage() {
-    pages.value.push({ name: form.page_name, question: [] })
-    form.reset('page_name')
+    pages.value.push({ name: form.page_name, question: [] });
+    form.reset('page_name');
+    showAddPage.value = false;
 }
 const deletePageId = ref(null);
 const hapus = (index) => {
@@ -103,6 +104,7 @@ const hapus = (index) => {
 const confirmDeletion = (page) => {
     page.splice(deletePageId.value, 1);
     showDeleteModal.value = false;
+    openDropdown.value = false;
     p(pages)
 };
 const p = (page) => {
