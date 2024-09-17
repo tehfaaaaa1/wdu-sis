@@ -38,14 +38,12 @@ class QuestionController extends Controller
                 'page' => $page,
                 'listquestions' => collect($page)->map(function ($p) {
                     return [
-                        'listquestion' => $p->question,
+                        'listquestion' => $p->question->sortBy('order'),
                         'choice' => collect($p->question)->map(function ($q) {
                             return ['choice' => $q->choice];
                         }),
-
                     ];
                 }),
-
                 'lastId' => $lastId,
                 'c_lastId' => $c_lastId
             ]
@@ -166,7 +164,7 @@ class QuestionController extends Controller
             // Track the question IDs that are being processed
             $processedQuestionIds = [];
 
-            foreach ($pageData['question'] as $questionData) {
+            foreach ($pageData['question'] as $index =>$questionData) {
                 $questionType = null;
                 $choices = [];
 
@@ -200,10 +198,11 @@ class QuestionController extends Controller
                 }
                 // Save or update the question
                 $saveQuestion = Question::firstOrNew(
-                    ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id, 'question_page_id' => $savePage->id]
+                    ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id]
                 );
+                $saveQuestion->question_page_id =  $savePage->id;
                 $saveQuestion->required = $questionData['required'];
-                $saveQuestion->order = $questionData['order'] ?? random_int(1, 10000);
+                $saveQuestion->order = $index+1;
                 $saveQuestion->question_text = $questionData['soal'];
                 $saveQuestion->question_type_id = $questionType;
                 $saveQuestion->save();
@@ -233,11 +232,11 @@ class QuestionController extends Controller
             }
 
             // Delete any existing questions that were not processed
-            $existingQuestions->except($processedQuestionIds)->each(function ($question) {
-                $question->delete();
-            });
         }
-
+        
+        $existingQuestions->except($processedQuestionIds)->each(function ($question) {
+            $question->delete();
+        });
         $existingPages->except($processedPageIds)->each(function ($page) {
             $page->delete();
         });

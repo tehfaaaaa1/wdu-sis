@@ -20,36 +20,36 @@ const showDeleteModal = ref(false);
 const openDropdown = ref(false)
 // Note: Customize the functions below if needed
 const pages = ref(props.page.map((page) => {
+    page.question.sort((a, b)=> a.order - b.order)
     question = page.question.map((item) => {
-        let tipe = []
-        let text = []
-        let choice = []
-        let lastCindex = ''
-        // pilihan = []
-        if (item.question_type_id == 2) {
-            tipe = ['Radio']
-            choice = item.choice.map((isi) => {
-                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-            })
-            lastCindex = choice.length - 1
-            // pilihan = [{pilih : item.choice.value}]
-        } else if (item.question_type_id == 3) {
-            tipe = ['Checkbox']
-            choice = item.choice.map((isi) => {
-                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-            })
-            lastCindex = choice.length - 1
-            // pilihan = [{pilih : item.choice.value}]
-        } else if (item.question_type_id == 1) {
-            tipe = ['Text']
-            text = [{ isi: '' }]
-        }
-        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
-    })
-
-    return { id: page.id, name: page.page_name, question: question }
+            let tipe = []
+            let text = []
+            let choice = []
+            let lastCindex = ''
+            // pilihan = []
+            if (item.question_type_id == 2) {
+                tipe = ['Radio']
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                })
+                lastCindex = choice.length - 1
+                // pilihan = [{pilih : item.choice.value}]
+            } else if (item.question_type_id == 3) {
+                tipe = ['Checkbox']
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                })
+                lastCindex = choice.length - 1
+                // pilihan = [{pilih : item.choice.value}]
+            } else if (item.question_type_id == 1) {
+                tipe = ['Text']
+                text = [{ isi: '' }]
+             } 
+            return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex}
+    })    
+    return { id: page.id, name: page.page_name, question: question}
 }))
-
+console.log(pages)
 if (pages.value.length == 0) {
     pages.value.push({ name: 'title', question: [] })
 }
@@ -110,7 +110,6 @@ const p = (page) => {
         pages.value.push({ name: 'title', question: [] })
     }
 }
-// console.log(pages)
 const cancelDeletion = () => (showDeleteModal.value = false);
 
 // Log Update
@@ -411,7 +410,7 @@ onBeforeUnmount(() => {
                     <!-- vue draggable : @update:modelValue="logUpdate" -->
                     <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
                         :class="'bg-white pb-8 rounded-md'" handle=".handle">
-                        <div v-for="(item, index) in page.question" :key="item.id" class="list-questions-item">
+                        <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
                             <div class="p-5 gap-2 flex items-center">
                                 <!-- Order of question -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
