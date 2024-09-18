@@ -25,10 +25,11 @@ class QuestionController extends Controller
         $client = DB::table('clients')
             ->where('slug', $clientSlug)
             ->get();
-        $last = Question::all()->last();
+        /*$last = Question::all()->last();
         $lastId = $last->id;
         $c_last = QuestionChoice::all()->last();
         $c_lastId = $c_last->id;
+        */
         return Inertia::render(
             'Client/Projects/Surveys/AddQuestions',
             [
@@ -44,8 +45,10 @@ class QuestionController extends Controller
                         }),
                     ];
                 }),
+                /*
                 'lastId' => $lastId,
                 'c_lastId' => $c_lastId
+                */
             ]
         );
     }

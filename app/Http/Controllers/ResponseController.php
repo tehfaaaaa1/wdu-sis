@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class ResponseController extends Controller
 {
+
     public function index(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
