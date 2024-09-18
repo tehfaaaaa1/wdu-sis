@@ -44,7 +44,7 @@ onMounted(() => {
 });
 
 // Watch for form changes and save to localStorage
-watch(form.page, (newVal) => {
+watch(() => form.page, (newVal) => {
     localStorage.setItem(storageKey, JSON.stringify(newVal));
 }, { deep: true });
 

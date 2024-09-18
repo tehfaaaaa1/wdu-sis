@@ -54,7 +54,7 @@ const pages = ref(props.page.map((page) => {
     })    
     return { id: page.id, name: page.page_name, question: question}
 }))
-console.log(pages)
+
 if (pages.value.length == 0) {
     pages.value.push({ name: 'title', question: [] })
 }
