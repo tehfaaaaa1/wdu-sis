@@ -52,7 +52,7 @@ const filteredClients = computed(() => {
     <AppLayout title="List Clients">
         <!-- <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Projects
+                Client
             </h2>
         </template> -->
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
@@ -72,7 +72,6 @@ const filteredClients = computed(() => {
                     </div>
                 </div>
 
-                <!-- May need to make this a component -->
                 <div
                     class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 justify-center content-stretch">
                     <div v-for="client in filteredClients" :key="client.id"
@@ -93,7 +92,8 @@ const filteredClients = computed(() => {
                                     <h1 class="text-base font-medium truncate text-gray-500">{{ client.alamat }}
                                     </h1>
                                 </div>
-                                <p class="text-lg md:text-base text-justify line-clamp-3 leading-5 tracking-wide text-gray-600">
+                                <p
+                                    class="text-lg md:text-base text-justify line-clamp-3 leading-5 tracking-wide text-gray-600">
                                     {{ client.desc }}
                                 </p>
                             </div>
@@ -105,7 +105,7 @@ const filteredClients = computed(() => {
                                     :href="route('profile_client', client.id)">
                                     Profile
                                 </NavLink>
-                                <NavLink    
+                                <NavLink
                                     class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
                                     :href="route('projects', client.slug)">
                                     See Projects
@@ -130,10 +130,10 @@ const filteredClients = computed(() => {
                                         </template>
                                         <template #content>
                                             <div class="py-1">
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
+                                                <a :class="'text-gray-700 block px-4 py-2 text-sm'"
                                                     :href="route('edit_client', client.id)">Edit Client</a>
 
-                                                <a :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
+                                                <a :class="'text-gray-700 block px-4 py-2 text-sm'"
                                                     @click="hapus(client.id)" class="cursor-pointer">Delete Client</a>
                                             </div>
                                         </template>

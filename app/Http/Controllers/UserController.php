@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\User;
-use App\Models\Team; 
+use App\Models\Team;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -61,7 +61,7 @@ class UserController extends Controller
             'password' => 'required|string|confirmed',
             'usertype' => 'required|string',
             'team_id' => 'nullable|exists:teams,id',
-            'client_id' => 'required' 
+            'client_id' => 'required'
         ]);
 
         // Create the user
@@ -89,9 +89,12 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $teams = Team::all(); // Fetch all teams for the view
-
+        $client = Client::all();
+        // dd($user->client);
         return Inertia::render('Users/EditUsers', [
             'user' => $user,
+            'userclient' => $user->client,
+            'client' => $client,
             'teams' => $teams, // Pass teams to the view
         ]);
     }
@@ -105,7 +108,7 @@ class UserController extends Controller
             'usertype' => 'required|string',
             'team_id' => 'nullable|exists:teams,id',
         ]);
-    
+
         $user = User::findOrFail($id);
         $user->update([
             'name' => $request->name,

@@ -1,25 +1,51 @@
 ## To Be Added
 **Surveys**
-- Drag & Drop Survey Form Builder (Adding more features) <!-- Note: Add Edit Questions -->
 - Question Logic in Surveys (TBA)
 - Region & Target Number of Survey Respondents (TBA)
 - Verify Respondent Region (TBA)
-<!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
+- Functioning Survey Forms (AddQuestion, Submission, Report) (Testing)
+<!-- - Biodata Respondent (COMPLETED) (Age, Address, Phone Number, Instance) -->
 
 **Misc**
-- Pagination in table list (list project, list survey, list user)
-- Add Icons to needed elements
+- Add Icons to necessary elements
 - Change to / Add Indonesian Language
-- better UI/UX
+- Cleaner & Better UI/UX
 - Dashboard Content
+- Pagination in lists (list project, list survey, list user)
+    - Might have to change search if this is implemented
+- Seperate/breakdown README for documentation cuz the changelog is getting kinda bloated
 <!-- - Updated Documentation (Fadel)
   - ERD Survey Database (V)
   - Activity Diagram (V) -->
 
 ## Need bug fix
-- Edit Client can't update (image breaks the form when added)
+- My brain
 
 ## Changelog
+### 13 Sep 2024
+- Cleaning up pages in SubmissionSurveys (few bugs left)
+- Updated ReportSurvey to match recent changes (pages)
+- Bug fix & Updated UI in many pages/views
+
+### 12 Sep 2024
+- Added pages in SubmissionSurveys (WIP)
+- Added dropdown for logic and delete in AddQuestions
+
+### 11 Sep 2024
+- Finally fixed edit client unable to update images (so long partner)
+- Logic in AddQuestion to check for duplicate question choice in a question
+- Changed selecting client in CRUD User from radios to use dropdown instead
+
+### 10 Sep 2024
+- No survey edits permitted when it is published
+- Initialize/create a page if there are no pages
+- ListSurvey & ReportSurvey bug fix
+
+### 9 Sep 2024
+- Save Alert in AddQuestion
+- Ability to remove pages in AddQuestions
+- Updated report & submission survey to get pages
+
 ### 6 Sep 2024
 - Updated AddQuestions :
   - Insert page

@@ -1,9 +1,10 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
+import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 const props = defineProps({
     surveys: Object,
     projects: Object,
@@ -14,7 +15,8 @@ const project = props.projects[0];
 const client = props.clients[0];
 const MAX_RADIO_CHOICES = 5;
 let question;
-let showAddPage = ref(false)
+const showAddPage = ref(false)
+const showDeleteModal = ref(false);
 
 // Note: Customize the functions below if needed
 const pages = ref(props.page.map((page) => {
@@ -48,32 +50,9 @@ const pages = ref(props.page.map((page) => {
     return { id: page.id, name: page.page_name, question: question }
 }))
 
-// const questions = ref(props.listquestions.map((item) => {
-//     let tipe = []
-//     let text = []
-//     let choice = []
-//     let lastCindex = ''
-//     // pilihan = []
-//     if (item.question_type_id == 2) {
-//         tipe = ['Radio']
-//         choice = item.choice.map((isi) => {
-//             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-//         })
-//         lastCindex = choice.length - 1
-//         // pilihan = [{pilih : item.choice.value}]
-//     } else if (item.question_type_id == 3) {
-//         tipe = ['Checkbox']
-//         choice = item.choice.map((isi) => {
-//             return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-//         })
-//         lastCindex = choice.length - 1
-//         // pilihan = [{pilih : item.choice.value}]
-//     } else if (item.question_type_id == 1) {
-//         tipe = ['Text']
-//         text = [{ isi: '' }]
-//     }
-//     return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
-// }))
+if (pages.value.length == 0) {
+    pages.value.push({ name: 'title', question: [] })
+}
 
 const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
@@ -111,15 +90,33 @@ function clone(element) {
     };
 }
 
+// Page functions
 function addNewPage() {
     pages.value.push({ name: form.page_name, question: [] })
     form.reset('page_name')
 }
+const deletePageId = ref(null);
+const hapus = (index) => {
+    deletePageId.value = index;
+    showDeleteModal.value = true;
+};
+const confirmDeletion = (page) => {
+    page.splice(deletePageId.value, 1);
+    showDeleteModal.value = false;
+    p(pages)
+};
+const p =(page) => {
+    if(page.value.length == 0){
+        pages.value.push({name: 'title', question:[]})
+    }
+}
+// console.log(pages)
+const cancelDeletion = () => (showDeleteModal.value = false);
 
 // Log Update
-const logUpdate = (newQuestions) => {
-    console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
-};
+// const logUpdate = (newQuestions) => {
+//     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
+// };
 
 // QUESTIONS OVER HERE
 // Question 
@@ -180,7 +177,6 @@ function AddCheckboxOption(question) {
 
 // delete
 function deleteRadio(question, index) {
-    console.log(question)
     if (question.lastChoiceIndex >= 1) {
         question.choices.splice(index, 1)
         question.lastChoiceIndex = question.choices.length - 1; // update radio index
@@ -210,7 +206,7 @@ function isTypeAdded(question, type) {
 }
 
 function remove(page, index) {
-    page.question.splice(index, 1)
+    page.question.splice(index, 1);
 }
 
 const form = useForm({
@@ -230,6 +226,11 @@ const savingStatus = ref('')
 //     })
 // }, 2000)
 // watch(form, autoSaveForm, { deep: true })
+const handleBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = ''; // This is required for the alert to be shown in some browsers
+    return '';
+};
 
 const submitForm = () => {
     savingStatus.value = 'saving';
@@ -248,8 +249,13 @@ const submitForm = () => {
             }, 3000); // 3000ms = 3 seconds
             console.log('success')
             savingStatus.value = 'saved';
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         },
         onError: (error) => {
+            setTimeout(() => {
+                savingStatus.value = '';
+            }, 3000); // 3000ms = 3 seconds
+            console.error('Error saving:', error);
             savingStatus.value = 'error';
         },
     });
@@ -261,14 +267,24 @@ const status = () => {
         surveyStatus: props.surveys.status
     })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
 }
-// console.log(pages.value)
+
+onMounted(() => {
+    // Attach the event listener when the component is mounted
+    window.addEventListener('beforeunload', handleBeforeUnload);
+});
+
+onBeforeUnmount(() => {
+    // Remove the event listener when the component is unmounted
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+});
+
 </script>
 
 <template>
     <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen relative">
-            <header class="bg-white flex justify-between items-center border-b border-gray-300 sticky top-0">
+            <header class="bg-white flex justify-between items-center border-b border-gray-300 sticky top-0 z-50">
                 <a :href="route('listsurvey', [client['slug'], project['slug']])"
                     class="flex justify-center items-center font-semibold text-white bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -287,7 +303,8 @@ const status = () => {
                     </button>
                 </form>
             </header>
-            <aside class="sticky bg-gray-200 min-h-full top-11 z-50">
+            <div class="absolute h-[96.5%] w-full bg-white opacity-50 z-40" v-if="props.surveys.status == 1"></div>
+            <aside class="sticky bg-gray-200 min-h-full top-11 z-30">
                 <div class="absolute lg:w-1/5">
                     <h1
                         class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang select-none">
@@ -296,7 +313,7 @@ const status = () => {
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                         :animation="150" :clone="clone" :sort="false" class="list-qtype">
                         <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                            items-center cursor-move">
+                            items-center cursor-move hover:font-semibold">
                             <span>{{ item.name }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="size-6 text-gray-500">
@@ -306,17 +323,12 @@ const status = () => {
                         </div>
                     </VueDraggable>
                     <button type="button" class="bg-white border-gray-300 py-2 px-4 flex justify-between
-                    items-center w-full" @click="showAddPage = !showAddPage" :class="!showAddPage ? 'border-b' : ''">
+                    items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
+                        :class="!showAddPage ? 'border-b' : ''">
                         Add Page
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 text-gray-500" v-if="!showAddPage">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 text-gray-500" v-else>
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            stroke="currentColor" class="size-6 text-gray-500">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </button>
                     <transition enter-active-class="transition ease-out duration-200"
@@ -354,19 +366,30 @@ const status = () => {
                         </button>
                         <p v-if="savingStatus === 'saving'" class="text-center">Saving...</p>
                         <p v-if="savingStatus === 'saved'" class="text-center font-semibold">All changes saved.</p>
-                        <p v-if="savingStatus === 'error'">Error saving data.</p>
+                        <p v-if="savingStatus === 'error'" class="text-center font-semibold">Error saving data.</p>
                     </form>
                 </div>
             </aside>
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page_index">
-                    <div class="p-5 rounded-t-md border-b border-gray-300 bg-ijo-terang">
-                        <p class="text-base text-white font-medium text-justify line-clamp-3">
-                            {{ page.name }}
-                        </p>
+                    <div class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative">
+                        <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
+                            class="w-full bg-transparent text-white border-0 border-b border-white
+                            placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
+                        <div @click="hapus(page_index)"
+                            class="cursor-pointer absolute -right-16 bg-white p-3 rounded-full border border-gray-300 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-red-500">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                        </div>
+                        <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
+                            @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
                     </div>
-                    <VueDraggable v-model="page.question" group="questions" @update:modelValue="logUpdate"
-                        :animation="150" class="list-questions" :class="'bg-white pb-8 rounded-md'" handle=".handle">
+                    <!-- vue draggable : @update:modelValue="logUpdate" -->
+                    <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
+                        :class="'bg-white pb-8 rounded-md'" handle=".handle">
                         <div v-for="(item, index) in page.question" :key="item.id" class="list-questions-item">
                             <div class="p-5 gap-2 flex items-center">
                                 <!-- Order of question -->
@@ -444,7 +467,7 @@ const status = () => {
                                 <div class="flex items-center mb-2">
                                     <span class="select-none">O</span>
                                     <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
-                                        :id="'radio' + (index + 1) + '-q' + (item.id)" :value="radio.pilih"
+                                        :id="'radio' + (index + 1) + '-q' + (item.id)"
                                         placeholder="Insert single choice"
                                         class="text-sm mx-4 block w-1/4 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
 
@@ -471,7 +494,7 @@ const status = () => {
                                 <div class="flex items-center mb-2">
                                     <span class="select-none">&#9634;</span>
                                     <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
-                                        :id="'checkbox' + (index + 1) + '-q' + (item.id)" :value="checkbox.pilih"
+                                        :id="'checkbox' + (index + 1) + '-q' + (item.id)"
                                         placeholder="Insert multiple choice here"
                                         class="text-sm mx-4 rounded-md block w-1/4">
 

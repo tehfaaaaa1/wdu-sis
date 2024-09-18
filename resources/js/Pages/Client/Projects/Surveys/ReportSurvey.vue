@@ -13,9 +13,12 @@ const props = defineProps({
 });
 const project = props.projects[0]
 const client = props.clients[0]
-
+const checked = (choice, q) => {
+    console.log(q.answer.some(ans=>ans.answer == choice.value && ans.response_id == props.responses.id ))
+    return q.answer.some(ans=>ans.answer == choice.value && ans.response_id == props.responses.id) ;
+};
 const hasil = ref([{ soal: [] }])
-console.log(props.page)
+// console.log(props.page)
 </script>
 
 <template>
@@ -40,32 +43,36 @@ console.log(props.page)
     
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2">
-                                            <!-- <div class="ps-5" v-for="answe in question.answer"> -->
                                                 <div v-for="(list, i) in question.choice" :key="i">
-                                                    <input type="radio" :name="'radio'+ list.id" :id="'radio'+ list.id" :checked="question.answer[i]">
+                                                    <input type="radio" :name="'radio'+ list.id" :id="'radio'+ list.id" :checked="checked(list, question)" disabled>
                                                     <label :for="'radio'+list.id">{{list.value}}</label>
-                                                    <!-- {{ question.answer[i] }} -->
-                                                </div>
-                                                <!-- <p class="font-semibold">Jawaban :
-                                                    {{ answe.answer }}</p>
-                                            </div> -->
+
+                                                    <!-- <div class="" v-for="ans in answer">
+                                                        <div class="" v-if="ans.question_id == question.id  && ans.answer == list.value">
+                                                            {{ ans }}
+                                                        </div>
+                                                    </div> -->
+                                            </div>  
                                         </div>
     
                                         <!-- Handle checkbox for question type 3 -->
                                         <div class="" v-if="question.question_type_id === 3">
                                             <div class="" v-for="(list, i) in question.choice" :key="i">
-                                                <input type="checkbox" :name="'checkbox'+list.id" :id="'checkbox'+list.id" :checked="question.answer[i]">
-                                                <label :for="'checkbox'+list.id">{{ list.value }}</label>
-                                                <!-- {{ question.answer[i] }} -->
-                                            </div>  
+                                                    <input type="checkbox" :name="'checkbox'+list.id" :id="'checkbox'+list.id" :checked="checked(list, question)" disabled>
+                                                    <label :for="'checkbox'+list.id">{{ list.value }}</label>
+                                                    <!-- <div class="" v-for="ans in answer">
+                                                        <div class="" v-if="ans.question_id == question.id  && ans.answer == list.value">
+                                                            {{ ans }}
+                                                        </div>
+                                                    </div> -->
+                                            </div>
                                         </div>
                                         <!-- Handling textarea for question type 1 -->
                                         <div v-if="question.question_type_id == 1">
                                             <!-- Conditional rendering to ensure v-model only binds when the value exists -->
-                                            <div class="ps-5" v-for="answe in question.answer">
-                                                <!-- <p class="font-semibold">Jawaban :
-                                                    {{ answe.answer }}</p> -->
-                                                <input type="text" :value="answe.answer" disabled>
+                                            <div class="ps-5" v-for="answe in answer">
+                                                <input v-if="answe.question_id == question.id" type="text" :value="answe.answer" disabled>
+                                                <!-- {{answe.question_id == question.id ? answe.answer :  (answe.question_id +'.' + answe.answer) }} -->
                                             </div>
                                         </div>
                                     </div>

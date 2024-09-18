@@ -54,7 +54,9 @@ const filteredSurveys = computed(() => {
 const hasFilledSurvey = (survey) => {
     return survey.response.some(res => res.user_id === props.user.id);
 };
-
+const hasPubllish = (survey) => {
+    return survey.status ==  0;
+};
 const getProvinceName = (provinceId) => {
     const province = props.provinces.find(p => p.id === provinceId);
     return province ? province.name : 'Unknown Province';
@@ -63,8 +65,6 @@ const getProvinceName = (provinceId) => {
 const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
 };
-
-
 </script>
 
 <template>
@@ -138,18 +138,28 @@ const getSurveySubmissions = (surveyId) => {
                                     Target Lokasi:
                                     <!--<span> {{ getProvinceName(survey.province_id) }}</span>--->
                                 </td>
-                                <td class="px-6 py-4">Dibuka</td>
-                                <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">
-                                    <div v-if="hasFilledSurvey(survey)">
-                                        <p class="text-center">Anda Sudah Mengisi Survey Ini</p>
-                                    </div>
-                                    <NavLink v-if="!hasFilledSurvey(survey)"
-                                        :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
-                                        Isi Survey
-                                    </NavLink>
+                                <td class="px-6 py-4">
+                                    <p v-if="survey.status == 0"> Ditutup</p>
+                                    <p v-if="survey.status == 1"> Dibuka</p>
+                                </td>
+                                <td class="px-6 py-6">
+                                    <div class="grid grid-cols-2 gap-x-2 justify-center content-center">
+                                        <div v-if="hasFilledSurvey(survey)"
+                                            :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                            <p class="text-center mt-3">Anda Sudah Mengisi Survey Ini</p>
+                                        </div>
+                                        <div class="m-auto" v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
+                                            :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                            <p class="text-center">Survey Ditutup</p>
+                                        </div>
+                                        <NavLink v-else
+                                            :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
+                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition"
+                                            :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                            Isi Survey
+                                        </NavLink>
 
-                                    <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])"
+                                    <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
                                         Cek Respon
                                     </NavLink>
@@ -164,8 +174,10 @@ const getSurveySubmissions = (surveyId) => {
                                         class="mt-5 text-center col-span-2">
                                         <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
                                             class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline">Delete</a>
+                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                                     </div>
+                                    </div>
+                                       
                                 </td>
                             </tr>
                         </tbody>

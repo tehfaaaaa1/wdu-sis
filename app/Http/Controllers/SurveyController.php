@@ -39,14 +39,14 @@ class SurveyController extends Controller
         $c = $client[0];
 
         $userTarget = Response::select('survey_id', DB::raw('count(*) as submissions'))
-        ->groupBy('survey_id')
-        ->get()
-        ->mapWithKeys(function ($response) {
-            return [$response->survey_id => $response->submissions];
-        });
+            ->groupBy('survey_id')
+            ->get()
+            ->mapWithKeys(function ($response) {
+                return [$response->survey_id => $response->submissions];
+            });
 
         $response = Response::where('user_id', $user->id)->get();
-
+        $provinces = Province::all();
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
@@ -64,13 +64,14 @@ class SurveyController extends Controller
                         'city_id' => $survey->city_id,
                         'regency_id' => $survey->regency_id,
                         'status' => $survey->status
-                    ]; 
+                    ];
                 }),
                 'projects' => $projectall,
                 'clients' => $client,
                 'user' => $user,
                 'userTarget' => $userTarget,
                 'response' => $response,
+                'provinces' => $provinces,
             ]
         );
     }
@@ -189,12 +190,12 @@ class SurveyController extends Controller
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $page = QuestionPage::where('survey_id', $id)->get();
         // Prepare data to pass to the view
-        $formattedPage = $page->map(function ($p){
+        $formattedPage = $page->map(function ($p) {
             return [
                 'id' => $p->id,
                 'page_name' => $p->page_name,
                 'survey_id' => $p->survey_id,
-                'question' =>$p->question->map(function ($q) {
+                'question' => $p->question->map(function ($q) {
                     return [
                         'id' => $q->id,
                         'question_text' => $q->question_text,
@@ -207,7 +208,6 @@ class SurveyController extends Controller
                 }),
             ];
         });
-        
 
         // Render the view
         return Inertia::render(
@@ -231,7 +231,7 @@ class SurveyController extends Controller
         $user = $response->user;
         $page = QuestionPage::where('survey_id', $surveyId)->get();
         // Prepare data to pass to the view
-        $formattedPage = $page->map(function ($p){
+        $formattedPage = $page->map(function ($p) {
             return [
                 'id' => $p->id,
                 'page_name' => $p->page_name,
@@ -303,16 +303,11 @@ class SurveyController extends Controller
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Survey deleted successfully.');
     }
 
-    public function statusChange($clientSlug, $projectSlug, $id, Request $request){
+    public function statusChange($clientSlug, $projectSlug, $id, Request $request)
+    {
         $status = $request->surveyStatus;
         $id = $request->surveyId;
-
-        if($status == 0){
-            Survey::where('id', $id)->update(['status' => 1]);
-        } elseif ($status ==1){
-            
-            Survey::where('id', $id)->update(['status' => 0]);
-        }
-        return back()->with('succes', 'change Status');
+        Survey::where('id', $id)->update($status == 0 ? ['status' => 1] : ['status' => 0]);
+        return back()->with('success', 'change Status');
     }
 }

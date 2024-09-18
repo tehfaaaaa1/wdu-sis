@@ -33,7 +33,7 @@ const submit = () => {
                 <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New Client</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
-                        <InputLabel for="client_name" />
+                        <InputLabel for="client_name" value="Nama Klien"/>
                         <TextInput id="client_name" v-model="form.client_name" type="text" placeholder="Client Name"
                             required autofocus autocomplete="client_name" />
                         <InputError class="mt-2" :message="form.errors.client_name" />
@@ -51,6 +51,7 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.phone" />
                     </div>
                     <div class="mt-4 relative">
+                        <InputLabel for="desc" value="Deskripsi" />
                         <textarea id="desc" v-model="form.desc" placeholder="Description"
                             class="block w-full h-32 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 text-gray-700"
                             required autocomplete="desc" />

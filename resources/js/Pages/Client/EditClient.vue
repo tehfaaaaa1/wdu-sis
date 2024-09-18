@@ -9,21 +9,24 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps({ clients: Object })
+var img = null
 const handleImage = (event) => {
     form.image = event.target.files[0];
+    console.log(form)
 }
 const form = useForm({
     client_name: props.clients.client_name,
     alamat: props.clients.alamat,
     phone: props.clients.phone,
-    desc: props.clients.desc,
-    // image: null, // Ensure this is null initially
+    desc: props.clients.desc, 
+    image: ''// Ensure this is null initially
 });
 
 const submit = () => {
-    form.put(route('update_client', props.clients.id), {
+    form.post(route('update_client', props.clients.id), {
         preserveScroll: true,
         onSuccess: () => form.reset('image') // Reset only the image field
     });
@@ -41,7 +44,7 @@ const submit = () => {
                 <form @submit.prevent="submit">
                     <!-- Client Name -->
                     <div class="relative">
-                        <InputLabel for="client_name" />
+                        <InputLabel for="client_name" value="Nama Klien"/>
                         <TextInput id="client_name" v-model="form.client_name" type="text" placeholder="Client Name"
                             class="" required autofocus autocomplete="client_name" />
                         <InputError class="mt-2" :message="form.errors.client_name" />
@@ -62,26 +65,27 @@ const submit = () => {
                     </div>
                     <!-- Description -->
                     <div class="mt-4 relative">
+                       <InputLabel for='desc' value="Deskripsi"/>
                         <textarea id="desc" v-model="form.desc" placeholder="Description"
                             class="block w-full h-32 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 text-gray-700"
                             required autocomplete="desc" />
                         <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
                     <!-- Image Upload -->
-                    <!--<div class="mt-4 relative">-->
-                        <!--<label class="block mb-2 text-base font-medium text-primary" for="file_input">Upload-->
-                            <!--photo</label>-->
+                    <div class="mt-4 relative">
+                        <label class="block mb-2 text-base font-medium text-primary" for="file_input">Upload
+                            photo</label>
                         <!-- Below input throws validation required for all text inputs above.  -->
                         <!-- <input @input="form.image = $event.target.files[0]" -->
                         <!-- Turns all the inputs to null. Why -->
-                        <!--<input @input="form.image = $event.target.files[0]"-->
-                            <!--class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none-->
-                            <!--file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" id="file_input"-->
-                            <!--type="file" accept=".png, .jpg, .jpeg">-->
-                        <!--<p class="mt-1 text-sm text-gray-500" id="file_input_help">PNG, JPG/JPEG (max file size : 2 MB).-->
-                            <!--Transparent-->
-                            <!--Background.</p>-->
-                    <!--</div>-->
+                        <input @input="handleImage" 
+                            class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
+                            file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" id="file_input"
+                            type="file" accept=".png, .jpg, .jpeg">
+                        <p class="mt-1 text-sm text-gray-500" id="file_input_help">PNG, JPG/JPEG (max file size : 2 MB).
+                            Transparent
+                            Background.</p>
+                    </div>
                     <!-- Submit Button -->
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
