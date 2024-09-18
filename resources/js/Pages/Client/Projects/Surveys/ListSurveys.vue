@@ -123,7 +123,7 @@ const getSurveySubmissions = (surveyId) => {
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-1/5">Survey Title</th>
                                 <th scope="col" class="px-6 py-3 w-1/4">Description</th>
-                                <th scope="col" class="px-6 py-3 ">Target</th>
+                                <th scope="col" class="px-6 py-3 ">Submission</th>
                                 <th scope="col" class="px-6 py-3 ">Status</th>
                                 <th scope="col" class="px-6 py-3 md:w-1/4 text-center">Action</th>
                             </tr>
@@ -134,9 +134,14 @@ const getSurveySubmissions = (surveyId) => {
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900">{{ survey.title }}</td>
                                 <td class="px-6 py-4 font-medium text-gray-c900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
-                                    {{ getSurveySubmissions(survey.id) }} / {{ survey.target_response }}<br>
-                                    Target Lokasi:
-                                    <!--<span> {{ getProvinceName(survey.province_id) }}</span>--->
+                                    {{ getSurveySubmissions(survey.id) }} / (tba: akumulasi target)<br>
+                                    <br>
+                                    Target Lokasi: 
+                                    <span>
+                                        <uL>
+                                            <li>{{ getProvinceName(survey.province_id) }} (Target: {{ survey.target_response }})</li>
+                                        </uL>
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <p v-if="survey.status == 0"> Ditutup</p>
