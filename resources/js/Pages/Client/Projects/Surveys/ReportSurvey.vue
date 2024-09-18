@@ -40,7 +40,7 @@ const checked = (choice, q) => {
                     <div class="bg-white rounded-b-md">
                         <div class="p-5 flex w-full">
                             <form class="w-full">
-                                <div v-for="(question, index) in page.question" :key="index">
+                                <div v-for="(question, index) in page.question.sort((a,b)=>a.order-b.order)" :key="index">
                                     <div class="block mb-2.5">
                                         <p class="font-semibold">{{ index + 1 }}. <label>{{ question.question_text
                                                 }}</label></p>
@@ -50,7 +50,8 @@ const checked = (choice, q) => {
                                             <div v-for="(list, i) in question.choice" :key="i">
                                                 <input type="radio" :name="'radio' + list.id" :id="'radio' + list.id"
                                                     :checked="checked(list, question)" disabled>
-                                                <label :for="'radio' + list.id" class="px-3">{{ list.value }}</label>
+                                                <label :for="'radio' + list.id" class="px-3">{{ list.id }}</label>
+                                                {{ question.answer }}
                                             </div>
                                         </div>
 
@@ -60,7 +61,7 @@ const checked = (choice, q) => {
                                                 <input type="checkbox" :name="'checkbox' + list.id"
                                                     :id="'checkbox' + list.id" :checked="checked(list, question)"
                                                     disabled>
-                                                <label :for="'checkbox' + list.id" class="px-3">{{ list.value }}</label>
+                                                <label :for="'checkbox' + list.id" class="px-3">{{ list.value}}</label>
                                             </div>
                                         </div>
 

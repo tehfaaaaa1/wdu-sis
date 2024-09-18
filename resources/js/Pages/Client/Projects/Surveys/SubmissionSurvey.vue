@@ -10,21 +10,20 @@ const props = defineProps({
     clients: Object,
     page: Array,
     pagee: Object,
-    responses: Object
+    responses: Object,
+    prevUrl: Object
 });
 
 const project = props.projects[0];
 const client = props.clients[0];
 const pages = props.page[0];
-
 // LocalStorage key for saving form state
 const storageKey = `survey_${props.surveys.id}_${pages.id}`;
-
 const form = useForm({
     page: props.pagee.data.map((page) => ({
         page_id: page.id,
         question: page.question,
-        answer: page.question.map(() => ({
+        answer: page.question.sort((a,b)=> a.order-b.order).map(() => ({
             texts: '',
             radios: [],
             checkboxes: [],
@@ -34,7 +33,12 @@ const form = useForm({
     client_slug: client['slug'],
     // resId: props.responses 
 });
-
+console.log(form.page)
+let urlPrev = props.prevUrl
+let nextPage = props.pagee.next_page_url ?? null
+if(props.pagee.prev_page_url == null){
+    urlPrev = null
+}
 // Restore form state from localStorage (if it exists)
 onMounted(() => {
     const savedForm = localStorage.getItem(storageKey);
@@ -44,7 +48,10 @@ onMounted(() => {
 });
 
 // Watch for form changes and save to localStorage
-watch(form.page, (newVal) => {
+watch(() => form.page, (newVal) => {
+    nextPage = props.pagee.path+'?page=3'
+    if(form.page.some(a=> a.answer.some(c=>c.radios == 227)) && props.pagee.next_page_url != null){
+    }
     localStorage.setItem(storageKey, JSON.stringify(newVal));
 }, { deep: true });
 
@@ -60,7 +67,6 @@ const getAllSurveyData = () => {
     }
     return allData;
 };
-
 const submit = () => {
     const allData = getAllSurveyData();
 
@@ -126,7 +132,7 @@ const submit = () => {
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
-                                    <Pagination class="flex justify-center md:mb-6 text-center" :links="{ prev_page_url: pagee.prev_page_url, next_page_url: pagee.next_page_url }" />
+                                    <Pagination class="flex justify-center md:mb-6 text-center" :links="{prev_page_url: urlPrev, next_page_url: nextPage}" />
 
                                     <PrimaryButton class="flex justify-center md:mb-6 text-center"
                                     v-if="pagee.next_page_url == null" :class="{ 'opacity-25': form.processing }"
