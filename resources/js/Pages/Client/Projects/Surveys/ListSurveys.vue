@@ -118,7 +118,7 @@ const getSurveySubmissions = (surveyId) => {
                             </div>
                             <div class="border-b-2 border-gray-300"></div>
                         </caption>
-
+ 
                         <thead class="text-xs text-white uppercase bg-primary">
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-1/5">Survey Title</th>

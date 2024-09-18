@@ -2,16 +2,32 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
-    surveys: Object,
-    projects: Object,
-    clients: Object,
-    response: Object,
-    totalres: Object,
+    surveys: Array,
+    projects: Array,
+    clients: Array,
+    response: Array,
+    totalres: Number,
+    provinces: Array,
 });
-const project = props.projects[0]
-const client = props.clients[0]
-const clientSlug = client.slug;
-const projectSlug = project.slug;
+
+const project = props.projects[0] || {};
+const client = props.clients[0] || {};
+const clientSlug = client.slug || '';
+const projectSlug = project.slug || '';
+
+const getProvinceName = (provinceId) => {
+    if (!Array.isArray(props.provinces)) {
+        console.error('Provinces is not an array:', props.provinces);
+        return 'Unknown Province';
+    }
+
+    // Convert provinceId to a number
+    const id = Number(provinceId);
+
+    // Find the province
+    const province = props.provinces.find(p => Number(p.id) === id);
+    return province ? province.name : 'Unknown Province';
+};
 </script>
 
 <template>
@@ -23,12 +39,11 @@ const projectSlug = project.slug;
                 </div>
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
-                        <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <h2 class="font-semibold text-lg">Summary</h2>
-                            <p class="font-medium">Wilayah  : </p>
+                            <p class="font-medium">Wilayah: {{ getProvinceName(props.surveys.province_id) }}</p>
                             <p class="font-medium">{{ props.totalres }} Respons / {{ props.surveys.target_response }} Target</p>
-                            <p class="font-medium">Status   : {{ props.surveys.status ? 'Dibuka' : 'Ditutup' }}</p>
+                            <p class="font-medium">Status: <b>{{ props.surveys.status ? 'DIBUKA' : 'DITUTUP' }}</b></p>
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md mt-4">
@@ -39,28 +54,27 @@ const projectSlug = project.slug;
                                     <th scope="col" class="px-6 py-3 w-1/12">No.</th>
                                     <th scope="col" class="px-6 py-3">Username</th>
                                     <th scope="col" class="px-6 py-3">Email</th>
-                                    <!-- <th scope="col" class="px-6 py-3"></th> -->
                                     <th scope="col" class="px-6 py-3">Wilayah/Daerah</th>
                                     <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(responses, index) in response" :key="index"
+                                <tr v-for="(responseItem, index) in response" :key="index"
                                     class="bg-white border-b hover:bg-gray-50">
                                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                         {{ index + 1 }}
                                     </td>
                                     <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">
-                                        {{ responses.user.name }}
+                                        {{ responseItem.user.name }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ responses.user.email }}
+                                        {{ responseItem.user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ responses.user.biodata.alamat }}
+                                        {{ responseItem.user.biodata.alamat }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
+                                        <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responseItem.id])"
                                             class="font-medium text-blue-600 hover:underline mr-4">Lihat Hasil</a>
                                     </td>
                                 </tr>

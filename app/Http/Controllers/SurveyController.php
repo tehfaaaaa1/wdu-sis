@@ -236,7 +236,7 @@ class SurveyController extends Controller
         $answers = Answer::where('response_id', $responseId)->get();
         $bio = $response->user->biodata;
         $page = QuestionPage::where('survey_id', $surveyId)->get();
-        // Prepare data to pass to the view
+        $provinces = Province::all();
         $formattedPage = $page->map(function ($p) {
             return [
                 'id' => $p->id,
@@ -266,6 +266,7 @@ class SurveyController extends Controller
                 'responses' => $response,
                 'answer' => $answers,
                 'biodata' => $bio,
+                'provinces' => $provinces->toArray()
             ]
         );
     }
