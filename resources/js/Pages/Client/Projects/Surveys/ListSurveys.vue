@@ -134,10 +134,13 @@ const getSurveySubmissions = (surveyId) => {
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900">{{ survey.title }}</td>
                                 <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
-                                    {{ getSurveySubmissions(survey.id) }} / {{ survey.target_response }}<br>
-                                    Target Lokasi:
+                                    {{ getSurveySubmissions(survey.id) }} / <i>(TBA: accumulated target)</i><br>
+                                    <br>
+                                    Lokasi:
                                     <span>
-                                        {{ getProvinceName(survey.province_id) }}
+                                        <ul>
+                                            <li>{{ getProvinceName(survey.province_id) }} (Target: {{ survey.target_response }})</li>
+                                        </ul>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
