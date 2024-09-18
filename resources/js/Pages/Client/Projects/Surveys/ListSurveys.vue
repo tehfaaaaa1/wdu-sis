@@ -132,13 +132,11 @@ const getSurveySubmissions = (surveyId) => {
                         <tbody>
                             <tr v-for="survey in filteredSurveys" :key="survey.id" class="bg-white border-b hover:bg-gray-50">
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900">{{ survey.title }}</td>
-                                <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">{{ survey.desc }}</td>
+                                <td class="px-6 py-4 font-medium text-gray-c900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
                                     {{ getSurveySubmissions(survey.id) }} / {{ survey.target_response }}<br>
                                     Target Lokasi:
-                                    <span>
-                                        {{ getProvinceName(survey.province_id) }}
-                                    </span>
+                                    <!--<span> {{ getProvinceName(survey.province_id) }}</span>--->
                                 </td>
                                 <td class="px-6 py-4">Dibuka</td>
                                 <td class="px-6 py-6 grid grid-cols-2 gap-x-2 justify-center">

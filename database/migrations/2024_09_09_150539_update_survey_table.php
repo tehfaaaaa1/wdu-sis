@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('questions', function (Blueprint $table) {
-            $table->foreignId('question_page_id')->after('survey_id')->nullable()->constrained(
-                table: 'question_pages',
-                indexName: 'questions_question_page_id',
-            )->onDelete('cascade');
+        Schema::table('surveys', function (Blueprint $table) {
+            $table->string('slug')->after('desc');
         });
     }
 
@@ -24,6 +21,5 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
     }
 };
