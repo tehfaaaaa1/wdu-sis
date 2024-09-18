@@ -119,7 +119,7 @@ class QuestionController extends Controller
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('question_added', 'Question added successfully.');
     }
 
-    public function manualSave(Request $request, $id, $clientSlug, $projectSlug)
+    public function manualSave(Request $request, $clientSlug, $projectSlug, $id)
     {
         // Validate the incoming request data
         $validatedData = $request->validate([
@@ -243,5 +243,9 @@ class QuestionController extends Controller
 
         // Additional logic for final submission, such as notifications or marking survey as complete
         return redirect()->route('question_surveys', [$clientSlug, $projectSlug, $id])->with('success', 'Survey created successfully.');
+    }
+
+    public function flow(Request $request, $clientSlug, $projectSlug, $id){
+        dd($request);
     }
 }

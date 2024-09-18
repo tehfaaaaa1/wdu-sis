@@ -104,7 +104,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 // Route::post('/auto-save-question/{id}',[QuestionController::class, 'autoSave'])->name('auto-save-question')->middleware('admin');
                 Route::post('/manual-save-question/{id}',[QuestionController::class, 'manualSave'])->name('manual-save-question');
                 Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store')->middleware('admin');
-                
+                Route::post('create-flow/{id}',[QuestionController::class, 'flow'])->name('save-flow');
             });
        });
     });

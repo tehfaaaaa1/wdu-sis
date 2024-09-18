@@ -290,6 +290,15 @@ const selectedQuestion = ref('')
 const selectedChoice = ref('')
 const selectedNextPage = ref('')
 const flowName = ref(null)
+const createFlow =()=>{
+    form.transform(()=>({
+        page:selectedPage.value,
+        question: selectedQuestion.value,
+        choice: selectedChoice.value,
+        next:selectedNextPage.value,
+        name: flowName.value
+    })).post(route('save-flow',[form.client_slug, form.project_slug, props.surveys.id]))
+}
 </script>
 
 <template>
@@ -340,12 +349,12 @@ const flowName = ref(null)
                 <div class="absolute lg:w-1/5">
                     <div class="flex" id="question-or-flow">
                         <h1 @click="QuestionOrFlow = 'question'"
-                            class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
+                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
                             :class="{ 'border-ijo-terang': QuestionOrFlow == 'question' }">
                             Questions
                         </h1>
                         <h1 @click="QuestionOrFlow = 'flow'"
-                            class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
+                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
                             :class="{ 'border-ijo-terang': QuestionOrFlow == 'flow' }">
                             Flows
                         </h1>
@@ -644,7 +653,7 @@ const flowName = ref(null)
                     <div class="flex items-center justify-between w-full">
                         <SecondaryButton @click="showLogicModal = false" class="hover:bg-red-500 hover:text-white">Back
                         </SecondaryButton>
-                        <PrimaryButton>Save</PrimaryButton>
+                        <PrimaryButton @click="createFlow()">Save</PrimaryButton>
                     </div>
                 </template>
             </DialogModal>

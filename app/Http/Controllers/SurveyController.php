@@ -182,7 +182,7 @@ class SurveyController extends Controller
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Update successfully.');
     }
 
-    public function submission(Survey $surveyModel, $clientSlug, $projectSlug, $id)
+    public function submission(Survey $surveyModel, $clientSlug, $projectSlug, $id, Request $request)
     {
         // Fetch survey, questions, project, client
         $survey = Survey::findOrFail($id);
@@ -192,7 +192,9 @@ class SurveyController extends Controller
       
         // Prepare data to pass to the view
         $res = Response::where('survey_id', $id)->where('user_id', Auth::user()->id)->first();
-
+        $session = $request->session()->all();
+        $prev = $session['_previous'];
+        $prevURl= $prev['url'];
         $formattedPage = $page->map(function ($p) {
             return [
                 'id' => $p->id,
@@ -222,6 +224,7 @@ class SurveyController extends Controller
                 'clients' => $client,
                 'page' => $formattedPage,
                 'pagee' => $page,
+                'prevUrl' => $prevURl,
                 // 'responses' => $res['id'] ?? null
             ]
         );
