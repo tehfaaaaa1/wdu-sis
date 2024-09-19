@@ -98,7 +98,7 @@ const submit = () => {
 
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
-                            :disabled="form.processing">
+                            :disabled="form.processing"> 
                             Add Survey
                         </PrimaryButton>
                     </div>
