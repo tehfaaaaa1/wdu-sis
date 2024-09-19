@@ -13,7 +13,8 @@ class QuestionPage extends Model
 
     protected $fillable= [
         'page_name',
-        'survey_id'
+        'survey_id',
+        'order'
     ];
 
     public function survey() : BelongsTo{
@@ -21,5 +22,8 @@ class QuestionPage extends Model
     }
     public function question() : HasMany{
         return $this->hasMany(Question::class);
+    }
+    public function flow() : HasMany{
+        return $this->hasMany(Flow::class);
     }
 }

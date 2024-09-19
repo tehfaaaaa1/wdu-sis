@@ -43,4 +43,7 @@ class Survey extends Model
     public function page(): HasMany {
         return $this->hasMany(QuestionPage::class);
     }
+    public function flow() : HasMany{
+        return $this->hasMany(Flow::class);
+    }
 }

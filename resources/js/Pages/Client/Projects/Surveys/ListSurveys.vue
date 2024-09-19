@@ -111,7 +111,7 @@ const getSurveySubmissions = (surveyId) => {
 </script>
 
 <template>
-    <AppLayout title="List Survey">
+    <AppLayout title="List Kuisioner">
         <template #header>
             <NavLink :href="route('projects', clientSlug)" class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang">
                 <span class="text-black">Project&nbsp;</span> {{ project.project_name }}
@@ -135,7 +135,7 @@ const getSurveySubmissions = (surveyId) => {
                         <NavLink :href="route('create_surveys', [clientSlug, projectSlug])"
                             v-if="$page.props.auth.user.usertype === 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
-                            Add Survey
+                            Tambah Kuisioner
                         </NavLink>
                         <NavLink :href="route('projects', [clientSlug])"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
@@ -193,17 +193,17 @@ const getSurveySubmissions = (surveyId) => {
                                     <div class="grid grid-cols-2 gap-x-2 justify-center content-center">
                                         <div v-if="hasFilledSurvey(survey)"
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
-                                            <p class="text-center mt-3">Anda Sudah Mengisi Survey Ini</p>
+                                            <p class="text-center" :class="props.user.usertype == 'superadmin' ? 'mt-3': ''">Anda Sudah Mengisi Survey Ini</p>
                                         </div>
                                         <div class="m-auto" v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
-                                            <p class="text-center">Survey Ditutup</p>
+                                            <p class="text-center">Kuisioner Ditutup</p>
                                         </div>
                                         <NavLink v-else
                                             :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
                                             class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition"
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
-                                            Isi Survey
+                                            Isi Kuisioner
                                         </NavLink>
 
                                     <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"

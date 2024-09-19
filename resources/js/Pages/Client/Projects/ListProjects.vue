@@ -110,7 +110,7 @@ const filteredProjects = computed(() => {
                                 <td class="px-6 py-6">
                                     <NavLink :href="route('listsurvey', [clientSlug, project.slug])"
                                         class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition hover:duration-200">
-                                        See Surveys
+                                        Lihat Kuisioner
                                     </NavLink>
                                     <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                         class="mt-5 text-center">

@@ -73,7 +73,7 @@ const submit = () => {
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="flex justify-center w-1/4 md:mb-10"
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Submit Biodata
+                                Konfirmasi
                             </PrimaryButton>
                         </div>
                     </form>

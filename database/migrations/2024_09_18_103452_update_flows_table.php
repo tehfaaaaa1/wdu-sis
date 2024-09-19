@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('question_pages', function (Blueprint $table) {
-            $table->id();
-            $table->string('page_name');
-            $table->foreignId('survey_id')->constrained(
+        Schema::table('flows', function (Blueprint $table) {
+            $table->integer('next_page_order')->nullable();
+            $table->dropForeign('flows_next_page_id');
+            $table->dropColumn('next_page_id');
+            $table->foreignId('survey_id')->nullable()->constrained(
                 table: 'surveys',
-                indexName: 'question_pages_survey_id',
+                indexName: 'flows_survey_id',
             )->onDelete('cascade');
-            $table->integer('order')->nullable();
-            $table->timestamps();
+            $table->integer('current_page_order')->nullable();
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('question_pages');
+        //
     }
 };

@@ -1,10 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import Biodata from './biodata.vue';
 import InputError from '@/Components/InputError.vue';
 
 
@@ -22,7 +20,7 @@ const bio = props.biodata[0]
 const form = useForm({
     nama: bio['nama_responden'],
     alamat: bio['alamat'],
-    no_hp: bio['no_hp'],
+    no_hp: String(bio['no_hp']),
     instansi: bio['instansi'],
     project_slug: project['slug'],
     client_slug: client['slug'],
@@ -34,11 +32,11 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout title="Edit Biodata">
+    <AppLayout title="Isi Biodata">
         <main class="min-h-screen">
             <div class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
-                    <h2>Edit Biodata</h2>
+                    <h2>Isi Biodata</h2>
                 </div>
                 <div class="bg-white rounded-b-md">
                     <div class="border-b-2 p-5 border-gray-500">
@@ -78,7 +76,7 @@ const submit = () => {
                         <div class="pt-5 flex justify-center">
                             <PrimaryButton class="my-5 p-5 justify-center "
                                 :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Konfirmasi Biodata
+                                Konfirmasi
                             </PrimaryButton>
                         </div>
                     </form>

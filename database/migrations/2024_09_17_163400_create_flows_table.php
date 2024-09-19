@@ -26,10 +26,12 @@ return new class extends Migration
                 table: 'question_choices',
                 indexName: 'flows_question_choice_id',
             )->onDelete('cascade');
-            $table->foreignId('next_page_id')
-                  ->constrained('question_pages', 'id') // referencing 'question_page_id'
-                  ->index('flows_next_page_id') // custom index name
-                  ->onDelete('cascade');
+            $table->integer('next_page_order')->nullable();
+            $table->foreignId('survey_id')->nullable()->constrained(
+                table: 'surveys',
+                indexName: 'flows_survey_id',
+            )->onDelete('cascade');
+            $table->integer('current_page_order')->nullable();
             $table->timestamps();
         });
     }

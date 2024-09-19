@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BiodataController;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -17,7 +18,7 @@ use App\Http\Controllers\LocationController;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        return redirect()->route('listclient');
     }   
 
     return Inertia::render('Auth/Login', [
@@ -110,6 +111,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::post('/manual-save-question/{id}',[QuestionController::class, 'manualSave'])->name('manual-save-question');
                 Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store')->middleware('admin');
                 Route::post('create-flow/{id}',[QuestionController::class, 'flow'])->name('save-flow');
+                Route::post('next/{id}',[SurveyController::class, 'next'])->name('nextPage');
             });
        });
     });
