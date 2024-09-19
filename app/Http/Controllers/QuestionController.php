@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Flow;
 use App\Models\QuestionPage;
 use Inertia\Inertia;
 use App\Models\Survey;
@@ -17,19 +18,20 @@ class QuestionController extends Controller
     public function question(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
-        $question = Question::where('survey_id', $id)->get();
+        $question = Question::where('survey_id',  $id)->get();
         $page = QuestionPage::where('survey_id', $id)->get();
         $project = DB::table('projects')
-            ->where('slug', $projectSlug)
-            ->get();
+        ->where('slug', $projectSlug)
+        ->get();
+        $surveyall = Survey::where('project_id', $project[0]->id)->get();
         $client = DB::table('clients')
             ->where('slug', $clientSlug)
             ->get();
-        /*$last = Question::all()->last();
-        $lastId = $last->id;
-        $c_last = QuestionChoice::all()->last();
-        $c_lastId = $c_last->id;
-        */
+        // $last = Question::all()->last();
+        // $lastId = $last->id;
+        // $c_last = QuestionChoice::all()->last();
+        // $c_lastId = $c_last->id;
+        $flow = Flow::where('survey_id', $id)->get();
         return Inertia::render(
             'Client/Projects/Surveys/AddQuestions',
             [
@@ -45,10 +47,11 @@ class QuestionController extends Controller
                         }),
                     ];
                 }),
-                /*
-                'lastId' => $lastId,
-                'c_lastId' => $c_lastId
-                */
+                // 'lastId' => $lastId,
+                // 'c_lastId' => $c_lastId,
+                'flows'=> $flow,
+                'surveyall' => $surveyall
+
             ]
         );
     }
@@ -149,12 +152,13 @@ class QuestionController extends Controller
         // Track the question IDs that are being processed
         $processedPageIds = [];
 
-        foreach ($validatedData['data'] as $pageData) {
+        foreach ($validatedData['data'] as $pgIndex => $pageData) {
             $savePage = QuestionPage::firstOrNew(
                 ['id' => $pageData['id'] ?? null]
             );
             $savePage->survey_id = $survey['id'];
             $savePage->page_name = $pageData['name'];
+            $savePage->order = $pgIndex+1;
             $savePage->save();
 
             $processedPageIds[] = $savePage->id;
@@ -249,6 +253,26 @@ class QuestionController extends Controller
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $id){
-        dd($request);
+        dd($request->all());     
+        $pageId = $request->page['id'];
+        $qId = $request->question['id'];
+        $qchoiceId = $request->choice['cId'];
+        $nextOrder = $request->next['order'];   
+        $currentOrder = $request->page['order'];
+        
+        $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+        $saveFlow = new Flow;
+        $saveFlow->flow_name = $request->name;
+        $saveFlow->question_page_id = $pageId;
+        $saveFlow->question_id = $qId;
+        $saveFlow->current_page_order = $currentOrder;
+        $saveFlow->question_choice_id = $qchoiceId;
+        $saveFlow->next_page_order = $nextOrder;
+        $saveFlow->survey_id = $id;
+        $saveFlow->save();
+
+        return redirect()->route('question_surveys', [$clientSlug, $projectSlug, $id])->with('success', 'Survey created successfully.');
     }
 }

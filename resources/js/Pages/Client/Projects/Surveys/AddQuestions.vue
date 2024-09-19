@@ -13,6 +13,8 @@ const props = defineProps({
     projects: Object,
     clients: Object,
     page: Object,
+    flows:Object,
+    surveyall:Object
 })
 const project = props.projects[0];
 const client = props.clients[0];
@@ -52,7 +54,7 @@ const pages = ref(props.page.map((page) => {
              } 
             return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex}
     })    
-    return { id: page.id, name: page.page_name, question: question}
+    return { id: page.id, order:page.order, name: page.page_name, question: question}
 }))
 
 if (pages.value.length == 0) {
@@ -296,8 +298,9 @@ const createFlow =()=>{
         question: selectedQuestion.value,
         choice: selectedChoice.value,
         next:selectedNextPage.value,
-        name: flowName.value
+        name: flowName.value,
     })).post(route('save-flow',[form.client_slug, form.project_slug, props.surveys.id]))
+    showLogicModal = false
 }
 </script>
 
@@ -391,11 +394,8 @@ const createFlow =()=>{
                                     class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
                                     placeholder="Enter page name">
                                 <button type="submit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor"
-                                        class="size-6 transition hover:text-sky-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 transition hover:text-sky-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                                     </svg>
                                 </button>
                             </form>
@@ -403,8 +403,9 @@ const createFlow =()=>{
                     </div>
                     <div class="bg-white" id="add-flow" v-if="QuestionOrFlow == 'flow'">
                         <div class="border-b border-gray-300 py-2 px-4 cursor-pointer" @click="showLogicModal = true">
-                            <div class="flows">
+                            <div class="flows" v-for="(flow, index) in flows" :key="index">
                                 <!-- All created flows will be listed here -->
+                                 <p>{{index+1 +'. '+ flow.flow_name }}</p>
                             </div>
                         </div>
                         <div class="border-b border-gray-300 py-2 px-4">
@@ -657,7 +658,9 @@ const createFlow =()=>{
                     </div>
                 </template>
             </DialogModal>
-
+            <div class="" v-for="flow in flows">
+                {{ flow }}
+            </div>
         </main>
     </AppLayout>
 </template>

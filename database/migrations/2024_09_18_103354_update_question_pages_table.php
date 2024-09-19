@@ -11,15 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('question_pages', function (Blueprint $table) {
-            $table->id();
-            $table->string('page_name');
-            $table->foreignId('survey_id')->constrained(
-                table: 'surveys',
-                indexName: 'question_pages_survey_id',
-            )->onDelete('cascade');
+        Schema::table('question_pages', function (Blueprint $table) {
             $table->integer('order')->nullable();
-            $table->timestamps();
         });
     }
 
@@ -28,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('question_pages');
+        //
     }
 };
