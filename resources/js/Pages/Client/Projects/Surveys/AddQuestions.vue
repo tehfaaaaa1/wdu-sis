@@ -247,7 +247,7 @@ const submitForm = () => {
         survey: props.surveys.id,
         project_slug: project['slug'],
         client_slug: client['slug'],
-    })).post(route('manual-save-question', [props.surveys.id, form.client_slug, form.project_slug]), {
+    })).post(route('manual-save-question', [form.client_slug, form.project_slug, props.surveys.id]), {
         preserveState: true,
         preserveScroll: true,
         onSuccess: () => {
@@ -291,23 +291,23 @@ const selectedQuestion = ref('')
 const selectedChoice = ref('')
 const selectedNextPage = ref('')
 const flowName = ref(null)
-const flowId = ref(null) 
-const floww = (flow)=>{
-    selectedPage.value = pages.value.find(a=> a.id == flow.question_page_id)
-    selectedQuestion.value = selectedPage.value.question.find(a=> a.id == flow.question_id)
-    selectedChoice.value = selectedQuestion.value.choices.find(c=> c.cId == flow.question_choice_id)
-    selectedNextPage.value = pages.value.find(a=> a.order == flow.next_page_order)
+const flowId = ref(null)
+const floww = (flow) => {
+    selectedPage.value = pages.value.find(a => a.id == flow.question_page_id)
+    selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
+    selectedChoice.value = selectedQuestion.value.choices.find(c => c.cId == flow.question_choice_id)
+    selectedNextPage.value = pages.value.find(a => a.order == flow.next_page_order)
     console.log(selectedNextPage.value)
     flowName.value = flow.flow_name
     flowId.value = flow.id
 }
-const newFlow = ()=>{
+const newFlow = () => {
     selectedPage.value = ''
     selectedQuestion.value = ''
     selectedChoice.value = ''
     selectedNextPage.value = ''
     flowName.value = null
-} 
+}
 const createFlow = () => {
     form.transform(() => ({
         page: selectedPage.value,
@@ -315,9 +315,14 @@ const createFlow = () => {
         choice: selectedChoice.value,
         next: selectedNextPage.value,
         name: flowName.value,
-        flow_id : flowId.value ??null
+        flow_id: flowId.value ?? null
     })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
         { onSuccess: showLogicModal.value = false });
+}
+
+const hapusFlow = ref(false)
+const confirmDeletionFlow = (flow) => {
+    form.get(route('delete-flow', [form.client_slug, form.project_slug, props.surveys.id, flow]), { onSuccess: hapusFlow.value = false });
 }
 </script>
 
@@ -423,9 +428,10 @@ const createFlow = () => {
                     </div>
                     <div class="bg-white" id="add-flow" v-if="QuestionOrFlow == 'flow'">
                         <div class="border-b border-gray-300 py-2 px-4">
-                            <div class="flows" v-for="(flow, index) in flows" :key="index">
+                            <div class="flows" v-for="(flow, index) in flows" :key="index"
+                                @click="showLogicModal = true; floww(flow)">
                                 <!-- All created flows will be listed here -->
-                                <p @click="showLogicModal = true; floww(flow)" class="cursor-pointer">{{ index + 1 + '. ' + flow.flow_name }}</p>
+                                {{ index + 1 + '. ' + flow.flow_name }}
                             </div>
                         </div>
                         <div class="border-0 border-gray-300 py-2 px-4">
@@ -658,6 +664,29 @@ const createFlow = () => {
                         <div class="flows-dropdown-label" v-if="selectedPage">
                             Nama Flow
                             <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
+                        </div>
+                        <div class="flows-dropdown-label" :class="{ '!justify-center': hapusFlow == true }"
+                            v-if="selectedPage">
+                            <a @click="hapusFlow = !hapusFlow" v-if="!hapusFlow"
+                                class="font-medium text-base text-red-600 hover:underline cursor-pointer">Delete</a>
+                            <div class="inset-0 flex items-center justify-center" v-if="hapusFlow">
+                                <!-- <div class="absolute inset-0 bg-gray-600 opacity-75"></div> -->
+                                <div class="bg-white p-6 rounded-lg shadow-lg z-10">
+                                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Confirm deletion</h2>
+                                    <p class="text-gray-600 mb-6">Are you sure want to delete? This action cannot be
+                                        undone.</p>
+                                    <div class="flex justify-end space-x-4">
+                                        <button @click="hapusFlow = !hapusFlow"
+                                            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
+                                            Cancel
+                                        </button>
+                                        <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                                            @click="confirmDeletionFlow(flowId)">
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </template>
