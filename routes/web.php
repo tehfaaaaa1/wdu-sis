@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BiodataController;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
@@ -17,7 +18,7 @@ use App\Http\Controllers\LocationController;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        return redirect()->route('listclient');
     }   
 
     return Inertia::render('Auth/Login', [
