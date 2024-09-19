@@ -32,6 +32,13 @@ class QuestionController extends Controller
         // $c_last = QuestionChoice::all()->last();
         // $c_lastId = $c_last->id;
         $flow = Flow::where('survey_id', $id)->get();
+        foreach($flow as $f){
+            $sa =$f->survey;
+            $pa =$f->pages;
+            $qa =$f->question;
+            $ca =$f->choice;
+            
+        }
         return Inertia::render(
             'Client/Projects/Surveys/AddQuestions',
             [
@@ -50,8 +57,7 @@ class QuestionController extends Controller
                 // 'lastId' => $lastId,
                 // 'c_lastId' => $c_lastId,
                 'flows'=> $flow,
-                'surveyall' => $surveyall
-
+                'surveyall' => $surveyall,
             ]
         );
     }
@@ -253,17 +259,17 @@ class QuestionController extends Controller
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $id){
-        // dd($request->all());     
+        
         $pageId = $request->page['id'];
         $qId = $request->question['id'];
         $qchoiceId = $request->choice['cId'];
         $nextOrder = $request->next['order'];   
         $currentOrder = $request->page['order'];
-        
+        $flowID = $request->flow_id;
         $request->validate([
             'name' => 'required|string|max:255'
         ]);
-        $saveFlow = new Flow;
+        $saveFlow = Flow::firstOrNew(['id'=>$flowID??null]);
         $saveFlow->flow_name = $request->name;
         $saveFlow->question_page_id = $pageId;
         $saveFlow->question_id = $qId;

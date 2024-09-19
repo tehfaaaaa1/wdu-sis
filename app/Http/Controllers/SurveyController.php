@@ -273,30 +273,6 @@ class SurveyController extends Controller
         );
     }
 
-    public function question(Survey $survey, $clientSlug, $projectSlug, $id)
-    {
-        $survey =  Survey::findOrFail($id);
-
-        $project = DB::table('projects')
-            ->where('slug', $projectSlug)
-            ->get();
-        $client = DB::table('clients')
-            ->where('slug', $clientSlug)
-            ->get();
-
-        $provinces = Province::all();
-        // dump($survey);
-        return Inertia::render(
-            'Client/Projects/Surveys/AddQuestions',
-            [
-                'surveys' => $survey,
-                'projects' => $project,
-                'clients' => $client,
-                'provinces' => $provinces,
-            ]
-        );
-    }
-
     public function destroy($clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);

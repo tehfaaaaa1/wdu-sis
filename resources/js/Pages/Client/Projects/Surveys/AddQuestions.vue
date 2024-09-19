@@ -285,13 +285,29 @@ onBeforeUnmount(() => {
     // Remove the event listener when the component is unmounted
     window.removeEventListener('beforeunload', handleBeforeUnload);
 });
-
 // PAGE FLOW
 const selectedPage = ref('')
 const selectedQuestion = ref('')
 const selectedChoice = ref('')
 const selectedNextPage = ref('')
 const flowName = ref(null)
+const flowId = ref(null) 
+const floww = (flow)=>{
+    selectedPage.value = pages.value.find(a=> a.id == flow.question_page_id)
+    selectedQuestion.value = selectedPage.value.question.find(a=> a.id == flow.question_id)
+    selectedChoice.value = selectedQuestion.value.choices.find(c=> c.cId == flow.question_choice_id)
+    selectedNextPage.value = pages.value.find(a=> a.order == flow.next_page_order)
+    console.log(selectedNextPage.value)
+    flowName.value = flow.flow_name
+    flowId.value = flow.id
+}
+const newFlow = ()=>{
+    selectedPage.value = ''
+    selectedQuestion.value = ''
+    selectedChoice.value = ''
+    selectedNextPage.value = ''
+    flowName.value = null
+} 
 const createFlow = () => {
     form.transform(() => ({
         page: selectedPage.value,
@@ -299,6 +315,7 @@ const createFlow = () => {
         choice: selectedChoice.value,
         next: selectedNextPage.value,
         name: flowName.value,
+        flow_id : flowId.value ??null
     })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
         { onSuccess: showLogicModal.value = false });
 }
@@ -408,14 +425,13 @@ const createFlow = () => {
                         <div class="border-b border-gray-300 py-2 px-4">
                             <div class="flows" v-for="(flow, index) in flows" :key="index">
                                 <!-- All created flows will be listed here -->
-                                <p @click="showLogicModal = true" class="cursor-pointer">{{ index + 1 + '. ' +
-                                    flow.flow_name }}</p>
+                                <p @click="showLogicModal = true; floww(flow)" class="cursor-pointer">{{ index + 1 + '. ' + flow.flow_name }}</p>
                             </div>
                         </div>
                         <div class="border-0 border-gray-300 py-2 px-4">
                             <button type="button"
                                 class="w-full text-center border border-primary p-3 hover:bg-primary hover:text-white transition cursor-pointer"
-                                @click="showLogicModal = true">Tambah Flow Baru</button>
+                                @click="showLogicModal = true; newFlow">Tambah Flow Baru</button>
                         </div>
                     </div>
                 </div>
