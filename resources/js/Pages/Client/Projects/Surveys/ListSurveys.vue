@@ -61,7 +61,7 @@ const hasPubllish = (survey) => {
 const getSelectedProvinces = (survey, provinces) => {
     if (!survey || !Array.isArray(provinces)) {
         console.error('Invalid data:', survey, provinces);
-        return { list: 'Error: Invalid data', total: 0 };
+        return { list: [], total: 0 }; 
     }
 
     let provinceTargets;
@@ -72,12 +72,12 @@ const getSelectedProvinces = (survey, provinces) => {
             : survey.province_targets;
     } catch (error) {
         console.error('Error parsing province_targets:', error);
-        return { list: 'Error parsing data', total: 0 };
+        return { list: [], total: 0 };  
     }
 
     if (!Array.isArray(provinceTargets) || provinceTargets.length === 0) {
         console.log('No provinces found in province_targets:', provinceTargets);
-        return { list: 'No provinces selected', total: 0 };
+        return { list: [], total: 0 };  
     }
 
     const totalTargetResponse = provinceTargets.reduce((total, target) => {
@@ -85,22 +85,24 @@ const getSelectedProvinces = (survey, provinces) => {
         return total + (isNaN(targetResponse) ? 0 : targetResponse);
     }, 0);
 
+
     const provinceList = provinceTargets.map(target => {
         if (!target || !target.province_id) {
             console.error('Invalid target data:', target);
-            return 'Unknown Province (0)';
+            return { name: 'Unknown Province', response: '0' };
         }
         const province = provinces.find(p => p.id === target.province_id);
         const provinceName = province ? province.name : 'Unknown Province';
         const targetResponse = target.target_response || '0';
-        return `${provinceName} (${targetResponse})`;
-    }).join(', ');
+        return { name: provinceName, response: targetResponse };
+    });
 
     return { list: provinceList, total: totalTargetResponse };
 };
 
+
 console.log('Provinces prop:', props.provinces);
-console.log('Props:', props); // Debugging
+console.log('Props:', props); 
 
 
 const getSurveySubmissions = (surveyId) => {
@@ -176,9 +178,12 @@ const getSurveySubmissions = (surveyId) => {
                                 <td class="px-6 py-4 font-medium text-gray-c900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
                                     {{ getSurveySubmissions(survey.id) }} / <b>{{ getSelectedProvinces(survey, props.provinces).total }}</b><br>
-                                    Target Lokasi: <uL>
-                                        <li>{{ getSelectedProvinces(survey, props.provinces).list }}</li>
-                                    </uL>
+                                    Target Lokasi:
+                                    <ul>
+                                        <li v-for="(province, index) in getSelectedProvinces(survey, props.provinces).list" :key="index">
+                                            - {{ province.name }} ({{ province.response }})
+                                        </li>
+                                    </ul>
                                 </td>
                                 <td class="px-6 py-4">
                                     <p v-if="survey.status == 0"> Ditutup</p>

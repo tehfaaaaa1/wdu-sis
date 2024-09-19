@@ -52,6 +52,7 @@ class SurveyController extends Controller
             'Client/Projects/Surveys/ListSurveys',
             [
                 'surveys' => collect($s)->map(function ($survey) {
+                    // Decode the JSON `province_targets` field
                     $provinceTargets = json_decode($survey->province_targets, true);
     
                     return [

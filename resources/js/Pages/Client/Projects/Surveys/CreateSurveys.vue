@@ -21,7 +21,7 @@ const form = useForm({
     project_id: props.projects[0]?.id || null,
     project_slug: props.projects[0]?.slug || null,
     client_slug: props.clients[0]?.slug || null,
-    province_targets: [], 
+    province_targets: [], // Start empty
     city_id: '',
     regency_id: '',
 });
@@ -38,7 +38,7 @@ const toggleProvinceTarget = (provinceId) => {
         const selectedProvince = provinces.value.find(province => province.id === provinceId);
         form.province_targets.push({ province_id: provinceId, target_response: '', province_name: selectedProvince.name });
     } else {
-        form.province_targets.splice(index, 1);
+        form.province_targets.splice(index, 1); // Remove if unchecked
     }
 };
 
