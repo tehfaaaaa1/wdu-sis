@@ -57,10 +57,51 @@ const hasFilledSurvey = (survey) => {
 const hasPubllish = (survey) => {
     return survey.status ==  0;
 };
-const getProvinceName = (provinceId) => {
-    const province = props.provinces.find(p => p.id === provinceId);
-    return province ? province.name : 'Unknown Province';
+
+const getSelectedProvinces = (survey, provinces) => {
+    if (!survey || !Array.isArray(provinces)) {
+        console.error('Invalid data:', survey, provinces);
+        return { list: 'Error: Invalid data', total: 0 };
+    }
+
+    let provinceTargets;
+
+    try {
+        provinceTargets = typeof survey.province_targets === 'string'
+            ? JSON.parse(survey.province_targets)
+            : survey.province_targets;
+    } catch (error) {
+        console.error('Error parsing province_targets:', error);
+        return { list: 'Error parsing data', total: 0 };
+    }
+
+    if (!Array.isArray(provinceTargets) || provinceTargets.length === 0) {
+        console.log('No provinces found in province_targets:', provinceTargets);
+        return { list: 'No provinces selected', total: 0 };
+    }
+
+    const totalTargetResponse = provinceTargets.reduce((total, target) => {
+        const targetResponse = parseInt(target.target_response, 10);
+        return total + (isNaN(targetResponse) ? 0 : targetResponse);
+    }, 0);
+
+    const provinceList = provinceTargets.map(target => {
+        if (!target || !target.province_id) {
+            console.error('Invalid target data:', target);
+            return 'Unknown Province (0)';
+        }
+        const province = provinces.find(p => p.id === target.province_id);
+        const provinceName = province ? province.name : 'Unknown Province';
+        const targetResponse = target.target_response || '0';
+        return `${provinceName} (${targetResponse})`;
+    }).join(', ');
+
+    return { list: provinceList, total: totalTargetResponse };
 };
+
+console.log('Provinces prop:', props.provinces);
+console.log('Props:', props); // Debugging
+
 
 const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
@@ -134,8 +175,10 @@ const getSurveySubmissions = (surveyId) => {
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900">{{ survey.title }}</td>
                                 <td class="px-6 py-4 font-medium text-gray-c900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
-                                    {{ getSurveySubmissions(survey.id) }} / (tba: akumulasi target)<br>
-                                    Target Lokasi: 
+                                    {{ getSurveySubmissions(survey.id) }} / <b>{{ getSelectedProvinces(survey, props.provinces).total }}</b><br>
+                                    Target Lokasi: <uL>
+                                        <li>{{ getSelectedProvinces(survey, props.provinces).list }}</li>
+                                    </uL>
                                 </td>
                                 <td class="px-6 py-4">
                                     <p v-if="survey.status == 0"> Ditutup</p>

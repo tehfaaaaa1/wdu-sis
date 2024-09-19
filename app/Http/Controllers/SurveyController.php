@@ -28,29 +28,32 @@ class SurveyController extends Controller
 {
     public function index(Project $project, $clientSlug, $projectSlug)
     {
-        $surveyall =  Project::where('slug', $projectSlug)->firstOrFail();
+        $surveyall = Project::where('slug', $projectSlug)->firstOrFail();
         $projectall = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
         $client = Client::where('slug', $clientSlug)->get();
         $s = $surveyall->survey;
-
+    
         $user = Auth::user();
         $c = $client[0];
-
+    
         $userTarget = Response::select('survey_id', DB::raw('count(*) as submissions'))
             ->groupBy('survey_id')
             ->get()
             ->mapWithKeys(function ($response) {
                 return [$response->survey_id => $response->submissions];
             });
-
+    
         $response = Response::where('user_id', $user->id)->get();
         $provinces = Province::all();
+    
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
                 'surveys' => collect($s)->map(function ($survey) {
+                    $provinceTargets = json_decode($survey->province_targets, true);
+    
                     return [
                         'id' => $survey->id,
                         'title' => $survey->title,
@@ -59,11 +62,8 @@ class SurveyController extends Controller
                         'created_at' => $survey->created_at->format('j F Y H:i:s'),
                         'updated_at' => $survey->updated_at->format('j F Y H:i:s'),
                         'response' => $survey->response,
-                        'target_response' => $survey->target_response,
-                        'province_id' => $survey->province_id,
-                        'city_id' => $survey->city_id,
-                        'regency_id' => $survey->regency_id,
-                        'status' => $survey->status
+                        'status' => $survey->status,
+                        'province_targets' => $provinceTargets
                     ];
                 }),
                 'projects' => $projectall,
@@ -75,6 +75,7 @@ class SurveyController extends Controller
             ]
         );
     }
+    
 
     public function create(Project $project, $clientSlug, $projectSlug)
     {
