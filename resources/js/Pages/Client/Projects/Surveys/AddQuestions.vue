@@ -437,7 +437,7 @@ const confirmDeletionFlow = (flow) => {
                         <div class="border-0 border-gray-300 py-2 px-4">
                             <button type="button"
                                 class="w-full text-center border border-primary p-3 hover:bg-primary hover:text-white transition cursor-pointer"
-                                @click="showLogicModal = true; newFlow">Tambah Flow Baru</button>
+                                @click="showLogicModal = true; newFlow()">Tambah Flow Baru</button>
                         </div>
                     </div>
                 </div>
