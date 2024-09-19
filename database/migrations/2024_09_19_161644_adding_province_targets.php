@@ -10,7 +10,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('surveys', function (Blueprint $table) {
-            $table->json('province_targets')->change();
+            $table->json('province_targets');
         });
     }
 
