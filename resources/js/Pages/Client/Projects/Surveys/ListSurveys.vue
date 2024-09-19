@@ -10,7 +10,7 @@ const props = defineProps({
     projects: Array,
     clients: Array,
     user: Object,
-    userTarget: [Array, Object],  
+    userTarget: Array,  
     provinces: Array,   
     cities: Array,
     regencies: Array
@@ -118,7 +118,7 @@ const getSurveySubmissions = (surveyId) => {
                             </div>
                             <div class="border-b-2 border-gray-300"></div>
                         </caption>
- 
+
                         <thead class="text-xs text-white uppercase bg-primary">
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-1/5">Survey Title</th>
@@ -132,16 +132,10 @@ const getSurveySubmissions = (surveyId) => {
                         <tbody>
                             <tr v-for="survey in filteredSurveys" :key="survey.id" class="bg-white border-b hover:bg-gray-50">
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900">{{ survey.title }}</td>
-                                <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">{{ survey.desc }}</td>
+                                <td class="px-6 py-4 font-medium text-gray-c900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
-                                    {{ getSurveySubmissions(survey.id) }} / <i>(TBA: accumulated target)</i><br>
-                                    <br>
-                                    Lokasi:
-                                    <span>
-                                        <ul>
-                                            <li>{{ getProvinceName(survey.province_id) }} (Target: {{ survey.target_response }})</li>
-                                        </ul>
-                                    </span>
+                                    {{ getSurveySubmissions(survey.id) }} / (tba: akumulasi target)<br>
+                                    Target Lokasi: 
                                 </td>
                                 <td class="px-6 py-4">
                                     <p v-if="survey.status == 0"> Ditutup</p>
@@ -151,7 +145,7 @@ const getSurveySubmissions = (surveyId) => {
                                     <div class="grid grid-cols-2 gap-x-2 justify-center content-center">
                                         <div v-if="hasFilledSurvey(survey)"
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
-                                            <p class="text-center" :class="props.user.usertype == 'superadmin' ? 'mt-3': ''">Anda Sudah Mengisi Survey Ini</p>
+                                            <p class="text-center mt-3">Anda Sudah Mengisi Survey Ini</p>
                                         </div>
                                         <div class="m-auto" v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">

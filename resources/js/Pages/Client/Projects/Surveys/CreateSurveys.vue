@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
@@ -18,35 +18,39 @@ const props = defineProps({
 const form = useForm({
     title: '',
     desc: '',
-    target_response: '',
     project_id: props.projects[0]?.id || null,
     project_slug: props.projects[0]?.slug || null,
     client_slug: props.clients[0]?.slug || null,
-    province_id: '',
+    province_targets: [], 
     city_id: '',
-    regency_id: ''
+    regency_id: '',
 });
 
 const provinces = ref([]);
-//const cities = ref([]);
-//const regencies = ref([]);
 
 axios.get(route('provinces.index')).then(response => {
     provinces.value = response.data;
 });
 
-watch(() => form.province_id, (newProvinceId) => {
-    if (newProvinceId) {
-        const selectedProvince = provinces.value.find(province => province.id === newProvinceId);
-        form.target_response = selectedProvince ? selectedProvince.target_response : '';
+const toggleProvinceTarget = (provinceId) => {
+    const index = form.province_targets.findIndex(p => p.province_id === provinceId);
+    if (index === -1) {
+        const selectedProvince = provinces.value.find(province => province.id === provinceId);
+        form.province_targets.push({ province_id: provinceId, target_response: '', province_name: selectedProvince.name });
+    } else {
+        form.province_targets.splice(index, 1);
     }
-});
+};
 
 const submit = () => {
     form.post(route('create_survey', [form.client_slug, form.project_slug]), {
         data: {
-            target_response: form.target_response,
-            province_id: form.province_id
+            title: form.title,
+            desc: form.desc,
+            project_id: form.project_id,
+            city_id: form.city_id,
+            regency_id: form.regency_id,
+            province_targets: form.province_targets,
         },
     });
 };
@@ -76,21 +80,26 @@ const submit = () => {
                     <div class="mt-4 relative">
                         <h2 class="text-primary font-semibold text-1xl text-left mb-1">Survey Target:</h2>
                     </div>
+
                     <div class="mt-4 relative">
-                        <InputLabel for="province_id" />
-                        <select v-model="form.province_id" class="block w-full rounded-md shadow-sm">
-                            <option value="">Select Province</option>
-                            <option v-for="province in provinces" :key="province.id" :value="province.id">{{ province.name }}</option>
-                        </select>
-                        <InputError class="mt-2" :message="form.errors.province_id" />
+                        <h3>Select Provinces:</h3>
+                        <div class="grid grid-cols-3">
+                            <div v-for="province in provinces" :key="province.id" class="flex items-center mb-2">
+                                <input type="checkbox" :id="`province-${province.id}`" @change="toggleProvinceTarget(province.id)" />
+                                <label :for="`province-${province.id}`" class="ml-2">{{ province.name }}</label>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="mt-4 relative">
-                        <InputLabel for="target_response" />
-                        <TextInput id="target_response" v-model="form.target_response" type="number" placeholder="Target Response" required autofocus autocomplete="target_response" />
-                        <InputError class="mt-2" :message="form.errors.target_response" />
+
+                    <div v-for="(provinceTarget, index) in form.province_targets" :key="index" class="mt-4 relative">
+                        <h4 class="text-primary font-semibold">{{ provinceTarget.province_name }}</h4>
+                        <div class="mt-2">
+                            <InputLabel :for="`target_response_${provinceTarget.province_id}`" />
+                            <TextInput :id="`target_response_${provinceTarget.province_id}`" v-model="provinceTarget.target_response" type="number" placeholder="Target Response" required />
+                            <InputError class="mt-2" :message="form.errors.province_targets?.[index]?.target_response" />
+                        </div>
                     </div>
-                    
+
                     <div class="my-4 text-center">
                         <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                             Add Survey

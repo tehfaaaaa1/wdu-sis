@@ -100,34 +100,34 @@ class SurveyController extends Controller
     public function store(Request $request, $clientSlug, $projectSlug)
     {
         $id = $request->project_id;
-        // $clientSlug = $request->client_slug;
-        // $projectSlug = $request->project_slug;
-
-
+    
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
-            'target_response' => 'required',
-            'province_id' => 'required|exists:provinces,id',
+            'province_targets' => 'required|array',
+            'province_targets.*.province_id' => 'required|exists:provinces,id',
+            'province_targets.*.target_response' => 'required|integer',
             'city_id' => 'nullable|exists:cities,id',
-            'regency_id' => "nullable|exists:regencies,id"
+            'regency_id' => 'nullable|exists:regencies,id'
         ]);
-
+    
         Survey::create([
             'title' => $request->title,
             'desc' => $request->desc,
             'slug' => Str::slug($request->title),
-            'target_response' => $request->target_response,
+            'province_targets' => json_encode($request->province_targets),
             'project_id' => $id,
-            'province_id' => $request->province_id,
             'city_id' => $request->city_id,
             'regency_id' => $request->regency_id,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
+    
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Survey created successfully.');
     }
+    
+    
+    
 
     public function edit(Survey $survey, $clientSlug, $projectSlug, $id)
     {
@@ -265,7 +265,7 @@ class SurveyController extends Controller
                 'page' => $formattedPage,
                 'responses' => $response,
                 'answer' => $answers,
-                'biodata' => $bio,  
+                'biodata' => $bio,
             ]
         );
     }

@@ -5,25 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Survey;
-use App\Models\Biodata;
 use App\Models\Response;
 use App\Models\Province;
-use Illuminate\Http\Request;
-use App\Models\QuestionChoice;
 use Illuminate\Support\Facades\DB;
 
 class ResponseController extends Controller
 {
-
-    public function index(Survey $survey, $clientSlug, $projectSlug, $id)
+    public function index($clientSlug, $projectSlug, $id)
     {
-        $survey =  Survey::findOrFail($id);
+        $survey = Survey::findOrFail($id);
         $response = Response::where('survey_id', $id)->get();
-        $project = DB::table('projects')->where('slug', $projectSlug)->get();
-        $client = DB::table('clients')->where('slug', $clientSlug)->get();
-        $totalRes = count($response);
+        $project = DB::table('projects')->where('slug', $projectSlug)->first(); 
+        $client = DB::table('clients')->where('slug', $clientSlug)->first(); 
+        $totalRes = $response->count(); 
         $provinces = Province::all();
-        return Inertia::render( 
+
+        return Inertia::render(
             'Client/Projects/Surveys/ListResponse',
             [
                 'surveys' => $survey,
@@ -31,7 +28,7 @@ class ResponseController extends Controller
                 'clients' => $client,
                 'totalres' => $totalRes,
                 'provinces' => $provinces,
-                'response' =>collect($response)->map(function ($res) {
+                'response' => $response->map(function ($res) {
                     return [
                         'id' => $res->id,
                         'user_id' => $res->user_id,
@@ -40,8 +37,8 @@ class ResponseController extends Controller
                         'status' => $res->status,
                         'biodata' => $res->user->biodata
                     ];
-
-                })
+                }),
+                'province_targets' => json_encode($request->province_targets)
             ]
         );
     }
