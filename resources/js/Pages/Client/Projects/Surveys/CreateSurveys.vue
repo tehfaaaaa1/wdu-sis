@@ -21,7 +21,7 @@ const form = useForm({
     project_id: props.projects[0]?.id || null,
     project_slug: props.projects[0]?.slug || null,
     client_slug: props.clients[0]?.slug || null,
-    province_targets: [], // Start empty
+    province_targets: [],
     city_id: '',
     regency_id: '',
 });
