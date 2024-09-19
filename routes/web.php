@@ -111,6 +111,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::post('/manual-save-question/{id}',[QuestionController::class, 'manualSave'])->name('manual-save-question');
                 Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store')->middleware('admin');
                 Route::post('create-flow/{id}',[QuestionController::class, 'flow'])->name('save-flow');
+                Route::get('{Survey:id}/delete-flow/{Flow:id}',[QuestionController::class, 'deleteFlow'])->name('delete-flow');
                 Route::post('next/{id}',[SurveyController::class, 'next'])->name('nextPage');
             });
        });
