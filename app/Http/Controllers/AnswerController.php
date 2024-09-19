@@ -13,7 +13,6 @@ class AnswerController extends Controller
     {
         // Fetch the survey
         $survey = Survey::findOrFail($id);
-        // dd($request);
             // Get form data from the request
         $page = $request['page'];
         $clientSlug = $request['client_slug'];
@@ -53,12 +52,10 @@ class AnswerController extends Controller
             elseif (!empty($answer['texts'])) {
                 $this->createAnswer($responseId, $questionId, $answer['texts']);
             } 
-        elseif (!empty($answer['radios'])) {
-            $this->createAnswer($responseId, $questionId, $answer['radios']);
-        } 
-        else {
-            abort(403, 'Invalid input provided.');
-        }
+            elseif (!empty($answer['radios'])) {
+                $this->createAnswer($responseId, $questionId, $answer['radios']);
+            } 
+        
     }
 
     private function createAnswer($responseId, $questionId, $answer)
