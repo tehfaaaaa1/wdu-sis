@@ -64,9 +64,9 @@ class QuestionController extends Controller
         $idSurvey = $request['survey'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
-        dd($allData);
+        // dd($allData);
         foreach ($allData as $data) {
-            dd($data);
+            // dd($data);
             $soal = $data['soal'];
             $type = $data['types'];
             $question_type = null;
@@ -253,7 +253,7 @@ class QuestionController extends Controller
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $id){
-        dd($request->all());     
+        // dd($request->all());     
         $pageId = $request->page['id'];
         $qId = $request->question['id'];
         $qchoiceId = $request->choice['cId'];

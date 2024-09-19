@@ -13,8 +13,8 @@ const props = defineProps({
     projects: Object,
     clients: Object,
     page: Object,
-    flows:Object,
-    surveyall:Object
+    flows: Object,
+    surveyall: Object
 })
 const project = props.projects[0];
 const client = props.clients[0];
@@ -27,34 +27,34 @@ const openDropdown = ref(false);
 const QuestionOrFlow = ref('question') // 'question' or 'flow'
 // Note: Customize the functions below if needed
 const pages = ref(props.page.map((page) => {
-    page.question.sort((a, b)=> a.order - b.order)
+    page.question.sort((a, b) => a.order - b.order)
     question = page.question.map((item) => {
-            let tipe = []
-            let text = []
-            let choice = []
-            let lastCindex = ''
-            // pilihan = []
-            if (item.question_type_id == 2) {
-                tipe = ['Radio']
-                choice = item.choice.map((isi) => {
-                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-                })
-                lastCindex = choice.length - 1
-                // pilihan = [{pilih : item.choice.value}]
-            } else if (item.question_type_id == 3) {
-                tipe = ['Checkbox']
-                choice = item.choice.map((isi) => {
-                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-                })
-                lastCindex = choice.length - 1
-                // pilihan = [{pilih : item.choice.value}]
-            } else if (item.question_type_id == 1) {
-                tipe = ['Text']
-                text = [{ isi: '' }]
-             } 
-            return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex}
-    })    
-    return { id: page.id, order:page.order, name: page.page_name, question: question}
+        let tipe = []
+        let text = []
+        let choice = []
+        let lastCindex = ''
+        // pilihan = []
+        if (item.question_type_id == 2) {
+            tipe = ['Radio']
+            choice = item.choice.map((isi) => {
+                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+            })
+            lastCindex = choice.length - 1
+            // pilihan = [{pilih : item.choice.value}]
+        } else if (item.question_type_id == 3) {
+            tipe = ['Checkbox']
+            choice = item.choice.map((isi) => {
+                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+            })
+            lastCindex = choice.length - 1
+            // pilihan = [{pilih : item.choice.value}]
+        } else if (item.question_type_id == 1) {
+            tipe = ['Text']
+            text = [{ isi: '' }]
+        }
+        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
+    })
+    return { id: page.id, order: page.order, name: page.page_name, question: question }
 }))
 
 if (pages.value.length == 0) {
@@ -292,15 +292,15 @@ const selectedQuestion = ref('')
 const selectedChoice = ref('')
 const selectedNextPage = ref('')
 const flowName = ref(null)
-const createFlow =()=>{
-    form.transform(()=>({
-        page:selectedPage.value,
+const createFlow = () => {
+    form.transform(() => ({
+        page: selectedPage.value,
         question: selectedQuestion.value,
         choice: selectedChoice.value,
-        next:selectedNextPage.value,
+        next: selectedNextPage.value,
         name: flowName.value,
-    })).post(route('save-flow',[form.client_slug, form.project_slug, props.surveys.id]))
-    showLogicModal = false
+    })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
+        { onSuccess: showLogicModal.value = false });
 }
 </script>
 
@@ -394,32 +394,28 @@ const createFlow =()=>{
                                     class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
                                     placeholder="Enter page name">
                                 <button type="submit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 transition hover:text-sky-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor"
+                                        class="size-6 transition hover:text-sky-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                                     </svg>
                                 </button>
                             </form>
                         </transition>
                     </div>
                     <div class="bg-white" id="add-flow" v-if="QuestionOrFlow == 'flow'">
-                        <div class="border-b border-gray-300 py-2 px-4 cursor-pointer" @click="showLogicModal = true">
+                        <div class="border-b border-gray-300 py-2 px-4">
                             <div class="flows" v-for="(flow, index) in flows" :key="index">
                                 <!-- All created flows will be listed here -->
-                                 <p>{{index+1 +'. '+ flow.flow_name }}</p>
+                                <p @click="showLogicModal = true" class="cursor-pointer">{{ index + 1 + '. ' +
+                                    flow.flow_name }}</p>
                             </div>
                         </div>
-                        <div class="border-b border-gray-300 py-2 px-4">
-                            <form class="bg-white flex items-center justify-center" @submit.prevent="submitForm">
-                                <button type="submit"
-                                    class="text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="2" stroke="currentColor" class="size-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                    </svg>
-                                    Simpan Flow
-                                </button>
-                            </form>
+                        <div class="border-0 border-gray-300 py-2 px-4">
+                            <button type="button"
+                                class="w-full text-center border border-primary p-3 hover:bg-primary hover:text-white transition cursor-pointer"
+                                @click="showLogicModal = true">Tambah Flow Baru</button>
                         </div>
                     </div>
                 </div>
@@ -607,7 +603,8 @@ const createFlow =()=>{
 
                 <template #content>
                     <div class="border border-gray-300 p-4">
-                        <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!</h3>
+                        <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!
+                        </h3>
                         <div class="flows-dropdown-label">
                             Halaman Awal
                             <select class="flows-dropdown" v-model="selectedPage"
@@ -616,8 +613,7 @@ const createFlow =()=>{
                                 <option :value="page" v-for="page in pages">{{ page.name }}</option>
                             </select>
                         </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage"
-                            @change="selectedChoice = ''">
+                        <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
                             Pertanyaan
                             <select class="flows-dropdown" v-model="selectedQuestion">
                                 <option :value="null" disabled>Pertanyaan</option>
@@ -658,9 +654,6 @@ const createFlow =()=>{
                     </div>
                 </template>
             </DialogModal>
-            <div class="" v-for="flow in flows">
-                {{ flow }}
-            </div>
         </main>
     </AppLayout>
 </template>
@@ -680,25 +673,15 @@ const createFlow =()=>{
     font-size: 18px;
 }
 
-.flows:empty {
+.flows {
     padding: 0.75rem;
-    text-align: center;
     border: 1px dashed #5EB54D;
     cursor: pointer;
     transition: all 100ms;
 }
 
-.flows:empty:before {
-    content: 'Tambah Flow Baru';
-    color: black;
-    font-weight: 500;
-}
-
-.flows:hover:empty {
+.flows:hover {
     background-color: #5EB54D;
-}
-
-.flows:hover:empty:before {
     color: white;
 }
 

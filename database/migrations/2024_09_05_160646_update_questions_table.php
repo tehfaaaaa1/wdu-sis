@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('questions', function (Blueprint $table) {
-            $table->integer('order')->unique(false)->change();
-        });
+        // Schema::table('questions', function (Blueprint $table) {
+        //     $table->integer('order')->unique(false)->change();
+        // });
     }
 
     /**
