@@ -178,10 +178,10 @@ const getSurveySubmissions = (surveyId) => {
                                 <td class="px-6 py-4 font-medium text-gray-c900 sm:text-gray-500">{{ survey.desc }}</td>
                                 <td class="px-6 py-4">
                                     {{ getSurveySubmissions(survey.id) }} / <b>{{ getSelectedProvinces(survey, props.provinces).total }}</b><br>
-                                    Target Lokasi:
+                                    Target Lokasi :
                                     <ul>
                                         <li v-for="(province, index) in getSelectedProvinces(survey, props.provinces).list" :key="index">
-                                            - {{ province.name }} ({{ province.response }})
+                                             {{ province.name }} ({{ province.response }}) 
                                         </li>
                                     </ul>
                                 </td>
