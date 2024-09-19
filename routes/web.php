@@ -31,7 +31,12 @@ Route::get('/', function () {
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
 
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        $user = Auth::user();
+        $client = DB::table('clients')->where('id', $user->client_id)->first();
+    
+        return Inertia::render('Dashboard', [
+            'client_name' => $client->client_name ?? 'No client assigned',
+        ]);
     })->name('dashboard');
 
     // Client
