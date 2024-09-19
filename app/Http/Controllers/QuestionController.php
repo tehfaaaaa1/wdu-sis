@@ -279,6 +279,21 @@ class QuestionController extends Controller
         $saveFlow->survey_id = $id;
         $saveFlow->save();
 
-        return redirect()->route('question_surveys', [$clientSlug, $projectSlug, $id])->with('success', 'Survey created successfully.');
+        return back()->with('success', 'Survey created successfully.');
+    }
+
+    public function deleteFlow($clientSlug, $projectSlug, $surveyId, $flowId) {
+        $flow =  Flow::findOrFail($flowId);
+        $survey =  Survey::findOrFail($surveyId);
+        $project = DB::table('projects')
+            ->where('slug', $projectSlug)
+            ->get();
+        $client = DB::table('clients')
+            ->where('slug', $clientSlug)
+            ->get();
+
+        $flow->delete();
+
+        return back()->with('success', 'Survey deleted successfully.');
     }
 }
