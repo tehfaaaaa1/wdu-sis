@@ -247,7 +247,7 @@ const submitForm = () => {
         survey: props.surveys.id,
         project_slug: project['slug'],
         client_slug: client['slug'],
-    })).post(route('manual-save-question', [props.surveys.id, form.client_slug, form.project_slug]), {
+    })).post(route('manual-save-question', [ form.client_slug, form.project_slug,props.surveys.id]), {
         preserveState: true,
         preserveScroll: true,
         onSuccess: () => {
