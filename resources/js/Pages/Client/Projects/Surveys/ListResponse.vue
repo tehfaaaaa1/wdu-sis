@@ -14,10 +14,48 @@ const client = props.clients[0]
 const clientSlug = client.slug;
 const projectSlug = project.slug;
 
-const getProvinceName = (provinceId) => {
-    const province = props.provinces.find(p => p.id === provinceId);
-    return province ? province.name : 'Unknown Province';
+const getSelectedProvinces = (survey, provinces) => {
+    if (!survey || !Array.isArray(provinces)) {
+        console.error('Invalid data:', survey, provinces);
+        return { list: [], total: 0 }; 
+    }
+
+    let provinceTargets;
+
+    try {
+        provinceTargets = typeof survey.province_targets === 'string'
+            ? JSON.parse(survey.province_targets)
+            : survey.province_targets;
+    } catch (error) {
+        console.error('Error parsing province_targets:', error);
+        return { list: [], total: 0 };  
+    }
+
+    if (!Array.isArray(provinceTargets) || provinceTargets.length === 0) {
+        console.log('No provinces found in province_targets:', provinceTargets);
+        return { list: [], total: 0 };  
+    }
+
+    const totalTargetResponse = provinceTargets.reduce((total, target) => {
+        const targetResponse = parseInt(target.target_response, 10);
+        return total + (isNaN(targetResponse) ? 0 : targetResponse);
+    }, 0);
+
+
+    const provinceList = provinceTargets.map(target => {
+        if (!target || !target.province_id) {
+            console.error('Invalid target data:', target);
+            return { name: 'Unknown Province', response: '0' };
+        }
+        const province = provinces.find(p => p.id === target.province_id);
+        const provinceName = province ? province.name : 'Unknown Province';
+        const targetResponse = target.target_response || '0';
+        return { name: provinceName, response: targetResponse };
+    });
+
+    return { list: provinceList, total: totalTargetResponse };
 };
+
 </script>
 
 <template>
@@ -32,9 +70,13 @@ const getProvinceName = (provinceId) => {
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <h2 class="font-semibold text-lg">Summary</h2>
-                            <p class="font-medium">{{ props.totalres }} Response</p>
-                            <p class="font-medium">Wilayah: {{ getProvinceName(props.surveys.province_id) }}</p>
-                            <p class="font-medium">{{ props.totalres }} Respons / {{ props.surveys.target_response }} Target</p>
+                            <p class="font-medium">Wilayah:</p>
+                            <ul>
+                                <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list" :key="index">
+                                    {{ province.name }} ({{ province.response }})
+                                </li>
+                            </ul>
+                            <p class="font-medium">{{ props.totalres }} Respons / {{ getSelectedProvinces(props.surveys, props.provinces).total }} Target</p>
                             <p class="font-medium">Status: <b>{{ props.surveys.status ? 'DIBUKA' : 'DITUTUP' }}</b></p>
                         </div>
                     </div>

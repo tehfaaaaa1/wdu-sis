@@ -60,9 +60,6 @@ const submit = () => {
     <AppLayout title="Create Survey">
         <div class="mt-6 sm:mt-1 px-1">
             <AuthenticationCard>
-                <template #logo>
-                    <AuthenticationCardLogo />
-                </template>
                 <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New Survey</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
@@ -78,12 +75,12 @@ const submit = () => {
                     </div>
 
                     <div class="mt-4 relative">
-                        <h2 class="text-primary font-semibold text-1xl text-left mb-1">Survey Target:</h2>
+                        <h2 class="text-primary font-semibold text-1xl text-left">Survey Target:</h2>
                     </div>
 
                     <div class="mt-4 relative">
-                        <h3>Select Provinces:</h3>
-                        <div class="grid grid-rows-13 grid-flow-col">
+                        <h3 class="text-center">Provinces:</h3>
+                        <div class="grid grid-rows-13 grid-flow-col text-xs">
                             <div v-for="province in provinces" :key="province.id" class="flex items-center mb-2">
                                 <input  class="checked:text-primary checked:ring-primary focus:ring-primary" type="checkbox" :id="`province-${province.id}`" @change="toggleProvinceTarget(province.id)" />
                                 <label :for="`province-${province.id}`" class="ml-2">{{province.name}}</label>

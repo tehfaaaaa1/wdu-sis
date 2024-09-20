@@ -22,8 +22,7 @@ class ResponseController extends Controller
         $totalRes = count($response);
         $provinces = Province::all();
 
-        // Assuming province_targets is a JSON column in the surveys table
-        $provinceTargets = $survey->province_targets;
+        $provinceTargets = json_decode($survey->province_targets, true);
 
         return Inertia::render( 
             'Client/Projects/Surveys/ListResponse',
