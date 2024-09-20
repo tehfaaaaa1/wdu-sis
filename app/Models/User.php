@@ -87,7 +87,6 @@ class User extends Authenticatable
         $query->when($filters['client']??false, fn($query, $client)=> 
             $query->whereHas('client', fn($query)=> $query->whereIn('slug', $client))
         );
-        
         $query->when($filters['team']??false, fn($query, $team)=> 
             $query->whereHas('currentTeam', fn($query)=> $query->whereIn('name', $team))
         );
