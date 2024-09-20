@@ -89,7 +89,7 @@ class User extends Authenticatable
         );
         
         $query->when($filters['team']??false, fn($query, $team)=> 
-            $query->whereHas('currentTeam', fn($query)=> $query->where('name', $team))
+            $query->whereHas('currentTeam', fn($query)=> $query->whereIn('name', $team))
         );
     }
 }
