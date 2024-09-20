@@ -73,10 +73,13 @@ const getSelectedProvinces = (survey, provinces) => {
                             <p class="font-medium">Wilayah:</p>
                             <ul>
                                 <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list" :key="index">
-                                    {{ province.name }} ({{ province.response }})
+                                    - {{ province.name }} ({{ province.response }})
                                 </li>
                             </ul>
-                            <p class="font-medium">{{ props.totalres }} Respons / {{ getSelectedProvinces(props.surveys, props.provinces).total }} Target</p>
+                            <br>
+                            <p class="font-medium">Respon:</p>
+                            <p>{{ props.totalres }} / {{ getSelectedProvinces(props.surveys, props.provinces).total }}</p>
+                            <br>
                             <p class="font-medium">Status: <b>{{ props.surveys.status ? 'DIBUKA' : 'DITUTUP' }}</b></p>
                         </div>
                     </div>
