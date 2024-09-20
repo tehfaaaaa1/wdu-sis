@@ -1,22 +1,17 @@
 <template>
-    <div class="flex flex-wrap -mb-1 justify-between space-x-4">
-        <!-- Previous Button -->
-        <Link v-if="links.prev_page_url"
-            class="inline-flex items-center rounded-md px-5 bg-secondary py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ijo-terang focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition"
-            :href="links.prev_page_url"
-            @click.prevent="navigate(links.prev_page_url)"
-            >
-            Previous
-        </Link>
+    <div v-if="links.length > 0">
 
-        <!-- Next Button -->
-        <Link v-if="links.next_page_url"
-            class="inline-flex items-center rounded-md px-5 bg-secondary py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-ijo-terang focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition"
-            :href="links.next_page_url"
-            @click.prevent="navigate(links.next_page_url)"
-            >
-            Next
-        </Link>
+        <div class="flex justify-center space-x-2 bg-white py-2">
+            <template v-for="(link, linkIndex) in links" :key="linkIndex">
+                <div v-if="link.url === null"></div>
+
+                <Link v-else
+                    class="transition mr-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded hover:bg-gray-100 focus:border-indigo-500 inline-block focus:text-indigo-500"
+                    :class="{ 'bg-blue-700 text-white hover:bg-white hover:text-blue-700': link.active }" :href="link.url">
+                <span v-html="link.label"></span>
+                </Link>
+            </template>
+        </div>
     </div>
 </template>
 
@@ -34,9 +29,4 @@ defineProps({
         })
     }
 });
-
-const emit = defineEmits(['navigate']);
-const navigate = (url) => {
-    emit('navigate', url)
-}
 </script>
