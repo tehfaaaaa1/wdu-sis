@@ -115,8 +115,11 @@ const search = ()=>{
                 <div class="px-6 py-4" v-if="isEmpty(users.data)">
                     <p>User Tersebut Tidak Ada</p>
                     <NavLink :href="route('users')">Kembali</NavLink>
+
                 </div>
-                <Pagination :links="users.links" />
+                <div class="" v-if="!isEmpty(users.data)">
+                    <Pagination :links="users.links" />
+                </div>
             </div>
         </div>
 
