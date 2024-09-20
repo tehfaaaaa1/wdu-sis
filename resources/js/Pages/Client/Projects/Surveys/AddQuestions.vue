@@ -332,8 +332,7 @@ const confirmDeletionFlow = (flow) => {
         <main class="min-h-screen relative">
             <header class="bg-white grid grid-cols-3 items-center border-b border-gray-300 sticky top-0 z-50">
                 <div class="flex items-center gap-x-4">
-                    <a :href="route('listsurvey', [client['slug'], project['slug']])"
-                        class="flex justify-center items-center font-semibold text-white bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
+                    <a :href="route('listsurvey', [client['slug'], project['slug']])" class="flex justify-center items-center font-semibold text-white focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-red-500 bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="size-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -352,7 +351,7 @@ const confirmDeletionFlow = (flow) => {
                     </div>
                     <form class="bg-white flex items-center" @submit.prevent="submitForm">
                         <button type="submit"
-                            class="py-2 text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
+                            class="py-2 px-2 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:rounded-sm text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="size-5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -363,7 +362,7 @@ const confirmDeletionFlow = (flow) => {
                     </form>
                     <form @submit.prevent="status">
                         <button type="submit"
-                            class="py-2.5 px-10 flex justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
+                            class="py-2.5 px-10 flex focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-secondary justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
                             {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
                         </button>
                     </form>
@@ -397,7 +396,7 @@ const confirmDeletionFlow = (flow) => {
                                 </svg>
                             </div>
                         </VueDraggable>
-                        <button type="button" class="bg-white border-gray-300 py-2 px-4 flex justify-between
+                        <button type="button" class="bg-white border-gray-300 py-2 focus: px-4 flex justify-between
                         items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
                             :class="{ 'border-b': !showAddPage }">
                             Add Page
@@ -449,7 +448,7 @@ const confirmDeletionFlow = (flow) => {
                             class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
                         <div class="absolute -right-16 z-10 mt-2 origin-top-right">
                             <button type="button" @click="hapus(page_index)"
-                                class="cursor-pointer block bg-white p-3 rounded-full border border-gray-300 shadow-md">
+                                class="cursor-pointer block bg-white p-3 rounded-full border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-red-500">
                                     <path stroke-linecap="round" stroke-linejoin="round"

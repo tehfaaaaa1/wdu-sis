@@ -10,7 +10,7 @@ const props = defineProps({
 const classes = computed(() => {
     return props.active
         ? 'inline-flex items-center px-4 py-3 my-3 bg-primary rounded-md border-secondary text-sm text-white font-medium leading-5 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out'
-        : 'inline-flex items-center px-4 py-3 my-3 rounded-md border-transparent text-sm font-medium leading-5 text-black hover:text-secondary hover:bg-white focus:outline-none focus:border-2 focus:border-primary transition duration-150 ease-in-out';
+        : 'inline-flex items-center px-4 py-3 my-3 rounded-md border-transparent text-sm font-medium leading-5 text-black hover:text-secondary hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary transition duration-150 ease-in-out';
 });
 </script>
 

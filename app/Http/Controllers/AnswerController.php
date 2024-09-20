@@ -55,7 +55,6 @@ class AnswerController extends Controller
             elseif (!empty($answer['radios'])) {
                 $this->createAnswer($responseId, $questionId, $answer['radios']);
             } 
-        
     }
 
     private function createAnswer($responseId, $questionId, $answer)
