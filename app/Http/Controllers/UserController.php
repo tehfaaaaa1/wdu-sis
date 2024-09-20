@@ -14,9 +14,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::filter(request(['search', 'client', 'team']))->Paginate(12)->withQueryString();
+        // dd($request->all());
         $clientall  = Client::all();
         $teams = Team::all();
-        // dump($request->search);
         foreach ($users as $user) {
             $client = $user->client ?? '';
             $team = $user->currentTeam ?? '';
@@ -26,6 +26,7 @@ class UserController extends Controller
             'client' => $clientall,
             'team'=> $teams
         ]);
+        
     }
 
     public function adminIndex()

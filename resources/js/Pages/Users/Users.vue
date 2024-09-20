@@ -18,10 +18,10 @@ const form = useForm({
     client: props.client.map(()=>({
         isi: [],
     })),  
-    search: '',
     team: props.team.map(()=>({
-        isi: [],
-    }))
+        tim: [],
+    })),
+    search: '',
 });
 const showDeleteModal = ref(false);
 const selectedUserId = ref(null);
@@ -69,8 +69,8 @@ const search = ()=>{
                         <label class="px-2" :for="'client'+ c.id+index">{{index +1 + '.'+ c.client_name }}</label>
                     </div>
                     <div class="" v-for="(t, index) in team" :key="index">
-                        <input type="checkbox" :id="'team'+ t.id" :name="'team'+ t.id" v-model="form.team[index].isi" :value="t.name">
-                        <label class="px-2" :for="'team'+t.id">{{ t.name }}</label>
+                        <input type="checkbox" :id="'team'+ t.id" :name="'team'+ t.id" v-model="form.team[index].tim" :value="t.name">
+                        <label class="px-2" :for="'team'+t.id">{{index +1 + '.'+ t.name }}</label>
                     </div>
                     <button type="button" @click="search">Search</button>
                 </div>
