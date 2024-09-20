@@ -129,9 +129,6 @@ class SurveyController extends Controller
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Survey created successfully.');
     }
     
-    
-    
-
     public function edit(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
