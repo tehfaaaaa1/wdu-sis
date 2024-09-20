@@ -21,7 +21,7 @@ class UserController extends Controller
                     'email' => $user->email,
                     'usertype' => $user->usertype,
                     'team' => $user->currentTeam ? $user->currentTeam->name : 'No Team',
-                    'client' => $user->client ? $user->client->client_name : 'No Client         '
+                    'client' => $user->client ? $user->client->client_name : 'No Client'
                 ];
             }),
         ]);
@@ -93,7 +93,7 @@ class UserController extends Controller
         // dd($user->client);
         return Inertia::render('Users/EditUsers', [
             'user' => $user,
-            'userclient' => $user->client,
+            'userclient' => $user->client ?? 'No Client',
             'client' => $client,
             'teams' => $teams, // Pass teams to the view
         ]);

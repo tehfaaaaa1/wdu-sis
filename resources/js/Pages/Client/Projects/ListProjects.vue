@@ -58,7 +58,7 @@ const filteredProjects = computed(() => {
 <template>
     <AppLayout title="List Project">
         <template #header>
-            <NavLink :href="route('listclient')" class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang"><span class="text-black">Client&nbsp;</span> {{ client.client_name }}</NavLink> 
+            <NavLink :href="route('listclient')" class="!py-0 focus:!rounded-sm focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang "><span class="text-black">Client&nbsp;</span> {{ client.client_name }}</NavLink> 
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
