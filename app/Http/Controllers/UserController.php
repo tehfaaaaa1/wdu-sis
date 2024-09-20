@@ -13,8 +13,8 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::filter(request(['search', 'client', 'team']))->Paginate(12)->withQueryString();
-        // dd($request->all());
+        // dump($request->all());
+        $users = User::filter(request(['search', 'client', 'team', 'noteam', 'noclient']))->Paginate(12)->withQueryString();
         $clientall  = Client::all();
         $teams = Team::all();
         foreach ($users as $user) {

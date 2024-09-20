@@ -90,5 +90,11 @@ class User extends Authenticatable
         $query->when($filters['team']??false, fn($query, $team)=> 
             $query->whereHas('currentTeam', fn($query)=> $query->whereIn('name', $team))
         );
+        $query->when($filters['noteam'] ?? false, fn($query)=> 
+            $query->where('current_team_id', null)
+        );
+        $query->when($filters['noclient'] ?? false, fn($query)=> 
+            $query->where('client_id', null)
+        );
     }
 }

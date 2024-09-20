@@ -22,6 +22,8 @@ const form = useForm({
         tim: [],
     })),
     search: '',
+    noteam: '',
+    noclient:'',
 });
 const showDeleteModal = ref(false);
 const selectedUserId = ref(null);
@@ -63,7 +65,7 @@ const search = () => {
                     </NavLink>
                 </div>
                 <div class="w-1/4 flex items-center py-2 text-sm">
-                    <input type="text" v-model="form.search"
+                    <input type="text" v-model="form.search" @keyup.enter="search"
                         class="w-full me-3 border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-primary"
                         placeholder="Search">
                     <div class="relative" id="filter">
@@ -81,6 +83,8 @@ const search = () => {
                             <template #content>
                                 <div class="p-3">
                                     <p class="text-sm text-gray-400 mb-1">Teams</p>
+                                    <input type="checkbox" v-model="form.noteam" id="noteam" name="noteam" value="">
+                                    <label for="noteam">No Team</label>
                                     <div class="mb-1.5 flex items-center" v-for="(t, index) in team" :key="index">
                                         <input type="checkbox" :id="'team' + t.id" :name="'team' + t.id"
                                             v-model="form.team[index].tim" :value="t.name">
@@ -88,6 +92,8 @@ const search = () => {
                                     </div>
                                     <hr class="my-3">
                                     <p class="text-sm text-gray-400 mb-1">Clients</p>
+                                    <input type="checkbox" v-model="form.noclient" id="noclient" name="noclient" value="">
+                                    <label for="noclient">No Client</label>
                                     <div class="mb-1.5 flex items-center" v-for="(c, index) in client" :key="index">
                                         <input type="checkbox" :id="'client' + c.id + index" :name="'client' + c.id + index"
                                         v-model="form.client[index].isi" :value="c.slug">
