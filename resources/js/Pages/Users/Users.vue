@@ -112,7 +112,7 @@ const search = ()=>{
                         </tr>
                     </tbody>
                 </table>
-                <div class="px-6 py-4" v-if="isEmpty(users)">
+                <div class="px-6 py-4" v-if="isEmpty(users.data)">
                     <p>User Tersebut Tidak Ada</p>
                     <NavLink :href="route('users')">Kembali</NavLink>
                 </div>
