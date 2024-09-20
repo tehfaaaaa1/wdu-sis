@@ -21,7 +21,6 @@ class UserController extends Controller
             $client = $user->client ?? '';
             $team = $user->currentTeam ?? '';
         }
-        // dd($users);
         return Inertia::render('Users/Users', [
             'users' => $users,
             'client' => $clientall,

@@ -105,7 +105,8 @@ const search = ()=>{
                                 {{ user.client != null ? user.client.client_name : 'No Client'  }}
                             </td>
                             <td class="px-6 py-4">
-                                <a :href="route('edit_user', user.id)"class="font-medium text-blue-600 hover:underline mr-4 py-1 px-2 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Edit</a>
+                                <a :href="route('edit_user', user.id)"   
+                                    class="font-medium text-blue-600 hover:underline mr-4 py-1 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Edit</a>
                                 <a @click="hapus(user.id)"
                                     class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                             </td>
