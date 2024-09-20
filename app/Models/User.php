@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -77,5 +78,18 @@ class User extends Authenticatable
     }
     public function biodata():  BelongsTo{
         return $this->belongsTo(Biodata::class);
+    }
+    public function scopeFilter(Builder $query, array $filters) {
+        $query->when($filters['search'] ?? false, fn($query, $search)  =>
+            $query->where('name', 'like', '%'. $search. '%')->orWhere('usertype', 'like', '%'. $search. '%')->orWhere('email', 'like', '%'. $search. '%')
+        );
+
+        $query->when($filters['client']??false, fn($query, $client)=> 
+            $query->whereHas('client', fn($query)=> $query->whereIn('slug', $client))
+        );
+        
+        $query->when($filters['team']??false, fn($query, $team)=> 
+            $query->whereHas('currentTeam', fn($query)=> $query->where('name', $team))
+        );
     }
 }

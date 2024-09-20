@@ -113,9 +113,11 @@ const getSurveySubmissions = (surveyId) => {
 <template>
     <AppLayout title="List Kuisioner">
         <template #header>
-            <NavLink :href="route('projects', clientSlug)" class="!py-0 focus:!rounded-sm focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang ">
-                <span class="text-black">Project&nbsp;</span> {{ project.project_name }}
-            </NavLink>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <NavLink :href="route('projects', clientSlug)" class="!py-0 focus:!rounded-sm focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang ">
+                    <span class="text-black">Project&nbsp;</span> {{ project.project_name }}
+                </NavLink>
+            </div>
         </template>
 
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
@@ -132,7 +134,7 @@ const getSurveySubmissions = (surveyId) => {
 
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_surveys', [clientSlug, projectSlug])"
+                        <NavLink :href="route('create_surveys', [ Slug, projectSlug])"
                             v-if="$page.props.auth.user.usertype === 'superadmin'"
                             class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition focus:ring-2 focus:ring-primary">
                             Tambah Kuisioner
@@ -181,7 +183,7 @@ const getSurveySubmissions = (surveyId) => {
                                     Target Lokasi :
                                     <ul>
                                         <li v-for="(province, index) in getSelectedProvinces(survey, props.provinces).list" :key="index">
-                                             {{ province.name }} ({{ province.response }}) 
+                                             - {{ province.name }} <b>({{ province.response }})</b> 
                                         </li>
                                     </ul>
                                 </td>

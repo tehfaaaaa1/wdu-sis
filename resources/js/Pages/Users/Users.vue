@@ -6,15 +6,25 @@ import { useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import NavLink from '@/Components/NavLink.vue';
 import Pagination from '@/Components/Pagination.vue';
+import { isEmpty } from 'lodash';
 
 const props = defineProps({
-    users: [Array, Object],
+    users: Array,
+    client: Object,
+    team: Object
 });
 
-const form = useForm({});
+const form = useForm({
+    client: props.client.map(()=>({
+        isi: [],
+    })),  
+    search: '',
+    team: props.team.map(()=>({
+        isi: [],
+    }))
+});
 const showDeleteModal = ref(false);
 const selectedUserId = ref(null);
-const searchQuery = ref('');
 
 const hapus = (id) => {
     selectedUserId.value = id;
@@ -31,18 +41,9 @@ const confirmDeletion = () => {
 const cancelDeletion = () => {
     showDeleteModal.value = false;
 };
-console.log(props.users)
-const filteredUsers = computed(() => {
-    return props.users.data.filter(user => {
-        return (
-            user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
-            // user.usertype.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            // user.current_team.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            // user.client.client_name.toLowerCase().includes(searchQuery.value.toLocaleLowerCase())
-        );
-    });
-});
+const search = ()=>{
+    form.get(route('users'))
+}
 </script>
 
 
@@ -62,10 +63,18 @@ const filteredUsers = computed(() => {
                     </NavLink>
                 </div>
                 <div class="flex items-center px-4 py-2 text-sm">
-                    <input type="text" v-model="searchQuery" class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Search">
+                    <input type="text" v-model="form.search" class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Search">
+                    <div class="" v-for="(c, index) in client" :key="index">
+                        <input type="checkbox" :id="'client'+ c.id+index" :name="'client'+ c.id+index" v-model="form.client[index].isi" :value="c.slug">
+                        <label class="px-2" :for="'client'+ c.id+index">{{index +1 + '.'+ c.client_name }}</label>
+                    </div>
+                    <div class="" v-for="(t, index) in team" :key="index">
+                        <input type="checkbox" :id="'team'+ t.id" :name="'team'+ t.id" v-model="form.team[index].isi" :value="t.name">
+                        <label class="px-2" :for="'team'+t.id">{{ t.name }}</label>
+                    </div>
+                    <button type="button" @click="search">Search</button>
                 </div>
             </div>
-
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 sm:table-fixed">
                     <thead class="text-xs text-white uppercase bg-primary">
@@ -79,7 +88,7 @@ const filteredUsers = computed(() => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in filteredUsers" :key="user.id" class="bg-white border-b hover:bg-gray-50">
+                        <tr v-for="user in users.data" :key="user.id" class="bg-white border-b hover:bg-gray-50">
                             <td scope="row" class="px-6 py-4 font-medium text-gray-900">
                                 {{ user.name }}
                             </td>
@@ -104,6 +113,10 @@ const filteredUsers = computed(() => {
                         </tr>
                     </tbody>
                 </table>
+                <div class="px-6 py-4" v-if="isEmpty(users.data)">
+                    <p>User Tersebut Tidak Ada</p>
+                    <NavLink :href="route('users')">Kembali</NavLink>
+                </div>
                 <Pagination :links="users.links" />
             </div>
         </div>

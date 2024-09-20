@@ -11,15 +11,20 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::Paginate(12);
+        $users = User::filter(request(['search', 'client', 'team']))->Paginate(12)->withQueryString();
+        $clientall  = Client::all();
+        $teams = Team::all();
+        // dump($request->search);
         foreach ($users as $user) {
             $client = $user->client ?? '';
             $team = $user->currentTeam ?? '';
         }
         return Inertia::render('Users/Users', [
             'users' => $users,
+            'client' => $clientall,
+            'team'=> $teams
         ]);
     }
 
