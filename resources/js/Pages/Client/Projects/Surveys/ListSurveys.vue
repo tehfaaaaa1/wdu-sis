@@ -153,16 +153,19 @@ const getSurveySubmissions = (surveyId) => {
                 </div>
 
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-                        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white">
-                            <div class="flex justify-between w-full ">
-                                <div>
-                                    {{ project['project_name'] }}
-                                    <p class="mt-1 mb-4 text-sm font-normal text-gray-500">{{ project['desc'] }}</p>
-                                </div>
-                            </div>
-                            <div class="border-b-2 border-gray-300"></div>
-                        </caption>
+                    <table class="w-full text-sm text-gray-500">
+                        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white text-center">
+                            <img :src="`/img/${client.image}`" alt="" class="h-60 w-full object-scale-down border-b-1 border-gray-400 mb-5">
+                            {{ client['client_name'] }}
+                            <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
+                                {{ client['desc'] }}
+                            </p>
+                            <div class="border-b-2 border-gray-300 mb-5"></div>
+                                {{ project['project_name'] }}
+                            <p class="text-sm font-normal text-gray-500">
+                                {{ project['desc'] }}
+                            </p>
+                        </caption>  
 
                         <thead class="text-xs text-white uppercase bg-primary">
                             <tr>
