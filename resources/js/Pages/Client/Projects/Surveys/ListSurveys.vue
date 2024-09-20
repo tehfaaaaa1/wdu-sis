@@ -134,18 +134,18 @@ const getSurveySubmissions = (surveyId) => {
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_surveys', [clientSlug, projectSlug])"
                             v-if="$page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                            class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition focus:ring-2 focus:ring-primary">
                             Tambah Kuisioner
                         </NavLink>
                         <NavLink :href="route('projects', [clientSlug])"
-                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition focus:ring-2 focus:ring-primary">
                             Back to Project
                         </NavLink>
                     </div>
 
                     <div class="flex items-center px-4 py-2 text-sm w-60">
                         <input type="text" v-model="searchQuery"
-                            class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
+                            class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-primary"
                             placeholder="Search">
                     </div>
                 </div>
@@ -207,7 +207,7 @@ const getSurveySubmissions = (surveyId) => {
                                         </NavLink>
 
                                     <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"
-                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary focus:!ring-secondary hover:outline hover:outline-primary transition">
                                         Cek Respon
                                     </NavLink>
                                     
@@ -220,8 +220,8 @@ const getSurveySubmissions = (surveyId) => {
                                     <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                         class="mt-5 text-center col-span-2">
                                         <a :href="route('edit_surveys', [clientSlug, projectSlug, survey.id])"
-                                            class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
-                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
+                                            class="font-medium text-blue-600 hover:underline mr-4 focus p-1 px-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-sm focus:rounded-sm">Edit</a>
+                                        <a @click="hapus(clientSlug, projectSlug, survey.id)" class="font-medium text-red-600 hover:underline cursor-pointer p-1">Delete</a>
                                     </div>
                                     </div>
                                        

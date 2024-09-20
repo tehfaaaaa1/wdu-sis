@@ -83,10 +83,10 @@ const submit = () => {
 
                     <div class="mt-4 relative">
                         <h3>Select Provinces:</h3>
-                        <div class="grid grid-cols-3">
+                        <div class="grid grid-rows-13 grid-flow-col">
                             <div v-for="province in provinces" :key="province.id" class="flex items-center mb-2">
-                                <input type="checkbox" :id="`province-${province.id}`" @change="toggleProvinceTarget(province.id)" />
-                                <label :for="`province-${province.id}`" class="ml-2">{{ province.name }}</label>
+                                <input  class="checked:text-primary checked:ring-primary focus:ring-primary" type="checkbox" :id="`province-${province.id}`" @change="toggleProvinceTarget(province.id)" />
+                                <label :for="`province-${province.id}`" class="ml-2">{{province.name}}</label>
                             </div>
                         </div>
                     </div>

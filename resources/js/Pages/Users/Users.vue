@@ -62,9 +62,7 @@ const filteredUsers = computed(() => {
                     </NavLink>
                 </div>
                 <div class="flex items-center px-4 py-2 text-sm">
-                            <input type="text" v-model="searchQuery"
-                                class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
-                                placeholder="Search">
+                    <input type="text" v-model="searchQuery" class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Search">
                 </div>
             </div>
 
@@ -99,7 +97,7 @@ const filteredUsers = computed(() => {
                             </td>
                             <td class="px-6 py-4">
                                 <a :href="route('edit_user', user.id)"   
-                                    class="font-medium text-blue-600 hover:underline mr-4">Edit</a>
+                                    class="font-medium text-blue-600 hover:underline mr-4 py-1 px-2 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Edit</a>
                                 <a @click="hapus(user.id)"
                                     class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
                             </td>
