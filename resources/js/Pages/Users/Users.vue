@@ -5,9 +5,10 @@ import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import NavLink from '@/Components/NavLink.vue';
+import Pagination from '@/Components/Pagination.vue';
 
 const props = defineProps({
-    users: Array,
+    users: [Array, Object],
 });
 
 const form = useForm({});
@@ -27,19 +28,18 @@ const confirmDeletion = () => {
         }
     });
 };
-
 const cancelDeletion = () => {
     showDeleteModal.value = false;
 };
-
+console.log(props.users)
 const filteredUsers = computed(() => {
-    return props.users.filter(user => {
+    return props.users.data.filter(user => {
         return (
             user.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            user.usertype.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            user.team.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-            user.client.toLowerCase().includes(searchQuery.value.toLocaleLowerCase())
+            user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+            // user.usertype.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            // user.current_team.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            // user.client.client_name.toLowerCase().includes(searchQuery.value.toLocaleLowerCase())
         );
     });
 });
@@ -72,7 +72,7 @@ const filteredUsers = computed(() => {
                         <tr>
                             <th scope="col" class="px-6 py-3">Name</th>
                             <th scope="col" class="px-6 py-3">Email</th>
-                            <th scope="col" class="px-6 py-3">User Type</th>
+                            <th scope="col" class="px-6 py-3 w-[10%]">User Type</th>
                             <th scope="col" class="px-6 py-3">Team</th>
                             <th scope="col" class="px-6 py-3">Client</th>
                             <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
@@ -80,20 +80,20 @@ const filteredUsers = computed(() => {
                     </thead>
                     <tbody>
                         <tr v-for="user in filteredUsers" :key="user.id" class="bg-white border-b hover:bg-gray-50">
-                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900">
                                 {{ user.name }}
                             </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">
+                            <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 break-words">
                                 {{ user.email }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ user.usertype }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ user.team }}
+                                {{ user.current_team != null ?  user.current_team.name : 'No Team' }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ user.client  }}
+                                {{ user.client != null ? user.client.client_name : 'No Client'  }}
                             </td>
                             <td class="px-6 py-4">
                                 <a :href="route('edit_user', user.id)"   
@@ -104,6 +104,7 @@ const filteredUsers = computed(() => {
                         </tr>
                     </tbody>
                 </table>
+                <Pagination :links="users.links" />
             </div>
         </div>
 

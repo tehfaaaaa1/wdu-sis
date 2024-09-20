@@ -13,17 +13,14 @@ class UserController extends Controller
 {
     public function index()
     {
+        $users = User::Paginate(12);
+        foreach ($users as $user) {
+            $client = $user->client ?? '';
+            $team = $user->currentTeam ?? '';
+        }
+        // dd($users);
         return Inertia::render('Users/Users', [
-            'users' => User::with('currentTeam')->get()->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'usertype' => $user->usertype,
-                    'team' => $user->currentTeam ? $user->currentTeam->name : 'No Team',
-                    'client' => $user->client ? $user->client->client_name : 'No Client'
-                ];
-            }),
+            'users' => $users,
         ]);
     }
 
@@ -90,10 +87,10 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $teams = Team::all(); // Fetch all teams for the view
         $client = Client::all();
-        // dd($user->client);
+        // dd($user);
         return Inertia::render('Users/EditUsers', [
             'user' => $user,
-            'userclient' => $user->client ?? 'No Client',
+            'userclient' => $user->client ?? 'null',
             'client' => $client,
             'teams' => $teams, // Pass teams to the view
         ]);
