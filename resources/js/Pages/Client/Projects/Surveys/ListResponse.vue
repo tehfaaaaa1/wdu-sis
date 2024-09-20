@@ -90,7 +90,7 @@ const getSelectedProvinces = (survey, provinces) => {
                                     <th scope="col" class="px-6 py-3">Email</th>
                                     <!-- <th scope="col" class="px-6 py-3"></th> -->
                                     <th scope="col" class="px-6 py-3">Wilayah/Daerah</th>
-                                    <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
+                                    <th scope="col" class="px-6 py-3 md:w-1/5 text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -112,9 +112,9 @@ const getSelectedProvinces = (survey, provinces) => {
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-4 text-center">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
-                                            class="font-medium text-blue-600 hover:underline mr-4">Lihat Hasil</a>
+                                            class="font-medium text-center text-blue-600 hover:underline py-1 px-2 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Lihat Hasil</a>
                                     </td>
                                 </tr>
                             </tbody>

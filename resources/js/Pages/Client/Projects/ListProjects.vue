@@ -58,7 +58,7 @@ const filteredProjects = computed(() => {
 <template>
     <AppLayout title="List Project">
         <template #header>
-            <NavLink :href="route('listclient')" class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang"><span class="text-black">Client&nbsp;</span> {{ client.client_name }}</NavLink> 
+            <NavLink :href="route('listclient')" class="!py-0 focus:!rounded-sm focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang "><span class="text-black">Client&nbsp;</span> {{ client.client_name }}</NavLink> 
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -72,7 +72,7 @@ const filteredProjects = computed(() => {
                     </div>
                     <div class="flex items-center px-4 py-2 text-sm w-60">
                         <input type="text" v-model="searchQuery"
-                            class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring focus:ring-primary focus:border-primary"
+                            class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-primary"
                             placeholder="Search">
                     </div>
                 </div>

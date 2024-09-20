@@ -113,7 +113,7 @@ const getSurveySubmissions = (surveyId) => {
 <template>
     <AppLayout title="List Kuisioner">
         <template #header>
-            <NavLink :href="route('projects', clientSlug)" class="!p-0 focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang">
+            <NavLink :href="route('projects', clientSlug)" class="!py-0 focus:!rounded-sm focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang ">
                 <span class="text-black">Project&nbsp;</span> {{ project.project_name }}
             </NavLink>
         </template>
@@ -145,7 +145,7 @@ const getSurveySubmissions = (surveyId) => {
 
                     <div class="flex items-center px-4 py-2 text-sm w-60">
                         <input type="text" v-model="searchQuery"
-                            class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-primary"
+                            class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-none focus:shadow-md"
                             placeholder="Search">
                     </div>
                 </div>
@@ -207,7 +207,7 @@ const getSurveySubmissions = (surveyId) => {
                                         </NavLink>
 
                                     <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"
-                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary focus:!ring-secondary hover:outline hover:outline-primary transition">
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary focus:!ring-secondary hover:outline hover:outline-primary transition ">
                                         Cek Respon
                                     </NavLink>
                                     

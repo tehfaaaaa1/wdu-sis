@@ -93,7 +93,7 @@ const filteredUsers = computed(() => {
                                 {{ user.team }}
                             </td>
                             <td class="px-6 py-4">
-                                {{ user.client }}
+                                {{ user.client  }}
                             </td>
                             <td class="px-6 py-4">
                                 <a :href="route('edit_user', user.id)"   
