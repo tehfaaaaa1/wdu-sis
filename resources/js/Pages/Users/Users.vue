@@ -82,27 +82,33 @@ const search = () => {
 
                             <template #content>
                                 <div class="p-3">
-                                    <p class="text-sm text-gray-400 mb-1">Teams</p>
-                                    <input type="checkbox" v-model="form.noteam" id="noteam" name="noteam" value="">
-                                    <label for="noteam">No Team</label>
-                                    <div class="mb-1.5 flex items-center" v-for="(t, index) in team" :key="index">
-                                        <input type="checkbox" :id="'team' + t.id" :name="'team' + t.id"
-                                            v-model="form.team[index].tim" :value="t.name">
-                                        <label class="px-2" :for="'team' + t.id">{{ t.name }}</label>
+                                    <div class="Teams">
+                                        <p class="text-xs text-gray-500 mb-1">Teams</p>
+                                        <div class="mb-1.5">
+                                            <input type="checkbox" v-model="form.noteam" id="noteam" name="noteam" value="">
+                                            <label class="px-2" for="noteam">No Team</label>
+                                        </div>
+                                        <div class="mb-1.5 flex items-center" v-for="(t, index) in team" :key="index">
+                                            <input type="checkbox" :id="'team' + t.id" :name="'team' + t.id" v-model="form.team[index].tim" :value="t.name">
+                                            <label class="px-2" :for="'team' + t.id">{{ t.name }}</label>
+                                        </div>
+                                        <hr class="my-3">
                                     </div>
-                                    <hr class="my-3">
-                                    <p class="text-sm text-gray-400 mb-1">Clients</p>
-                                    <input type="checkbox" v-model="form.noclient" id="noclient" name="noclient" value="">
-                                    <label for="noclient">No Client</label>
-                                    <div class="mb-1.5 flex items-center" v-for="(c, index) in client" :key="index">
-                                        <input type="checkbox" :id="'client' + c.id + index" :name="'client' + c.id + index"
-                                        v-model="form.client[index].isi" :value="c.slug">
-                                        <label class="px-2" :for="'client' + c.id + index">
-                                            {{ c.client_name }}
-                                        </label>
+                                    <div class="Client">
+                                        <p class="text-xs text-gray-500 mb-1">Clients</p>
+                                        <div class="No Client mb-1.5">
+                                            <input type="checkbox" v-model="form.noclient" id="noclient" name="noclient" value="">
+                                            <label class="px-2" for="noclient">No Client</label>
+                                        </div>
+                                        <div class="mb-1.5 flex items-center" v-for="(c, index) in client" :key="index">
+                                            <input type="checkbox" :id="'client' + c.id + index" :name="'client' + c.id + index" v-model="form.client[index].isi" :value="c.slug">
+                                            <label class="px-2" :for="'client' + c.id + index">
+                                                {{ c.client_name }}
+                                            </label>
+                                        </div>
+                                        <hr class="my-3">
                                     </div>
-                                    <hr class="my-3">
-                                    <button type="button" @click="search" class="w-full bg-primary py-2 rounded-md text-white text-center">Search</button>
+                                    <button type="button" @click="search" class="w-full hover:bg-white hover:text-primary hover:ring-2 hover:ring-primary transition bg-primary py-2 rounded-md text-white text-center">Search</button>
                                 </div>
                             </template>
                         </DropdownAlt>
