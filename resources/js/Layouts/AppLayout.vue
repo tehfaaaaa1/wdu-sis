@@ -58,7 +58,7 @@ const logout = () => {
                                     :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                                     Admin Panel
                                 </NavLink> -->
-                                <NavLink :href="route('listclient')" :active="route().current('listclient')">
+                                <NavLink class="focus:text-primary" :href="route('listclient')" :active="route().current('listclient')">
                                     Client
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('users')"

@@ -6,8 +6,8 @@
                 <div v-if="link.url === null"></div>
 
                 <Link v-else
-                    class="transition mr-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded hover:bg-gray-100 focus:border-secondary inline-block focus:text-secondary"
-                    :class="{ 'bg-secondary text-white hover:bg-white hover:text-secondary': link.active }"
+                    class="transition mr-1 px-4 py-3 text-sm leading-4 text-gray-400 ring-1 ring-gray-200 rounded hover:bg-gray-100 focus:bg-gray-100 inline-block outline-0"
+                    :class="{ 'bg-secondary focus:bg-white focus:ring-secondary focus:text-secondary hover:border-secondary text-white hover:bg-white hover:text-secondary': link.active }"
                     :href="link.url">
                 <span v-html="link.label"></span>
                 </Link>
