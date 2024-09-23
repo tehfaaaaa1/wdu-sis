@@ -46,6 +46,14 @@ const cancelDeletion = () => {
 const search = () => {
     form.get(route('users'))
 }
+let test = props.users.links.find(l=> l.label == 'pagination.next')
+let test2 = props.users.links.find(l=> l.label == 'pagination.previous')
+if(test.label == 'pagination.next'){
+    test.label = 'Next'
+}
+if (test2.label == 'pagination.previous'){
+    test2.label = 'Previous'
+}
 </script>
 
 
@@ -110,7 +118,7 @@ const search = () => {
                                         </div>
                                         <hr class="my-3">
                                     </div>
-                                    <button type="button" @click="search" class="w-full hover:bg-white hover:text-primary hover:ring-2 hover:ring-primary transition bg-primary py-2 rounded-md text-white text-center">Search</button>
+                                    <button type="button" @click="search" class="w-full hover:bg-white hover:text-primary hover:ring-2 hover:ring-primary transition bg-primary py-2 rounded-md text-white text-center">Filter</button>
                                 </div>
                             </template>
                         </DropdownAlt>

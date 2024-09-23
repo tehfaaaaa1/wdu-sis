@@ -59,7 +59,7 @@ const submit = () => {
 <template>
     <AppLayout title="Create Survey">
         <div class="mt-6 sm:mt-1 px-1">
-            <AuthenticationCard>
+            <div class="w-full sm:max-w-lg mt-6 mb-6 px-6 py-4 bg-white border-2 mx-auto shadow-md overflow-hidden sm:rounded-lg">
                 <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New Survey</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
@@ -73,7 +73,7 @@ const submit = () => {
                             class="block text-primary placeholder-primary w-full h-28 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6" />
                         <InputError class="mt-2" :message="form.errors.desc" />
                     </div>
-
+                    
                     <div class="mt-4 relative">
                         <h2 class="text-primary font-semibold text-1xl text-left">Survey Target:</h2>
                     </div>
@@ -103,7 +103,7 @@ const submit = () => {
                         </PrimaryButton>
                     </div>
                 </form>
-            </AuthenticationCard>
+            </div>
         </div>
     </AppLayout>
 </template>
