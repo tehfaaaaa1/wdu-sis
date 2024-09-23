@@ -81,7 +81,7 @@ const filteredProjects = computed(() => {
 
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500">
-                        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white text-center">
+                        <caption class="p-5 text-lg font-semibold rtl:text-right text-gray-900 bg-white text-center">
                             <img :src="`/img/${client.image}`" alt="" class="h-60 w-full object-scale-down border-b-1 border-gray-400 mb-5">
                             {{ client['client_name'] }}
                             <p class="mt-1 mb-4 text-sm font-normal text-gray-500">

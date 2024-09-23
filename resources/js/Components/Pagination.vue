@@ -7,7 +7,8 @@
 
                 <Link v-else
                     class="transition mr-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded hover:bg-gray-100 focus:border-secondary inline-block focus:text-secondary"
-                    :class="{ 'bg-secondary text-white hover:bg-white hover:text-secondary': link.active }" :href="link.url">
+                    :class="{ 'bg-secondary text-white hover:bg-white hover:text-secondary': link.active }"
+                    :href="link.url">
                 <span v-html="link.label"></span>
                 </Link>
             </template>
@@ -29,12 +30,12 @@ const props = defineProps({
     }
 });
 
-let test = props.links.find(l=> l.label == 'pagination.next')
-let test2 = props.links.find(l=> l.label == 'pagination.previous')
-if(test.label == 'pagination.next'){
-    test.label = 'Next'
+let test = props.links.find(l => l.label == 'pagination.next')
+let test2 = props.links.find(l => l.label == 'pagination.previous')
+if (props.links.find(l => l.label == 'pagination.next') == 'pagination.next') {
+    props.links.find(l => l.label == 'pagination.next').label = 'Next'
 }
-if (test2.label == 'pagination.previous'){
-    test2.label = 'Previous'
+if (props.links.find(l => l.label == 'pagination.previous') == 'pagination.previous') {
+    props.links.find(l => l.label == 'pagination.previous').label = 'Previous'
 }
 </script>
