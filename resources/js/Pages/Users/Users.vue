@@ -46,12 +46,7 @@ const cancelDeletion = () => {
 const search = () => {
     form.get(route('users'))
 }
-if(props.users.links.find(l=> l.label == 'pagination.next')){
-    props.users.links.find(l=> l.label == 'pagination.next').label = 'Next'
-}
-if(props.users.links.find(l=> l.label == 'pagination.previous')){
-    props.users.links.find(l=> l.label == 'pagination.previous').label = 'Previous'
-}
+
 </script>
 
 
