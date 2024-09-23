@@ -61,7 +61,7 @@ const filteredClients = computed(() => {
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_client_page')"
                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primarytransition">
                             Add Clients
                         </NavLink>
                     </div>
@@ -101,12 +101,12 @@ const filteredClients = computed(() => {
                         <div class="pb-3 px-3 mx-5 sm:mx-0">
                             <div class="flex justify-center mt-3">
                                 <NavLink
-                                    class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition mr-4"
+                                    class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4"
                                     :href="route('profile_client', client.id)">
                                     Profile
                                 </NavLink>
                                 <NavLink
-                                    class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition"
+                                    class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition"
                                     :href="route('projects', client.slug)">
                                     See Projects
                                 </NavLink>

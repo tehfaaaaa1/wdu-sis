@@ -136,11 +136,11 @@ const getSurveySubmissions = (surveyId) => {
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_surveys', [ clientSlug, projectSlug])"
                             v-if="$page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition focus:ring-2 focus:ring-primary">
+                            class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-m hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
                             Tambah Kuisioner
                         </NavLink>
                         <NavLink :href="route('projects', [clientSlug])"
-                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition focus:ring-2 focus:ring-primary">
+                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
                             Back to Project
                         </NavLink>
                     </div>
@@ -206,19 +206,19 @@ const getSurveySubmissions = (surveyId) => {
                                         </div>
                                         <NavLink v-else
                                             :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition"
+                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary transition"
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
                                             Isi Kuisioner
                                         </NavLink>
 
                                     <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"
-                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary focus:!ring-secondary hover:outline hover:outline-primary transition ">
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:text-secondary focus:hover:!ring-secondary hover:!ring-secondary focus:!ring-secondary transition ">
                                         Cek Respon
                                     </NavLink>
                                     
                                     <NavLink :href="route('question_surveys', [clientSlug, projectSlug, survey.id])"
                                         v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                                        class="col-span-2 w-full flex justify-center py-2.5 text-white bg-primary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline hover:outline-primary transition">
+                                        class="col-span-2 w-full flex justify-center py-2.5 text-white bg-primary rounded-md text-sm hover:bg-transparent hover:!text-primary transition">
                                         Tambah pertanyaan
                                     </NavLink>
 
