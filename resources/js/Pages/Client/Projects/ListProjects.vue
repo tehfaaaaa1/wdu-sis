@@ -59,7 +59,7 @@ const filteredProjects = computed(() => {
     <AppLayout title="List Project">
         <template #header>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <NavLink :href="route('listclient')" class="!py-0 focus:!rounded-sm focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang "><span class="text-black">Client&nbsp;</span> {{ client.client_name }}</NavLink> 
+                <NavLink :href="route('listclient')" class="!py-0 focus:!rounded-sm hover:!rounded-sm focus:!border-0 !m-0 !font-semibold !text-lg text-ijo-terang "><span class="text-black">Client&nbsp;</span> {{ client.client_name }}</NavLink> 
             </div>
         </template>
         <main class="min-h-screen bg-repeat bg-[('/img/bg-dashboard.png')]">
@@ -68,7 +68,7 @@ const filteredProjects = computed(() => {
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_projects', clientSlug)"
                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md border-2 hover:bg-white hover:text-primary hover:border-primary transition">
+                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary transition">
                             Add Project
                         </NavLink>
                     </div>
@@ -112,7 +112,7 @@ const filteredProjects = computed(() => {
                                 </td> -->
                                 <td class="px-6 py-6">
                                     <NavLink :href="route('listsurvey', [clientSlug, project.slug])"
-                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary hover:outline focus:!ring-secondary hover:outline-primary transition hover:duration-200">
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary transition">
                                         Lihat Kuisioner
                                     </NavLink>
                                     <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
