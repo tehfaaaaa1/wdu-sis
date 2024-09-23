@@ -29,12 +29,10 @@ const props = defineProps({
     }
 });
 
-let test = props.links.find(l=> l.label == 'pagination.next')
-let test2 = props.links.find(l=> l.label == 'pagination.previous')
-if(test.label == 'pagination.next'){
-    test.label = 'Next'
+if(props.links.find(l=> l.label == 'pagination.next')){
+    props.links.find(l=> l.label == 'pagination.next').label = 'Next'
 }
-if (test2.label == 'pagination.previous'){
-    test2.label = 'Previous'
+if(props.links.find(l=> l.label == 'pagination.previous')){
+    props.links.find(l=> l.label == 'pagination.previous').label = 'Previous'
 }
 </script>
