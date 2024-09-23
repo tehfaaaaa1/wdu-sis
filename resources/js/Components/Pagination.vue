@@ -18,7 +18,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import { defineEmits } from 'vue';
-defineProps({
+const props = defineProps({
     links: {
         type: Object,
         required: true,
@@ -28,4 +28,13 @@ defineProps({
         })
     }
 });
+
+let test = props.links.find(l=> l.label == 'pagination.next')
+let test2 = props.links.find(l=> l.label == 'pagination.previous')
+if(test.label == 'pagination.next'){
+    test.label = 'Next'
+}
+if (test2.label == 'pagination.previous'){
+    test2.label = 'Previous'
+}
 </script>
