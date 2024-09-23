@@ -91,17 +91,18 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
                 Route::patch('StatusChange/{id}', [SurveyController::class, 'statusChange'])->name('changeStatus')->middleware(['ableSurvey']);
                 
-                Route::get('/{id}/submission',[SurveyController::class, 'submission'])->name('submission_surveys');
-
+                
                 Route::get('/{Survey:id}/biodata/{Biodata:id}',[BiodataController::class, 'bio'])->name('biodata');
                 Route::get('/{Survey:id}/editbiodata/{Biodata:id}',[BiodataController::class, 'editbio'])->name('edit_bio');
                 Route::post('/{Survey:id}/add-biodata/{Biodata:id}',[BiodataController::class, 'addBio'])->name('add_bio');
                 Route::put('/{Survey:id}/update-biodata/{Biodata:id}',[BiodataController::class, 'updbio'])->name('update_bio');
-
-                Route::get('/{Survey:id}/report/{Response:id}',[SurveyController::class, 'report'])->name('report_surveys');
-
-                Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');
                 
+                
+                Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');
+                Route::get('/{id}/submission',[AnswerController::class, 'submission'])->name('submission_surveys');
+                
+                Route::get('/{Survey:id}/all-report/', [ResponseController::class, 'allreport'])->name('allreport');
+                Route::get('/{Survey:id}/report/{Response:id}',[ResponseController::class, 'report'])->name('report_surveys');
                 Route::get('/{id}/list-response',[ResponseController::class, 'index'])->name('response');
                 
                 Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);

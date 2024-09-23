@@ -70,6 +70,7 @@ const getSelectedProvinces = (survey, provinces) => {
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <h2 class="font-semibold text-lg">Summary</h2>
+                            <a :href="route('allreport',[clientSlug, projectSlug, props.surveys.id])">allReport</a>
                             <p class="font-medium">Wilayah:</p>
                             <ul>
                                 <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list" :key="index">
@@ -106,14 +107,10 @@ const getSelectedProvinces = (survey, provinces) => {
                                         {{ responses.user.name }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ responses.user.email }}
+                                    {{ responses.user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="" v-for="bio in biodata">
-                                            <div class="" v-if="bio.user_id === responses.user_id">
-                                                {{ bio.alamat }}
-                                            </div>
-                                        </div>
+                                        {{ responses.user.biodata.alamat }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
