@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import PieChart from '@/Components/PieChart.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
@@ -13,12 +13,37 @@ const props = defineProps({
 });
 const project = props.projects[0]
 const client = props.clients[0]
-const count = (choice, answer)=>{
+const count = (choice, answer) => {
     let all = answer.length
     choice.forEach(element => {
-        console.log(element.value + '. ' + (answer.filter(a=>a.answer == element.id).length / all) * 100 +' %')
+        console.log(element.value + '. ' + (answer.filter(a => a.answer == element.id).length / all) * 100 + ' %')
     });
 }
+
+const chartData = {
+  labels: ['Dawei', 'Jaki', 'Kinich', 'Fei Yu-Ching'],
+  datasets: [
+    {
+      label: 'Orang2 pintar 👍',
+      backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+      data: [40, 20, 80, 10],
+    },
+  ],
+};
+
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: true,
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: 'Smart People Distribution',
+    },
+  },
+};
 </script>
 
 <template>
@@ -35,26 +60,27 @@ const count = (choice, answer)=>{
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                     :key="index">
                                     <div class="block mb-2.5">
-                                        <p class="font-semibold">{{ index + 1 }}. <label>{{ question.question_text}}</label></p>
+                                        <p class="font-semibold">{{ index + 1 }}. <label>{{
+                                            question.question_text }}</label></p>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2">
                                             <div v-for="(list, i) in question.choice" :key="i">
                                                 <input type="radio" :name="'radio' + list.id" :id="'radio' + list.id"
-                                                disabled>
+                                                    disabled>
                                                 <label :for="'radio' + list.id" class="px-3">{{ list.value }}</label>
                                             </div>
                                             {{ question.answer }}
+                                            <PieChart :chart-data="chartData" :chart-options="chartOptions" />
                                         </div>
 
                                         <!-- Handle checkbox for question type 3 -->
                                         <div class="" v-if="question.question_type_id === 3">
                                             <div class="" v-for="(list, i) in question.choice" :key="i">
                                                 <input type="checkbox" :name="'checkbox' + list.id"
-                                                    :id="'checkbox' + list.id"
-                                                    disabled>
-                                                    <label :for="'checkbox' + list.id" class="px-3">{{ list.value }}</label>
-                                                </div>
-                                                {{ count(question.choice,question.answer) }}
+                                                    :id="'checkbox' + list.id" disabled>
+                                                <label :for="'checkbox' + list.id" class="px-3">{{ list.value }}</label>
+                                            </div>
+                                            {{ count(question.choice, question.answer) }}
                                         </div>
 
                                         <!-- Handling textarea for question type 1 -->
@@ -62,7 +88,7 @@ const count = (choice, answer)=>{
                                             <div class="px-5 mt-2" v-for="answe in question.answer">
                                                 <input v-if="answe.question_id == question.id" type="text"
                                                     :value="answe.answer" disabled class="rounded w-full">
-                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
