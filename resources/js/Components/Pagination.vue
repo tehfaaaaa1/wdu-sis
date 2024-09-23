@@ -7,7 +7,8 @@
 
                 <Link v-else
                     class="transition mr-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded hover:bg-gray-100 focus:border-secondary inline-block focus:text-secondary"
-                    :class="{ 'bg-secondary text-white hover:bg-white hover:text-secondary': link.active }" :href="link.url">
+                    :class="{ 'bg-secondary text-white hover:bg-white hover:text-secondary': link.active }"
+                    :href="link.url">
                 <span v-html="link.label"></span>
                 </Link>
             </template>
