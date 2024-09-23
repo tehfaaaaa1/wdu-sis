@@ -1,11 +1,15 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
+use App\Models\Flow;
+use Inertia\Inertia;
 use App\Models\Answer;
 use App\Models\Survey;
 use App\Models\Response;
+use App\Models\QuestionPage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AnswerController extends Controller
 {
@@ -66,4 +70,52 @@ class AnswerController extends Controller
         $jawab->answer = $answer;
         $jawab->save();
     }
+
+    public function submission(Survey $surveyModel, $clientSlug, $projectSlug, $id)
+    {
+        // Fetch survey, questions, project, client
+        $survey = Survey::findOrFail($id);
+        $project = DB::table('projects')->where('slug', $projectSlug)->get();
+        $client = DB::table('clients')->where('slug', $clientSlug)->get();
+        $page = QuestionPage::where('survey_id', $id)->get();
+        // Prepare data to pass to the view
+        $res = Response::where('survey_id', $id)->where('user_id', Auth::user()->id)->first();
+        $flow = Flow::where('survey_id', $id)->get();
+        $formattedPage = $page->map(function ($p) {
+            return [
+                'id' => $p->id,
+                'page_name' => $p->page_name,
+                'survey_id' => $p->survey_id,
+                'flow' => $p->flow->map(function ($f) {
+                    return ['flow'=>$f];
+                }),
+                'question' => $p->question->map(function ($q) {
+                    return [
+                        'id' => $q->id,
+                        'question_text' => $q->question_text,
+                        'question_type_id' => $q->question_type_id,
+                        'survey_id' => $q->survey_id,
+                        'order' => $q->order,
+                        'required' => $q->required,
+                        'choice' => $q->choice,
+                    ];
+                }),
+            ];
+        });
+
+        // Render the view
+        return Inertia::render(
+            'Client/Projects/Surveys/SubmissionSurvey',
+            [
+                'surveys' => $survey,
+                'projects' => $project,
+                'clients' => $client,
+                'page' => $formattedPage,
+                'pagee' => $page,
+                'flow' => $flow
+                // 'responses' => $res['id'] ?? null
+            ]
+        );
+    }
+
 }
