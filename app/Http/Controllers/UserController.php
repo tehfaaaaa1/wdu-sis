@@ -14,7 +14,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         // dump($request->all());
-        $users = User::filter(request(['search', 'client', 'team', 'noteam', 'noclient']))->Paginate(12)->withQueryString();
+        $users = User::filter(request(['search', 'client', 'team', 'noteam', 'noclient']))->Paginate(12)->withQueryString()->onEachSide(2);
         $clientall  = Client::all();
         $teams = Team::all();
         foreach ($users as $user) {
