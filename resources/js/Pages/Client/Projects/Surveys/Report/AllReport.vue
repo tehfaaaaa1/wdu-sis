@@ -1,6 +1,8 @@
 <script setup>
+import BarChart from '@/Components/BarChart.vue';
 import PieChart from '@/Components/PieChart.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { elements } from 'chart.js';
 
 const props = defineProps({
     surveys: Object,
@@ -13,24 +15,22 @@ const props = defineProps({
 });
 const project = props.projects[0]
 const client = props.clients[0]
-const count = (choice, answer) => {
-    let all = answer.length
-    choice.forEach(element => {
-        console.log(element.value + '. ' + (answer.filter(a => a.answer == element.id).length / all) * 100 + ' %')
-    });
-}
 
-const chartData = {
-  labels: ['Dawei', 'Jaki', 'Kinich', 'Fei Yu-Ching'],
-  datasets: [
-    {
-      label: 'Orang2 pintar 👍',
-      backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-      data: [40, 20, 80, 10],
-    },
-  ],
-};
 
+const MultiplechartData =(
+    props.page.map((page)=>({
+        question:page.question.map(()=>({
+            labels: [],
+            datasets: [{
+                label: 'Response',
+                backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
+                data: [],
+            }],
+        }))
+    }))
+)
+
+console.log(MultiplechartData)
 const chartOptions = {
   responsive: true,
   plugins: {
@@ -40,10 +40,20 @@ const chartOptions = {
     },
     title: {
       display: true,
-      text: 'Smart People Distribution',
+      text: 'Data',
     },
   },
 };
+
+const count = (pgind, qind, choice, answer) => {
+    const all = answer.length
+    
+    choice.forEach(element => {
+        const persentage = ((answer.filter(a=>a.answer == element.id).length *100) / all).toFixed(2)
+        MultiplechartData[pgind].question[qind].labels.push(element.value+'.'+ persentage +'%' )
+        MultiplechartData[pgind].question[qind].datasets[0].data.push(answer.filter(a=>a.answer == element.id).length)
+    });
+}
 </script>
 
 <template>
@@ -63,24 +73,27 @@ const chartOptions = {
                                         <p class="font-semibold">{{ index + 1 }}. <label>{{
                                             question.question_text }}</label></p>
                                         <!-- Handling radio inputs for question type 2 -->
-                                        <div v-if="question.question_type_id == 2">
-                                            <div v-for="(list, i) in question.choice" :key="i">
-                                                <input type="radio" :name="'radio' + list.id" :id="'radio' + list.id"
-                                                    disabled>
-                                                <label :for="'radio' + list.id" class="px-3">{{ list.value }}</label>
+                                        <div v-if="question.question_type_id == 2" class="flex gap-x-10">
+                                            <div class="">
+                                                <div v-for="(list, i) in question.choice" :key="i">
+                                                    <input type="radio" :name="'radio' + list.id" :id="'radio' + list.id"
+                                                        disabled>
+                                                    <label :for="'radio' + list.id" class="px-3">{{ list.value }}</label>
+                                                </div>
                                             </div>
-                                            {{ question.answer }}
-                                            <PieChart :chart-data="chartData" :chart-options="chartOptions" />
+                                            <PieChart :chart-data="MultiplechartData[ind].question[index]" :key="count(ind, index, question.choice, question.answer)" :chart-options="chartOptions" />
                                         </div>
 
                                         <!-- Handle checkbox for question type 3 -->
-                                        <div class="" v-if="question.question_type_id === 3">
-                                            <div class="" v-for="(list, i) in question.choice" :key="i">
-                                                <input type="checkbox" :name="'checkbox' + list.id"
-                                                    :id="'checkbox' + list.id" disabled>
-                                                <label :for="'checkbox' + list.id" class="px-3">{{ list.value }}</label>
+                                        <div class="flex gap-x-10" v-if="question.question_type_id === 3">
+                                            <div class="">
+                                                <div class="" v-for="(list, i) in question.choice" :key="i">
+                                                    <input type="checkbox" :name="'checkbox' + list.id"
+                                                        :id="'checkbox' + list.id" disabled>
+                                                    <label :for="'checkbox' + list.id" class="px-3">{{ list.value }}</label>
+                                                </div>
                                             </div>
-                                            {{ count(question.choice, question.answer) }}
+                                            <BarChart :chart-data="MultiplechartData[ind].question[index]" :key="count(ind, index, question.choice, question.answer)" :chart-options="chartOptions" />
                                         </div>
 
                                         <!-- Handling textarea for question type 1 -->
