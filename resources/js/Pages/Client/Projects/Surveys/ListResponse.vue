@@ -98,8 +98,7 @@ const getSelectedProvinces = (survey, provinces) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(responses, index) in response" :key="index"
-                                    class="bg-white border-b hover:bg-gray-50">
+                                <tr v-for="(responses, index) in response" :key="index" class="bg-white border-b hover:bg-gray-50">
                                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                         {{ index + 1 }}
                                     </td>
@@ -107,10 +106,10 @@ const getSelectedProvinces = (survey, provinces) => {
                                         {{ responses.user.name }}
                                     </td>
                                     <td class="px-6 py-4">
-                                    {{ responses.user.email }}
+                                        {{ responses.user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ responses.user.biodata.alamat }}
+                                        {{ responses.user.biodata ? responses.user.biodata.alamat : 'Tidak ada alamat' }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
