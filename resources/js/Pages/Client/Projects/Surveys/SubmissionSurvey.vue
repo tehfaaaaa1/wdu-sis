@@ -4,6 +4,7 @@ import { computed, ref, watch, onMounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { debounce } from 'lodash';
 const props = defineProps({
     surveys: Object,
     projects: Object,
@@ -24,7 +25,7 @@ const currentPage = computed(() => {
 const project = props.projects[0];
 const client = props.clients[0];
 // LocalStorage key for saving form state
-const storageKey = `survey_${props.surveys.id}_${currentPage.id}`;
+const storageKey = `survey_id_${props.surveys.id}`;
 const form = useForm({
     page: props.pagee.map((page) => ({
         page_id: page.id,
@@ -73,19 +74,20 @@ onMounted(() => {
     if (savedForm) {
         form.page = JSON.parse(savedForm);
     }
-    
-console.log(form.page)
 });
 
-watch(() => form.page, (newVal) => {
-    localStorage.setItem(storageKey, JSON.stringify(newVal));
-}, { deep: true });
+watch(() => form.page,
+    debounce((newVal) => {
+        localStorage.setItem(storageKey, JSON.stringify(newVal));
+    }, 300), 
+    { deep: true }
+);
 
 const submit = () => {
     form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]), {
         preserveState: true,
         onSuccess: () => {
-            localStorage.clear()
+            localStorage.removeItem(storageKey)
         }
     });
 };

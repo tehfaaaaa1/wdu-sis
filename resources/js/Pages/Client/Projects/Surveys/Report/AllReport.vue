@@ -47,7 +47,7 @@ const count = (pgind, qind, choice, answer, question) => {
     if(PieChartData[pgind].question[qind].labels.length != choice.length){
         choice.forEach(element => {
             const persentage = ((answer.filter(a=>a.answer == element.id).length *100) / all).toFixed(2)
-            PieChartData[pgind].question[qind].labels.push(element.value+'.'+ persentage +'%' )
+            PieChartData[pgind].question[qind].labels.push(element.value+' ('+ persentage +'%)' )
             PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a=>a.answer == element.id).length)
         })
     } else {
@@ -76,8 +76,10 @@ const showAllanswer = ref(props.page.map((p)=>({
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                     :key="index">
                                     <div class="block mb-2.5">
-                                        <p class="font-semibold">{{ index + 1 }}. <label>{{
-                                            question.question_text }}</label></p>
+                                        <p class="font-semibold">
+                                            {{ index + 1 }}. <label>{{question.question_text }}</label>
+                                        </p>
+
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2" class="flex gap-x-10">
                                             <div class="">
