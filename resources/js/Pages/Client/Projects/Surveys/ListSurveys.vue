@@ -154,7 +154,7 @@ const getSurveySubmissions = (surveyId) => {
 
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-gray-500">
-                        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white text-center">
+                        <caption class="p-5 text-lg font-semibold rtl:text-right text-gray-900 bg-white text-center">
                             <img :src="`/img/${client.image}`" alt="" class="h-60 w-full object-scale-down border-b-1 border-gray-400 mb-5">
                             {{ client['client_name'] }}
                             <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
@@ -206,7 +206,7 @@ const getSurveySubmissions = (surveyId) => {
                                         </div>
                                         <NavLink v-else
                                             :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary transition"
+                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:text-secondary focus:hover:!ring-secondary hover:!ring-secondary focus:!ring-secondary transition "
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
                                             Isi Kuisioner
                                         </NavLink>
