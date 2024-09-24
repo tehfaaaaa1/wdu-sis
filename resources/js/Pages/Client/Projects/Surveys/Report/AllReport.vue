@@ -3,6 +3,7 @@ import BarChart from '@/Components/BarChart.vue';
 import PieChart from '@/Components/PieChart.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { elements } from 'chart.js';
+import { ref } from 'vue';
 
 const props = defineProps({
     surveys: Object,
@@ -16,27 +17,24 @@ const props = defineProps({
 const project = props.projects[0]
 const client = props.clients[0]
 
-
-const MultiplechartData =(
+const PieChartData =(
     props.page.map((page)=>({
         question:page.question.map(()=>({
             labels: [],
             datasets: [{
-                label: 'Response',
+                label: ['Response'],
                 backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
                 data: [],
             }],
         }))
     }))
 )
-
-console.log(MultiplechartData)
 const chartOptions = {
   responsive: true,
   plugins: {
     legend: {
       display: true,
-      position: 'top',
+      position: 'bottom',
     },
     title: {
       display: true,
@@ -45,15 +43,24 @@ const chartOptions = {
   },
 };
 
-const count = (pgind, qind, choice, answer) => {
+const count = (pgind, qind, choice, answer, question) => {
     const all = answer.length
-    
-    choice.forEach(element => {
-        const persentage = ((answer.filter(a=>a.answer == element.id).length *100) / all).toFixed(2)
-        MultiplechartData[pgind].question[qind].labels.push(element.value+'.'+ persentage +'%' )
-        MultiplechartData[pgind].question[qind].datasets[0].data.push(answer.filter(a=>a.answer == element.id).length)
-    });
-}
+    if(PieChartData[pgind].question[qind].labels.length != choice.length){
+        choice.forEach(element => {
+            const persentage = ((answer.filter(a=>a.answer == element.id).length *100) / all).toFixed(2)
+            PieChartData[pgind].question[qind].labels.push(element.value+'.'+ persentage +'%' )
+            PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a=>a.answer == element.id).length)
+        })
+    } else {
+        return false
+    }
+}    
+const showAllanswer = ref(props.page.map((p)=>({
+    q: p.question.map(()=>({
+        value: false
+    }))
+})))
+
 </script>
 
 <template>
@@ -81,7 +88,7 @@ const count = (pgind, qind, choice, answer) => {
                                                     <label :for="'radio' + list.id" class="px-3">{{ list.value }}</label>
                                                 </div>
                                             </div>
-                                            <PieChart :chart-data="MultiplechartData[ind].question[index]" :key="count(ind, index, question.choice, question.answer)" :chart-options="chartOptions" />
+                                            <PieChart :chart-data="PieChartData[ind].question[index]" :key="count(ind, index, question.choice, question.answer, question)" :chart-options="chartOptions" />
                                         </div>
 
                                         <!-- Handle checkbox for question type 3 -->
@@ -93,14 +100,22 @@ const count = (pgind, qind, choice, answer) => {
                                                     <label :for="'checkbox' + list.id" class="px-3">{{ list.value }}</label>
                                                 </div>
                                             </div>
-                                            <BarChart :chart-data="MultiplechartData[ind].question[index]" :key="count(ind, index, question.choice, question.answer)" :chart-options="chartOptions" />
+                                            <BarChart :chart-data="PieChartData[ind].question[index]" :key="count(ind, index, question.choice, question.answer, question)" :chart-options="chartOptions" />
                                         </div>
 
                                         <!-- Handling textarea for question type 1 -->
                                         <div v-if="question.question_type_id == 1">
-                                            <div class="px-5 mt-2" v-for="answe in question.answer">
-                                                <input v-if="answe.question_id == question.id" type="text"
+                                            <div class="px-5 mt-2" v-for="(answe , Aindex) in question.answer" :key="Aindex">
+                                                <div class="" v-if="Aindex < 3 || showAllanswer[ind].q[index].value == true">
+                                                    <input v-if="answe.question_id == question.id" type="text"
                                                     :value="answe.answer" disabled class="rounded w-full">
+                                                </div>
+                                            </div>
+                                            <div class="" v-if="showAllanswer[ind].q[index].value == false">
+                                                <button type="button" @click="showAllanswer[ind].q[index].value = true">Show All Answer</button>
+                                            </div>
+                                            <div class="" v-else>
+                                                <button type="button" @click="showAllanswer[ind].q[index].value = false">Hidden Answer</button>
                                             </div>
                                         </div>
                                     </div>

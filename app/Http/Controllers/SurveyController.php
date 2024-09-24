@@ -37,7 +37,6 @@ class SurveyController extends Controller
         $s = $surveyall->survey;
     
         $user = Auth::user();
-        $c = $client[0];
     
         $userTarget = Response::select('survey_id', DB::raw('count(*) as submissions'))
             ->groupBy('survey_id')
