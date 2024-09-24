@@ -17,7 +17,7 @@ class ableCUDdSurvey
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->current_team_id == 1 && Auth::user()->usertype != 'superadmin' &&Auth::user()->usertype != 'admin')  {
+        if(Auth::user()->current_team_id == 1 && Auth::user()->usertype == 'user')  {
             abort(403,  Auth::user()->currentTeam->name.' Tidak Diizinkan');
             // return redirect()->back()->withErrors(Auth::user()->usertype, ' Dilarang Masuk');
         }

@@ -1,8 +1,10 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { debounce } from 'lodash';
 const props = defineProps({
     surveys: Object,
     projects: Object,
@@ -22,8 +24,8 @@ const currentPage = computed(() => {
 })
 const project = props.projects[0];
 const client = props.clients[0];
-// // LocalStorage key for saving form state
-// const storageKey = `survey_${props.surveys.id}_${pages.id}`;
+// LocalStorage key for saving form state
+const storageKey = `survey_id_${props.surveys.id}`;
 const form = useForm({
     page: props.pagee.map((page) => ({
         page_id: page.id,
@@ -67,19 +69,35 @@ function prevPage() {
     }
 }
 
+onMounted(() => {
+    const savedForm = localStorage.getItem(storageKey);
+    if (savedForm) {
+        form.page = JSON.parse(savedForm);
+    }
+});
+
+watch(() => form.page,
+    debounce((newVal) => {
+        localStorage.setItem(storageKey, JSON.stringify(newVal));
+    }, 300), 
+    { deep: true }
+);
+
 const submit = () => {
     form.post(route('submit_survey', [form.client_slug, form.project_slug, props.surveys.id]), {
         preserveState: true,
         onSuccess: () => {
-            localStorage.clear()
+            localStorage.removeItem(storageKey)
         }
     });
 };
 </script>
 
 <template>
-    <AppLayout title="Isi Survey">
-        <main class="min-h-screen">
+
+    <Head :title="'Isi Survey'" />
+    <div class="min-h-screen bg-gray-300">
+        <main>
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="">
                     <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md select-none">
@@ -87,8 +105,8 @@ const submit = () => {
                     </div>
                     <div class="bg-white rounded-b-md">
                         <!-- <div class="border-b-2 p-5 border-gray-500">
-                            <p class="text-base text-justify select-none">{{ props.surveys.desc }}</p>
-                        </div> -->
+                                <p class="text-base text-justify select-none">{{ props.surveys.desc }}</p>
+                            </div> -->
                         <div class="p-5 flex w-full">
                             <form @submit.prevent="submit" class="w-full">
                                 <div v-for="(question, index) in currentPage.question" :key="index" class="block mb-4">
@@ -146,5 +164,5 @@ const submit = () => {
                 </div>
             </div>
         </main>
-    </AppLayout>
+    </div>
 </template>
