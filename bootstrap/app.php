@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'ableCreateUser' => ableCreateuser::class,
-            'ableSurvey' => ableCUDdSurvey::class,
+            'ableCUDSurvey' => ableCUDdSurvey::class,
             'admin' => admin::class,
          ]);
         //
