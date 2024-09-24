@@ -105,17 +105,17 @@ const showAllanswer = ref(props.page.map((p)=>({
 
                                         <!-- Handling textarea for question type 1 -->
                                         <div v-if="question.question_type_id == 1">
+                                            <div class="" v-if="showAllanswer[ind].q[index].value == false">
+                                                <button type="button" @click="showAllanswer[ind].q[index].value = true">Show All Answer</button>
+                                            </div>
+                                            <div class="" v-else>
+                                                <button type="button" @click="showAllanswer[ind].q[index].value = false">Show Less</button>
+                                            </div>
                                             <div class="px-5 mt-2" v-for="(answe , Aindex) in question.answer" :key="Aindex">
                                                 <div class="" v-if="Aindex < 3 || showAllanswer[ind].q[index].value == true">
                                                     <input v-if="answe.question_id == question.id" type="text"
                                                     :value="answe.answer" disabled class="rounded w-full">
                                                 </div>
-                                            </div>
-                                            <div class="" v-if="showAllanswer[ind].q[index].value == false">
-                                                <button type="button" @click="showAllanswer[ind].q[index].value = true">Show All Answer</button>
-                                            </div>
-                                            <div class="" v-else>
-                                                <button type="button" @click="showAllanswer[ind].q[index].value = false">Hidden Answer</button>
                                             </div>
                                         </div>
                                     </div>
