@@ -75,8 +75,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::put('update-survey/{id}', [SurveyController::class, 'update'])->name('update_survey')->middleware(['admin']);
                 Route::patch('StatusChange/{id}', [SurveyController::class, 'statusChange'])->name('changeStatus')->middleware(['admin']);
                 Route::get('{id}/delete', [SurveyController::class, 'destroy'])->name('delete_surveys')->middleware(['ableSurvey']);
-                Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey');
-                Route::get('/{id}/submission',[AnswerController::class, 'submission'])->name('submission_surveys');
+                Route::post('/{id}/submit',[AnswerController::class, 'submit'])->name('submit_survey')->middleware(['submission']);
+                Route::get('/{id}/submission',[AnswerController::class, 'submission'])->name('submission_surveys')->middleware(['submission']);
                 
                 //Bio
                 Route::get('/{Survey:id}/biodata/{Biodata:id}',[BiodataController::class, 'bio'])->name('biodata');
