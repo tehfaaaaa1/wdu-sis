@@ -10,14 +10,13 @@ const props = defineProps({
     projects: Array,
     clients: Array,
     user: Object,
-    userTarget: Array,  
+    userTarget: Object,  
     provinces: Array,   
     cities: Array,
     regencies: Array
 });
 
 const form = useForm({ search: '' });
-const submit = () => form.get(route('surveys'));
 
 const selectedProvince = ref(null);
 const selectedSurveyId = ref(null);
@@ -101,8 +100,8 @@ const getSelectedProvinces = (survey, provinces) => {
 };
 
 
-console.log('Provinces prop:', props.provinces);
-console.log('Props:', props); 
+// console.log('Provinces prop:', props.provinces);
+// console.log('Props:', props); 
 
 
 const getSurveySubmissions = (surveyId) => {
@@ -153,8 +152,8 @@ const getSurveySubmissions = (surveyId) => {
                 </div>
 
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full text-sm text-gray-500">
-                        <caption class="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white text-center">
+                    <table class="w-full text-sm text-gray-500 text-left">
+                        <caption class="p-5 text-lg font-semibold rtl:text-right text-gray-900 bg-white text-center">
                             <img :src="`/img/${client.image}`" alt="" class="h-60 w-full object-scale-down border-b-1 border-gray-400 mb-5">
                             {{ client['client_name'] }}
                             <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
@@ -206,7 +205,7 @@ const getSurveySubmissions = (surveyId) => {
                                         </div>
                                         <NavLink v-else
                                             :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:!text-primary transition"
+                                            class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:text-secondary focus:hover:!ring-secondary hover:!ring-secondary focus:!ring-secondary transition "
                                             :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
                                             Isi Kuisioner
                                         </NavLink>

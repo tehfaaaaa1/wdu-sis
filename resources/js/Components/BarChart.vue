@@ -1,6 +1,6 @@
 <template>
-    <div class="max-w-lg max-h-lg">
-        <Bar :data="chartData" :options="chartOptions" />
+    <div class="max-w-md max-h-md">
+        <Bar class="w-96" :data="chartData" :options="chartOptions" />
     </div>
 </template>
 

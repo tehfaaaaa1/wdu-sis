@@ -2,13 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use Auth;
 use Closure;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Constraint\IsEmpty;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\User;
-use illuminate\Support\Facades\Auth;
+use App\Models\Response as Res;
 
-class ableCUDdSurvey
+class Submission
 {
     /**
      * Handle an incoming request.
@@ -17,9 +18,10 @@ class ableCUDdSurvey
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->current_team_id == 1 && Auth::user()->usertype == 'user')  {
-            abort(403,  Auth::user()->currentTeam->name.' Tidak Diizinkan');
-            // return redirect()->back()->withErrors(Auth::user()->usertype, ' Dilarang Masuk');
+        $surveyId= $request->route('id');
+        $response = Res::where('user_id', Auth::user()->id)->where('survey_id', $surveyId)->first();
+        if($response != null){
+            abort(403, 'Anda Sudah Mengisi Kuisioner Ini');
         }
         return $next($request);
     }

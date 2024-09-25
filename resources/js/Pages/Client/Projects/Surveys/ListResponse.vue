@@ -59,7 +59,7 @@ const getSelectedProvinces = (survey, provinces) => {
 </script>
 
 <template>
-    <AppLayout title="Isi Survey">
+    <AppLayout title="Monitor Survey">
         <main class="min-h-screen">
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-ijo-terang text-white rounded-t-md">
@@ -70,7 +70,7 @@ const getSelectedProvinces = (survey, provinces) => {
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <h2 class="font-semibold text-lg">Summary</h2>
-                            <a :href="route('allreport',[clientSlug, projectSlug, props.surveys.id])">allReport</a>
+                            <a class="text-blue-500 underline" :href="route('allreport',[clientSlug, projectSlug, props.surveys.id])">Monitor Survey</a>
                             <p class="font-medium">Wilayah:</p>
                             <ul>
                                 <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list" :key="index">

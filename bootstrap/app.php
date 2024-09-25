@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Middleware\ableCUDdSurvey;
 use App\Http\Middleware\admin;
+use App\Http\Middleware\Submission;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\ableCreateUser;
+use App\Http\Middleware\ableCUDdSurvey;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\ableCreateUser;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'ableCreateUser' => ableCreateuser::class,
             'ableCUDSurvey' => ableCUDdSurvey::class,
             'admin' => admin::class,
+            'submission' => Submission::class
          ]);
         //
     })
