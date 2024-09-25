@@ -29,6 +29,7 @@ const PieChartData =(
         }))
     }))
 )
+
 const chartOptions = {
   responsive: true,
   plugins: {
@@ -42,13 +43,32 @@ const chartOptions = {
     },
   },
 };
+
+
+const barBackgroundColors = ['#41B883', '#E46651', '#00D8FF', '#DD1B16']
+const BarChartData =(
+    props.page.map((page)=>({
+        question:page.question.map((q)=>({
+            labels: ['Response'],
+            datasets: q.choice.map((c, ini)=>({
+                label: c.value +' ('+((q.answer.filter(a=>a.answer == c.id).length *100) / q.answer.length).toFixed(2)+'%)',
+                backgroundColor: barBackgroundColors[ini],
+                data: [q.answer.filter(a=>a.answer == c.id).length]
+            }))
+        }))
+    }))
+)
+console.log(BarChartData)
 const count = (pgind, qind, choice, answer, question) => {
     const all = answer.length
+
     if(PieChartData[pgind].question[qind].labels.length != choice.length){
-        choice.forEach(element => {
+        choice.forEach((element, ind) => {
             const persentage = ((answer.filter(a=>a.answer == element.id).length *100) / all).toFixed(2)
-            PieChartData[pgind].question[qind].labels.push(element.value+' ('+ persentage +'%)' )
-            PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a=>a.answer == element.id).length)
+            if(question.question_type_id == 2){
+                PieChartData[pgind].question[qind].labels.push(element.value+' ('+ persentage +'%)' )
+                PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a=>a.answer == element.id).length)
+            } 
         })
     } else {
         return false
@@ -101,7 +121,7 @@ const showAllanswer = ref(props.page.map((p)=>({
                                                     <label :for="'checkbox' + list.id" class="px-3">{{ list.value }}</label>
                                                 </div>
                                             </div>
-                                            <BarChart :chart-data="PieChartData[ind].question[index]" :key="count(ind, index, question.choice, question.answer, question)" :chart-options="chartOptions" />
+                                            <BarChart :chart-data="BarChartData[ind].question[index]" :key="count(ind, index, question.choice, question.answer, question)" :chart-options="chartOptions" />
                                         </div>
 
                                         <!-- Handling textarea for question type 1 -->

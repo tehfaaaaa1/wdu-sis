@@ -69,8 +69,10 @@ const getSelectedProvinces = (survey, provinces) => {
                     <div class="border-b-2 p-5 border-gray-500">
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
-                            <h2 class="font-semibold text-lg">Summary</h2>
-                            <a class="text-blue-500 underline" :href="route('allreport',[clientSlug, projectSlug, props.surveys.id])">Monitor Survey</a>
+                            <div class="flex justify-between items-center w-full">
+                                <h2 class="font-semibold text-lg">Summary</h2>
+                                <a class="text-blue-500 underline" :href="route('allreport',[clientSlug, projectSlug, props.surveys.id])">Lihat Statistik</a>
+                            </div>
                             <p class="font-medium">Wilayah:</p>
                             <ul>
                                 <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list" :key="index">
