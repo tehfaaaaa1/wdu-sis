@@ -113,7 +113,7 @@ const getSurveySubmissions = (surveyId) => {
     <AppLayout title="List Kuisioner">
         <template #header>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <NavLink :href="route('projects', clientSlug)" class="!py-0 focus:!rounded-sm focus:!ring-0 focus:!border-0 !m-0 hover:ring-0 hover:underline !font-semibold !text-lg text-ijo-terang ">
+                <NavLink :href="route('projects', clientSlug)" class="!py-0 focus:!rounded-sm focus:!ring-0 focus:!border-0 !m-0 hover:!ring-0 hover:underline !font-semibold !text-lg text-ijo-terang ">
                     <span class="text-black">Project&nbsp;</span> {{ project.project_name }}
                 </NavLink>
             </div>
