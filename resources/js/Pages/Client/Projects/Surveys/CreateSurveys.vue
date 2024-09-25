@@ -2,8 +2,6 @@
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import axios from 'axios';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -21,7 +19,7 @@ const form = useForm({
     project_id: props.projects[0]?.id || null,
     project_slug: props.projects[0]?.slug || null,
     client_slug: props.clients[0]?.slug || null,
-    province_targets: [], // This will hold cities, regencies, and their province_id
+    province_targets: [],
 });
 
 const provinces = ref([]);
@@ -29,14 +27,12 @@ const cities = ref([]);
 const regencies = ref([]);
 const selectedProvince = ref(null);
 
-// Fetch provinces on load
 axios.get(route('provinces.index')).then(response => {
     provinces.value = response.data;
 });
 
-// Fetch cities and regencies when a province is selected
 const fetchCitiesAndRegencies = (provinceId) => {
-    // Clear cities and regencies list before fetching new ones
+
     cities.value = [];
     regencies.value = [];
     
@@ -57,7 +53,7 @@ const fetchCitiesAndRegencies = (provinceId) => {
         });
 };
 
-// Toggle the selected province and fetch cities/regencies
+
 const toggleProvinceTarget = (provinceId) => {
     const index = form.province_targets.findIndex(p => p.province_id === provinceId);
     if (index === -1) {
@@ -66,21 +62,20 @@ const toggleProvinceTarget = (provinceId) => {
             province_id: provinceId,
             target_response: '',
             province_name: selected.name,
-            cities: [], // For storing selected cities
-            regencies: [] // For storing selected regencies
+            cities: [], 
+            regencies: [] 
         });
         selectedProvince.value = provinceId;
-        fetchCitiesAndRegencies(provinceId);  // Fetch the related cities and regencies
+        fetchCitiesAndRegencies(provinceId); 
     } else {
         form.province_targets.splice(index, 1);
         selectedProvince.value = null;
-        // Clear cities and regencies list after deselecting the province
         cities.value = [];
         regencies.value = [];
     }
 };
 
-// Toggle city selection for the province
+
 const toggleCity = (provinceId, cityId) => {
     const provinceIndex = form.province_targets.findIndex(p => p.province_id === provinceId);
     const cityIndex = form.province_targets[provinceIndex].cities.indexOf(cityId);
@@ -92,7 +87,7 @@ const toggleCity = (provinceId, cityId) => {
     }
 };
 
-// Toggle regency selection for the province
+
 const toggleRegency = (provinceId, regencyId) => {
     const provinceIndex = form.province_targets.findIndex(p => p.province_id === provinceId);
     const regencyIndex = form.province_targets[provinceIndex].regencies.indexOf(regencyId);
@@ -104,7 +99,7 @@ const toggleRegency = (provinceId, regencyId) => {
     }
 };
 
-// Submit form
+
 const submit = () => {
     form.post(route('create_survey', [form.client_slug, form.project_slug]), {
         data: {
@@ -149,27 +144,33 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <!-- Cities and Regencies checkboxes for selected provinces -->
+                    <!-- Cities, Regencies, and Target Response for selected provinces -->
                     <div v-for="(provinceTarget, index) in form.province_targets" :key="index" class="mt-4 relative">
                         <h4 class="text-primary font-semibold">{{ provinceTarget.province_name }}</h4>
 
-                        <!-- Cities Checkboxes -->
+                        <h5 class="mt-2 text-primary">Target Response:</h5>
+                        <TextInput v-model="provinceTarget.target_response" type="number" placeholder="Enter target response" class="w-full" />
+                        <InputError class="mt-2" :message="form.errors[`province_targets.${index}.target_response`]" />
+
                         <h5 class="mt-2 text-primary">Select Cities:</h5>
                         <div v-for="city in cities" :key="city.id" class="flex items-center mb-2">
                             <input type="checkbox" :id="`city-${city.id}`" @change="toggleCity(provinceTarget.province_id, city.id)" />
                             <label :for="`city-${city.id}`" class="ml-2">{{ city.name }}</label>
                         </div>
 
-                        <!-- Regencies Checkboxes -->
+                        <h5 class="mt-2 text-primary">Target Response City:</h5>
+                        <TextInput v-model="provinceTarget.target_response_city" type="number" placeholder="Enter city's target response" class="w-full" />
+                        <InputError class="mt-2" :message="form.errors[`province_targets.${index}.target_response_city`]" />
+
                         <h5 class="mt-4 text-primary">Select Regencies:</h5>
                         <div v-for="regency in regencies" :key="regency.id" class="flex items-center mb-2">
                             <input type="checkbox" :id="`regency-${regency.id}`" @change="toggleRegency(provinceTarget.province_id, regency.id)" />
                             <label :for="`regency-${regency.id}`" class="ml-2">{{ regency.name }}</label>
                         </div>
 
-                        <PrimaryButton class="w-half align-right mt-2" :class="{ 'opacity-25': form.processing}" :disabled="form.processing">
-                            Update Target
-                        </PrimaryButton>
+                        <h5 class="mt-2 text-primary">Target Response Regency:</h5>
+                        <TextInput v-model="provinceTarget.target_response_regency" type="number" placeholder="Enter regency's target response" class="w-full" />
+                        <InputError class="mt-2" :message="form.errors[`province_targets.${index}.target_response_regency`]" />
                     </div>
 
                     <div class="my-4 text-center">

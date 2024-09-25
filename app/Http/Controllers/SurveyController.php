@@ -109,6 +109,8 @@ class SurveyController extends Controller
             'province_targets' => 'required|array',
             'province_targets.*.province_id' => 'required|exists:provinces,id',
             'province_targets.*.target_response' => 'required|integer',
+            'province_targets.*.target_response_regency' => 'required|integer',
+            'province_targets.*.target_response_city' => 'required|integer',
             'city_id' => 'nullable|exists:cities,id',
             'regency_id' => 'nullable|exists:regencies,id'
         ]);
