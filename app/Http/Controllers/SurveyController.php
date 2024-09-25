@@ -47,12 +47,14 @@ class SurveyController extends Controller
     
         $response = Response::where('user_id', $user->id)->get();
         $provinces = Province::all();
-    
+        $cities = City::all();
+        $regencies = Regency::all();
+
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
                 'surveys' => collect($s)->map(function ($survey) {
-                    // Decode the JSON `province_targets` field/
+
                     $provinceTargets = json_decode($survey->province_targets, true);
     
                     return [
@@ -73,6 +75,8 @@ class SurveyController extends Controller
                 'userTarget' => $userTarget,
                 'response' => $response,
                 'provinces' => $provinces,
+                'cities' => $cities,
+                'regencies' => $regencies,
             ]
         );
     }
@@ -103,26 +107,39 @@ class SurveyController extends Controller
     {
         $id = $request->project_id;
     
-        $request->validate([
-            'title' => 'required|max:255',
-            'desc' => 'required',
-            'province_targets' => 'required|array',
-            'province_targets.*.province_id' => 'required|exists:provinces,id',
-            'province_targets.*.target_response' => 'required|integer',
-            'province_targets.*.target_response_regency' => 'required|integer',
-            'province_targets.*.target_response_city' => 'required|integer',
-            'city_id' => 'nullable|exists:cities,id',
-            'regency_id' => 'nullable|exists:regencies,id'
+        $validatedData = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'desc' => ['required', 'string'],
+            'project_id' => ['required', 'exists:projects,id'],
+            'province_targets' => ['required', 'array'],
+            'province_targets.*.province_id' => ['required', 'exists:provinces,id'],
+            'province_targets.*.target_response' => ['required', 'integer'],
+            'province_targets.*.cities' => ['array'],
+            'province_targets.*.regencies' => ['array'],
         ]);
+    
+        foreach ($validatedData['province_targets'] as &$province) {
+            $province['province_name'] = Province::find($province['province_id'])->name;
+    
+            $province['cities'] = array_filter($province['cities'], function ($city) {
+                return isset($city['city_id']) && !empty($city['target_response_city']);
+            });
+    
+            $province['regencies'] = array_filter($province['regencies'], function ($regency) {
+                return isset($regency['regency_id']) && !empty($regency['target_response_regency']);
+            });
+        }
+    
+        $filteredProvinceTargets = array_filter($validatedData['province_targets'], function ($province) {
+            return !empty($province['cities']) || !empty($province['regencies']);
+        });
     
         Survey::create([
             'title' => $request->title,
             'desc' => $request->desc,
             'slug' => Str::slug($request->title),
             'province_targets' => json_encode($request->province_targets),
-            'project_id' => $id,
-            'city_id' => $request->city_id,
-            'regency_id' => $request->regency_id,
+            'project_id' => $validatedData['project_id'], 
             'created_at' => now(),
             'updated_at' => now(),
         ]);

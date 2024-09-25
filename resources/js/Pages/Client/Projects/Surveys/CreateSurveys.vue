@@ -27,7 +27,6 @@ axios.get(route('provinces.index')).then(response => {
     provinces.value = response.data;
 });
 
-// Fetch cities and regencies for a specific province
 const fetchCitiesAndRegencies = async (provinceId, provinceIndex) => {
     try {
         const [cityResponse, regencyResponse] = await Promise.all([
@@ -53,7 +52,6 @@ const fetchCitiesAndRegencies = async (provinceId, provinceIndex) => {
     }
 };
 
-// Toggle province target and fetch cities/regencies
 const toggleProvinceTarget = async (provinceId) => {
     const index = form.province_targets.findIndex(p => p.province_id === provinceId);
 
@@ -73,14 +71,12 @@ const toggleProvinceTarget = async (provinceId) => {
     }
 };
 
-// Toggle city target response visibility
 const toggleCity = (provinceId, cityId) => {
     const provinceTarget = form.province_targets.find(p => p.province_id === provinceId);
     const cityTarget = provinceTarget.cities.find(city => city.city_id === cityId);
     cityTarget.showCityResponse = !cityTarget.showCityResponse;
 };
 
-// Toggle regency target response visibility
 const toggleRegency = (provinceId, regencyId) => {
     const provinceTarget = form.province_targets.find(p => p.province_id === provinceId);
     const regencyTarget = provinceTarget.regencies.find(regency => regency.regency_id === regencyId);
@@ -88,6 +84,20 @@ const toggleRegency = (provinceId, regencyId) => {
 };
 
 const submit = () => {
+    const selectedProvinceTargets = form.province_targets.map(province => ({
+        province_id: province.province_id,
+        target_response: province.target_response,
+        cities: province.cities.filter(city => city.showCityResponse).map(city => ({
+            city_id: city.city_id,
+            target_response_city: city.target_response_city,
+        })),
+        regencies: province.regencies.filter(regency => regency.showRegencyResponse).map(regency => ({
+            regency_id: regency.regency_id,
+            target_response_regency: regency.target_response_regency,
+        })),
+    }));
+
+    form.province_targets = selectedProvinceTargets.filter(province => province.cities.length > 0 || province.regencies.length > 0);
     form.post(route('create_survey', [form.client_slug, form.project_slug]));
 };
 </script>
@@ -167,11 +177,7 @@ const submit = () => {
                         </div>
                     </div>
 
-                    <div class="my-4 text-center">
-                        <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                            Add Survey
-                        </PrimaryButton>
-                    </div>
+                    <PrimaryButton class="mt-6 w-full">Create Survey</PrimaryButton>
                 </form>
             </div>
         </div>
