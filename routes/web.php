@@ -122,4 +122,4 @@ Route::post('/teams/{team}/members', [HomeController::class, 'store'])->name('te
 // location target survey
 Route::get('/provinces', [LocationController::class, 'getProvinces'])->name('provinces.index');
 Route::get('/cities/{province_id}', [LocationController::class, 'getCitiesByProvince'])->name('cities.index');
-Route::get('/regencies/{city_id}', [LocationController::class, 'getRegenciesByCity'])->name('regencies.index');
+Route::get('/regencies/{province_id}', [LocationController::class, 'getRegenciesByProvince'])->name('regencies.index');
