@@ -87,7 +87,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::get('/{Survey:id}/all-report/', [ResponseController::class, 'allreport'])->name('allreport')->middleware(['ableCUDSurvey']);
                 Route::get('/{Survey:id}/report/{Response:id}',[ResponseController::class, 'report'])->name('report_surveys')->middleware(['ableCUDSurvey']);
                 Route::get('/{id}/list-response',[ResponseController::class, 'index'])->name('response')->middleware(['ableCUDSurvey']);;
-                
+                Route::get('/{id}/list-response/export', [ResponseController::class, 'export'])->name('export-response');
                 // question
                 Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys')->middleware('admin');
                 Route::post('/manual-save-question/{id}',[QuestionController::class, 'manualSave'])->name('manual-save-question')->middleware('admin');

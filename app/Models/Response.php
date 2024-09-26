@@ -18,11 +18,12 @@ class Response extends Model
     ];
 
     public function answer() : HasMany{
-
         return $this->hasMany(Answer::class);
     }
     public function user() : BelongsTo{
-
         return $this->belongsTo(User::class);
+    }
+    public function survey() : BelongsTo{
+        return $this->belongsTo(Survey::class);
     }
 }
