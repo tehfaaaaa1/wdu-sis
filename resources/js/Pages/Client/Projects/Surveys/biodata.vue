@@ -3,7 +3,7 @@ import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-
+import { Head, Link, router } from '@inertiajs/vue3';
 
 const props = defineProps({
     surveys: Object,
@@ -29,9 +29,9 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout title="Isi Biodata">
-        <main class="min-h-screen">
-            <div class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
+    <Head :title="'Biodata'" />
+        <main class="min-h-screen bg-gray-300">
+            <div class="mx-auto max-w-xl lg:max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
                     <h2>Isi Biodata</h2>
                 </div>
@@ -43,14 +43,14 @@ const submit = () => {
                         <div class="relative px-5 mt-3">
                             <label for="">Nama</label>
                             <TextInput v-model="form.nama" type="text" placeholder="Nama"
-                                class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                class="block rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                 required />
                             <InputError class="mt-2" :message="form.errors.name" />
                         </div>
                         <div class="mt-4 relative px-5">
                             <label for="">Alamat</label>
                             <TextInput v-model="form.alamat" type="text" placeholder="Alamat"
-                                class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                class="block rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                 required />
                             <InputError class="mt-2" :message="form.errors.email" />
                         </div>
@@ -58,7 +58,7 @@ const submit = () => {
                         <div class="mt-4 relative px-5">
                             <label for="">Nomor Handphone</label>
                             <TextInput v-model="form.no_hp" type="number" placeholder="No Hp"
-                                class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                class="block rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                 required />
                             <InputError class="mt-2" :message="form.errors.password" />
                         </div>
@@ -66,7 +66,7 @@ const submit = () => {
                         <div class="mt-4 relative px-5">
                             <label for="">Nama Instansi</label>
                             <TextInput v-model="form.instansi" type="text" placeholder="Instansi"
-                                class="block !w-1/3 rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                class="block rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                 required />
                             <InputError class="mt-2" :message="form.errors.password_confirmation" />
                         </div>
@@ -80,5 +80,5 @@ const submit = () => {
                 </div>
             </div>
         </main>
-    </AppLayout>
+    
 </template>
