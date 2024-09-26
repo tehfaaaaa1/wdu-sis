@@ -84,6 +84,7 @@ const getSelectedProvinces = (survey, provinces) => {
                             <p>{{ props.totalres }} / {{ getSelectedProvinces(props.surveys, props.provinces).total }}</p>
                             <br>
                             <p class="font-medium">Status: <b>{{ props.surveys.status ? 'DIBUKA' : 'DITUTUP' }}</b></p>
+                            <a :href="route('export-response', [clientSlug, projectSlug, props.surveys.id])">Export Response</a>
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md mt-4">

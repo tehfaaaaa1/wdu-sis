@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ResponseExport;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Answer;
@@ -12,6 +13,7 @@ use App\Models\Response;
 use App\Models\QuestionPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ResponseController extends Controller
 {
@@ -125,5 +127,8 @@ class ResponseController extends Controller
                 'responses' => $response,
             ]
         );
+    }
+    public function export($clientSlug, $projectSlug, $surveyId){
+        return (new ResponseExport)->survey($surveyId)->download('response.xlsx', \Maatwebsite\Excel\Excel::XLSX, ['Content-Type' => 'xlsx']);
     }
 }
