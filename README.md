@@ -1,27 +1,56 @@
 ## To Be Added
 **Surveys**
-- Question Logic in Surveys (TBA)
-- Region & Target Number of Survey Respondents (TBA)
+- Functional Survey Forms (AddQuestion, Submission, Report) (Testing)
+- Question Logic in Surveys (Testing)
+- Region & Target Number of Survey Respondents (WIP)
 - Verify Respondent Region (TBA)
-- Drag & Drop Survey Form Builder (Debugging)
-<!-- - Biodata Respondent (Complete V) (Age, Address, Phone Number, Instance) -->
+<!-- - Biodata Respondent (COMPLETED) (Age, Address, Phone Number, Instance) -->
 
 **Misc**
-- Pagination in table list (list project, list survey, list user)
-- Add Icons to needed elements
+- Add Icons to necessary elements
 - Change to / Add Indonesian Language
 - Cleaner & Better UI/UX
-- Dashboard Content
+- Pagination in lists for performance boost (list project, list survey, list user)
+    - Might have to change search if this is implemented
+- Seperate/breakdown README for documentation cuz the changelog is getting kinda bloated
+<!-- Dashboard Content -->
 <!-- - Updated Documentation (Fadel)
   - ERD Survey Database (V)
   - Activity Diagram (V) -->
 
 ## Need bug fix
-- My brain
+- Our brains
 
 ## Changelog
+### 19 Sep 2024
+- Added flows in forms / questionnaires (testing)
+    - Flows : Rules for questions where if a respondent choose a specific choice, direct them to a "unique" page
+    - CRUD flows
+- Updated List and Create Survey
+    - Dropdown -> checkbox for selecting multiple regions
+    - Location Target
+    - Sum of target respondent
+
+### 18 Sep 2024
+- Prototyping Flows Feature
+- ListResponse tweaks
+
+### 17 Sep 2024
+- Flows Feature Concept
+
+### 13 Sep 2024
+- Cleaning up pages in SubmissionSurveys (few bugs left)
+- Updated ReportSurvey to match recent changes (pages)
+- Bug fix & Updated UI in many pages/views
+
+### 12 Sep 2024
+- Added pages in SubmissionSurveys (WIP)
+- Added dropdown for logic and delete in AddQuestions
+
 ### 11 Sep 2024
 - Finally fixed edit client unable to update images (so long partner)
+- Logic in AddQuestion to check for duplicate question choice in a question
+- Changed selecting client in CRUD User from radios to use dropdown instead
 
 ### 10 Sep 2024
 - No survey edits permitted when it is published

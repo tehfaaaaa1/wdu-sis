@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('question_pages', function (Blueprint $table) {
-            $table->integer('order')->nullable();
+        Schema::table('surveys', function (Blueprint $table) {
+            $table->string('slug')->after('desc');
         });
     }
 
