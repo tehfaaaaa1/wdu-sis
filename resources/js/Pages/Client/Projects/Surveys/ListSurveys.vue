@@ -78,26 +78,56 @@ const getSelectedProvinces = (survey) => {
 const getCitiesAndRegencies = (survey) => {
     let provinceTargets = parseProvinceTargets(survey);
 
-    const cities = provinceTargets.flatMap(target => {
-        return (target.cities || []).map(city => {
-            const foundCity = props.cities.find(c => c.id === city.city_id);
-            const cityName = foundCity ? foundCity.name : 'Unknown City';
-            const targetResponseCity = city.target_response_city || '0';
-            return { city_name: cityName, responseCity: targetResponseCity };
-        });
+    const provincesData = provinceTargets.map(target => {
+        const provinceId = target.province_id;
+
+        const foundProvince = props.provinces.find(p => p.id === provinceId);
+        const provinceName = foundProvince ? foundProvince.name : 'Unknown Province';
+
+        const cities = (target.cities || []).length > 0 ?
+            (target.cities || []).map(city => {
+                const foundCity = props.cities.find(c => c.id === city.city_id);
+                const cityName = foundCity ? foundCity.name : 'Unknown City';
+                const targetResponseCity = city.target_response_city || '0';
+                return {
+                    city_name: cityName,
+                    responseCity: targetResponseCity,
+                    name: provinceName,
+                    isPlaceholder: false
+                };
+            }) : [{
+                city_name: 'No city listed',
+                responseCity: '0',
+                isPlaceholder: true
+            }];
+
+        const regencies = (target.regencies || []).length > 0 ?
+            (target.regencies || []).map(regency => {
+                const foundRegency = props.regencies.find(r => r.id === regency.regency_id);
+                const regencyName = foundRegency ? foundRegency.name : 'Unknown Regency';
+                const targetResponseRegency = regency.target_response_regency || '0';
+                return {
+                    regency_name: regencyName,
+                    responseRegency: targetResponseRegency,
+                    isPlaceholder: false // Regular regency entry
+                };
+            }) : [{
+                regency_name: 'No regency listed',
+                responseRegency: '0',
+                isPlaceholder: true // This helps apply a custom style
+            }];
+
+        return {
+            province_name: provinceName,
+            cities,
+            regencies,
+            target_response: target.target_response
+        };
     });
 
-    const regencies = provinceTargets.flatMap(target => {
-        return (target.regencies || []).map(regency => {
-            const foundRegency = props.regencies.find(r => r.id === regency.regency_id);
-            const regencyName = foundRegency ? foundRegency.name : 'Unknown Regency';
-            const targetResponseRegency = regency.target_response_regency || '0';
-            return { regency_name: regencyName, responseRegency: targetResponseRegency };
-        });
-    });
-
-    return { cities, regencies };
+    return provincesData;
 };
+
 
 const parseProvinceTargets = (survey) => {
     try {
@@ -196,21 +226,28 @@ const getSurveySubmissions = (surveyId) => {
                                     {{ getSurveySubmissions(survey.id) }} / <b>{{ getSelectedProvinces(survey).total
                                         }}</b><br>
                                     <br>
-                                    Target Lokasi :
+                                    Target Lokasi:
                                     <ul>
-                                        <li v-for="(province, index) in getSelectedProvinces(survey).list" :key="index">
-                                            <div class="font-bold">Province:</div>
-                                            - {{ province.name }} <b>({{ province.response }})</b>
+                                        <li v-for="(province, index) in getCitiesAndRegencies(survey)" :key="index">
+                                            <div class="font-bold">Province</div>
+                                            - {{ province.province_name }} <b>({{ province.target_response }})</b>
                                             <ul>
-                                                <div class="font-bold px-2 mt-1">City:</div>
-                                                <li v-for="city in getCitiesAndRegencies(survey).cities"
-                                                    :key="city.city_name" class="px-2">
-                                                    - {{ city.city_name }} <b>({{ city.responseCity }})</b></li>
-                                                <div class="font-bold px-2 mt-1">Regency:</div>
-                                                <li v-for="regency in getCitiesAndRegencies(survey).regencies"
-                                                    :key="regency.regency_name" class="px-2">- {{ regency.regency_name
-                                                    }} <b>({{
-                                                        regency.responseRegency }})</b></li>
+                                                <div class="font-bold px-2 mt-1">City</div>
+                                                <li v-for="(city, cityIndex) in province.cities" :key="cityIndex"
+                                                    :class="{ 'text-gray-500 italic': city.isPlaceholder, 'px-2': true }">
+                                                    - {{ city.city_name }} <b v-if="!city.isPlaceholder">({{
+                                                        city.responseCity
+                                                        }})</b>
+                                                </li>
+                                            </ul>
+                                            <div class="font-bold px-2 mt-1">Regency</div>
+                                            <ul>
+                                                <li v-for="(regency, regencyIndex) in province.regencies"
+                                                    :key="regencyIndex"
+                                                    :class="{ 'text-gray-500 italic': regency.isPlaceholder, 'px-2': true }">
+                                                    - {{ regency.regency_name }} <b v-if="!regency.isPlaceholder">({{
+                                                        regency.responseRegency }})</b>
+                                                </li>
                                                 <br>
                                             </ul>
                                         </li>
