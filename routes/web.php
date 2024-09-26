@@ -29,9 +29,8 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
-
+Route::get('/invite/{email}/{password}/{Client:slug}/{Project:slug}/{Survey:id}', [HomeController::class ,'coba']);
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
-
     Route::get('/', function () {
         if (Auth::check()) {
             return redirect()->route('listclient');
@@ -43,7 +42,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             'client_name' => $client->client_name ?? 'No client assigned',
         ]);
     })->name('dashboard');
-
+    Route::get('/emailsend', [HomeController::class, 'email'])->name('sendEmail');
     // Client
     Route::prefix('/client')->group(function (){
         
@@ -79,10 +78,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::get('/{id}/submission',[AnswerController::class, 'submission'])->name('submission_surveys')->middleware(['submission']);
                 
                 //Bio
-                Route::get('/{Survey:id}/biodata/{Biodata:id}',[BiodataController::class, 'bio'])->name('biodata');
-                Route::get('/{Survey:id}/editbiodata/{Biodata:id}',[BiodataController::class, 'editbio'])->name('edit_bio');
-                Route::post('/{Survey:id}/add-biodata/{Biodata:id}',[BiodataController::class, 'addBio'])->name('add_bio');
-                Route::put('/{Survey:id}/update-biodata/{Biodata:id}',[BiodataController::class, 'updbio'])->name('update_bio');
+                Route::get('/{Survey:id}/biodata/{User:id}',[BiodataController::class, 'bio'])->name('biodata');
+                Route::get('/{Survey:id}/editbiodata/{User:id}',[BiodataController::class, 'editbio'])->name('edit_bio');
+                Route::post('/{Survey:id}/add-biodata/{User:id}',[BiodataController::class, 'addBio'])->name('add_bio');
+                Route::put('/{Survey:id}/update-biodata/{User:id}',[BiodataController::class, 'updbio'])->name('update_bio');
                 
                 //Responde
                 Route::get('/{Survey:id}/all-report/', [ResponseController::class, 'allreport'])->name('allreport')->middleware(['ableCUDSurvey']);

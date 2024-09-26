@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        // dump($request->all());
+        
         $users = User::filter(request(['search', 'client', 'team', 'noteam', 'noclient']))->Paginate(12)->withQueryString()->onEachSide(2);
         $clientall  = Client::all();
         $teams = Team::all();
@@ -31,6 +31,7 @@ class UserController extends Controller
 
     public function adminIndex()
     {
+
         return Inertia::render('Dashboard/AdminUsers', [
             'users' => User::with('currentTeam')->get()->map(function ($user) {
                 return [
