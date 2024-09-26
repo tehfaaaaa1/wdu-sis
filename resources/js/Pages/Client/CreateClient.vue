@@ -17,7 +17,6 @@ const form = useForm({
     desc: '',
     image: '',
 });
-
 const submit = () => {
     form.post(route('create_client'));
 };

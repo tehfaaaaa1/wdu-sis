@@ -42,26 +42,26 @@ const logout = () => {
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                            <div class="shrink-0 flex items-center ">
+                                <Link :href="route('listclient')" class="focus:outline-none focus:ring-2 focus:ring-primary p-2 focus:rounded-sm">
                                 <ApplicationMark class="block w-72" />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 lg:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                                <!-- <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
-                                </NavLink>
+                                </NavLink> -->
                                 <!-- <NavLink
                                     v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                     :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                                     Admin Panel
                                 </NavLink> -->
-                                <NavLink :href="route('listclient')" :active="route().current('listclient')">
+                                <NavLink class="focus:text-primary" :href="route('listclient')" :active="route().current('listclient')">
                                     Client
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('users')"
+                                <NavLink class="focus:text-primary" v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('users')"
                                     :active="route().current('users')">
                                     User
                                 </NavLink>
@@ -81,7 +81,7 @@ const logout = () => {
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary transition ease-in-out duration-150">
+                                                class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-primary px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.current_team.name }}
 
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -335,7 +335,7 @@ const logout = () => {
 
             <!-- Page Heading -->
             <header v-if="$slots.header" class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-10xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header> 

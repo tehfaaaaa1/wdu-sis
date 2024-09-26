@@ -61,7 +61,7 @@ const submit = () => {
                 <div class="mt-4 relative">
                     <InputLabel for="email" />
                     <TextInput id="email" v-model="form.email" type="email" placeholder="Email"
-                        class="block w-full rounded-md border-0 py-1.5 text-primary shadow-sm ring-1 ring-inset ring-primary placeholder:text-primary focus:ring-2 focus:ring-inset text-sm lg:text-base focus:ring-primary sm:text-sm sm:leading-6 pr-10"
+                        class="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset text-sm lg:text-base focus:ring-primary sm:text-sm sm:leading-6 pr-10"
                         required autocomplete="username" />
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="size-6 absolute right-3 top-1.5 text-primary">
@@ -74,7 +74,7 @@ const submit = () => {
                 <div class="mt-4 relative">
                     <InputLabel for="password" />
                     <TextInput id="password" v-model="form.password" type="password" placeholder="Password"
-                        class="block w-full rounded-md border-0 py-1.5 text-primary shadow-sm ring-1 ring-inset ring-primary placeholder:text-primary focus:ring-2 focus:ring-inset text-sm md:text-base focus:ring-primary sm:text-sm sm:leading-6 pr-10"
+                        class="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset text-sm md:text-base focus:ring-primary sm:text-sm sm:leading-6 pr-10"
                         required autocomplete="new-password" />
 
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

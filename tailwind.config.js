@@ -30,7 +30,11 @@ export default {
                 disc: 'disc',
                 decimal: 'decimal',
                 square: 'square',
-              }
+              },
+              gridTemplateRows: {
+                // Simple 13 row grid
+                '13': 'repeat(13, minmax(0, 1fr))',
+            },
         },
     },
 

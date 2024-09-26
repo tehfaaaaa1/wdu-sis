@@ -2,12 +2,10 @@
 import { ref, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AuthenticationCard from '@/Components/AuthenticationCard.vue';
-import AuthenticationCardLogo from '@/Components/AuthenticationCardLogo.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import Dropdown from '@/Components/Dropdown.vue';
 const props = defineProps({
     teams: Array,
     client: Array
@@ -71,18 +69,18 @@ const submit = () => {
                     </div>
 
                     <div class="mt-4 relative">
-                        <h2 class="text-primary font-semibold text-2xl text-center mb-4">Team Select</h2>
+                        <h2 class="text-primary font-semibold text-lg mb-1">Team Select</h2>
 
-                        <div class="items-center mb-4">
-                            <input type="checkbox" id="make-admin" class="checked:text-primary" v-model="isAdmin" />
-                            <label for="make-admin" class="pl-1.5">Make an admin?</label>
+                        <div class="items-center mb-2">
+                            <input type="checkbox" id="make-admin" class="checked:text-primary focus:ring-primary" v-model="isAdmin" />
+                            <label for="make-admin" class="pl-1.5 text-sm ">Make an admin?</label>
                         </div>
 
                         <div class="w-full grid grid-cols-2 gap-2 text-gray-700">
                             <div v-for="team in props.teams" :key="team.id" class="flex items-center">
-                                <input type="radio" :id="'team_' + team.id" name="team_id" class="checked:text-primary"
+                                <input type="radio" :id="'team_' + team.id" name="team_id" class="checked:text-primary focus:ring-primary"
                                     v-model="form.team_id" :value="team.id" />
-                                <label :for="'team_' + team.id" class="pl-1.5">{{ team.name }}</label>
+                                <label :for="'team_' + team.id" class="pl-1.5 text-sm">{{ team.name }}</label>
                             </div>
                         </div>
                         <InputError class="mt-2" :message="form.errors.team_id" />
@@ -90,10 +88,10 @@ const submit = () => {
                     <div class="mt-4 relative">
                         <h2 class="text-primary font-semibold text-lg mb-1">Client Select</h2>
                         <div class="py-1">
-                            <select :id="'client_id'" name="client_id" class="w-full rounded_md border-primary rounded-md cursor-pointer"
+                            <select :id="'client_id'" name="client_id" class="w-full rounded_md border-primary rounded-md cursor-pointer ring-2 ring-transparent focus:border-primary focus:ring-primary focus:outline-none text-sm"
                                 v-model="form.client_id">
                                 <option value="" disabled>Choose client</option>
-                                <option v-for="c in client" class="ml-2" :value="c.id">{{ c.client_name }}</option>
+                                <option v-for="c in client" class="ml-2 text-sm" :value="c.id">{{ c.client_name }}</option>
                             </select>
                         </div>
                     </div>

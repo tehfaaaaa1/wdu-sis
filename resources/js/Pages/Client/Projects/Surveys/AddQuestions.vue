@@ -5,11 +5,16 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
+import DialogModal from '@/Components/DialogModal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 const props = defineProps({
     surveys: Object,
     projects: Object,
     clients: Object,
     page: Object,
+    flows: Object,
+    surveyall: Object
 })
 const project = props.projects[0];
 const client = props.clients[0];
@@ -17,9 +22,12 @@ const MAX_RADIO_CHOICES = 5;
 let question;
 const showAddPage = ref(false)
 const showDeleteModal = ref(false);
-
+const showLogicModal = ref(false);
+const openDropdown = ref(false);
+const QuestionOrFlow = ref('question') // 'question' or 'flow'
 // Note: Customize the functions below if needed
 const pages = ref(props.page.map((page) => {
+    page.question.sort((a, b) => a.order - b.order)
     question = page.question.map((item) => {
         let tipe = []
         let text = []
@@ -46,8 +54,7 @@ const pages = ref(props.page.map((page) => {
         }
         return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
     })
-
-    return { id: page.id, name: page.page_name, question: question }
+    return { id: page.id, order: page.order, name: page.page_name, question: question }
 }))
 
 if (pages.value.length == 0) {
@@ -92,8 +99,9 @@ function clone(element) {
 
 // Page functions
 function addNewPage() {
-    pages.value.push({ name: form.page_name, question: [] })
-    form.reset('page_name')
+    pages.value.push({ name: form.page_name, question: [] });
+    form.reset('page_name');
+    showAddPage.value = false;
 }
 const deletePageId = ref(null);
 const hapus = (index) => {
@@ -103,14 +111,14 @@ const hapus = (index) => {
 const confirmDeletion = (page) => {
     page.splice(deletePageId.value, 1);
     showDeleteModal.value = false;
+    openDropdown.value = false;
     p(pages)
 };
-const p =(page) => {
-    if(page.value.length == 0){
-        pages.value.push({name: 'title', question:[]})
+const p = (page) => {
+    if (page.value.length == 0) {
+        pages.value.push({ name: 'title', question: [] })
     }
 }
-// console.log(pages)
 const cancelDeletion = () => (showDeleteModal.value = false);
 
 // Log Update
@@ -239,7 +247,7 @@ const submitForm = () => {
         survey: props.surveys.id,
         project_slug: project['slug'],
         client_slug: client['slug'],
-    })).post(route('manual-save-question', [props.surveys.id, form.client_slug, form.project_slug]), {
+    })).post(route('manual-save-question', [form.client_slug, form.project_slug, props.surveys.id]), {
         preserveState: true,
         preserveScroll: true,
         onSuccess: () => {
@@ -277,86 +285,73 @@ onBeforeUnmount(() => {
     // Remove the event listener when the component is unmounted
     window.removeEventListener('beforeunload', handleBeforeUnload);
 });
+// PAGE FLOW
+const selectedPage = ref('')
+const selectedQuestion = ref('')
+const selectedChoice = ref('')
+const selectedNextPage = ref('')
+const flowName = ref(null)
+const flowId = ref(null)
+const floww = (flow) => {
+    selectedPage.value = pages.value.find(a => a.id == flow.question_page_id)
+    selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
+    selectedChoice.value = selectedQuestion.value.choices.find(c => c.cId == flow.question_choice_id)
+    selectedNextPage.value = pages.value.find(a => a.order == flow.next_page_order)
+    console.log(selectedNextPage.value)
+    flowName.value = flow.flow_name
+    flowId.value = flow.id
+}
+const newFlow = () => {
+    selectedPage.value = ''
+    selectedQuestion.value = ''
+    selectedChoice.value = ''
+    selectedNextPage.value = ''
+    flowName.value = null
+}
+const createFlow = () => {
+    form.transform(() => ({
+        page: selectedPage.value,
+        question: selectedQuestion.value,
+        choice: selectedChoice.value,
+        next: selectedNextPage.value,
+        name: flowName.value,
+        flow_id: flowId.value ?? null
+    })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
+        { onSuccess: showLogicModal.value = false });
+}
 
+const hapusFlow = ref(false)
+const confirmDeletionFlow = (flow) => {
+    form.get(route('delete-flow', [form.client_slug, form.project_slug, props.surveys.id, flow]), { onSuccess: hapusFlow.value = false });
+}
 </script>
 
 <template>
     <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen relative">
-            <header class="bg-white flex justify-between items-center border-b border-gray-300 sticky top-0 z-50">
-                <a :href="route('listsurvey', [client['slug'], project['slug']])"
-                    class="flex justify-center items-center font-semibold text-white bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="size-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                    </svg>
-                    Back
-                </a>
+            <header class="bg-white grid grid-cols-3 items-center border-b border-gray-300 sticky top-0 z-50">
+                <div class="flex items-center gap-x-4">
+                    <a :href="route('listsurvey', [client['slug'], project['slug']])" class="flex justify-center items-center font-semibold text-white focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-red-500 bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="size-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                        Back
+                    </a>
+                </div>
                 <h2 class="text-center font-semibold text-xl">
                     {{ props.surveys.title }}
                 </h2>
-                <form action="" @submit.prevent="status">
-                    <button type="submit"
-                        class="py-2.5 px-8 gap-1 flex justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
-                        {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
-                    </button>
-                </form>
-            </header>
-            <div class="absolute h-[96.5%] w-full bg-white opacity-50 z-40" v-if="props.surveys.status == 1"></div>
-            <aside class="sticky bg-gray-200 min-h-full top-11 z-30">
-                <div class="absolute lg:w-1/5">
-                    <h1
-                        class="bg-white text-center text-lg font-semibold py-2.5 border-b-2 border-ijo-terang select-none">
-                        Add Questions
-                    </h1>
-                    <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                        :animation="150" :clone="clone" :sort="false" class="list-qtype">
-                        <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                            items-center cursor-move hover:font-semibold">
-                            <span>{{ item.name }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-gray-500">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                        </div>
-                    </VueDraggable>
-                    <button type="button" class="bg-white border-gray-300 py-2 px-4 flex justify-between
-                    items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
-                        :class="!showAddPage ? 'border-b' : ''">
-                        Add Page
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6 text-gray-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </button>
-                    <transition enter-active-class="transition ease-out duration-200"
-                        enter-from-class="transform scale-95" enter-to-class="transform opacity-100 scale-100"
-                        leave-active-class="transition ease-in duration-75"
-                        leave-from-class="transform opacity-100 scale-100" leave-to-class="transform scale-95">
-                        <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"
-                            class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
-                            <input type="text" id="showAddPage" v-model="form.page_name"
-                                class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
-                                placeholder="Enter page name">
-                            <button type="submit">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor"
-                                    class="size-6 transition hover:text-sky-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                                </svg>
-                            </button>
-                        </form>
-                    </transition>
-                    <!-- <form action=""> -->
-                    <!-- <input type="text" name="" id=""> -->
-                    <!-- <button></button> -->
-                    <!-- </form> -->
-                    <form class="bg-white" @submit.prevent="submitForm">
+                <div class="grid grid-cols-3 items-center justify-items-end">
+                    <div class="save-status">
+                        <p v-if="savingStatus === 'saving'" class="text-center">Saving...</p>
+                        <p v-if="savingStatus === 'saved'" class="text-center font-semibold">All changes saved.</p>
+                        <p v-if="savingStatus === 'error'" class="text-center font-semibold">Error saving data.</p>
+                    </div>
+                    <form class="bg-white flex items-center" @submit.prevent="submitForm">
                         <button type="submit"
-                            class="px-4 py-2 w-full text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
+                            class="py-2 px-2 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:rounded-sm text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                 stroke="currentColor" class="size-5">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -364,25 +359,124 @@ onBeforeUnmount(() => {
                             </svg>
                             Save Questions
                         </button>
-                        <p v-if="savingStatus === 'saving'" class="text-center">Saving...</p>
-                        <p v-if="savingStatus === 'saved'" class="text-center font-semibold">All changes saved.</p>
-                        <p v-if="savingStatus === 'error'" class="text-center font-semibold">Error saving data.</p>
                     </form>
+                    <form @submit.prevent="status">
+                        <button type="submit"
+                            class="py-2.5 px-10 flex focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-secondary justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
+                            {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
+                        </button>
+                    </form>
+                </div>
+            </header>
+            <div class="absolute h-[96.5%] w-full bg-white opacity-50 z-40" v-if="props.surveys.status == 1"></div>
+            <aside class="sticky bg-gray-200 min-h-full top-11 z-30">
+                <div class="absolute lg:w-1/5">
+                    <div class="flex" id="question-or-flow">
+                        <h1 @click="QuestionOrFlow = 'question'"
+                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
+                            :class="{ 'border-ijo-terang': QuestionOrFlow == 'question' }">
+                            Questions
+                        </h1>
+                        <h1 @click="QuestionOrFlow = 'flow'"
+                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
+                            :class="{ 'border-ijo-terang': QuestionOrFlow == 'flow' }">
+                            Flows
+                        </h1>
+                    </div>
+                    <div class="" id="add-question" v-if="QuestionOrFlow == 'question'">
+                        <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
+                            :animation="150" :clone="clone" :sort="false" class="list-qtype">
+                            <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
+                                items-center cursor-move hover:font-semibold">
+                                <span>{{ item.name }}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </div>
+                        </VueDraggable>
+                        <button type="button" class="bg-white border-gray-300 py-2 focus: px-4 flex justify-between
+                        items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
+                            :class="{ 'border-b': !showAddPage }">
+                            Add Page
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-gray-500">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
+                        <transition enter-active-class="transition ease-out duration-200"
+                            enter-from-class="transform scale-95" enter-to-class="transform opacity-100 scale-100"
+                            leave-active-class="transition ease-in duration-75"
+                            leave-from-class="transform opacity-100 scale-100" leave-to-class="transform scale-95">
+                            <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"
+                                class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
+                                <input type="text" id="showAddPage" v-model="form.page_name"
+                                    class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
+                                    placeholder="Enter page name">
+                                <button type="submit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor"
+                                        class="size-6 transition hover:text-sky-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                    </svg>
+                                </button>
+                            </form>
+                        </transition>
+                    </div>
+                    <div class="bg-white" id="add-flow" v-if="QuestionOrFlow == 'flow'">
+                        <div class="border-b border-gray-300 py-2 px-4">
+                            <div class="flows" v-for="(flow, index) in flows" :key="index"
+                                @click="showLogicModal = true; floww(flow)">
+                                <!-- All created flows will be listed here -->
+                                {{ index + 1 + '. ' + flow.flow_name }}
+                            </div>
+                        </div>
+                        <div class="border-0 border-gray-300 py-2 px-4">
+                            <button type="button"
+                                class="w-full text-center border border-primary p-3 hover:bg-primary hover:text-white transition cursor-pointer"
+                                @click="showLogicModal = true; newFlow()">Tambah Flow Baru</button>
+                        </div>
+                    </div>
                 </div>
             </aside>
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page_index">
                     <div class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative">
                         <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
-                            class="w-full bg-transparent text-white border-0 border-b border-white
-                            placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
-                        <div @click="hapus(page_index)"
-                            class="cursor-pointer absolute -right-16 bg-white p-3 rounded-full border border-gray-300 shadow-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-red-500">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                            </svg>
+                            class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
+                        <div class="absolute -right-16 z-10 mt-2 origin-top-right">
+                            <button type="button" @click="hapus(page_index)"
+                                class="cursor-pointer block bg-white p-3 rounded-full border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-red-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
+                            </button>
+                            <!-- <div class="flex flex-col space-y-2 group">
+                                <div class="absolute top-12">
+                                    <transition enter-active-class="transition ease-in duration-75"
+                                        enter-from-class="transform opacity-50 -translate-y-4"
+                                        enter-to-class="transform opacity-100 translate-y-0"
+                                        leave-active-class="transition ease-in duration-75"
+                                        leave-from-class="transform opacity-100 translate-y-0"
+                                        leave-to-class="transform opacity-0 -translate-y-4">
+                                        <div v-if="openDropdown" class="flex flex-col space-y-2" @click="open = false">
+
+                                            <div @click="showLogicModal = true"
+                                                class="cursor-pointer block bg-white p-3 rounded-full border border-gray-300 shadow-md">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </transition>
+                                </div>
+                            </div> -->
                         </div>
                         <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
                             @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
@@ -390,7 +484,7 @@ onBeforeUnmount(() => {
                     <!-- vue draggable : @update:modelValue="logUpdate" -->
                     <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
                         :class="'bg-white pb-8 rounded-md'" handle=".handle">
-                        <div v-for="(item, index) in page.question" :key="item.id" class="list-questions-item">
+                        <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
                             <div class="p-5 gap-2 flex items-center">
                                 <!-- Order of question -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -422,7 +516,7 @@ onBeforeUnmount(() => {
                                             </svg>
                                         </button>
                                     </template>
-                                    <template #content>
+                                    <template #content class="">
                                         <div @click="textQuestion(item)" class="block px-4 py-2 text-sm cursor-pointer">
                                             Text
                                         </div>
@@ -520,6 +614,90 @@ onBeforeUnmount(() => {
                         v-if="pages.length > 1 && page_index != pages.length - 1"></div>
                 </div>
             </form>
+
+            <DialogModal :show="showLogicModal" @close="showLogicModal = false">
+                <template #title>
+                    <div>
+                        Tambah Logika/Flow Halaman
+                    </div>
+                </template>
+
+                <template #content>
+                    <div class="border border-gray-300 p-4">
+                        <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!
+                        </h3>
+                        <div class="flows-dropdown-label">
+                            Halaman Awal
+                            <select class="flows-dropdown" v-model="selectedPage"
+                                @change="selectedQuestion = null; selectedNextPage = null">
+                                <option :value="''" disabled>Halaman</option>
+                                <option :value="page" v-for="page in pages">{{ page.name }}</option>
+                            </select>
+                        </div>
+                        <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
+                            Pertanyaan
+                            <select class="flows-dropdown" v-model="selectedQuestion">
+                                <option :value="null" disabled>Pertanyaan</option>
+                                <option :value="question"
+                                    v-for="question in selectedPage.question.filter(prop => prop.types == 'Radio')">{{
+                                        question.soal }}</option>
+                            </select>
+                        </div>
+                        <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
+                            Pilihan Jawaban
+                            <select class="flows-dropdown" v-model="selectedChoice">
+                                <option :value="''" disabled>Pilihan Jawaban</option>
+                                <option :value="option" v-for="option in selectedQuestion.choices">{{ option.pilih }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flows-dropdown-label" v-if="selectedPage">
+                            Halaman Tujuan
+                            <select class="flows-dropdown" v-model="selectedNextPage">
+                                <option :value="null" disabled>Tujuan Halaman</option>
+                                <option :value="nextpage"
+                                    v-for="nextpage in pages.filter(page => page != selectedPage)">{{ nextpage.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flows-dropdown-label" v-if="selectedPage">
+                            Nama Flow
+                            <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
+                        </div>
+                        <div class="flows-dropdown-label" :class="{ '!justify-center': hapusFlow == true }"
+                            v-if="selectedPage">
+                            <a @click="hapusFlow = !hapusFlow" v-if="!hapusFlow"
+                                class="font-medium text-base text-red-600 hover:underline cursor-pointer">Delete</a>
+                            <div class="inset-0 flex items-center justify-center" v-if="hapusFlow">
+                                <!-- <div class="absolute inset-0 bg-gray-600 opacity-75"></div> -->
+                                <div class="bg-white p-6 rounded-lg shadow-lg z-10">
+                                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Confirm deletion</h2>
+                                    <p class="text-gray-600 mb-6">Are you sure want to delete? This action cannot be
+                                        undone.</p>
+                                    <div class="flex justify-end space-x-4">
+                                        <button @click="hapusFlow = !hapusFlow"
+                                            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
+                                            Cancel
+                                        </button>
+                                        <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+                                            @click="confirmDeletionFlow(flowId)">
+                                            Hapus
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template #footer>
+                    <div class="flex items-center justify-between w-full">
+                        <SecondaryButton @click="showLogicModal = false" class="hover:bg-red-500 hover:text-white">Back
+                        </SecondaryButton>
+                        <PrimaryButton @click="createFlow()">Save</PrimaryButton>
+                    </div>
+                </template>
+            </DialogModal>
         </main>
     </AppLayout>
 </template>
@@ -537,5 +715,30 @@ onBeforeUnmount(() => {
     color: white;
     font-weight: bold;
     font-size: 18px;
+}
+
+.flows {
+    padding: 0.75rem;
+    border: 1px dashed #5EB54D;
+    cursor: pointer;
+    transition: all 100ms;
+}
+
+.flows:hover {
+    background-color: #5EB54D;
+    color: white;
+}
+
+.flows-dropdown {
+    width: 30%;
+    cursor: pointer;
+}
+
+.flows-dropdown-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
 }
 </style>

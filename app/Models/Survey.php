@@ -8,6 +8,7 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Survey extends Model
 {
     use HasFactory;
@@ -18,23 +19,31 @@ class Survey extends Model
         'slug',
         'status',
         'project_id',
-        'target_response',
-        'province_id',
         'city_id',
         'regency_id',
+        'province_targets', 
+    ];
+
+    protected $casts = [
+        'province_targets' => 'array', 
     ];
 
     public function project(): BelongsTo {
         return $this->BelongsTo(Project::class, 'project_id');
     }
 
-    public function question():  Hasmany{
+    public function question(): HasMany {
         return $this->hasMany(Question::class);
     }
-    public function response():  Hasmany{
+
+    public function response(): HasMany {
         return $this->hasMany(Response::class);
     }
-    public function page():  Hasmany{
+
+    public function page(): HasMany {
         return $this->hasMany(QuestionPage::class);
+    }
+    public function flow() : HasMany{
+        return $this->hasMany(Flow::class);
     }
 }

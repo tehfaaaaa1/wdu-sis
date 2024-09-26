@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('total_response')->nullable();
             $table->integer('target_response')->default(0);
             $table->boolean('status')->default(0);
+            $table->json('province_targets')->nullable();
             $table->timestamps();
         });
     }

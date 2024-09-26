@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Flow;
 use App\Models\QuestionPage;
 use URL;
 use App\Models\City;
@@ -28,29 +29,34 @@ class SurveyController extends Controller
 {
     public function index(Project $project, $clientSlug, $projectSlug)
     {
-        $surveyall =  Project::where('slug', $projectSlug)->firstOrFail();
+        $surveyall = Project::where('slug', $projectSlug)->firstOrFail();
         $projectall = DB::table('projects')
             ->where('slug', $projectSlug)
             ->get();
         $client = Client::where('slug', $clientSlug)->get();
         $s = $surveyall->survey;
-
+    
         $user = Auth::user();
-        $c = $client[0];
-
+    
         $userTarget = Response::select('survey_id', DB::raw('count(*) as submissions'))
             ->groupBy('survey_id')
             ->get()
             ->mapWithKeys(function ($response) {
                 return [$response->survey_id => $response->submissions];
             });
-
+    
         $response = Response::where('user_id', $user->id)->get();
         $provinces = Province::all();
+        $cities = City::all();
+        $regencies = Regency::all();
+
         return Inertia::render(
             'Client/Projects/Surveys/ListSurveys',
             [
                 'surveys' => collect($s)->map(function ($survey) {
+
+                    $provinceTargets = json_decode($survey->province_targets, true);
+    
                     return [
                         'id' => $survey->id,
                         'title' => $survey->title,
@@ -59,11 +65,8 @@ class SurveyController extends Controller
                         'created_at' => $survey->created_at->format('j F Y H:i:s'),
                         'updated_at' => $survey->updated_at->format('j F Y H:i:s'),
                         'response' => $survey->response,
-                        'target_response' => $survey->target_response,
-                        'province_id' => $survey->province_id,
-                        'city_id' => $survey->city_id,
-                        'regency_id' => $survey->regency_id,
-                        'status' => $survey->status
+                        'status' => $survey->status,
+                        'province_targets' => $provinceTargets
                     ];
                 }),
                 'projects' => $projectall,
@@ -72,9 +75,12 @@ class SurveyController extends Controller
                 'userTarget' => $userTarget,
                 'response' => $response,
                 'provinces' => $provinces,
+                'cities' => $cities,
+                'regencies' => $regencies,
             ]
         );
     }
+    
 
     public function create(Project $project, $clientSlug, $projectSlug)
     {
@@ -100,35 +106,47 @@ class SurveyController extends Controller
     public function store(Request $request, $clientSlug, $projectSlug)
     {
         $id = $request->project_id;
-        // $clientSlug = $request->client_slug;
-        // $projectSlug = $request->project_slug;
-
-
-        $request->validate([
-            'title' => 'required|max:255',
-            'desc' => 'required',
-            'target_response' => 'required',
-            'province_id' => 'required|exists:provinces,id',
-            'city_id' => 'nullable|exists:cities,id',
-            'regency_id' => "nullable|exists:regencies,id"
+    
+        $validatedData = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'desc' => ['required', 'string'],
+            'project_id' => ['required', 'exists:projects,id'],
+            'province_targets' => ['required', 'array'],
+            'province_targets.*.province_id' => ['required', 'exists:provinces,id'],
+            'province_targets.*.target_response' => ['required', 'integer'],
+            'province_targets.*.cities' => ['array'],
+            'province_targets.*.regencies' => ['array'],
         ]);
-
+    
+        foreach ($validatedData['province_targets'] as &$province) {
+            $province['province_name'] = Province::find($province['province_id'])->name;
+    
+            $province['cities'] = array_filter($province['cities'], function ($city) {
+                return isset($city['city_id']) && !empty($city['target_response_city']);
+            });
+    
+            $province['regencies'] = array_filter($province['regencies'], function ($regency) {
+                return isset($regency['regency_id']) && !empty($regency['target_response_regency']);
+            });
+        }
+    
+        $filteredProvinceTargets = array_filter($validatedData['province_targets'], function ($province) {
+            return !empty($province['cities']) || !empty($province['regencies']);
+        });
+    
         Survey::create([
             'title' => $request->title,
             'desc' => $request->desc,
             'slug' => Str::slug($request->title),
-            'target_response' => $request->target_response,
-            'project_id' => $id,
-            'province_id' => $request->province_id,
-            'city_id' => $request->city_id,
-            'regency_id' => $request->regency_id,
+            'province_targets' => json_encode($request->province_targets),
+            'project_id' => $validatedData['project_id'], 
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
+    
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Survey created successfully.');
     }
-
+    
     public function edit(Survey $survey, $clientSlug, $projectSlug, $id)
     {
         $survey =  Survey::findOrFail($id);
@@ -180,112 +198,6 @@ class SurveyController extends Controller
             'updated_at' => now()
         ]);
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Update successfully.');
-    }
-
-    public function submission(Survey $surveyModel, $clientSlug, $projectSlug, $id)
-    {
-        // Fetch survey, questions, project, client
-        $survey = Survey::findOrFail($id);
-        $project = DB::table('projects')->where('slug', $projectSlug)->get();
-        $client = DB::table('clients')->where('slug', $clientSlug)->get();
-        $page = QuestionPage::where('survey_id', $id)->get();
-        // Prepare data to pass to the view
-        $formattedPage = $page->map(function ($p) {
-            return [
-                'id' => $p->id,
-                'page_name' => $p->page_name,
-                'survey_id' => $p->survey_id,
-                'question' => $p->question->map(function ($q) {
-                    return [
-                        'id' => $q->id,
-                        'question_text' => $q->question_text,
-                        'question_type_id' => $q->question_type_id,
-                        'survey_id' => $q->survey_id,
-                        'order' => $q->order,
-                        'required' => $q->required,
-                        'choice' => $q->choice,
-                    ];
-                }),
-            ];
-        });
-
-        // Render the view
-        return Inertia::render(
-            'Client/Projects/Surveys/SubmissionSurvey',
-            [
-                'surveys' => $survey,
-                'projects' => $project,
-                'clients' => $client,
-                'page' => $formattedPage,
-            ]
-        );
-    }
-
-    public function report(Survey $surveyModel, $clientSlug, $projectSlug, $surveyId, $responseId)
-    {
-        $survey = Survey::findOrFail($surveyId);
-        $response = Response::with('user')->where('survey_id', $surveyId)->findOrFail($responseId);
-        $project = DB::table('projects')->where('slug', $projectSlug)->get();
-        $client = DB::table('clients')->where('slug', $clientSlug)->get();
-        $answers = Answer::where('response_id', $responseId)->get();
-        $user = $response->user;
-        $page = QuestionPage::where('survey_id', $surveyId)->get();
-        // Prepare data to pass to the view
-        $formattedPage = $page->map(function ($p) {
-            return [
-                'id' => $p->id,
-                'page_name' => $p->page_name,
-                'survey_id' => $p->survey_id,
-                'question' => $p->question->map(function ($q) {
-                    return [
-                        'id' => $q->id,
-                        'question_text' => $q->question_text,
-                        'question_type_id' => $q->question_type_id,
-                        'survey_id' => $q->survey_id,
-                        'order' => $q->order,
-                        'required' => $q->required,
-                        'choice' => $q->choice,
-                        'answer' => $q->answer
-                    ];
-                }),
-            ];
-        });
-        return Inertia::render(
-            'Client/Projects/Surveys/ReportSurvey',
-            [
-                'surveys' => $survey,
-                'projects' => $project,
-                'clients' => $client,
-                'page' => $formattedPage,
-                'responses' => $response,
-                'answer' => $answers,
-                'user' => $user,
-            ]
-        );
-    }
-
-    public function question(Survey $survey, $clientSlug, $projectSlug, $id)
-    {
-        $survey =  Survey::findOrFail($id);
-
-        $project = DB::table('projects')
-            ->where('slug', $projectSlug)
-            ->get();
-        $client = DB::table('clients')
-            ->where('slug', $clientSlug)
-            ->get();
-
-        $provinces = Province::all();
-        // dump($survey);
-        return Inertia::render(
-            'Client/Projects/Surveys/AddQuestions',
-            [
-                'surveys' => $survey,
-                'projects' => $project,
-                'clients' => $client,
-                'provinces' => $provinces,
-            ]
-        );
     }
 
     public function destroy($clientSlug, $projectSlug, $id)

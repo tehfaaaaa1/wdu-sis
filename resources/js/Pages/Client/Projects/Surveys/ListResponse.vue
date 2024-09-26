@@ -7,16 +7,59 @@ const props = defineProps({
     clients: Object,
     response: Object,
     totalres: Object,
-    biodata: Object
+    provinces: Array,
 });
 const project = props.projects[0]
 const client = props.clients[0]
 const clientSlug = client.slug;
 const projectSlug = project.slug;
+
+const getSelectedProvinces = (survey, provinces) => {
+    if (!survey || !Array.isArray(provinces)) {
+        console.error('Invalid data:', survey, provinces);
+        return { list: [], total: 0 }; 
+    }
+
+    let provinceTargets;
+
+    try {
+        provinceTargets = typeof survey.province_targets === 'string'
+            ? JSON.parse(survey.province_targets)
+            : survey.province_targets;
+    } catch (error) {
+        console.error('Error parsing province_targets:', error);
+        return { list: [], total: 0 };  
+    }
+
+    if (!Array.isArray(provinceTargets) || provinceTargets.length === 0) {
+        console.log('No provinces found in province_targets:', provinceTargets);
+        return { list: [], total: 0 };  
+    }
+
+    const totalTargetResponse = provinceTargets.reduce((total, target) => {
+        const targetResponse = parseInt(target.target_response, 10);
+        return total + (isNaN(targetResponse) ? 0 : targetResponse);
+    }, 0);
+
+
+    const provinceList = provinceTargets.map(target => {
+        if (!target || !target.province_id) {
+            console.error('Invalid target data:', target);
+            return { name: 'Unknown Province', response: '0' };
+        }
+        const province = provinces.find(p => p.id === target.province_id);
+        const provinceName = province ? province.name : 'Unknown Province';
+        const targetResponse = target.target_response || '0';
+        return { name: provinceName, response: targetResponse };
+    });
+
+    return { list: provinceList, total: totalTargetResponse };
+};
+
 </script>
 
 <template>
-    <AppLayout title="Isi Survey">
+    <AppLayout title="Monitor Survey">
         <main class="min-h-screen">
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="text-center text-3xl font-semibold py-5 bg-ijo-terang text-white rounded-t-md">
@@ -26,8 +69,21 @@ const projectSlug = project.slug;
                     <div class="border-b-2 p-5 border-gray-500">
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
-                            <h2 class="font-semibold text-lg">Summary</h2>
-                            <p class="font-medium">{{ props.totalres }} Response</p>
+                            <div class="flex justify-between items-center w-full">
+                                <h2 class="font-semibold text-lg">Summary</h2>
+                                <a class="text-blue-500 underline" :href="route('allreport',[clientSlug, projectSlug, props.surveys.id])">Lihat Statistik</a>
+                            </div>
+                            <p class="font-medium">Wilayah:</p>
+                            <ul>
+                                <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list" :key="index">
+                                    - {{ province.name }} ({{ province.response }})
+                                </li>
+                            </ul>
+                            <br>
+                            <p class="font-medium">Respon:</p>
+                            <p>{{ props.totalres }} / {{ getSelectedProvinces(props.surveys, props.provinces).total }}</p>
+                            <br>
+                            <p class="font-medium">Status: <b>{{ props.surveys.status ? 'DIBUKA' : 'DITUTUP' }}</b></p>
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md mt-4">
@@ -40,12 +96,11 @@ const projectSlug = project.slug;
                                     <th scope="col" class="px-6 py-3">Email</th>
                                     <!-- <th scope="col" class="px-6 py-3"></th> -->
                                     <th scope="col" class="px-6 py-3">Wilayah/Daerah</th>
-                                    <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
+                                    <th scope="col" class="px-6 py-3 md:w-1/5 text-center">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(responses, index) in response" :key="index"
-                                    class="bg-white border-b hover:bg-gray-50">
+                                <tr v-for="(responses, index) in response" :key="index" class="bg-white border-b hover:bg-gray-50">
                                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                         {{ index + 1 }}
                                     </td>
@@ -56,15 +111,11 @@ const projectSlug = project.slug;
                                         {{ responses.user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="" v-for="bio in biodata">
-                                            <div class="" v-if="bio.user_id === responses.user_id">
-                                                {{ bio.alamat }}
-                                            </div>
-                                        </div>
+                                        {{ responses.user.biodata ? responses.user.biodata.alamat : 'Tidak ada alamat' }}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-4 text-center">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
-                                            class="font-medium text-blue-600 hover:underline mr-4">Lihat Hasil</a>
+                                            class="font-medium text-center text-blue-600 hover:underline py-1 px-2 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Lihat Hasil</a>
                                     </td>
                                 </tr>
                             </tbody>

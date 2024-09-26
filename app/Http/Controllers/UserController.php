@@ -11,20 +11,22 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // dump($request->all());
+        $users = User::filter(request(['search', 'client', 'team', 'noteam', 'noclient']))->Paginate(12)->withQueryString()->onEachSide(2);
+        $clientall  = Client::all();
+        $teams = Team::all();
+        foreach ($users as $user) {
+            $client = $user->client ?? '';
+            $team = $user->currentTeam ?? '';
+        }
         return Inertia::render('Users/Users', [
-            'users' => User::with('currentTeam')->get()->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'usertype' => $user->usertype,
-                    'team' => $user->currentTeam ? $user->currentTeam->name : 'No Team',
-                    'client' => $user->client ? $user->client->client_name : 'No Client         '
-                ];
-            }),
+            'users' => $users,
+            'client' => $clientall,
+            'team'=> $teams
         ]);
+        
     }
 
     public function adminIndex()
@@ -90,10 +92,10 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $teams = Team::all(); // Fetch all teams for the view
         $client = Client::all();
-        // dd($user->client);
+        // dd($user);
         return Inertia::render('Users/EditUsers', [
             'user' => $user,
-            'userclient' => $user->client,
+            'userclient' => $user->client ?? 'null',
             'client' => $client,
             'teams' => $teams, // Pass teams to the view
         ]);
@@ -107,6 +109,7 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8|confirmed',
             'usertype' => 'required|string',
             'team_id' => 'nullable|exists:teams,id',
+            'client_id' => 'required'
         ]);
 
         $user = User::findOrFail($id);
@@ -115,6 +118,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => $request->password ? bcrypt($request->password) : $user->password,
             'usertype' => $request->usertype,
+            'client_id' => $request->client_id
         ]);
 
         // Assign team if provided
@@ -126,12 +130,12 @@ class UserController extends Controller
             }
         }
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        return redirect()->route('users')->with('success', 'User updated successfully.');
     }
 
     public function destroy($id)
     {
         User::destroy($id);
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('users')->with('success', 'User deleted successfully.');
     }
 }
