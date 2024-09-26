@@ -104,7 +104,7 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                     <label :for="'radio' + list.id" class="px-3">{{ list.value
                                                         }}</label>
                                                 </div>
-                                            </div>
+                                            </div> 
                                             <PieChart :chart-data="PieChartData[ind].question[index]"
                                                 :key="count(ind, index, question.choice, question.answer, question)"
                                                 :chart-options="chartOptions" />
