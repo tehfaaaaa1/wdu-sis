@@ -114,8 +114,8 @@ class SurveyController extends Controller
             'province_targets' => ['required', 'array'],
             'province_targets.*.province_id' => ['required', 'exists:provinces,id'],
             'province_targets.*.target_response' => ['required', 'integer'],
-            'province_targets.*.cities' => ['array'],
-            'province_targets.*.regencies' => ['array'],
+            'province_targets.*.cities' => ['nullable', 'array'],
+            'province_targets.*.regencies' => ['nullable','array'],
         ]);
     
         foreach ($validatedData['province_targets'] as &$province) {
