@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Survey;
+use Hash;
 use App\Models\Team;
 use App\Models\User;
-use Hash;
 use Inertia\Inertia;
+use App\Mail\TestMail;
+use App\Models\Survey;
+use App\Models\Response;
 use Illuminate\Http\Request;
 use illuminate\Support\Facades\Auth;
-use App\Models\Response;
-
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -89,6 +90,16 @@ class HomeController extends Controller
             'users' => $users,
             'response' => $response
         ]);
+    }
+
+    public function sendEmail(Request $request) {
+        $mailData = [
+            'title' => 'Questionnaire Submission Invitation',
+        ];
+           
+        Mail::to('admin@gmail.com')->send(new TestMail($mailData));
+             
+        echo "Mail send successfully !!";
     }
 
 }

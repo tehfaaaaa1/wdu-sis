@@ -1,21 +1,23 @@
 <?php
 
-use App\Http\Controllers\BiodataController;
-use App\Http\Middleware\ableCUDdSurvey;
 use Inertia\Inertia;
+use App\Mail\TestMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\ableCUDdSurvey;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\BiodataController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ResponseController;
-use App\Http\Controllers\LocationController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -42,7 +44,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             'client_name' => $client->client_name ?? 'No client assigned',
         ]);
     })->name('dashboard');
-    Route::get('/emailsend', [HomeController::class, 'email'])->name('sendEmail');
+    Route::get('/email', [HomeController::class, 'email'])->name('email');
+    Route::get('/send-email', function () { return View::make('emails.testMail'); })->name('email.send');
     // Client
     Route::prefix('/client')->group(function (){
         
