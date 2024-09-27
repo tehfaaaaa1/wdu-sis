@@ -129,6 +129,7 @@ class ResponseController extends Controller
         );
     }
     public function export($clientSlug, $projectSlug, $surveyId){
-        return (new ResponseExport)->survey($surveyId)->download('response.xlsx', \Maatwebsite\Excel\Excel::XLSX, ['Content-Type' => 'xlsx']);
+        $survey = Survey::where('id', $surveyId)->first();
+        return (new ResponseExport)->survey($surveyId, $survey->title)->download('response.xlsx', \Maatwebsite\Excel\Excel::XLSX, ['Content-Type' => 'xlsx']);
     }
 }

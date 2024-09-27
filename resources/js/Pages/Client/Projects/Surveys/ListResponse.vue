@@ -1,4 +1,5 @@
 <script setup>
+import NavLinkBlue from '@/Components/NavLinkBlue.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
@@ -17,7 +18,7 @@ const projectSlug = project.slug;
 const getSelectedProvinces = (survey, provinces) => {
     if (!survey || !Array.isArray(provinces)) {
         console.error('Invalid data:', survey, provinces);
-        return { list: [], total: 0 }; 
+        return { list: [], total: 0 };
     }
 
     let provinceTargets;
@@ -28,12 +29,12 @@ const getSelectedProvinces = (survey, provinces) => {
             : survey.province_targets;
     } catch (error) {
         console.error('Error parsing province_targets:', error);
-        return { list: [], total: 0 };  
+        return { list: [], total: 0 };
     }
 
     if (!Array.isArray(provinceTargets) || provinceTargets.length === 0) {
         console.log('No provinces found in province_targets:', provinceTargets);
-        return { list: [], total: 0 };  
+        return { list: [], total: 0 };
     }
 
     const totalTargetResponse = provinceTargets.reduce((total, target) => {
@@ -71,20 +72,26 @@ const getSelectedProvinces = (survey, provinces) => {
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <div class="flex justify-between items-center w-full">
                                 <h2 class="font-semibold text-lg">Summary</h2>
-                                <a class="text-blue-500 underline" :href="route('allreport',[clientSlug, projectSlug, props.surveys.id])">Lihat Statistik</a>
+                                <NavLinkBlue :href="route('allreport', [clientSlug, projectSlug, props.surveys.id])"
+                                    class="bg-secondary text-white">
+                                    Lihat Statistik
+                                </NavLinkBlue>
                             </div>
                             <p class="font-medium">Wilayah:</p>
                             <ul>
-                                <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list" :key="index">
+                                <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list"
+                                    :key="index">
                                     - {{ province.name }} ({{ province.response }})
                                 </li>
                             </ul>
                             <br>
                             <p class="font-medium">Respon:</p>
-                            <p>{{ props.totalres }} / {{ getSelectedProvinces(props.surveys, props.provinces).total }}</p>
+                            <p>{{ props.totalres }} / {{ getSelectedProvinces(props.surveys, props.provinces).total }}
+                            </p>
                             <br>
                             <p class="font-medium">Status: <b>{{ props.surveys.status ? 'DIBUKA' : 'DITUTUP' }}</b></p>
-                            <a :href="route('export-response', [clientSlug, projectSlug, props.surveys.id])">Export Response</a>
+                            <a :href="route('export-response', [clientSlug, projectSlug, props.surveys.id])"
+                                class="text-blue-500 underline hover:text-blue-600">Export List Response</a>
                         </div>
                     </div>
                     <div class="relative overflow-x-auto shadow-md mt-4">
@@ -101,7 +108,8 @@ const getSelectedProvinces = (survey, provinces) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="(responses, index) in response" :key="index" class="bg-white border-b hover:bg-gray-50">
+                                <tr v-for="(responses, index) in response" :key="index"
+                                    class="bg-white border-b hover:bg-gray-50">
                                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                         {{ index + 1 }}
                                     </td>
@@ -112,11 +120,13 @@ const getSelectedProvinces = (survey, provinces) => {
                                         {{ responses.user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ responses.user.biodata ? responses.user.biodata.alamat : 'Tidak ada alamat' }}
+                                        {{ responses.user.biodata ? responses.user.biodata.alamat : 'Tidak ada alamat'
+                                        }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
-                                            class="font-medium text-center text-blue-600 hover:underline py-1 px-2 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Lihat Hasil</a>
+                                            class="font-medium text-center text-blue-600 hover:underline py-1 px-2 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Lihat
+                                            Hasil</a>
                                     </td>
                                 </tr>
                             </tbody>
