@@ -195,14 +195,14 @@ const submit = () => {
                             <TextInput 
                                 v-model="provinceTarget.target_response" 
                                 type="number" 
-                                placeholder="Enter target response" 
+                                placeholder="Target response for province" 
                                 class="w-full h-10" 
                                 :readonly="provinceTarget.cities.some(city => city.showCityResponse) || provinceTarget.regencies.some(regency => regency.showRegencyResponse)" 
                             />
 
                             <div class="text-right">
                                 <SecondaryButton @click="toggleCityRegency(provinceTarget)" type="button" class="h-10 flex items-center justify-center text-xs">
-                                    {{ provinceTarget.showCityRegency ? 'Hide Cities/Regencies' : 'Add Cities/Regencies' }}
+                                    {{ provinceTarget.showCityRegency ? 'Hide Cities/Regencies' : 'Show Cities/Regencies' }}
                                 </SecondaryButton>
                             </div>
                         </div>
@@ -219,6 +219,7 @@ const submit = () => {
 
                             <div v-for="cityTarget in provinceTarget.cities" :key="cityTarget.city_id">
                                 <div v-if="cityTarget.showCityResponse">
+                                    <h4 class="text-primary font-semibold mt-2">{{ cityTarget.city_name }}</h4>
                                     <h5 class="text-primary text-sm">Target Response City:</h5>
                                     <TextInput 
                                         id="city-response" 
@@ -241,7 +242,7 @@ const submit = () => {
 
                             <div v-for="regencyTarget in provinceTarget.regencies" :key="regencyTarget.regency_id">
                                 <div v-if="regencyTarget.showRegencyResponse">
-                                    <h5 class="text-primary">Target Response Regency:</h5>
+                                    <h5 class="text-primary text-sm">Target Response Regency:</h5>
                                     <TextInput 
                                         id="regency-response" 
                                         v-model="regencyTarget.target_response_regency" 
@@ -261,3 +262,11 @@ const submit = () => {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+input[readonly]{
+    background-color: #d3d3d3;
+    opacity: 1;
+    cursor: default;
+}
+</style>
