@@ -63,12 +63,25 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     public function map($response): array
     {
         $this->rownumber++;
-        return [
-            $this->rownumber,
-            $response->user->biodata->nama_responden,
-            $response->user->biodata->instansi,
-            Date::dateTimeToExcel($response->created_at)
-        ];
+        $answers = array_column($response->answer->toArray(), 'answer');
+        // Boutta try this later
+        // for($i = 0; $i<count($choices);$i++ ){
+        //     for($j = $i + 1;$j<count($choices);$j++){
+        //         $intersect = array_intersect($choices[$i], $choices[$j]);
+        //         if(!empty($intersect)){
+        //             abort(403, 'ha');
+        //         }
+        //     }
+        // }
+        return array_merge(
+            [
+                $this->rownumber,
+                $response->user->biodata->nama_responden,
+                $response->user->biodata->instansi,
+                Date::dateTimeToExcel($response->created_at),
+            ],
+            $answers // This will spread the array elements across additional columns
+        );
     }
 
     public function query()
