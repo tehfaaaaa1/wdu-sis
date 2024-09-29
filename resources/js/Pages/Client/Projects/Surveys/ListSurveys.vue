@@ -84,49 +84,44 @@ const getCitiesAndRegencies = (survey) => {
         const foundProvince = props.provinces.find(p => p.id === provinceId);
         const provinceName = foundProvince ? foundProvince.name : 'Unknown Province';
 
-        const cities = (target.cities || []).length > 0 ? 
-            (target.cities || []).map(city => {
-                const foundCity = props.cities.find(c => c.id === city.city_id);
-                const cityName = foundCity ? foundCity.name : 'Unknown City';
-                const targetResponseCity = city.target_response_city || '0';
-                return { 
-                    city_name: cityName, 
-                    responseCity: targetResponseCity, 
-                    name: provinceName, 
-                    isPlaceholder: false 
-                };
-            }) : [{
-                city_name: 'No city listed', 
-                responseCity: '0',
-                isPlaceholder: true 
-            }];
+        const cities = (target.cities || []).map(city => {
+            const foundCity = props.cities.find(c => c.id === city.city_id);
+            const cityName = foundCity ? foundCity.name : 'Unknown City';
+            const targetResponseCity = city.target_response_city || '0';
+            return { 
+                city_name: cityName, 
+                responseCity: targetResponseCity, 
+                name: provinceName, 
+                isPlaceholder: false 
+            };
+        });
 
-        const regencies = (target.regencies || []).length > 0 ?
-            (target.regencies || []).map(regency => {
-                const foundRegency = props.regencies.find(r => r.id === regency.regency_id);
-                const regencyName = foundRegency ? foundRegency.name : 'Unknown Regency';
-                const targetResponseRegency = regency.target_response_regency || '0';
-                return { 
-                    regency_name: regencyName, 
-                    responseRegency: targetResponseRegency,
-                    isPlaceholder: false // Regular regency entry
-                };
-            }) : [{
-                regency_name: 'No regency listed', 
-                responseRegency: '0',
-                isPlaceholder: true // This helps apply a custom style
-            }];
+        const citiesDisplay = cities.length > 0 ? cities : [{ city_name: 'No city listed', responseCity: '0', isPlaceholder: true }];
+
+        const regencies = (target.regencies || []).map(regency => {
+            const foundRegency = props.regencies.find(r => r.id === regency.regency_id);
+            const regencyName = foundRegency ? foundRegency.name : 'Unknown Regency';
+            const targetResponseRegency = regency.target_response_regency || '0';
+            return { 
+                regency_name: regencyName, 
+                responseRegency: targetResponseRegency,
+                isPlaceholder: false 
+            };
+        });
+
+        const regenciesDisplay = regencies.length > 0 ? regencies : [{ regency_name: 'No regency listed', responseRegency: '0', isPlaceholder: true }];
 
         return {
             province_name: provinceName,    
-            cities,
-            regencies,
+            cities: citiesDisplay,
+            regencies: regenciesDisplay,
             target_response: target.target_response
         };
     });
 
     return provincesData;
 };
+
 
 
 const parseProvinceTargets = (survey) => {
@@ -205,11 +200,11 @@ const getSurveySubmissions = (surveyId) => {
                                 </p>
                             </caption>  
 
-                            <thead class="text-xs text-white uppercase bg-primary">
+                            <thead class="text-xs text-center text-white uppercase bg-primary">
                                 <tr>
                                     <th scope="col" class="px-6 py-3 w-1/5">Survey Title</th>
                                     <th scope="col" class="px-6 py-3 w-1/4">Description</th>
-                                    <th scope="col" class="px-6 py-3 ">Target</th>
+                                    <th scope="col" class="px-6 py-3" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'">Target</th>
                                     <th scope="col" class="px-6 py-3 ">Status</th>
                                     <th scope="col" class="px-6 py-3 md:w-1/4 text-center">Action</th>
                                 </tr>
@@ -219,7 +214,7 @@ const getSurveySubmissions = (surveyId) => {
                                 <tr v-for="survey in filteredSurveys" :key="survey.id" class="bg-white border-b hover:bg-gray-50">
                                     <td scope="row" class="px-6 py-4 font-medium text-gray-900">{{ survey.title }}</td>
                                     <td class="px-6 py-4 font-medium text-gray-c900 sm:text-gray-500">{{ survey.desc }}</td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-6 py-4" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'">
                                         <div class="mt-5"></div>
                                         <ul>
                                             <li v-for="(province, index) in getCitiesAndRegencies(survey)" :key="index">
@@ -244,14 +239,16 @@ const getSurveySubmissions = (surveyId) => {
                                         </ul>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="text-xl">
-                                            <div class="square">
-                                                {{ getSurveySubmissions(survey.id) }} / <b>{{ getSelectedProvinces(survey).total }}</b><br>
+                                        <div class="text-xl" v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'">
+                                            <div class="square" >
+                                                {{ getSurveySubmissions(survey.id) }}/<b> {{ getSelectedProvinces(survey).total }}</b><br>
                                                 <br>
                                             </div>
                                         </div>
-                                        <p v-if="survey.status == 0" class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded text-center mt-3">DITUTUP</p>
-                                        <p v-if="survey.status == 1" class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded text-center mt-3">DIBUKA</p>
+                                        <div class="flex justify-center">
+                                            <p v-if="survey.status == 0" class="w-24 bg-auto bg-red-100 text-red-800 text-xs font-medium rounded text-center mt-3 p-2">DITUTUP</p>
+                                            <p v-if="survey.status == 1" class="w-24 bg-auto bg-green-100 text-green-800 text-xs font-medium rounded text-center mt-3 p-2">DIBUKA</p>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-6">
                                         <div class="grid grid-cols-2 gap-x-2 justify-center content-center">
