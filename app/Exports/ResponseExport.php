@@ -30,11 +30,19 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     use Exportable;
     private $rownumber = 0;
     private $surveyTitle = '';
-
-    public function survey($surveyId, $title)
+    private $survey_id = '';
+    public $question = [];
+    public $choice = [];
+    public function survey($surveyId, $title, $question)
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
+        $this->question = array_column($question->toArray(), 'question_text');
+        foreach($question as $q){
+            if($q->question_type_id == 2 ||$q->question_type_id ==3){
+                array_push($this->choice, $q->choice->toArray());
+            };
+        }
         return $this;
     }
 
@@ -42,35 +50,57 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     {
         return 'B3';
     }
-
     public function headings(): array
     {
-        return [
+        // dd($this->question);
+        return array_merge([ 
             'No',
             'Nama Responden',
             'Instansi',
+            'Email',
             'Waktu Submit',
-        ];
+            ], $this->question);
     }
-
     public function columnFormats(): array
     {
         return [
-            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
     public function map($response): array
-    {
+    {   
         $this->rownumber++;
-        return [
+        $answer = $response->answer->toArray();
+        usort($answer, function($a,$b){
+            return ($a['question_id'] >= $b['question_id']);
+        });
+        foreach($answer as $index => $a){
+            foreach($this->choice as $choice){
+                foreach($choice as $c){
+                    if($a['answer'] == $c['id']){
+                        $answer[$index]['answer'] = $c['value']; 
+                    }
+                }
+            }
+        }
+        $groupAnswer = [];
+        foreach ($answer as $ans) {
+            $groupAnswer[$ans['question_id']][] = $ans['answer'];
+        }
+        foreach ($groupAnswer as $question_id => &$answer) {
+            $answer = implode(', ', $answer);
+        }
+        return array_merge(
+            [
             $this->rownumber,
             $response->user->biodata->nama_responden,
             $response->user->biodata->instansi,
+            $response->user->email,
             Date::dateTimeToExcel($response->created_at)
-        ];
+            ], $groupAnswer
+        );
     }
-
     public function query()
     {
         return Response::query()->where('survey_id', $this->survey_id);
@@ -80,12 +110,10 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
-                // Add text to cell A1 (or any other cell above the table)
+                // Add text to cell B2 (or any other cell above the table)
                 $event->sheet->setCellValue('B2', $this->surveyTitle .= ' - List Respon');
-                
-                // Merge cells A1 to C1 for centering
+                // Merge cells B2 to E2 for centering
                 $event->sheet->mergeCells('B2:E2');
-
                 // Optionally apply some styles to the text
                 $event->sheet->getStyle('B2')->applyFromArray([
                     'font' => [

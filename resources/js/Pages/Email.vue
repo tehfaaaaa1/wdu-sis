@@ -12,8 +12,7 @@ const search = ref('')
 const filteredSurveys = computed(() => {
     return props.survey.filter(survey => {
         return (
-            survey.title.toLowerCase().includes(search.value.toLowerCase()) ||
-            survey.desc.toLowerCase().includes(search.value.toLowerCase())
+            survey.title.toLowerCase().includes(search.value.toLowerCase())
         ) ;
     });
 });
@@ -37,16 +36,16 @@ const isi =(surveyTitle)=>{
                             <h1>Pilih Survey</h1>
                             <Dropdown width="96" align="left">
                                 <template #trigger>
-                                    <input type="text" name="" id="" v-model="search" class="w-full border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-none focus:shadow-md"
+                                    <input type="text" name="" id="" v-model="search" @click="search = ''" class="w-full mb-2 border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent  focus:shadow-md"
                                     placeholder="Search Survey">
                                 </template>
                                 <template #content>
                                     <div class="cursor-pointer p-2 grid " :class="filteredSurveys.length < 5 ? 'grid-cols-1' : 'grid-cols-2'">
-                                        <div class="w-full mb-2 px-2 py-1 text-gray-700 cursor-pointer rounded-sm hover:bg-gray-200 " v-for="survey in filteredSurveys">
-                                            <input type="radio" name="" :id="'survey_'+survey.id" :value="survey" v-model="selectedSurvey" @input="isi(survey.title)" class="hidden">
-                                            <label class="text-sm cursor-pointer " :for="'survey_'+survey.id">{{ survey.title}}</label>
+                                        <div class="w-full  text-gray-700 cursor-pointer rounded-sm hover:bg-gray-200 " v-for="survey in filteredSurveys" @input="isi(survey.title)">
+                                            <input type="radio" name="" :id="'survey_'+survey.id" :value="survey" v-model="selectedSurvey" class="hidden w-full">
+                                            <label class="text-sm cursor-pointer block px-2 py-1 h-full" :for="'survey_'+survey.id">{{ survey.title}}</label>
                                         </div>
-                                        <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700">Survey tersebut tidak ada</p>
+                                        <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700 ">Tidak Ada Survey Yang Sesuai</p>
                                     </div>
                                 </template>
                             </Dropdown>
