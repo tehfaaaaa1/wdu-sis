@@ -93,7 +93,7 @@ const showAllanswer = ref(props.page.map((p) => ({
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)" :key="index">
                                     <div class="block mb-2.5">
                                         <p class="font-semibold">
-                                            {{ index + 1 }}. <label>{{ question.question_text }}</label>
+                                            {{ index + 1 }}. <label>{{ question.question_text }}{{ ' ('+ responses.length +' Response)' }}</label>
                                         </p>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2" class="flex gap-x-10">
@@ -137,8 +137,9 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                 v-if="showAllanswer[ind].q[index].value == false">
                                                 <button
                                                     class="text-sm text-secondary border-b border-transparent hover:border-secondary transition p-1 focus:border-secondary focus:outline-none"
-                                                    type="button" @click="showAllanswer[ind].q[index].value = true">Show
-                                                    All</button>
+                                                    type="button" @click="showAllanswer[ind].q[index].value = true">
+                                                    Show {{ question.answer.length - 3  }} More
+                                                </button>
                                             </div>
                                             <div class="flex justify-center mt-2" v-else>
                                                 <button type="button"

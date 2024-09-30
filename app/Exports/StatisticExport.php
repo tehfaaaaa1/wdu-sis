@@ -31,7 +31,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize
 
     public function query()
     {
-        return Question::query()->where('survey_id', $this->survey_id);
+        return Question::query()->where('survey_id', $this->survey_id)->orderBy('question_page_id')->orderBy('order');
     }
 
     public function map($row): array
@@ -43,20 +43,24 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize
         $totalResponse = count($answer);
         $hitung = [];
         if($row->question_type_id != 1){
-        foreach($choice as $index => $id){
-            foreach($answer as $a){
-                if($a['answer'] == $id){
-                    $hitung[$index][] = $a['answer'];
+            foreach($choice as $index => $id){
+                foreach($answer as $a){
+                    if($a['answer'] == $id){
+                        $hitung[$index][] = $a['answer'];
+                    }
                 }
             }
-        }
-        $mapRows = [[
-            $this->rownumber,
-            $row->question_text
-        ],['','', 'Response Percent', 'Response Count']];
-
+            $mapRows = [[
+                $this->rownumber,
+                $row->question_text,
+            ],['','', 'Response Percent', 'Response Count']];
         foreach($choice_value as $index =>$value){
-            $count = count($hitung[$index]);
+            if($hitung[$index] ?? 0){
+                $count = count($hitung[$index]);
+            } else {
+                $count ='0';
+            }
+            // dd($count);
             $percentage = ($count *100) / $totalResponse;
             $mapRows[] = ['', $value, number_format($percentage, 2, '.', ""). '%' ,$count];
         }
