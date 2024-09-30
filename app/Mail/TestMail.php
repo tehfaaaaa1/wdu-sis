@@ -14,7 +14,7 @@ class TestMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $maildata;
-    
+
     /**
      * Create a new message instance.
      */
@@ -29,8 +29,7 @@ class TestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Test Mail',
-            from: new Address('bajindul@example.com', 'Rolan'),
+            subject: 'Undangan Untuk Mengisi Formulir',
         );
     }
 
@@ -41,7 +40,7 @@ class TestMail extends Mailable
     {
         return new Content(
             view: 'emails.testMail',
-            with :[ 'mailData' => $this->maildata]
+            with: ['mailData' => $this->maildata]
         );
     }
 
