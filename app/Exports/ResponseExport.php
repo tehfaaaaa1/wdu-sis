@@ -31,15 +31,17 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     private $rownumber = 0;
     private $surveyTitle = '';
     private $survey_id = '';
-    private $question = [];
-    private $choice = [];
+    public $question_id = [];
+    public $question_text = [];
+    public $choice = [];
     public function survey($surveyId, $title, $question)
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
-        $this->question = array_column($question->toArray(), 'question_text');
-        foreach ($question as $q) {
-            if ($q->question_type_id == 2 || $q->question_type_id == 3) {
+        $this->question_id = array_column($question->toArray(), 'id');
+        $this->question_text = array_column($question->toArray(), 'question_text');
+        foreach($question as $q){
+            if($q->question_type_id == 2 ||$q->question_type_id ==3){
                 array_push($this->choice, $q->choice->toArray());
             };
         }
@@ -60,7 +62,7 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             'Instansi',
             'Email',
             'Waktu Submit',
-        ], $this->question);
+            ], $this->question_text);
     }
 
     public function columnFormats(): array
@@ -73,8 +75,8 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     public function map($response): array
     {
         $this->rownumber++;
-        $answer = $response->answer->toArray();
-        usort($answer, function ($a, $b) {
+        $answer = $response->answer->toArray(); 
+        usort($answer, function($a,$b){
             return ($a['question_id'] >= $b['question_id']);
         });
         foreach ($answer as $index => $a) {
@@ -87,11 +89,20 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             }
         }
         $groupAnswer = [];
-        foreach ($answer as $ans) {
-            $groupAnswer[$ans['question_id']][] = $ans['answer'];
-        }
-        foreach ($groupAnswer as $question_id => &$answer) {
-            $answer = implode(', ', $answer);
+        foreach($this->question_id as $qId){
+            $groupAnswer[$qId][] = null;
+            foreach ($answer as $ans) {
+                if($qId == $ans['question_id']){
+                    $groupAnswer[$qId][] = $ans['answer'];
+                }
+            }
+            $groupAnswer[$qId] =  array_filter($groupAnswer[$qId], function($value){
+                return $value != null;
+            });
+        } 
+        // dd($groupAnswer);
+        foreach ($groupAnswer as $qId => &$answe) {
+            $answe = implode(", ", $answe);
         }
         return array_merge(
             [
@@ -104,7 +115,7 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             $groupAnswer
         );
     }
-    
+
     public function query()
     {
         return Response::query()->where('survey_id', $this->survey_id);
