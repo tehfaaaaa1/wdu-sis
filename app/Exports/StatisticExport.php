@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Question;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
@@ -10,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class StatisticExport implements FromQuery, WithMapping
+class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -36,14 +37,36 @@ class StatisticExport implements FromQuery, WithMapping
     public function map($row): array
     {
         $this->rownumber++;
-        $choice = array_column($row->choice->toArray(), 'value');
-        return [
-            [
+        $choice_value = array_column($row->choice->toArray(), 'value');
+        $choice = array_column($row->choice->toArray(), 'id');
+        $answer = $row->answer->toArray();
+        $totalResponse = count($answer);
+        $hitung = [];
+        if($row->question_type_id != 1){
+        foreach($choice as $index => $id){
+            foreach($answer as $a){
+                if($a['answer'] == $id){
+                    $hitung[$index][] = $a['answer'];
+                }
+            }
+        }
+        $mapRows = [[
+            $this->rownumber,
+            $row->question_text
+        ],['','', 'Response Percent', 'Response Count']];
+
+        foreach($choice_value as $index =>$value){
+            $count = count($hitung[$index]);
+            $percentage = ($count *100) / $totalResponse;
+            $mapRows[] = ['', $value, number_format($percentage, 2, '.', ""). '%' ,$count];
+        }
+            return $mapRows;
+        } else if($row->question_type_id == 1){
+            return [[
                 $this->rownumber,
                 $row->question_text
-            ],
-            ['', [explode(',', $row->choice)]],
-        ];
+            ],['', $totalResponse. ' Responses']];
+        }
     }
 
     public function registerEvents(): array
