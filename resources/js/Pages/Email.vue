@@ -1,12 +1,13 @@
 <script setup>
 import Dropdown from '@/Components/Dropdown.vue';
-import DropdownAlt from '@/Components/DropdownAlt.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 const props = defineProps({
     survey: Object,
     users: Object,
-    response: Object    
+    response: Object
 })
 const search = ref('')
 const filteredSurveys = computed(() => {
@@ -16,20 +17,28 @@ const filteredSurveys = computed(() => {
         ) ;
     });
 });
-const selectedSurvey = ref('')
-const selectedUser = ref('') 
-const isi =(surveyTitle)=>{
+const form = useForm({
+    selectedSurvey: '',
+    selectedUser: '',
+})
+const isi = (surveyTitle) => {
     search.value = surveyTitle
 }
+const submit = () => {
+    form.post(route('email.send'), {
+        onFinish: () => form.reset(),
+    });
+};
 </script>
 <template>
     <AppLayout title="Email">
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="bg-white p-3 rounded-md">
+                <form class="bg-white p-3 rounded-md" @submit.prevent="submit">
                     <h1 class="text-lg font-semibold">Email Send</h1>
-                    <input type="email" name="" id="" class=" border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-none focus:shadow-md"
-                    placeholder="Email">
+                    <input type="email" name="" id=""
+                        class=" border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-none focus:shadow-md"
+                        placeholder="Email">
                     <div class="flex items-center mt-2" name='content'>
                         <!-- <h2 class="font-semibold text-black">Pilih Survey</h2> -->
                         <div class="relative">
@@ -51,16 +60,29 @@ const isi =(surveyTitle)=>{
                             </Dropdown>
                         </div>
                     </div>
-                    <div class="" v-if="selectedSurvey">
+                    <div class="" v-if="form.selectedSurvey">
                         <h2 class="font-semibold text-black">Pilih Akun</h2>
                         <div class="w-full grid grid-cols-2 gap-2 text-gray-700">
-                            <div class="" v-for="user in users.filter(user => user.client_id == selectedSurvey.project.client.id && selectedSurvey.response.every(res=>res.user_id != user.id))">
-                                <input type="radio" :id="'user_'+ user.id" name="user_id" class="checked:text-primary focus:ring-primary" v-model="selectedUser" :value="user">
-                                <label :for="'user_'+ user.id" class="pl-1.5 text-sm">{{user.name }} {{ selectedSurvey.response.some(res=>res.user_id == user.id) ? '(sudah Mengisi)' : '(Belum Mengisi)' }}</label>
+                            <div class=""
+                                v-for="user in users.filter(user => user.client_id == selectedSurvey.project.client.id && selectedSurvey.response.every(res => res.user_id != user.id))">
+                                <input type="radio" :id="'user_' + user.id" name="user_id"
+                                    class="checked:text-primary focus:ring-primary" v-model="form.selectedUser"
+                                    :value="user">
+                                <label :for="'user_' + user.id" class="pl-1.5 text-sm">{{ user.name }} {{
+                                    selectedSurvey.response.some(res => res.user_id == user.id) ? '(sudah Mengisi)' :
+                                        '(Belum Mengisi)'
+                                }}</label>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <div class="my-4">
+                        <PrimaryButton class="justify-center mt-2" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing">
+                            Send Email
+                        </PrimaryButton>
+                    </div>
+                </form>
             </div>
         </main>
 

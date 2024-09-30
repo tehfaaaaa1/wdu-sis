@@ -9,6 +9,8 @@ use App\Models\Answer;
 use App\Models\Survey;
 use App\Models\Biodata;
 use App\Models\Province;
+use App\Models\City;
+use App\Models\Regency;
 use App\Models\Response;
 use App\Models\QuestionPage;
 use Illuminate\Http\Request;
@@ -25,6 +27,8 @@ class ResponseController extends Controller
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $totalRes = count($response);
         $provinces = Province::all();
+        $cities = City::all();
+        $regencies = Regency::all();
         $provinceTargets = json_decode($survey->province_targets, true);
 
         return Inertia::render( 
@@ -45,7 +49,9 @@ class ResponseController extends Controller
                         'biodata' => $res->user->biodata
                     ];
                 }),
-                'province_targets' => $provinceTargets
+                'province_targets' => $provinceTargets,
+                'cities' => $cities,
+                'regencies' => $regencies,
             ]
         );
     }

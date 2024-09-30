@@ -9,9 +9,11 @@ const props = defineProps({
     response: Object,
     totalres: Object,
     provinces: Array,
+    cities: Array
 });
-const project = props.projects[0]
-const client = props.clients[0]
+
+const project = props.projects[0];
+const client = props.clients[0];
 const clientSlug = client.slug;
 const projectSlug = project.slug;
 
@@ -42,16 +44,32 @@ const getSelectedProvinces = (survey, provinces) => {
         return total + (isNaN(targetResponse) ? 0 : targetResponse);
     }, 0);
 
-
     const provinceList = provinceTargets.map(target => {
         if (!target || !target.province_id) {
             console.error('Invalid target data:', target);
-            return { name: 'Unknown Province', response: '0' };
+            return { name: 'Unknown Province', response: '0', cities: [], regencies: [] };
         }
         const province = provinces.find(p => p.id === target.province_id);
         const provinceName = province ? province.name : 'Unknown Province';
         const targetResponse = target.target_response || '0';
-        return { name: provinceName, response: targetResponse };
+
+        const cityList = target.cities ? target.cities.map(city => {
+            const foundCity = props.cities ? props.cities.find(c => c.id === city.city_id) : null;
+            const cityName = foundCity ? foundCity.name : 'No name for City';
+            return {
+                name: cityName,
+                response: city.target_response_city || '0'
+            };
+        }) : [];
+
+        const regencyList = target.regencies ? target.regencies.map(regency => {
+            return {
+                name: `Regency ID ${regency.regency_id}`,
+                response: regency.target_response_regency || '0'
+            };
+        }) : [];
+
+        return { name: provinceName, response: targetResponse, cities: cityList, regencies: regencyList };
     });
 
     return { list: provinceList, total: totalTargetResponse };
@@ -81,13 +99,20 @@ const getSelectedProvinces = (survey, provinces) => {
                             <ul>
                                 <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list"
                                     :key="index">
-                                    - {{ province.name }} ({{ province.response }})
+                                    {{ province.name }} ({{ province.response }})
+                                    <ul>
+                                        <li v-for="(city, cityIndex) in province.cities" :key="cityIndex">
+                                            - {{ city.name }} ({{ city.response }})
+                                        </li>
+                                        <li v-for="(regency, regencyIndex) in province.regencies" :key="regencyIndex">
+                                            - {{ regency.name }} ({{ regency.response }})
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
                             <br>
                             <p class="font-medium">Respon:</p>
-                            <p>{{ props.totalres }} / {{ getSelectedProvinces(props.surveys, props.provinces).total }}
-                            </p>
+                            <p>{{ props.totalres }} / {{ getSelectedProvinces(props.surveys, props.provinces).total }}</p>
                             <br>
                             <p class="font-medium">Status: <b>{{ props.surveys.status ? 'DIBUKA' : 'DITUTUP' }}</b></p>
                             <a :href="route('export-response', [clientSlug, projectSlug, props.surveys.id])"
@@ -102,7 +127,6 @@ const getSelectedProvinces = (survey, provinces) => {
                                     <th scope="col" class="px-6 py-3 w-1/12">No.</th>
                                     <th scope="col" class="px-6 py-3">Nama</th>
                                     <th scope="col" class="px-6 py-3">Email</th>
-                                    <!-- <th scope="col" class="px-6 py-3"></th> -->
                                     <th scope="col" class="px-6 py-3">Wilayah/Daerah</th>
                                     <th scope="col" class="px-6 py-3 md:w-1/5 text-center">Action</th>
                                 </tr>
@@ -120,8 +144,7 @@ const getSelectedProvinces = (survey, provinces) => {
                                         {{ responses.user.email }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ responses.user.biodata ? responses.user.biodata.alamat : 'Tidak ada alamat'
-                                        }}
+                                        {{ responses.user.biodata ? responses.user.biodata.alamat : 'Tidak ada alamat' }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
