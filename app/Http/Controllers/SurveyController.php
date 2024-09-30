@@ -146,6 +146,59 @@ class SurveyController extends Controller
     
         return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('success', 'Survey created successfully.');
     }
+    public function location(Survey $survey, $clientSlug, $projectSlug, $id)
+    {
+        $surveyall = Project::where('slug', $projectSlug)->firstOrFail();
+        $projectall = DB::table('projects')
+            ->where('slug', $projectSlug)
+            ->get();
+        $client = Client::where('slug', $clientSlug)->get();
+        $s = $surveyall->survey;
+    
+        $user = Auth::user();
+    
+        $userTarget = Response::select('survey_id', DB::raw('count(*) as submissions'))
+            ->groupBy('survey_id')
+            ->get()
+            ->mapWithKeys(function ($response) {
+                return [$response->survey_id => $response->submissions];
+            });
+    
+        $response = Response::where('user_id', $user->id)->get();
+        $provinces = Province::all();
+        $cities = City::all();
+        $regencies = Regency::all();
+        
+        return Inertia::render(
+            'Client/Projects/Surveys/LocationSurveys',
+            [
+                'surveys' => collect($s)->map(function ($survey) {
+
+                    $provinceTargets = json_decode($survey->province_targets, true);
+    
+                    return [
+                        'id' => $survey->id,
+                        'title' => $survey->title,
+                        'desc' => $survey->desc,
+                        'project_id' => $survey->project_id,
+                        'created_at' => $survey->created_at->format('j F Y H:i:s'),
+                        'updated_at' => $survey->updated_at->format('j F Y H:i:s'),
+                        'response' => $survey->response,
+                        'status' => $survey->status,
+                        'province_targets' => $provinceTargets
+                    ];
+                }),
+                'projects' => $projectall,
+                'clients' => $client,
+                'user' => $user,
+                'userTarget' => $userTarget,
+                'response' => $response,
+                'provinces' => $provinces,
+                'cities' => $cities,
+                'regencies' => $regencies,
+            ]
+        );
+    }
     
     public function edit(Survey $survey, $clientSlug, $projectSlug, $id)
     {
