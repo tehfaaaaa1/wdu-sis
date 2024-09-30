@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ResponseExport;
+use App\Exports\StatisticExport;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Answer;
@@ -136,6 +137,6 @@ class ResponseController extends Controller
     }
     public function export($clientSlug, $projectSlug, $surveyId){
         $survey = Survey::where('id', $surveyId)->first();
-        return (new ResponseExport)->survey($surveyId, $survey->title, $survey->question)->download('response.xlsx', \Maatwebsite\Excel\Excel::XLSX, ['Content-Type' => 'xlsx']);
+        return (new StatisticExport)->survey($surveyId, $survey->title, $survey->response)->download('response.xlsx', \Maatwebsite\Excel\Excel::XLSX, ['Content-Type' => 'xlsx']);
     }
 }

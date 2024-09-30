@@ -31,15 +31,15 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     private $rownumber = 0;
     private $surveyTitle = '';
     private $survey_id = '';
-    public $question = [];
-    public $choice = [];
+    private $question = [];
+    private $choice = [];
     public function survey($surveyId, $title, $question)
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
         $this->question = array_column($question->toArray(), 'question_text');
-        foreach($question as $q){
-            if($q->question_type_id == 2 ||$q->question_type_id ==3){
+        foreach ($question as $q) {
+            if ($q->question_type_id == 2 || $q->question_type_id == 3) {
                 array_push($this->choice, $q->choice->toArray());
             };
         }
@@ -50,17 +50,19 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     {
         return 'B3';
     }
+
     public function headings(): array
     {
         // dd($this->question);
-        return array_merge([ 
+        return array_merge([
             'No',
             'Nama Responden',
             'Instansi',
             'Email',
             'Waktu Submit',
-            ], $this->question);
+        ], $this->question);
     }
+
     public function columnFormats(): array
     {
         return [
@@ -69,17 +71,17 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     }
 
     public function map($response): array
-    {   
+    {
         $this->rownumber++;
         $answer = $response->answer->toArray();
-        usort($answer, function($a,$b){
+        usort($answer, function ($a, $b) {
             return ($a['question_id'] >= $b['question_id']);
         });
-        foreach($answer as $index => $a){
-            foreach($this->choice as $choice){
-                foreach($choice as $c){
-                    if($a['answer'] == $c['id']){
-                        $answer[$index]['answer'] = $c['value']; 
+        foreach ($answer as $index => $a) {
+            foreach ($this->choice as $choice) {
+                foreach ($choice as $c) {
+                    if ($a['answer'] == $c['id']) {
+                        $answer[$index]['answer'] = $c['value'];
                     }
                 }
             }
@@ -93,14 +95,16 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
         }
         return array_merge(
             [
-            $this->rownumber,
-            $response->user->biodata->nama_responden,
-            $response->user->biodata->instansi,
-            $response->user->email,
-            Date::dateTimeToExcel($response->created_at)
-            ], $groupAnswer
+                $this->rownumber,
+                $response->user->biodata->nama_responden,
+                $response->user->biodata->instansi,
+                $response->user->email,
+                Date::dateTimeToExcel($response->created_at)
+            ],
+            $groupAnswer
         );
     }
+    
     public function query()
     {
         return Response::query()->where('survey_id', $this->survey_id);
@@ -109,7 +113,7 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
+            AfterSheet::class => function (AfterSheet $event) {
                 // Add text to cell B2 (or any other cell above the table)
                 $event->sheet->setCellValue('B2', $this->surveyTitle .= ' - List Respon');
                 // Merge cells B2 to E2 for centering
