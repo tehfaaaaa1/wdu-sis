@@ -25,7 +25,7 @@ const isi = (surveyTitle) => {
     search.value = surveyTitle
 }
 const submit = () => {
-    form.post(route('email.send'), {
+    form.get(route('email.send'), {
         onFinish: () => form.reset(),
     });
 };

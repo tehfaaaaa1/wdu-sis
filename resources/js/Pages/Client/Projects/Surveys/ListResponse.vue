@@ -9,7 +9,8 @@ const props = defineProps({
     response: Object,
     totalres: Object,
     provinces: Array,
-    cities: Array
+    cities: Array,
+    regencies: Array,
 });
 
 const project = props.projects[0];
@@ -63,8 +64,10 @@ const getSelectedProvinces = (survey, provinces) => {
         }) : [];
 
         const regencyList = target.regencies ? target.regencies.map(regency => {
+            const foundRegency = props.regencies ? props.regencies.find(r => r.id === regency.regency_id) : null;
+            const regencyName = foundRegency ? foundRegency.name : 'No name for Regency';
             return {
-                name: `Regency ID ${regency.regency_id}`,
+                name: regencyName,
                 response: regency.target_response_regency || '0'
             };
         }) : [];
@@ -95,18 +98,22 @@ const getSelectedProvinces = (survey, provinces) => {
                                     Lihat Statistik
                                 </NavLinkBlue>
                             </div>
-                            <p class="font-medium">Wilayah:</p>
+                            <p class="font-bold">Wilayah:</p>
                             <ul>
                                 <li v-for="(province, index) in getSelectedProvinces(props.surveys, props.provinces).list"
                                     :key="index">
-                                    {{ province.name }} ({{ province.response }})
+                                    {{ province.name }} <span class="font-medium">({{ province.response }})</span>
                                     <ul>
-                                        <li v-for="(city, cityIndex) in province.cities" :key="cityIndex">
-                                            - {{ city.name }} ({{ city.response }})
-                                        </li>
-                                        <li v-for="(regency, regencyIndex) in province.regencies" :key="regencyIndex">
-                                            - {{ regency.name }} ({{ regency.response }})
-                                        </li>
+                                        <div class="text-sm">
+                                            <li v-for="(city, cityIndex) in province.cities" :key="cityIndex">
+                                                - {{ city.name }} ({{ city.response }})
+                                            </li>
+                                        </div>
+                                        <div class="text-sm">  
+                                            <li v-for="(regency, regencyIndex) in province.regencies" :key="regencyIndex">
+                                                - Kab.  {{ regency.name }} ({{ regency.response }})
+                                            </li>
+                                        </div>
                                     </ul>
                                 </li>
                             </ul>
