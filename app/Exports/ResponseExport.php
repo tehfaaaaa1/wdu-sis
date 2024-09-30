@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use Number;
 use App\Models\Response;
 use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -12,17 +11,14 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Illuminate\Contracts\Support\Responsable;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithProperties;
-use Maatwebsite\Excel\Concerns\WithColumnLimit;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumnFormatting, ShouldAutoSize, WithCustomStartCell, WithEvents
+class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumnFormatting, ShouldAutoSize, WithCustomStartCell, WithEvents, WithTitle
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -34,18 +30,22 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     public $question_id = [];
     public $question_text = [];
     public $choice = [];
-    public function survey($surveyId, $title, $question)
+    public function __construct($surveyId, $title, $question)
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
         $this->question_id = array_column($question->toArray(), 'id');
         $this->question_text = array_column($question->toArray(), 'question_text');
-        foreach($question as $q){
-            if($q->question_type_id == 2 ||$q->question_type_id ==3){
+        foreach ($question as $q) {
+            if ($q->question_type_id == 2 || $q->question_type_id == 3) {
                 array_push($this->choice, $q->choice->toArray());
             };
         }
-        return $this;
+    }
+
+    public function title(): string
+    {
+        return 'Responses';
     }
 
     public function startCell(): string
@@ -55,14 +55,13 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
 
     public function headings(): array
     {
-        // dd($this->question);
         return array_merge([
             'No',
             'Nama Responden',
             'Instansi',
             'Email',
             'Waktu Submit',
-            ], $this->question_text);
+        ], $this->question_text);
     }
 
     public function columnFormats(): array
@@ -75,8 +74,8 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     public function map($response): array
     {
         $this->rownumber++;
-        $answer = $response->answer->toArray(); 
-        usort($answer, function($a,$b){
+        $answer = $response->answer->toArray();
+        usort($answer, function ($a, $b) {
             return ($a['question_id'] >= $b['question_id']);
         });
         foreach ($answer as $index => $a) {
@@ -89,18 +88,18 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             }
         }
         $groupAnswer = [];
-        foreach($this->question_id as $qId){
+        foreach ($this->question_id as $qId) {
             $groupAnswer[$qId][] = null;
             foreach ($answer as $ans) {
-                if($qId == $ans['question_id']){
+                if ($qId == $ans['question_id']) {
                     $groupAnswer[$qId][] = $ans['answer'];
                 }
             }
-            $groupAnswer[$qId] =  array_filter($groupAnswer[$qId], function($value){
+            $groupAnswer[$qId] =  array_filter($groupAnswer[$qId], function ($value) {
                 return $value != null;
             });
-        } 
-        // dd($groupAnswer);
+        }
+
         foreach ($groupAnswer as $qId => &$answe) {
             $answe = implode(", ", $answe);
         }
