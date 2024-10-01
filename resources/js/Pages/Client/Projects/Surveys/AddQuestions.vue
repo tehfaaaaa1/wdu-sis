@@ -33,24 +33,28 @@ const pages = ref(props.page.map((page) => {
         let text = []
         let choice = []
         let lastCindex = ''
-        // pilihan = []
-        if (item.question_type_id == 2) {
-            tipe = ['Radio']
-            choice = item.choice.map((isi) => {
-                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-            })
-            lastCindex = choice.length - 1
-            // pilihan = [{pilih : item.choice.value}]
-        } else if (item.question_type_id == 3) {
-            tipe = ['Checkbox']
-            choice = item.choice.map((isi) => {
-                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-            })
-            lastCindex = choice.length - 1
-            // pilihan = [{pilih : item.choice.value}]
-        } else if (item.question_type_id == 1) {
-            tipe = ['Text']
-            text = [{ isi: '' }]
+        switch (item.question_type_id) {
+            case 1:
+                tipe = ['Text']
+                text = [{ isi: '' }]
+                break;
+            case 2:
+                tipe = ['Radio']
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                })
+                lastCindex = choice.length - 1
+                break;
+            case 3:
+                tipe = ['Checkbox']
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                })
+                lastCindex = choice.length - 1
+                break;
+
+            default:
+                break;
         }
         return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
     })
@@ -66,6 +70,8 @@ const questionsType = ref([
     { types: 'Radio', name: 'Single Choice', choices: '' },
     { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
     { types: 'Radio', name: 'Yes / No', choices: '' },
+    { types: 'Image', name: 'Image', files: '' },
+    { types: 'Paragraph', name: 'Paragraph', texts: '' },
 ]);
 function clone(element) {
     let texts = []
@@ -225,15 +231,6 @@ const form = useForm({
 
 // Save Mechanic
 const savingStatus = ref('')
-// const autoSaveForm = debounce(() => {
-//     savingStatus.value = 'saving'
-//     form.post(route('auto-save-question', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true }, {
-//         preserveState: true,
-//         onSuccess: () => { savingStatus.value = 'saved' },
-//         onError: () => { savingStatus.value = 'error' }
-//     })
-// }, 2000)
-// watch(form, autoSaveForm, { deep: true })
 const handleBeforeUnload = (event) => {
     event.preventDefault();
     event.returnValue = ''; // This is required for the alert to be shown in some browsers
@@ -332,7 +329,8 @@ const confirmDeletionFlow = (flow) => {
         <main class="min-h-screen relative">
             <header class="bg-white grid grid-cols-3 items-center border-b border-gray-300 sticky top-0 z-50">
                 <div class="flex items-center gap-x-4">
-                    <a :href="route('listsurvey', [client['slug'], project['slug']])" class="flex justify-center items-center font-semibold text-white focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-red-500 bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
+                    <a :href="route('listsurvey', [client['slug'], project['slug']])"
+                        class="flex justify-center items-center font-semibold text-white focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-red-500 bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="size-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -455,28 +453,6 @@ const confirmDeletionFlow = (flow) => {
                                         d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
                             </button>
-                            <!-- <div class="flex flex-col space-y-2 group">
-                                <div class="absolute top-12">
-                                    <transition enter-active-class="transition ease-in duration-75"
-                                        enter-from-class="transform opacity-50 -translate-y-4"
-                                        enter-to-class="transform opacity-100 translate-y-0"
-                                        leave-active-class="transition ease-in duration-75"
-                                        leave-from-class="transform opacity-100 translate-y-0"
-                                        leave-to-class="transform opacity-0 -translate-y-4">
-                                        <div v-if="openDropdown" class="flex flex-col space-y-2" @click="open = false">
-
-                                            <div @click="showLogicModal = true"
-                                                class="cursor-pointer block bg-white p-3 rounded-full border border-gray-300 shadow-md">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </div>
-                            </div> -->
                         </div>
                         <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
                             @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
@@ -494,12 +470,15 @@ const confirmDeletionFlow = (flow) => {
                                         d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                 </svg>
 
-                                <p class="ml-2">{{ index + 1 }}.</p>
-
+                                <p class="ml-2" v-if="item.types != 'Image'">{{ index + 1 }}.</p>
+                                <p class="ml-2" v-else></p>
+                            
                                 <!-- Insert question here -->
-                                <input v-model="item.soal" type="text" placeholder="Insert question here"
+                                <input v-if="item.types!= 'Image'" v-model="item.soal" type="text" placeholder="Insert question here"
                                     class="text-sm w-full mx-1 rounded-md">
-
+                                <input v-else type="file" accept=".png, .jpg, .jpeg" id="file_input"
+                                class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
+                            file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
                                 <!-- Question types -->
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
@@ -527,6 +506,14 @@ const confirmDeletionFlow = (flow) => {
                                         <div @click="checkboxQuestion(item)"
                                             class="block px-4 py-2 text-sm cursor-pointer">
                                             Multiple Choice
+                                        </div>
+                                        <div @click="checkboxQuestion(item)"
+                                            class="block px-4 py-2 text-sm cursor-pointer">
+                                            Image
+                                        </div>
+                                        <div @click="checkboxQuestion(item)"
+                                            class="block px-4 py-2 text-sm cursor-pointer">
+                                            Paragraph
                                         </div>
                                         <div class="block border-t border-gray-300 py-2 text-center">
                                             <input type="checkbox" v-model="item.required" true-value="1"

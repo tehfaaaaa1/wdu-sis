@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ReportExport;
-use App\Exports\ResponseExport;
-use App\Exports\StatisticExport;
-use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Answer;
 use App\Models\Survey;
@@ -15,7 +12,6 @@ use App\Models\City;
 use App\Models\Regency;
 use App\Models\Response;
 use App\Models\QuestionPage;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 

@@ -16,7 +16,7 @@ class ReportExport implements FromArray, WithMultipleSheets
     private $survey_id = '';
     private $response = [];
     private $question = [];
-    
+
     public function __construct($surveyId, $title, $question, $response)
     {
         $this->survey_id = $surveyId;
@@ -39,5 +39,4 @@ class ReportExport implements FromArray, WithMultipleSheets
 
         return $sheets;
     }
-
 }
