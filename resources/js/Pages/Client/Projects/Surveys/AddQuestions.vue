@@ -51,7 +51,7 @@ const pages = ref(props.page.map((page) => {
         } else if (item.question_type_id == 1) {
             tipe = ['Text']
             text = [{ isi: '' }]
-        }
+        }    
         return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
     })
     return { id: page.id, order: page.order, name: page.page_name, question: question }
@@ -476,7 +476,7 @@ const confirmDeletionFlow = (flow) => {
                                         </div>
                                     </transition>
                                 </div>
-                            </div> -->
+                                </div> -->
                         </div>
                         <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
                             @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
