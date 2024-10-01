@@ -48,24 +48,23 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
     public function map($row): array
     {
         $this->rownumber++;
-        $choice_value = array_column($row->choice->toArray(), 'value');
-        $choice = array_column($row->choice->toArray(), 'id');
+        // $choice_value = array_column($row->choice->toArray(), 'value');
+        $choice = $row->choice->toArray();  
         $answer = $row->answer->toArray();
         $totalResponse = count($answer);
-        $hitung = [];
-        if ($row->question_type_id != 1) {
-            foreach ($choice as $index => $id) {
-                foreach ($answer as $a) {
-                    if ($a['answer'] == $id) {
-                        $hitung[$index][] = $a['answer'];
-                    }
-                }
-            }
+    if ($row->question_type_id != 1 && $row->question_type_id <= 3) {
             $mapRows = [[
                 $this->rownumber,
                 $row->question_text,
             ], ['', '', 'Response Percent', 'Response Count']];
-            foreach ($choice_value as $index => $value) {
+            $hitung = [];
+
+            foreach ($choice as $index => $c) {
+                foreach ($answer as $a) {
+                    if ($a['answer'] == $c['id']) {
+                        $hitung[$index][] = $a['answer'];
+                    }
+                }
                 if ($hitung[$index] ?? 0) {
                     $count = count($hitung[$index]);
                 } else {
@@ -73,15 +72,18 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
                 }
                 // dd($count);
                 $percentage = ($count * 100) / $totalResponse;
-                $mapRows[] = ['', $value, number_format($percentage, 2, '.', "") . '%', $count];
+                $mapRows[] = ['', $c['value'], number_format($percentage, 2, '.', "") . '%', $count];
             }
             $mapRows[] = [''];
-            return $mapRows;
+
+        return $mapRows;
+
         } else if ($row->question_type_id == 1) {
-            return [[
-                $this->rownumber,
-                $row->question_text
-            ], ['', $totalResponse . ' Responses']];
+            return [
+                [$this->rownumber, $row->question_text], 
+                ['', $totalResponse . ' Responses'],
+                ['']
+            ];
         }
     }
 
