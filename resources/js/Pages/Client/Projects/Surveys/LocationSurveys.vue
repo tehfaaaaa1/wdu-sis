@@ -15,7 +15,7 @@ const props = defineProps({
     cities: Array,
     regencies: Array
 });
-
+    
 const form = useForm({ search: '' });
 
 const selectedProvince = ref(null);
@@ -60,7 +60,6 @@ const hasPubllish = (survey) => {
     return survey.status == 0;
 };
 
-// Function to get selected provinces based on the survey data
 const getSelectedProvinces = (survey) => {
     let provinceTargets = parseProvinceTargets(survey);
     const totalTargetResponse = provinceTargets.reduce((total, target) => {
@@ -78,7 +77,6 @@ const getSelectedProvinces = (survey) => {
     return { list: provinceList, total: totalTargetResponse };
 };
 
-// Parse province targets from survey data
 const parseProvinceTargets = (survey) => {
     if (typeof survey.province_targets === 'string') {
         try {
@@ -92,14 +90,12 @@ const parseProvinceTargets = (survey) => {
     }
 };
 
-// Get the survey submissions
 const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
 };
 
-// On component mount, select the survey and trigger province coloring
 onMounted(() => {
-    selectedSurvey.value = props.surveys[0]; // Select the first survey or apply your own logic
+    selectedSurvey.value = props.surveys[0];
     console.log('Selected Survey:', selectedSurvey.value);
 
     if (selectedSurvey.value) {
@@ -108,10 +104,9 @@ onMounted(() => {
         console.warn('No survey selected.');
     }
 
-    attachClickEvents(); // Attach event handlers for interaction, if necessary
+    attachClickEvents();
 });
 
-// Function to attach click events to provinces (optional)
 function attachClickEvents() {
     setTimeout(() => {
         const paths = document.querySelectorAll('.map-container path');
@@ -127,12 +122,10 @@ function attachClickEvents() {
     }, 500);
 }
 
-// Handle clicks on the provinces (optional)
 function handleProvinceClick(provinceId) {
     console.log(`Province clicked: ${provinceId}`);
 }
 
-// Function to color provinces based on survey data
 function colorProvinces(selectedSurvey) {
     if (!selectedSurvey || !selectedSurvey.province_targets) {
         console.warn('No valid survey or province_targets found:', selectedSurvey);
@@ -166,10 +159,10 @@ function colorProvinces(selectedSurvey) {
         console.log('Province data for ID', provinceId, ':', provinceData);
 
         if (provinceData) {
-            path.setAttribute('fill', '#6db445'); // Green color for provinces with data
+            path.setAttribute('fill', '#6db445');
             console.log('Set color for province', provinceId);
         } else {
-            path.setAttribute('fill', '#cccccc'); // Default gray color for provinces without data
+            path.setAttribute('fill', '#cccccc');
             console.log('No matching province, set fallback color for', provinceId);
         }
     });
