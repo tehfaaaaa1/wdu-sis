@@ -52,34 +52,28 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
         $totalResponse = count($answer);
 
     if ($row->question_type_id != 1 && $row->question_type_id <= 3) {
-            $mapRows = [
-                [$this->rownumber,$row->question_text], 
-                ['', '', 'Response Percent', 'Response Count']
-            ];
-
             $hitung = [];
-
+            $mapRows = [
+                [$this->rownumber, $row->question_text], 
+                ['', '', 'Response Percent', 'Response Count'],
+            ];
             foreach ($choice as $index => $c) {
                 foreach ($answer as $a) {
-                    if ($a['answer'] == $c['id']) {
-                        $hitung[$index][] = $a['answer'];
-                    }
+                    $a['answer'] == $c['id'] ? $hitung[$index][] = $a['answer'] : '';
                 }
                 $hitung[$index] ?? 0 ? $count = count($hitung[$index]) : $count = '0';
                 $percentage = ($count * 100) / $totalResponse;
                 $mapRows[] = ['', $c['value'], number_format($percentage, 2, '.', "") . '%', $count];
             }
-            // dd($hitung);
             $mapRows[] = [''];
-
         return $mapRows;
 
     } else if ($row->question_type_id == 1) {
-            return [
-                [$this->rownumber, $row->question_text], 
-                ['', $totalResponse . ' Responses'],
-                [''],
-            ];
+        return [
+            [$this->rownumber, $row->question_text], 
+            ['', $totalResponse . ' Responses'],
+            [''],
+        ];
     }
 }
 

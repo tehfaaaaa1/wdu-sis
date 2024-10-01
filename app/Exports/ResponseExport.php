@@ -78,22 +78,16 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
         usort($answer, function ($a, $b) {
             return ($a['question_id'] >= $b['question_id']);
         });
-        foreach ($answer as $index => $a) {
-            foreach ($this->choice as $choice) {
-                foreach ($choice as $c) {
-                    if ($a['answer'] == $c['id']) {
-                        $answer[$index]['answer'] = $c['value'];
-                    }
-                }
-            }
-        }
         $groupAnswer = [];
         foreach ($this->question_id as $qId) {
             $groupAnswer[$qId][] = null;
-            foreach ($answer as $ans) {
-                if ($qId == $ans['question_id']) {
-                    $groupAnswer[$qId][] = $ans['answer'];
+            foreach ($answer as $index => $ans) {
+                foreach ($this->choice as $choice) {
+                    foreach ($choice as $c) {
+                        $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['value'] : '';
+                    }
                 }
+            $qId == $ans['question_id'] ? $groupAnswer[$qId][] = $ans['answer'] : ''; 
             }
             $groupAnswer[$qId] =  array_filter($groupAnswer[$qId], function ($value) {
                 return $value != null;
