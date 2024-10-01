@@ -67,11 +67,10 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
             }
             $mapRows[] = [''];
         return $mapRows;
-
     } else if ($row->question_type_id == 1) {
         return [
             [$this->rownumber, $row->question_text], 
-            ['', $totalResponse . ' Responses'],
+            ['', (string)$totalResponse . ' Responses'],
             [''],
         ];
     }
@@ -79,6 +78,9 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
 
     public function registerEvents(): array
     {
+        function p (){
+
+        }
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 // Add text to cell B2 (or any other cell above the table)

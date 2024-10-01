@@ -39,7 +39,7 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             if($a['question_page_id'] == $b['question_page_id']){
                 return $a['order'] >= $b['order'] ;
             }
-            return ($a['question_page_id'] >= $b['question_page_id']);
+            return $a['question_page_id'] >= $b['question_page_id'];
         });
         foreach($this->question as $index =>$quest){
             $this->question_text[$index] = $quest['question_text'];

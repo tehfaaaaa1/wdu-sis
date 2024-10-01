@@ -55,10 +55,10 @@ const submit = () => {
                                             <label class="text-sm cursor-pointer block px-2 py-1 h-full" :for="'survey_'+survey.id">{{ survey.title}}</label>
                                         </div>
                                         <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700 ">Tidak Ada Survey Yang Sesuai</p>
-                                    </div>
+                                    </div>  
                                 </template>
                             </Dropdown>
-                        </div>
+                        </div>      
                     </div>
                     <div class="" v-if="form.selectedSurvey">
                         <h2 class="font-semibold text-black">Pilih Akun</h2>
