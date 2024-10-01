@@ -196,6 +196,7 @@ class SurveyController extends Controller
                 'provinces' => $provinces,
                 'cities' => $cities,
                 'regencies' => $regencies,
+                'currentSurveyId' => $id,
             ]
         );
     }
