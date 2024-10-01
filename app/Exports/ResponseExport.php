@@ -27,15 +27,23 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     private $rownumber = 0;
     private $surveyTitle = '';
     private $survey_id = '';
-    public $question_id = [];
+    public $question = [];
     public $question_text = [];
     public $choice = [];
     public function __construct($surveyId, $title, $question)
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
-        $this->question_id = array_column($question->toArray(), 'id');
-        $this->question_text = array_column($question->toArray(), 'question_text');
+        $this->question = $question->toArray();
+        usort($this->question, function ($a, $b) {
+            if($a['question_page_id'] == $b['question_page_id']){
+                return $a['order'] >= $b['order'] ;
+            }
+            return ($a['question_page_id'] >= $b['question_page_id']);
+        });
+        foreach($this->question as $index =>$quest){
+            $this->question_text[$index] = $quest['question_text'];
+        }
         foreach ($question as $q) {
             if ($q->question_type_id == 2 || $q->question_type_id == 3) {
                 array_push($this->choice, $q->choice->toArray());
@@ -79,17 +87,17 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             return ($a['question_id'] >= $b['question_id']);
         });
         $groupAnswer = [];
-        foreach ($this->question_id as $qId) {
-            $groupAnswer[$qId][] = null;
+        foreach ($this->question as $q) {
+            $groupAnswer[$q['id']][] = null;
             foreach ($answer as $index => $ans) {
                 foreach ($this->choice as $choice) {
                     foreach ($choice as $c) {
                         $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['value'] : '';
                     }
                 }
-            $qId == $ans['question_id'] ? $groupAnswer[$qId][] = $ans['answer'] : ''; 
+            $q['id'] == $ans['question_id'] ? $groupAnswer[$q['id']][] = $answer[$index]['answer'] : ''; 
             }
-            $groupAnswer[$qId] =  array_filter($groupAnswer[$qId], function ($value) {
+            $groupAnswer[$q['id']] =  array_filter($groupAnswer[$q['id']], function ($value) {
                 return $value != null;
             });
         }
