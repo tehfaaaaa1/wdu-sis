@@ -95,17 +95,24 @@ const getSurveySubmissions = (surveyId) => {
 };
 
 onMounted(() => {
-    selectedSurvey.value = props.surveys[0];
-    console.log('Selected Survey:', selectedSurvey.value);
+    const surveyId = getSurveyIdFromRoute(); 
+    selectedSurvey.value = props.surveys.find(survey => survey.id === surveyId);
 
     if (selectedSurvey.value) {
+        console.log('Selected Survey:', selectedSurvey.value);
         colorProvinces(selectedSurvey.value);
     } else {
-        console.warn('No survey selected.');
+        console.warn('No survey found for the given ID.');
     }
 
     attachClickEvents();
 });
+
+function getSurveyIdFromRoute() {
+    const routeParams = route().params;
+    return parseInt(routeParams.id); 
+}
+
 
 function attachClickEvents() {
     setTimeout(() => {
@@ -153,17 +160,13 @@ function colorProvinces(selectedSurvey) {
 
     paths.forEach(path => {
         const provinceId = parseInt(path.id, 10);
-        console.log('Processing path with ID:', provinceId);
 
         const provinceData = provinceTargets.find(p => p.province_id === provinceId);
-        console.log('Province data for ID', provinceId, ':', provinceData);
 
         if (provinceData) {
             path.setAttribute('fill', '#6db445');
-            console.log('Set color for province', provinceId);
         } else {
             path.setAttribute('fill', '#cccccc');
-            console.log('No matching province, set fallback color for', provinceId);
         }
     });
 }
