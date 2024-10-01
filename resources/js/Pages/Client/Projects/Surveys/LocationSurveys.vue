@@ -29,6 +29,8 @@ const projectSlug = project.slug;
 
 const selectedSurvey = ref(null);
 
+const filledProvinceCheck = ref(null);
+
 const hapus = (cliSlug, proSlug, id) => {
     selectedSurveyId.value = id;
     showDeleteModal.value = true;
@@ -151,7 +153,15 @@ function colorProvinces(selectedSurvey) {
     }
 
     const paths = document.querySelectorAll('.map-container path');
-    console.log('SVG paths found:', paths.length);
+    const hoverText = document.getElementById('hoverText');
+    const svgContainer = document.querySelector('.map-container svg');
+
+    const provinceList = provinceTargets.map(target => {
+        const province = props.provinces.find(p => p.id === target.province_id);
+        const provinceName = province ? province.name : 'Unknown Province';
+        const targetResponse = target.target_response || '0';
+        return { name: provinceName, response: targetResponse };
+    });
 
     if (paths.length === 0) {
         console.warn('No paths found in the SVG.');
@@ -162,14 +172,37 @@ function colorProvinces(selectedSurvey) {
         const provinceId = parseInt(path.id, 10);
 
         const provinceData = provinceTargets.find(p => p.province_id === provinceId);
+        const province = props.provinces.find(v => v.id === provinceId);
+        const provinceName = province ? province.name : 'Unknown Province';
 
         if (provinceData) {
             path.setAttribute('fill', '#6db445');
+            path.setAttribute('class', 'filledProvince');
+
+            path.addEventListener('mouseover', (e) => {
+                hoverText.style.display = 'block';
+                hoverText.innerHTML = `<strong>${provinceName}</strong><br>Test`;
+            });
+
+            path.addEventListener('mousemove', (e) => {
+                const pathRect = path.getBoundingClientRect(); 
+                const svgRect = svgContainer.getBoundingClientRect(); 
+
+                hoverText.style.top = `${pathRect.top - svgRect.top + 600}px`;
+                hoverText.style.left = `${pathRect.left - svgRect.left + 200}px`;
+            });
+
+            path.addEventListener('mouseleave', () => {
+                hoverText.style.display = 'none';
+            });
         } else {
             path.setAttribute('fill', '#cccccc');
         }
     });
+    return { list: provinceList, total: totalTargetResponse };
 }
+
+
 </script>
 
 <template>
@@ -201,7 +234,7 @@ function colorProvinces(selectedSurvey) {
                             class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-m hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
                             Tambah Kuisioner
                         </NavLink>
-                        <NavLink
+                        <NavLink :href="route('listsurvey', [ clientSlug, projectSlug])"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
                             Back to Survey
                         </NavLink>
@@ -399,6 +432,9 @@ function colorProvinces(selectedSurvey) {
                             </div>
                         </div>
                     </div>
+                    <div id="hoverText" style="display: none;" class="absolute bg-black bg-opacity-70 text-white p-1.5 rounded pointer-events-none z-[1000]">
+                        Province Selected
+                    </div>
                 </div>
             </div>
         </main>
@@ -422,7 +458,7 @@ function colorProvinces(selectedSurvey) {
     cursor: pointer;
 }
 
-path:hover{
+.filledProvince:hover{
     opacity: 0.5;
 }
 
@@ -434,4 +470,5 @@ path:hover{
     cursor: default;
     opacity: 0.1;
 }
+
 </style>

@@ -237,10 +237,10 @@ const getSurveySubmissions = (surveyId) => {
                                                 </ul>
                                             </li>
                                             <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                                                class="text-center col-span-2 mb-5">
-                                                <NavLink :href="route('location_surveys', [clientSlug, projectSlug, survey.id])">
-                                                    View Map
-                                                </NavLink>
+                                                class="text-center col-span-2 mb-3">
+                                                <a :href="route('location_surveys', [clientSlug, projectSlug, survey.id])" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                    Details click here
+                                                </a>
                                             </div>
                                         </ul>
                                     </td>
