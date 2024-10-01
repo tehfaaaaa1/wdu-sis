@@ -160,7 +160,7 @@ function colorProvinces(selectedSurvey) {
         const province = props.provinces.find(p => p.id === target.province_id);
         const provinceName = province ? province.name : 'Unknown Province';
         const targetResponse = target.target_response || '0';
-        return { name: provinceName, response: targetResponse };
+        return { id: target.province_id, name: provinceName, response: targetResponse };
     });
 
     if (paths.length === 0) {
@@ -170,26 +170,32 @@ function colorProvinces(selectedSurvey) {
 
     paths.forEach(path => {
         const provinceId = parseInt(path.id, 10);
-
         const provinceData = provinceTargets.find(p => p.province_id === provinceId);
         const province = props.provinces.find(v => v.id === provinceId);
         const provinceName = province ? province.name : 'Unknown Province';
 
         if (provinceData) {
+            const provinceEntry = provinceList.find(p => p.id === provinceId);
+            const targetResponse = provinceEntry ? provinceEntry.response : 'No Data';
+
             path.setAttribute('fill', '#6db445');
             path.setAttribute('class', 'filledProvince');
 
-            path.addEventListener('mouseover', (e) => {
+            path.addEventListener('mouseover', () => {
                 hoverText.style.display = 'block';
-                hoverText.innerHTML = `<strong>${provinceName}</strong><br>Test`;
-            });
+                hoverText.innerHTML = 
+                    `<strong>${provinceName} (Target Responden: ${targetResponse})</strong>
+                    <br>Text
+                    <br>Text
+                    <br>Text
+                    <br>Text
+                    <br>`;
+                
+                const pathRect = path.getBoundingClientRect();
+                const svgRect = svgContainer.getBoundingClientRect();
 
-            path.addEventListener('mousemove', (e) => {
-                const pathRect = path.getBoundingClientRect(); 
-                const svgRect = svgContainer.getBoundingClientRect(); 
-
-                hoverText.style.top = `${pathRect.top - svgRect.top + 600}px`;
-                hoverText.style.left = `${pathRect.left - svgRect.left + 200}px`;
+                hoverText.style.top = `${pathRect.top - svgRect.top + 550}px`;  
+                hoverText.style.left = `${pathRect.left - svgRect.left + pathRect.width + 200}px`;
             });
 
             path.addEventListener('mouseleave', () => {
@@ -199,9 +205,9 @@ function colorProvinces(selectedSurvey) {
             path.setAttribute('fill', '#cccccc');
         }
     });
+
     return { list: provinceList, total: totalTargetResponse };
 }
-
 
 </script>
 
@@ -263,10 +269,10 @@ function colorProvinces(selectedSurvey) {
                     </table>
                     <div class="text-center text-3xl font-semibold py-5 bg-ijo-terang text-white rounded-t-md">
                     </div>
-                    <h3 class="text-center mt-3 mb-3 text-xl font-semibold">Location Details</h3>
+                    <h3 class="text-center mt-3 mb-2 text-xl font-semibold">Location Details</h3>
                     <div id="map-container" class="map-container">
                         <div class="flex justify-center items-center">
-                            <div class="border-b-1 border-gray-400">
+                            <div class="border-b-1 border-gray-400 h-max">
                                 <svg
                                 xmlns:mapsvg="http://mapsvg.com"
                                 xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -435,6 +441,7 @@ function colorProvinces(selectedSurvey) {
                     <div id="hoverText" style="display: none;" class="absolute bg-black bg-opacity-70 text-white p-1.5 rounded pointer-events-none z-[1000]">
                         Province Selected
                     </div>
+                    <h3 class="text-center mt-5 mb-3 text-xl font-semibold">Location Details</h3>
                 </div>
             </div>
         </main>
