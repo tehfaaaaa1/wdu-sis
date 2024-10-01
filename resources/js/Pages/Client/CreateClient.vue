@@ -9,7 +9,19 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
-
+import { ref } from 'vue';
+const imageUrl = ref(null);
+const handleImage = (event) => {
+    form.image = event.target.files[0];
+    var input = event.target;
+    if(input.files){
+        var reader = new FileReader();
+        reader.onload = (e)=>{
+            imageUrl.value = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0])
+    }
+}
 const form = useForm({
     client_name: '',
     alamat: '',
@@ -26,9 +38,6 @@ const submit = () => {
     <AppLayout title="Create Client">
         <div class="mt-6 sm:mt-0 px-4">
             <AuthenticationCard>
-                <template #logo>
-                    <AuthenticationCardLogo />
-                </template>
                 <h2 class="text-primary font-semibold text-2xl text-center mb-4">Create New Client</h2>
                 <form @submit.prevent="submit">
                     <div class="relative">
@@ -58,8 +67,9 @@ const submit = () => {
                     </div>
                     <div class="mt-4 relative">
                         <label class="block mb-2 text-base font-medium text-primary"
-                            for="file_input">Upload photo</label>
-                        <input @input="form.image = $event.target.files[0]"
+                            for="file_input">Upload photo</label> 
+                            <img v-if="imageUrl" :src="imageUrl" alt="Image Preview" />
+                        <input @change="handleImage"
                             class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white"
                             id="file_input" type="file" accept=".png, .jpg, .jpeg">

@@ -62,7 +62,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
                     $a['answer'] == $c['id'] ? $hitung[$index][] = $a['answer'] : '';
                 }
                 $hitung[$index] ?? 0 ? $count = count($hitung[$index]) : $count = '0';
-                $percentage = ($count * 100) / $totalResponse;
+                $answer ? $percentage = ($count * 100) / $totalResponse : $percentage = '0';
                 $mapRows[] = ['', $c['value'], number_format($percentage, 2, '.', "") . '%', $count];
             }
             $mapRows[] = [''];
@@ -70,7 +70,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
     } else if ($row->question_type_id == 1) {
         return [
             [$this->rownumber, $row->question_text], 
-            ['', (string)$totalResponse . ' Responses'],
+            ['', (string)$totalResponse ?? (string)'no' . ' Responses' ],
             [''],
         ];
     }
@@ -78,9 +78,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
 
     public function registerEvents(): array
     {
-        function p (){
 
-        }
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 // Add text to cell B2 (or any other cell above the table)
