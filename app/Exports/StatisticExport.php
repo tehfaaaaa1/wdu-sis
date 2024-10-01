@@ -8,10 +8,12 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize
+class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCustomStartCell, WithEvents, WithTitle
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -21,60 +23,66 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize
     private $surveyTitle = '';
     private $survey_id = '';
     private $response = [];
-    public function survey($surveyId, $title, $response)
+    public function __construct($surveyId, $title, $response)
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
-        $this->response = $response;
-        return $this;
+        $this->response = $response;   
+    }
+
+    public function title(): string
+    {
+        return 'Summary Report';
     }
 
     public function query()
     {
-        return Question::query()->where('survey_id', $this->survey_id);
+        return Question::query()->where('survey_id', $this->survey_id)->orderBy('question_page_id')->orderBy('order');
     }
 
-    public function map($row): array
+    public function startCell(): string
     {
+        return 'B3';
+    }
+
+    public function map($row): array{
         $this->rownumber++;
-        $choice_value = array_column($row->choice->toArray(), 'value');
-        $choice = array_column($row->choice->toArray(), 'id');
+        $choice = $row->choice->toArray();  
         $answer = $row->answer->toArray();
         $totalResponse = count($answer);
-        $hitung = [];
-        if($row->question_type_id != 1){
-        foreach($choice as $index => $id){
-            foreach($answer as $a){
-                if($a['answer'] == $id){
-                    $hitung[$index][] = $a['answer'];
-                }
-            }
-        }
-        $mapRows = [[
-            $this->rownumber,
-            $row->question_text
-        ],['','', 'Response Percent', 'Response Count']];
 
-        foreach($choice_value as $index =>$value){
-            $count = count($hitung[$index]);
-            $percentage = ($count *100) / $totalResponse;
-            $mapRows[] = ['', $value, number_format($percentage, 2, '.', ""). '%' ,$count];
-        }
-            return $mapRows;
-        } else if($row->question_type_id == 1){
-            return [[
-                $this->rownumber,
-                $row->question_text
-            ],['', $totalResponse. ' Responses']];
-        }
+    if ($row->question_type_id != 1 && $row->question_type_id <= 3) {
+            $hitung = [];
+            $mapRows = [
+                [$this->rownumber, $row->question_text], 
+                ['', '', 'Response Percent', 'Response Count'],
+            ];
+            foreach ($choice as $index => $c) {
+                foreach ($answer as $a) {
+                    $a['answer'] == $c['id'] ? $hitung[$index][] = $a['answer'] : '';
+                }
+                $hitung[$index] ?? 0 ? $count = count($hitung[$index]) : $count = '0';
+                $percentage = ($count * 100) / $totalResponse;
+                $mapRows[] = ['', $c['value'], number_format($percentage, 2, '.', "") . '%', $count];
+            }
+            $mapRows[] = [''];
+        return $mapRows;
+
+    } else if ($row->question_type_id == 1) {
+        return [
+            [$this->rownumber, $row->question_text], 
+            ['', $totalResponse . ' Responses'],
+            [''],
+        ];
     }
+}
 
     public function registerEvents(): array
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 // Add text to cell B2 (or any other cell above the table)
-                $event->sheet->setCellValue('B2', $this->surveyTitle .= ' - List Respon');
+                $event->sheet->setCellValue('B2', $this->surveyTitle .= ' - Summary Report');
                 // Merge cells B2 to E2 for centering
                 $event->sheet->mergeCells('B2:E2');
                 // Optionally apply some styles to the text

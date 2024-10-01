@@ -16,10 +16,10 @@ const props = defineProps({
 });
 const project = props.projects[0]
 const client = props.clients[0]
-const BackgroundColors = ['#41B883','#E46651' , '#00D8FF','#FFAF00' , '#cc66ff']
-const PieChartData =(
-    props.page.map((page)=>({
-        question:page.question.map(()=>({
+const BackgroundColors = ['#41B883', '#E46651', '#00D8FF', '#FFAF00', '#cc66ff']
+const PieChartData = (
+    props.page.map((page) => ({
+        question: page.question.map(() => ({
             labels: [],
             datasets: [{
                 label: ['Response'],
@@ -30,14 +30,14 @@ const PieChartData =(
     }))
 )
 
-const BarChartData =(
-    props.page.map((page)=>({
-        question:page.question.map((q)=>({
+const BarChartData = (
+    props.page.map((page) => ({
+        question: page.question.map((q) => ({
             labels: ['Response'],
-            datasets: q.choice.map((c, index)=>({
-                label: c.value +' ('+((q.answer.filter(a=>a.answer == c.id).length *100) / q.answer.length).toFixed(2)+'%)',
+            datasets: q.choice.map((c, index) => ({
+                label: c.value + ' (' + ((q.answer.filter(a => a.answer == c.id).length * 100) / q.answer.length).toFixed(2) + '%)',
                 backgroundColor: BackgroundColors[index],
-                data: [q.answer.filter(a=>a.answer == c.id ).length]
+                data: [q.answer.filter(a => a.answer == c.id).length]
             }))
         }))
     }))
@@ -59,12 +59,12 @@ const chartOptions = {
 
 const count = (pgind, qind, choice, answer, question) => {
     const all = answer.length
-    if(PieChartData[pgind].question[qind].labels.length != choice.length){
+    if (PieChartData[pgind].question[qind].labels.length != choice.length) {
         choice.forEach((element, ind) => {
-            const persentage = ((answer.filter(a=>a.answer == element.id).length *100) / all).toFixed(2)
-            if(question.question_type_id == 2){
-                PieChartData[pgind].question[qind].labels.push(element.value+' ('+ persentage +'%)' )
-                PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a=>a.answer == element.id).length)
+            const persentage = ((answer.filter(a => a.answer == element.id).length * 100) / all).toFixed(2)
+            if (question.question_type_id == 2) {
+                PieChartData[pgind].question[qind].labels.push(element.value + ' (' + persentage + '%)')
+                PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a => a.answer == element.id).length)
             }
         })
     } else {
@@ -90,10 +90,12 @@ const showAllanswer = ref(props.page.map((p) => ({
                     <div class="bg-white rounded-b-md overflow-x-auto">
                         <div class="p-5 flex w-full">
                             <form class="w-full">
-                                <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)" :key="index">
+                                <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
+                                    :key="index">
                                     <div class="block mb-2.5">
                                         <p class="font-semibold">
-                                            {{ index + 1 }}. <label>{{ question.question_text }}</label>
+                                            {{ index + 1 }}. <label>{{ question.question_text }}{{ ' (' +
+                                                responses.length + ' Response)' }}</label>
                                         </p>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2" class="flex gap-x-10">
@@ -104,7 +106,7 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                     <label :for="'radio' + list.id" class="px-3">{{ list.value
                                                         }}</label>
                                                 </div>
-                                            </div> 
+                                            </div>
                                             <PieChart :chart-data="PieChartData[ind].question[index]"
                                                 :key="count(ind, index, question.choice, question.answer, question)"
                                                 :chart-options="chartOptions" />
@@ -137,8 +139,9 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                 v-if="showAllanswer[ind].q[index].value == false">
                                                 <button
                                                     class="text-sm text-secondary border-b border-transparent hover:border-secondary transition p-1 focus:border-secondary focus:outline-none"
-                                                    type="button" @click="showAllanswer[ind].q[index].value = true">Show
-                                                    All</button>
+                                                    type="button" @click="showAllanswer[ind].q[index].value = true">
+                                                    Show {{ question.answer.length - 3 }} More
+                                                </button>
                                             </div>
                                             <div class="flex justify-center mt-2" v-else>
                                                 <button type="button"

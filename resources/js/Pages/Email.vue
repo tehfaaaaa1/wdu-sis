@@ -37,7 +37,7 @@ const submit = () => {
                 <form class="bg-white p-3 rounded-md" @submit.prevent="submit">
                     <h1 class="text-lg font-semibold">Email Send</h1>
                     <input type="email" name="" id=""
-                        class=" border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-none focus:shadow-md"
+                        class=" border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent focus:shadow-md"
                         placeholder="Email">
                     <div class="flex items-center mt-2" name='content'>
                         <!-- <h2 class="font-semibold text-black">Pilih Survey</h2> -->
@@ -51,7 +51,7 @@ const submit = () => {
                                 <template #content>
                                     <div class="cursor-pointer p-2 grid " :class="filteredSurveys.length < 5 ? 'grid-cols-1' : 'grid-cols-2'">
                                         <div class="w-full  text-gray-700 cursor-pointer rounded-sm hover:bg-gray-200 " v-for="survey in filteredSurveys" @input="isi(survey.title)">
-                                            <input type="radio" name="" :id="'survey_'+survey.id" :value="survey" v-model="selectedSurvey" class="hidden w-full">
+                                            <input type="radio" name="" :id="'survey_'+survey.id" :value="survey" v-model="form.selectedSurvey" class="hidden w-full">
                                             <label class="text-sm cursor-pointer block px-2 py-1 h-full" :for="'survey_'+survey.id">{{ survey.title}}</label>
                                         </div>
                                         <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700 ">Tidak Ada Survey Yang Sesuai</p>
@@ -64,12 +64,12 @@ const submit = () => {
                         <h2 class="font-semibold text-black">Pilih Akun</h2>
                         <div class="w-full grid grid-cols-2 gap-2 text-gray-700">
                             <div class=""
-                                v-for="user in users.filter(user => user.client_id == selectedSurvey.project.client.id && selectedSurvey.response.every(res => res.user_id != user.id))">
+                                v-for="user in users.filter(user => user.client_id == form.selectedSurvey.project.client.id && form.selectedSurvey.response.every(res => res.user_id != user.id))">
                                 <input type="radio" :id="'user_' + user.id" name="user_id"
                                     class="checked:text-primary focus:ring-primary" v-model="form.selectedUser"
                                     :value="user">
                                 <label :for="'user_' + user.id" class="pl-1.5 text-sm">{{ user.name }} {{
-                                    selectedSurvey.response.some(res => res.user_id == user.id) ? '(sudah Mengisi)' :
+                                    form.selectedSurvey.response.some(res => res.user_id == user.id) ? '(sudah Mengisi)' :
                                         '(Belum Mengisi)'
                                 }}</label>
                             </div>
