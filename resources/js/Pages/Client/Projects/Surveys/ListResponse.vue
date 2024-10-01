@@ -45,35 +45,35 @@ const getSelectedProvinces = (survey, provinces) => {
         return total + (isNaN(targetResponse) ? 0 : targetResponse);
     }, 0);
 
-    const provinceList = provinceTargets.map(target => {
-        if (!target || !target.province_id) {
-            console.error('Invalid target data:', target);
-            return { name: 'Unknown Province', response: '0', cities: [], regencies: [] };
-        }
-        const province = provinces.find(p => p.id === target.province_id);
-        const provinceName = province ? province.name : 'Unknown Province';
-        const targetResponse = target.target_response || '0';
+        const provinceList = provinceTargets.map(target => {
+            if (!target || !target.province_id) {
+                console.error('Invalid target data:', target);
+                return { name: 'Unknown Province', response: '0', cities: [], regencies: [] };
+            }
+            const province = provinces.find(p => p.id === target.province_id);
+            const provinceName = province ? province.name : 'Unknown Province';
+            const targetResponse = target.target_response || '0';
 
-        const cityList = target.cities ? target.cities.map(city => {
-            const foundCity = props.cities ? props.cities.find(c => c.id === city.city_id) : null;
-            const cityName = foundCity ? foundCity.name : 'No name for City';
-            return {
-                name: cityName,
-                response: city.target_response_city || '0'
-            };
-        }) : [];
+            const cityList = target.cities ? target.cities.map(city => {
+                const foundCity = props.cities ? props.cities.find(c => c.id === city.city_id) : null;
+                const cityName = foundCity ? foundCity.name : 'No name for City';
+                return {
+                    name: cityName,
+                    response: city.target_response_city || '0'
+                };
+            }) : [];
 
-        const regencyList = target.regencies ? target.regencies.map(regency => {
-            const foundRegency = props.regencies ? props.regencies.find(r => r.id === regency.regency_id) : null;
-            const regencyName = foundRegency ? foundRegency.name : 'No name for Regency';
-            return {
-                name: regencyName,
-                response: regency.target_response_regency || '0'
-            };
-        }) : [];
+            const regencyList = target.regencies ? target.regencies.map(regency => {
+                const foundRegency = props.regencies ? props.regencies.find(r => r.id === regency.regency_id) : null;
+                const regencyName = foundRegency ? foundRegency.name : 'No name for Regency';
+                return {
+                    name: regencyName,
+                    response: regency.target_response_regency || '0'
+                };
+            }) : [];
 
-        return { name: provinceName, response: targetResponse, cities: cityList, regencies: regencyList };
-    });
+            return { name: provinceName, response: targetResponse, cities: cityList, regencies: regencyList };
+        });
 
     return { list: provinceList, total: totalTargetResponse };
 };

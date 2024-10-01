@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -30,7 +30,7 @@ const projectSlug = project.slug;
 
 const surveyId = props.currentSurveyId;
 const survey = props.surveys.find(s => parseInt(s.id) === parseInt(surveyId));
-console.log('current survey id', survey);
+/*console.log('current survey id', survey);
 console.log('currentSurveyId:', props.currentSurveyId);
 console.log('survey data', props.surveys);
 
@@ -38,7 +38,9 @@ if (!survey) {
   console.warn('Survey not found with ID:', surveyId);
 } else {
   console.log('Found Survey:', survey);
-}
+}*/
+
+const totalTargetResponse = ref(0);
 const selectedSurvey = ref(null);
 
 const filledProvinceCheck = ref(null);
@@ -65,48 +67,6 @@ const filteredSurveys = computed(() => {
         );
     });
 });
-
-const hasFilledSurvey = (survey) => {
-    return survey.response.some(res => res.user_id === props.user.id);
-};
-
-const hasPubllish = (survey) => {
-    return survey.status == 0;
-};
-
-const getSelectedProvinces = (survey) => {
-    let provinceTargets = parseProvinceTargets(survey);
-    const totalTargetResponse = provinceTargets.reduce((total, target) => {
-        const targetResponse = parseInt(target.target_response, 10);
-        return total + (isNaN(targetResponse) ? 0 : targetResponse);
-    }, 0);
-
-    const provinceList = provinceTargets.map(target => {
-        const province = props.provinces.find(p => p.id === target.province_id);
-        const provinceName = province ? province.name : 'Unknown Province';
-        const targetResponse = target.target_response || '0';
-        return { name: provinceName, response: targetResponse };
-    });
-
-    return { list: provinceList, total: totalTargetResponse };
-};
-
-const parseProvinceTargets = (survey) => {
-    if (typeof survey.province_targets === 'string') {
-        try {
-            return JSON.parse(survey.province_targets);
-        } catch (error) {
-            console.error('Error parsing province_targets:', error);
-            return [];
-        }
-    } else {
-        return survey.province_targets || [];
-    }
-};
-
-const getSurveySubmissions = (surveyId) => {
-    return props.userTarget[surveyId] || 0;
-};
 
 onMounted(() => {
     const surveyId = getSurveyIdFromRoute(); 
@@ -150,7 +110,7 @@ function handleProvinceClick(provinceId) {
 function colorProvinces(selectedSurvey) {
     if (!selectedSurvey || !selectedSurvey.province_targets) {
         console.warn('No valid survey or province_targets found:', selectedSurvey);
-        return;
+        return { list: [], total: 0 };
     }
 
     let provinceTargets;
@@ -161,18 +121,60 @@ function colorProvinces(selectedSurvey) {
         console.log('Parsed province targets:', provinceTargets);
     } catch (error) {
         console.error('Error parsing province_targets:', error);
-        return;
+        return { list: [], total: 0 };
     }
+
+    const total = provinceTargets.reduce((total, target) => {
+        const targetResponse = parseInt(target.target_response, 10);
+        return total + (isNaN(targetResponse) ? 0 : targetResponse);
+    }, 0);
+
+    totalTargetResponse.value = total;  
+    
 
     const paths = document.querySelectorAll('.map-container path');
     const hoverText = document.getElementById('hoverText');
     const svgContainer = document.querySelector('.map-container svg');
 
     const provinceList = provinceTargets.map(target => {
+    console.log('Full Target Data:', target);
+
+    if (!target || !target.province_id) {
+        console.error('Invalid target data:', target);
+        return { id: null, name: 'Unknown Province', response: '0', cities: [] };
+    }
+
         const province = props.provinces.find(p => p.id === target.province_id);
         const provinceName = province ? province.name : 'Unknown Province';
         const targetResponse = target.target_response || '0';
-        return { id: target.province_id, name: provinceName, response: targetResponse };
+
+        console.log('Target Cities Data:', target.cities);
+
+        const cityList = target.cities ? target.cities.map(city => {
+            const foundCity = props.cities ? props.cities.find(c => c.id === city.city_id) : null;
+            const cityName = foundCity ? foundCity.name : 'No name for City';
+
+            console.log('Found City:', foundCity);
+            return {
+                name: cityName,
+                response: city.target_response_city || '0'
+            };
+
+        }) : [];
+        
+        const regencyList = target.regencies ? target.regencies.map(regency => {
+            const foundRegency = props.regencies ? props.regencies.find(r => r.id === regency.regency_id) : null;
+            const regencyName = foundRegency ? foundRegency.name : 'No name for Regency';
+
+            console.log('Found Regency:', foundRegency);
+            return {
+                name: regencyName,
+                response: regency.target_response_regency || '0'
+            };
+
+        }) : [];
+
+        return { id: target.province_id, name: provinceName, response: targetResponse, cities: cityList, regencies: regencyList };
     });
 
     if (paths.length === 0) {
@@ -190,6 +192,32 @@ function colorProvinces(selectedSurvey) {
             const provinceEntry = provinceList.find(p => p.id === provinceId);
             const targetResponse = provinceEntry ? provinceEntry.response : 'No Data';
 
+            let cityListText = '<ul>';
+            if (provinceData.cities && provinceData.cities.length > 0) {
+                provinceData.cities.forEach(city => {
+                    const cityEntry = props.cities ? props.cities.find(c => c.id === city.city_id) : null;
+                    const cityName = cityEntry ? cityEntry.name : 'No name for City';
+                    const targetResponseCity = city.target_response_city ? city.target_response_city : 'No data';
+                    cityListText += `<li>${cityName} (Target Responden: ${targetResponseCity})</li>`;
+                });
+            } else {
+                cityListText += '<li><i>No cities available</i></li>';
+            }
+            cityListText += '</ul>';
+
+            let regencyListText = '<ul>';
+            if (provinceData.regencies && provinceData.regencies.length > 0) {
+                provinceData.regencies.forEach(regency => {
+                    const regencyEntry = props.regencies ? props.regencies.find(r => r.id === regency.regency_id) : null;
+                    const regencyName = regencyEntry ? regencyEntry.name : 'No name for Regency';
+                    const targetResponseRegency = regency.target_response_regency ? regency.target_response_regency : 'No data';
+                    regencyListText += `<li>Kab. ${regencyName} (Target Responden: ${targetResponseRegency})</li>`;
+                });
+            } else {
+                regencyListText += '<li><i>No regencies available</i></li>';
+            }
+            regencyListText += '</ul>';
+
             path.setAttribute('fill', '#6db445');
             path.setAttribute('class', 'filledProvince');
 
@@ -197,11 +225,8 @@ function colorProvinces(selectedSurvey) {
                 hoverText.style.display = 'block';
                 hoverText.innerHTML = 
                     `<strong>${provinceName} (Target Responden: ${targetResponse})</strong>
-                    <br>Text
-                    <br>Text
-                    <br>Text
-                    <br>Text
-                    <br>`;
+                    <br>${cityListText}
+                    ${regencyListText}`;
                 
                 const pathRect = path.getBoundingClientRect();
                 const svgRect = svgContainer.getBoundingClientRect();
@@ -218,8 +243,18 @@ function colorProvinces(selectedSurvey) {
         }
     });
 
-    return { list: provinceList };
+    return { list: provinceList, total };
 }
+
+const getSurveySubmissions = (surveyId) => {
+    return props.userTarget[surveyId] || 0;
+};
+
+watch(() => selectedSurvey, (newSurvey) => {
+    if (newSurvey) {
+        colorProvinces(newSurvey);
+    }
+}, { immediate: true });
 
 </script>
 
@@ -247,11 +282,6 @@ function colorProvinces(selectedSurvey) {
 
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_surveys', [ clientSlug, projectSlug])"
-                            v-if="$page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-m hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
-                            Tambah Kuisioner
-                        </NavLink>
                         <NavLink :href="route('listsurvey', [ clientSlug, projectSlug])"
                             class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
                             Back to Survey
@@ -282,7 +312,7 @@ function colorProvinces(selectedSurvey) {
                     <div class="text-center text-3xl font-semibold py-5 bg-ijo-terang text-white rounded-t-md">
                         {{ survey ? survey.title : 'Survey not found' }}
                     </div>
-                    <h3 class="text-center mt-3 mb-3 text-xl font-semibold">Location Details</h3>
+                    <h3 class="text-center mt-3 text-xl font-semibold">Survey Location Target</h3>
                     <div id="map-container" class="map-container">
                         <div class="flex justify-center items-center">
                             <div class="border-b-1 border-gray-400 h-max">
@@ -293,7 +323,7 @@ function colorProvinces(selectedSurvey) {
                                 xmlns:svg="http://www.w3.org/2000/svg"
                                 xmlns="http://www.w3.org/2000/svg"
                                 mapsvg:geoViewBox="95.220250 7.356505 141.009728 -10.946766"
-                                viewBox="0 0 792.54596 420"
+                                viewBox="0 -30 792.54596 420"
                                 preserveAspectRatio="xMidYMid meet">       
                                 <path
                                     d="m 36.70571,92.057885 -0.17,0.1 -0.71,-1.09 -1.25,-1.34 -0.98,-0.46 -0.59,-0.1 -0.24,-0.15 0.11,-0.15 0.99,-0.2 2.06,0.13 0.69,1.08 0.34,0.98 -0.01,0.86 -0.24,0.34 z m -27.5499995,-61.11 2.5899995,1.42 0.08,0.66 0.28,0.46 1.01,1 1.79,1.4 0.85,0.35 3.94,0.98 4.04,0.27 1.91,-0.35 2.23,-0.88 0.36,0 0.9,0.48 1.52,-0.36 1.12,0.12 1.41,0.53 0.38,0.33 0.32,0.86 0.62,0.21 0.98,-0.2 3.93,-1.52 0.47,0.02 0.88,0.89 1.09,1.51 2.15,2.26 1.56,1.32 1.21,0.28 0.89,1.77 0.15,1.52 0.41,0.97 0.44,0.59 -0.09,0.93 0.82,-0.1 0.97,0.36 0.64,0.31 2.06,1.58 0.14,1.33 -0.36,0.86 0,0 -0.4,0.14 -0.8,-0.15 -0.77,0.21 -0.06,0.32 -0.27,0.12 -0.56,0.12 -0.38,-0.09 -0.09,0.21 0.3,0.53 -0.03,0.38 -0.41,0.24 0.15,0.47 -0.47,0.68 0.03,0.97 -0.21,0.29 -0.24,1.33 -1.21,0.65 0.06,0.38 -0.15,0.27 -0.56,-0.38 -0.18,0.03 -0.09,0.32 0.41,0.74 -0.12,0.35 -1.48,1.18 -0.44,0.62 0.33,0.82 0.47,0.5 0,0.32 0.27,0.18 -0.03,0.74 0.74,0.35 0.21,0.88 0.56,0.41 -0.33,0.53 0.27,0.56 0.03,0.44 0.65,0.44 0.27,-0.12 0.38,0.71 -0.24,0.79 -2.37,0.65 0.09,0.18 0.59,0.12 0.5,0.5 0.06,0.74 0.62,0.65 -0.09,0.97 -0.62,-0.06 -0.18,0.12 0.21,0.26 -0.03,0.53 0.27,0.88 0,1.06 0.92,0.24 0.59,1.06 0.95,0.12 -0.03,0.26 0.24,0.29 -0.33,0.5 -0.06,0.38 0.15,0.65 0.5,0.5 0.03,0.26 -0.62,0.21 -0.24,1.41 0.18,1 0.41,0.56 -0.06,0.71 0.83,0.35 0.53,1.62 -0.61,2.79 0,0 -3.51,-1.98 -0.4,0 -0.93,0.46 -2.1,-0.53 -1.65,-2.3 -0.1,-4 -0.32,-2.17 -0.58,-1.78 -0.2,-0.21 -0.8,-0.01 -1.57,-0.62 -0.47,-0.22 -0.66,-0.63 -1.24,-1.73 -0.46,-1.96 -0.47,-0.77 -1.53,-0.52 -1.58,-2.52 -1.23,-2.32 -1.4,-0.78 -0.47,-0.52 -0.3,-1.13 -1.6,-1.12 -2.64,-0.15 -1.33,0.22 -0.68,-0.14 -0.52,-0.3 -1.68,-1.64 -1.86,-2.77 -1.7,-1.81 -0.76,-0.24 -1.31,-1.01 -0.98,-0.44 -1.17,-1.04 -1.96,-2.36 -2.8399995,-2.64 -2.3,-1.88 -1.87,-2.83 -2.41,-4.69 0.34,-0.67 -0.06,-0.3 -1.17000004,-1.87 0.4,-2.12 -0.56,-1.28 0.17,-1.57 0.86000004,0.01 2.17,-1.4 0.4,-0.07 2.87,0.44 2.43,0.76 z"
@@ -454,7 +484,16 @@ function colorProvinces(selectedSurvey) {
                     <div id="hoverText" style="display: none;" class="absolute bg-black bg-opacity-70 text-white p-1.5 rounded pointer-events-none z-[1000]">
                         Province Selected
                     </div>
-                    <h3 class="text-center mt-5 mb-3 text-xl font-semibold">Location Details</h3>
+                    <div class="ml-5 sm:ml-10 lg:ml-20 mb-5">
+                        <div class="flex flex-col items-start">
+                            <div class="w-full sm:w-[200px]"> 
+                                <h3 class="text-center text-xl font-semibold mb-3">Responden Based Location Target</h3>
+                            </div>
+                            <div class="w-full sm:w-[200px] h-auto border border-[#6db445] rounded-[20px] flex items-center justify-center box-border p-10">
+                                <div class="text-5xl">{{ getSurveySubmissions(survey.id) }}/{{ totalTargetResponse }}</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -462,17 +501,6 @@ function colorProvinces(selectedSurvey) {
 </template>
 
 <style scoped>
-.square {
-    width: 100px;
-    height: 50px;
-    border: 1px solid #6db445;
-    border-radius: 10px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-}
 
 .map-container {
     cursor: pointer;
