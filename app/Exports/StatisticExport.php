@@ -45,18 +45,18 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
         return 'B3';
     }
 
-    public function map($row): array
-    {
+    public function map($row): array{
         $this->rownumber++;
-        // $choice_value = array_column($row->choice->toArray(), 'value');
         $choice = $row->choice->toArray();  
         $answer = $row->answer->toArray();
         $totalResponse = count($answer);
+
     if ($row->question_type_id != 1 && $row->question_type_id <= 3) {
-            $mapRows = [[
-                $this->rownumber,
-                $row->question_text,
-            ], ['', '', 'Response Percent', 'Response Count']];
+            $mapRows = [
+                [$this->rownumber,$row->question_text], 
+                ['', '', 'Response Percent', 'Response Count']
+            ];
+
             $hitung = [];
 
             foreach ($choice as $index => $c) {
@@ -65,27 +65,23 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
                         $hitung[$index][] = $a['answer'];
                     }
                 }
-                if ($hitung[$index] ?? 0) {
-                    $count = count($hitung[$index]);
-                } else {
-                    $count = '0';
-                }
-                // dd($count);
+                $hitung[$index] ?? 0 ? $count = count($hitung[$index]) : $count = '0';
                 $percentage = ($count * 100) / $totalResponse;
                 $mapRows[] = ['', $c['value'], number_format($percentage, 2, '.', "") . '%', $count];
             }
+            // dd($hitung);
             $mapRows[] = [''];
 
         return $mapRows;
 
-        } else if ($row->question_type_id == 1) {
+    } else if ($row->question_type_id == 1) {
             return [
                 [$this->rownumber, $row->question_text], 
                 ['', $totalResponse . ' Responses'],
-                ['']
+                [''],
             ];
-        }
     }
+}
 
     public function registerEvents(): array
     {
