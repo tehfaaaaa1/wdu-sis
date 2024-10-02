@@ -137,8 +137,6 @@ const parseProvinceTargets = (survey) => {
 };
 
 
-
-
 const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
 };
