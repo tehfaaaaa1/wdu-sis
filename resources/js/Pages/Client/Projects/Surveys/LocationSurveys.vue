@@ -80,13 +80,11 @@ const prepareProvincePieChartData = (selectedSurvey, provinces) => {
         }
     });
 
-    // Debugging provinceData to ensure it's correctly populated
     console.log('pie Province Data:', provinceData);
 
     const labels = provinceData.map(data => data.province_name);
     const data = provinceData.map(data => data.response);
 
-    // Debugging labels and data
     console.log('pie Labels:', labels);
     console.log('pie Data:', data);
 
@@ -95,7 +93,7 @@ const prepareProvincePieChartData = (selectedSurvey, provinces) => {
     return {
         labels,
         datasets: [{
-            label: 'pie Province Responses',
+            label: 'Target Responden',
             backgroundColor,
             data,
         }],
