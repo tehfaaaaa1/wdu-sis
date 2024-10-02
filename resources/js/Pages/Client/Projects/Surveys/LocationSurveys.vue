@@ -138,6 +138,7 @@ function colorProvinces(selectedSurvey) {
 
     const provinceList = provinceTargets.map(target => {
     console.log('Full Target Data:', target);
+    
 
     if (!target || !target.province_id) {
         console.error('Invalid target data:', target);
@@ -485,13 +486,33 @@ watch(() => selectedSurvey, (newSurvey) => {
                         Province Selected
                     </div>
                     <div class="ml-5 sm:ml-10 lg:ml-20 mb-5">
-                        <div class="flex flex-col items-start">
-                            <div class="w-full sm:w-[200px]"> 
-                                <h3 class="text-center text-xl font-semibold mb-3">Responden Based Location Target</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="flex flex-col items-center justify-between h-full">
+                                <div class="w-full sm:w-[200px]">
+                                    <h3 class="text-center text-xl font-semibold mb-3">Responden Based <br>All Location Target</h3>
+                                </div>
+                                <div class="w-full sm:w-[200px] h-auto border border-[#6db445] rounded-[20px] flex items-center justify-center box-border p-10">
+                                    <div class="text-5xl">{{ getSurveySubmissions(survey.id) }}/{{ totalTargetResponse }}</div>
+                                </div>
                             </div>
-                            <div class="w-full sm:w-[200px] h-auto border border-[#6db445] rounded-[20px] flex items-center justify-center box-border p-10">
-                                <div class="text-5xl">{{ getSurveySubmissions(survey.id) }}/{{ totalTargetResponse }}</div>
+
+                            <div class="flex flex-col justify-center items-center h-full">
+                                <div class="w-full sm:w-[200px]">
+                                    <h3 class="text-center text-xl font-semibold">
+                                        Responden Based<br>Provinces Target
+                                    </h3>
+                                </div>
+                                <div class="flex-grow flex items-center justify-center">
+                                    <ul>
+                                        <li v-for="(province, index) in colorProvinces(selectedSurvey).list" :key="index">
+                                            - {{ province.name }} <b>({{ province.response }})</b>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
+
+                            <!-- third -->
+                            <div></div>
                         </div>
                     </div>
                 </div>
