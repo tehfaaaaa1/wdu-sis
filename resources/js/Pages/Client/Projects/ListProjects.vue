@@ -6,6 +6,7 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
+import NavLinkBlue from '@/Components/NavLinkBlue.vue';
 
 
 const props = defineProps({ projects: Object, clients: Object })
@@ -111,10 +112,10 @@ const filteredProjects = computed(() => {
                                     100
                                 </td> -->
                                 <td class="px-6 py-6">
-                                    <NavLink :href="route('listsurvey', [clientSlug, project.slug])"
-                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent focus:!ring-secondary hover:!text-primary transition">
+                                    <NavLinkBlue :href="route('listsurvey', [clientSlug, project.slug])"
+                                        class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent focus:!ring-secondary transition">
                                         Lihat Kuisioner
-                                    </NavLink>
+                                    </NavLinkBlue>
                                     <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                         class="mt-5 text-center">
                                         <a class="font-medium text-blue-600 focus:outline-none focus:ring-2 focus:shadow-sm focus:ring-blue-500 py-1 focus:rounded-sm px-2 hover:underline mr-4"
