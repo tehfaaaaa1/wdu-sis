@@ -56,7 +56,16 @@ let chartInstance = null;
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
 
-const BackgroundColors = ['#41B883', '#E46651', '#00D8FF', '#FFAF00', '#cc66ff'];
+const BackgroundColors = [
+    '#41B883', '#E46651', '#00D8FF', '#FFAF00', '#cc66ff', 
+    '#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#A833FF',  
+    '#33FFF5', '#FF3380', '#80FF33', '#FF8333', '#FF3388',  
+    '#33FF99', '#9933FF', '#FF9933', '#FF33BB', '#BB33FF',
+    '#FF33FF', '#33FFDD', '#DDFF33', '#33CCFF', '#FF33CC',
+    '#FF7733', '#7733FF', '#33FF66', '#66FF33', '#FF3366',
+    '#FF66FF', '#3366FF', '#FFCC33', '#33FFCC', '#FFCC66',
+    '#FF6633', '#336633', '#FF9966', '#6699FF', '#FF6699'   
+];
 
 const prepareProvincePieChartData = (selectedSurvey, provinces) => {
     if (!selectedSurvey || !selectedSurvey.province_targets) {
@@ -233,7 +242,12 @@ function colorProvinces(selectedSurvey) {
         return total + (isNaN(targetResponse) ? 0 : targetResponse);
     }, 0);
 
-    totalTargetResponse.value = total;  
+    totalTargetResponse.value = total; 
+    
+    // pie connection
+    const pieChartData = prepareProvincePieChartData(selectedSurvey, props.provinces);
+    const labels = pieChartData.labels;
+    const backgroundColor = pieChartData.datasets[0].backgroundColor;
     
 
     const paths = document.querySelectorAll('.map-container path');
@@ -323,26 +337,34 @@ function colorProvinces(selectedSurvey) {
             }
             regencyListText += '</ul>';
 
-            path.setAttribute('fill', '#6db445');
-            path.setAttribute('class', 'filledProvince');
+            const provinceIndex = labels.findIndex(label => label === provinceName);
 
-            path.addEventListener('mouseover', () => {
+            if (provinceIndex !== -1) {
+                path.setAttribute('fill', backgroundColor[provinceIndex]);
+                path.addEventListener('mouseover', () => {
+                    
+                const targetResponse = provinceData ? provinceData.target_response : 'No Data';
+
                 hoverText.style.display = 'block';
                 hoverText.innerHTML = 
                     `<strong>${provinceName} (Target Responden: ${targetResponse})</strong>
                     <br>${cityListText}
-                    ${regencyListText}`;
-                
-                const pathRect = path.getBoundingClientRect();
-                const svgRect = svgContainer.getBoundingClientRect();
+                    ${regencyListText}`
+                    
+                    const pathRect = path.getBoundingClientRect();
+                    const svgRect = svgContainer.getBoundingClientRect();
 
-                hoverText.style.top = `${pathRect.top - svgRect.top + 550}px`;  
-                hoverText.style.left = `${pathRect.left - svgRect.left + pathRect.width + 10}px`;
-            });
+                    hoverText.style.top = `${pathRect.top - svgRect.top + 550}px`;
+                    hoverText.style.left = `${pathRect.left - svgRect.left + pathRect.width + 10}px`;
+                });
 
-            path.addEventListener('mouseleave', () => {
-                hoverText.style.display = 'none';
-            });
+                path.addEventListener('mouseleave', () => {
+                    hoverText.style.display = 'none';
+                });
+            } else {
+                console.warn(`No matching province found in pie chart for: ${provinceName}`);
+                path.setAttribute('fill', '#cccccc'); 
+            }
         } else {
             path.setAttribute('fill', '#cccccc');
         }
