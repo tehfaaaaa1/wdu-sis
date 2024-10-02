@@ -268,11 +268,10 @@ class QuestionController extends Controller
             }
 
             // Delete any existing questions that were not processed
+            $existingQuestions->except($processedQuestionIds)->each(function ($question) {
+                $question->delete();
+            });
         }
-        
-        $existingQuestions->except($processedQuestionIds)->each(function ($question) {
-            $question->delete();
-        });
         $existingPages->except($processedPageIds)->each(function ($page) {
             $page->delete();
         });
