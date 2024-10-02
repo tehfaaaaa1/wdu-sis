@@ -58,7 +58,9 @@ const pages = ref(props.page.map((page) => {
                 tipe = ['Image']
                 files = [{ files: item.question_text }]
                 break;
-
+            case 5:
+                tipe = ['Paragraph']
+                break;
             default:
                 break;
         }
@@ -528,7 +530,6 @@ const handleImage = (event, pgindex, qindex) => {
                         :class="'bg-white pb-8 rounded-md'" handle=".handle">
                         <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
                             <div class="p-5 gap-2 flex items-center">
-                                <!-- Order of question -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor"
                                     class="size-10 cursor-grab handle border-2 rounded-md border-gray-800">
@@ -536,13 +537,13 @@ const handleImage = (event, pgindex, qindex) => {
                                         d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                 </svg>
                                 <!-- Insert question here -->
-                                <input v-if="item.types[0] != 'Image'" v-model="item.soal" type="text"
+                                <input v-if="item.types[0] != 'Image' && item.types[0] != 'Paragraph' " v-model="item.soal" type="text"
                                     placeholder="Insert question here" class="text-sm w-full mx-1 rounded-md">
                                 <input v-else-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                     id="file_input" @input="handleImage($event, page_index, index)"
-                                    class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
-                            file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
-                                <!-- Question types -->
+                                    class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
+                                <textarea v-else-if="item.types[0] == 'Paragraph'" v-model="item.soal" class="text-sm w-full mx-1 rounded-md" name="" id=""/>
+                                    <!-- Question types -->
                                 <Dropdown align="right" width="48" v-if="!item.files">
                                     <template #trigger>
                                         <button type="button"

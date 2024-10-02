@@ -47,7 +47,6 @@ const flow = computed(() => form.page[currentIndex.value].flow.find(p => p.quest
 
 let backOrder = null
 let logic = null
-
 function nextPage() {
     if (flow.value && form.page[currentIndex.value].answer.some(a => a.radios == flow.value.question_choice_id)) {
         backOrder = flow.value.current_page_order
@@ -110,7 +109,7 @@ const submit = () => {
                         <div class="p-5 flex w-full">
                             <form @submit.prevent="submit" class="w-full">
                                 <div v-for="(question, index) in currentPage.question" :key="index" class="block mb-4">
-                                    <p>{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
+                                    <p v-if="question.question_type_id <=3">{{ index + 1 }}. <label>{{ question.question_text }}</label></p>
 
                                     <!-- Handling radio inputs for question type 2 -->
                                     <div v-if="question.question_type_id == 2">
@@ -138,6 +137,13 @@ const submit = () => {
                                                 {{ list.value }}
                                             </label>
                                         </div>
+                                    </div>
+                                    <div class="" v-if="question.question_type_id == 4">
+                                        <img :src="'/img/'+question.question_text" class="w-full" alt="Image">
+                                    </div>
+                                    
+                                    <div class="" v-if="question.question_type_id == 5">
+                                        <p>{{ question.question_text }}</p>
                                     </div>
 
                                     <!-- Handling textarea for question type 1 -->
