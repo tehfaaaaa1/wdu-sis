@@ -4,6 +4,7 @@ import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
+import NavLinkBlue from '@/Components/NavLinkBlue.vue';
 
 const props = defineProps({
     surveys: Array,
@@ -273,10 +274,10 @@ const getSurveySubmissions = (surveyId) => {
                                                 Isi Kuisioner
                                             </NavLink>
 
-                                        <NavLink :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"
+                                        <NavLinkBlue :href="route('response', [clientSlug, projectSlug, survey.id])" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'"
                                             class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:text-secondary focus:hover:!ring-secondary hover:!ring-secondary focus:!ring-secondary transition ">
                                             Cek Respon
-                                        </NavLink>
+                                        </NavLinkBlue>
                                         
                                         <NavLink :href="route('question_surveys', [clientSlug, projectSlug, survey.id])"
                                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
