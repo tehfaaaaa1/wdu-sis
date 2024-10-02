@@ -28,6 +28,19 @@ const clientSlug = client.slug;
 const project = props.projects[0];
 const projectSlug = project.slug;
 
+const showCitiesAndRegencies = ref([]);
+const toggleVisibility = (surveyId, provinceIndex) => {
+  if (!showCitiesAndRegencies.value[surveyId]) {
+    showCitiesAndRegencies.value[surveyId] = [];
+  }
+  showCitiesAndRegencies.value[surveyId][provinceIndex] = !showCitiesAndRegencies.value[surveyId][provinceIndex];
+};
+
+const isVisible = (surveyId, provinceIndex) => {
+  return showCitiesAndRegencies.value[surveyId] && showCitiesAndRegencies.value[surveyId][provinceIndex];
+};
+
+
 const hapus = (cliSlug, proSlug, id) => {
     selectedSurveyId.value = id;
     showDeleteModal.value = true;
@@ -95,7 +108,7 @@ const getCitiesAndRegencies = (survey) => {
                 name: provinceName, 
                 isPlaceholder: false 
             };
-        });
+        }).filter(city => !city.isPlaceholder);
 
         const citiesDisplay = cities.length > 0 ? cities : [{ city_name: 'No city listed', responseCity: '0', isPlaceholder: true }];
 
@@ -108,7 +121,7 @@ const getCitiesAndRegencies = (survey) => {
                 responseRegency: targetResponseRegency,
                 isPlaceholder: false 
             };
-        });
+        }).filter(regency => !regency.isPlaceholder);;
 
         const regenciesDisplay = regencies.length > 0 ? regencies : [{ regency_name: 'No regency listed', responseRegency: '0', isPlaceholder: true }];
 
@@ -116,9 +129,14 @@ const getCitiesAndRegencies = (survey) => {
             province_name: provinceName,    
             cities: citiesDisplay,
             regencies: regenciesDisplay,
-            target_response: target.target_response
+            target_response: target.target_response,
+            hasCitiesOrRegencies: cities.length > 0 || regencies.length > 0,
         };
     });
+    if (showCitiesAndRegencies.value.length === 0) {
+        showCitiesAndRegencies.value = new Array(provincesData.length).fill(false);
+    }
+
 
     return provincesData;
 };
@@ -216,28 +234,39 @@ const getSurveySubmissions = (surveyId) => {
                                     <td class="px-6 py-4" v-if="$page.props.auth.user.current_team_id !=1 || props.user.usertype == 'superadmin'">
                                         <div class="mt-5"></div>
                                         <ul>
-                                            <li v-for="(province, index) in getCitiesAndRegencies(survey)" :key="index">
-                                                <div class="font-bold">Province</div>
-                                                - {{ province.province_name }} <b>({{ province.target_response }})</b>
-                                                <ul>
-                                                    <div class="font-bold px-2 mt-1">City</div>
-                                                    <li v-for="(city, cityIndex) in province.cities" :key="cityIndex" 
-                                                        :class="{ 'text-gray-500 italic': city.isPlaceholder, 'px-2': true }">
-                                                        - {{ city.city_name }} <b v-if="!city.isPlaceholder">({{ city.responseCity }})</b>
+                                            <b>Province</b>
+                                            <li v-for="(province, index) in getCitiesAndRegencies(survey)" :key="index">               
+                                                <div class="flex justify-between items-center mt-1 mb-1">
+                                                    <span>- {{ province.province_name }} <b>({{ province.target_response }})</b></span>
+                                                    <svg
+                                                    v-if="province.hasCitiesOrRegencies"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    :class="{'rotate-180': isVisible(survey.id, index)}"
+                                                    class="h-4 w-5 ml-3 cursor-pointer transition-transform"
+                                                    @click="toggleVisibility(survey.id, index)"
+                                                    >
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                    </svg>
+                                                </div>
+                                                <ul v-if="isVisible(survey.id, index)" class="ml-2 mb-1">
+
+                                                    <div class="font-bold px-2">City</div>
+                                                    <li v-for="(city, cityIndex) in province.cities" :key="cityIndex" :class="{ 'text-gray-500 italic': city.isPlaceholder, 'px-2': true }">
+                                                    - {{ city.city_name }} <b v-if="!city.isPlaceholder">({{ city.responseCity }})</b>
                                                     </li>
-                                                </ul>
-                                                <div class="font-bold px-2 mt-1">Regency</div>
-                                                <ul>
-                                                    <li v-for="(regency, regencyIndex) in province.regencies" :key="regencyIndex" 
-                                                        :class="{ 'text-gray-500 italic': regency.isPlaceholder, 'px-2': true }">
-                                                        - {{ regency.regency_name }} <b v-if="!regency.isPlaceholder">({{ regency.responseRegency }})</b>
+
+                                                    <div class="font-bold px-2">Regency</div>
+                                                    <li v-for="(regency, regencyIndex) in province.regencies" :key="regencyIndex" :class="{ 'text-gray-500 italic': regency.isPlaceholder, 'px-2': true }">
+                                                    - {{ regency.regency_name }} <b v-if="!regency.isPlaceholder">({{ regency.responseRegency }})</b>
                                                     </li>
-                                                    <br>
                                                 </ul>
                                             </li>
                                             <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                                 class="text-center col-span-2 mb-3">
-                                                <a :href="route('location_surveys', [clientSlug, projectSlug, survey.id])" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                                <a :href="route('location_surveys', [clientSlug, projectSlug, survey.id])" class="font-medium text-blue-600 dark:text-blue-500 hover:underline"><br>
                                                     Details click here
                                                 </a>
                                             </div>

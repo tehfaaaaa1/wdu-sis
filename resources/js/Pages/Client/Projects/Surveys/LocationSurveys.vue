@@ -109,6 +109,7 @@ const prepareProvincePieChartData = (selectedSurvey, provinces) => {
     console.log('pie Data:', data);
 
     const backgroundColor = labels.map((_, index) => BackgroundColors[index % BackgroundColors.length]);
+    const displayLabels = labels.length <= 5;
 
     return {
         labels,
@@ -117,6 +118,7 @@ const prepareProvincePieChartData = (selectedSurvey, provinces) => {
             backgroundColor,
             data,
             datalabels: {
+                display: displayLabels,
                 color: '#FFFFFF',
                 font: {
                     weight: 'bold',
@@ -343,6 +345,8 @@ function colorProvinces(selectedSurvey) {
                 path.setAttribute('fill', backgroundColor[provinceIndex]);
                 path.addEventListener('mouseover', () => {
                     
+                path.style.opacity = '0.5';
+    
                 const targetResponse = provinceData ? provinceData.target_response : 'No Data';
 
                 hoverText.style.display = 'block';
@@ -359,6 +363,7 @@ function colorProvinces(selectedSurvey) {
                 });
 
                 path.addEventListener('mouseleave', () => {
+                    path.style.opacity = '1';
                     hoverText.style.display = 'none';
                 });
             } else {
@@ -655,7 +660,7 @@ watch(() => selectedSurvey, (newSurvey) => {
                                 <div class="flex-grow flex mt-5">
                                     <ul>
                                         <li v-for="(province, index) in colorProvinces(selectedSurvey).list" :key="index">
-                                            {{ province.name }} <b>({{ province.response }})</b>
+                                            - {{ province.name }}: <b>{{ province.response }}</b>
                                         </li>
                                     </ul>
                                 </div>
@@ -696,6 +701,10 @@ watch(() => selectedSurvey, (newSurvey) => {
     width: 100%;
     height: 100%;
   }
+
+.map-container path {
+    transition: opacity 0.3s ease;
+}
 
 .filledProvince:hover{
     opacity: 0.5;
