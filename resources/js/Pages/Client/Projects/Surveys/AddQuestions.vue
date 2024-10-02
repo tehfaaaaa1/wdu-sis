@@ -8,6 +8,7 @@ import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Index from '@/Pages/API/Index.vue';
 const props = defineProps({
     surveys: Object,
     projects: Object,
@@ -32,6 +33,7 @@ const pages = ref(props.page.map((page) => {
         let tipe = []
         let text = []
         let choice = []
+        let files = []
         let lastCindex = ''
         switch (item.question_type_id) {
             case 1:
@@ -52,11 +54,15 @@ const pages = ref(props.page.map((page) => {
                 })
                 lastCindex = choice.length - 1
                 break;
+            case 4:
+                tipe = ['Image']
+                files = [{ files: item.question_text }]
+                break;
 
             default:
                 break;
         }
-        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
+        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex }
     })
     return { id: page.id, order: page.order, name: page.page_name, question: question }
 }))
@@ -70,10 +76,14 @@ const questionsType = ref([
     { types: 'Radio', name: 'Single Choice', choices: '' },
     { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
     { types: 'Radio', name: 'Yes / No', choices: '' },
-    { types: 'Image', name: 'Image', files: '' },
-    { types: 'Paragraph', name: 'Paragraph', texts: '' },
 ]);
-function clone(element) {
+
+const descType = ref([
+    { types: 'Image', name: 'Image', files: '' },
+    { types: 'Paragraph', name: 'Paragraph' },
+])
+
+function cloneQuestion(element) {
     let texts = []
     let choice = []
     let required = 0
@@ -100,6 +110,21 @@ function clone(element) {
     }
     return {
         soal: '', texts: texts, choices: choice, types: [element.types], required, lastChoiceIndex: lastCindex
+    };
+}
+
+function cloneDesc(element) {
+    let file = []
+    switch (element.name) {
+        case 'Image':
+            file = [{ files: '' }]
+            break;
+
+        default:
+            break;
+    }
+    return {
+        soal: '', types: [element.types], files: file
     };
 }
 
@@ -173,6 +198,7 @@ function checkboxQuestion(question) {
         question.lastChoiceIndex = question.choices.length - 1; // update radio index
     }
 }
+
 // add
 function AddRadioOption(question) {
     const radio = { pilih: '' };
@@ -321,13 +347,31 @@ const hapusFlow = ref(false)
 const confirmDeletionFlow = (flow) => {
     form.get(route('delete-flow', [form.client_slug, form.project_slug, props.surveys.id, flow]), { onSuccess: hapusFlow.value = false });
 }
+
+// PREVIEW IMAGE
+const handleImage = (event, pgindex, qindex) => {
+    pages.value[pgindex].question[qindex].soal = event.target.files[0];
+    pages.value[pgindex].question[qindex].files[0].files = event.target.files[0];
+    var input = event.target;
+    if (input.files) {
+        if (pages.value[pgindex].question[qindex].files[0].files.size / 1024 > 2048) {
+            alert('EXCEED IMAGE SIZE LIMIT');
+            exit;
+        }
+        var reader = new FileReader();
+        reader.onload = (e) => {
+            pages.value[pgindex].question[qindex].files[0].files = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0])
+    }
+}
 </script>
 
 <template>
     <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen relative">
-            <header class="bg-white grid grid-cols-3 items-center border-b border-gray-300 sticky top-0 z-50">
+            <header class="bg-white grid grid-cols-2 items-center border-b border-gray-300 sticky top-0 z-50">
                 <div class="flex items-center gap-x-4">
                     <a :href="route('listsurvey', [client['slug'], project['slug']])"
                         class="flex justify-center items-center font-semibold text-white focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-red-500 bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
@@ -337,33 +381,35 @@ const confirmDeletionFlow = (flow) => {
                         </svg>
                         Back
                     </a>
+                    <h2 class="text-center font-semibold text-xl">
+                        {{ props.surveys.title }}
+                    </h2>
                 </div>
-                <h2 class="text-center font-semibold text-xl">
-                    {{ props.surveys.title }}
-                </h2>
-                <div class="grid grid-cols-3 items-center justify-items-end">
-                    <div class="save-status">
-                        <p v-if="savingStatus === 'saving'" class="text-center">Saving...</p>
-                        <p v-if="savingStatus === 'saved'" class="text-center font-semibold">All changes saved.</p>
-                        <p v-if="savingStatus === 'error'" class="text-center font-semibold">Error saving data.</p>
+                <div class="grid grid-cols-2 items-center justify-items-end">
+                    <div class="save-status flex justify-start">
+                        <p v-if="savingStatus === 'saving'" class="text-wrap">Saving...</p>
+                        <p v-if="savingStatus === 'saved'" class="font-semibold text-wrap">All changes saved.</p>
+                        <p v-if="savingStatus === 'error'" class="font-semibold text-wrap">Error saving data.</p>
                     </div>
-                    <form class="bg-white flex items-center" @submit.prevent="submitForm">
-                        <button type="submit"
-                            class="py-2 px-2 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:rounded-sm text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="size-5">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                            </svg>
-                            Save Questions
-                        </button>
-                    </form>
-                    <form @submit.prevent="status">
-                        <button type="submit"
-                            class="py-2.5 px-10 flex focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-secondary justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
-                            {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
-                        </button>
-                    </form>
+                    <div class="save-publish flex items-center gap-4">
+                        <form class="bg-white" @submit.prevent="submitForm">
+                            <button type="submit"
+                                class="py-2 px-2 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:rounded-sm text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                    stroke="currentColor" class="size-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                                Save Questions
+                            </button>
+                        </form>
+                        <form @submit.prevent="status">
+                            <button type="submit"
+                                class="py-2.5 px-10 flex focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-secondary justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
+                                {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </header>
             <div class="absolute h-[96.5%] w-full bg-white opacity-50 z-40" v-if="props.surveys.status == 1"></div>
@@ -382,8 +428,11 @@ const confirmDeletionFlow = (flow) => {
                         </h1>
                     </div>
                     <div class="" id="add-question" v-if="QuestionOrFlow == 'question'">
+                        <p
+                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full">
+                            Questions</p>
                         <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                            :animation="150" :clone="clone" :sort="false" class="list-qtype">
+                            :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
                             <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
                                 items-center cursor-move hover:font-semibold">
                                 <span>{{ item.name }}</span>
@@ -394,6 +443,23 @@ const confirmDeletionFlow = (flow) => {
                                 </svg>
                             </div>
                         </VueDraggable>
+
+                        <p
+                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full">
+                            Descriptions</p>
+                        <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
+                            :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
+                            <div v-for="item in descType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
+                                items-center cursor-move hover:font-semibold">
+                                <span>{{ item.name }}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </div>
+                        </VueDraggable>
+
                         <button type="button" class="bg-white border-gray-300 py-2 focus: px-4 flex justify-between
                         items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
                             :class="{ 'border-b': !showAddPage }">
@@ -469,18 +535,15 @@ const confirmDeletionFlow = (flow) => {
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                 </svg>
-
-                                <p class="ml-2" v-if="item.types != 'Image'">{{ index + 1 }}.</p>
-                                <p class="ml-2" v-else></p>
-                            
                                 <!-- Insert question here -->
-                                <input v-if="item.types!= 'Image'" v-model="item.soal" type="text" placeholder="Insert question here"
-                                    class="text-sm w-full mx-1 rounded-md">
-                                <input v-else type="file" accept=".png, .jpg, .jpeg" id="file_input"
-                                class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
+                                <input v-if="item.types[0] != 'Image'" v-model="item.soal" type="text"
+                                    placeholder="Insert question here" class="text-sm w-full mx-1 rounded-md">
+                                <input v-else-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
+                                    id="file_input" @input="handleImage($event, page_index, index)"
+                                    class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none
                             file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
                                 <!-- Question types -->
-                                <Dropdown align="right" width="48">
+                                <Dropdown align="right" width="48" v-if="!item.files">
                                     <template #trigger>
                                         <button type="button"
                                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
@@ -507,14 +570,6 @@ const confirmDeletionFlow = (flow) => {
                                             class="block px-4 py-2 text-sm cursor-pointer">
                                             Multiple Choice
                                         </div>
-                                        <div @click="checkboxQuestion(item)"
-                                            class="block px-4 py-2 text-sm cursor-pointer">
-                                            Image
-                                        </div>
-                                        <div @click="checkboxQuestion(item)"
-                                            class="block px-4 py-2 text-sm cursor-pointer">
-                                            Paragraph
-                                        </div>
                                         <div class="block border-t border-gray-300 py-2 text-center">
                                             <input type="checkbox" v-model="item.required" true-value="1"
                                                 false-value="0" :id="'q' + index + '-required'" class="cursor-pointer">
@@ -526,7 +581,7 @@ const confirmDeletionFlow = (flow) => {
                                 <!-- delete question -->
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" @click="remove(page, index)"
-                                    class="size-10 text-red-600 cursor-pointer">
+                                    class="size-10 text-red-600 cursor-pointer" :class="{ 'size-8': item.files }">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                 </svg>
@@ -594,6 +649,13 @@ const confirmDeletionFlow = (flow) => {
                                         Add Options
                                     </a>
                                 </div>
+                            </div>
+
+                            <!-- Image -->
+                            <div class="px-5 flex justify-center" v-for="(image, index) in item.files" :key="index">
+                                <img v-if="image.files != item.soal" :src="image.files" alt="Preview">
+                                <img v-else :src="'/img/' + item.soal" alt="Preview Image">
+
                             </div>
                         </div>
                     </VueDraggable>
