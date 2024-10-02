@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import BarChart from '@/Components/BarChart.vue';
+import PieChart from '@/Components/PieChart.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
@@ -19,8 +21,6 @@ const props = defineProps({
     
 const form = useForm({ search: '' });
 
-const selectedProvince = ref(null);
-const selectedSurveyId = ref(null);
 const showDeleteModal = ref(false);
 
 const client = props.clients[0];
@@ -45,18 +45,81 @@ const selectedSurvey = ref(null);
 
 const filledProvinceCheck = ref(null);
 
-const hapus = (cliSlug, proSlug, id) => {
-    selectedSurveyId.value = id;
-    showDeleteModal.value = true;
-};
+// pie chart
+const BackgroundColors = ['#41B883', '#E46651', '#00D8FF', '#FFAF00', '#cc66ff']
+const prepareProvincePieChartData = (selectedSurvey, provinces) => {
+    if (!selectedSurvey || !selectedSurvey.province_targets) {
+        console.error('pie Selected survey or province_targets is missing.');
+        return { labels: [], datasets: [{ label: 'No Data', backgroundColor: [], data: [] }] };
+    }
 
-const confirmDeletion = () => {
-    form.get(route('delete_surveys', [clientSlug, projectSlug, selectedSurveyId.value]), {
-        onFinish: () => (showDeleteModal.value = false)
+    let provinceTargets;
+    try {
+        provinceTargets = typeof selectedSurvey.province_targets === 'string'
+            ? JSON.parse(selectedSurvey.province_targets)
+            : selectedSurvey.province_targets;
+        console.log('pie Parsed province targets:', provinceTargets);
+    } catch (error) {
+        console.error('pie Error parsing province_targets:', error);
+        return { labels: [], datasets: [{ label: 'Error', backgroundColor: [], data: [] }] };
+    }
+
+    const provinceData = [];
+
+    provinceTargets.forEach(target => {
+        if (target.province_id && target.target_response) {
+            const targetResponse = parseInt(target.target_response, 10);
+            if (!isNaN(targetResponse)) {
+                const province = provinces.find(p => p.id === target.province_id);
+                const provinceName = province ? province.name : `Province ${target.province_id}`;
+                provinceData.push({
+                    province_name: provinceName,
+                    response: targetResponse,
+                });
+            }
+        }
     });
+
+    // Debugging provinceData to ensure it's correctly populated
+    console.log('pie Province Data:', provinceData);
+
+    const labels = provinceData.map(data => data.province_name);
+    const data = provinceData.map(data => data.response);
+
+    // Debugging labels and data
+    console.log('pie Labels:', labels);
+    console.log('pie Data:', data);
+
+    const backgroundColor = labels.map((_, index) => BackgroundColors[index % BackgroundColors.length]);
+
+    return {
+        labels,
+        datasets: [{
+            label: 'pie Province Responses',
+            backgroundColor,
+            data,
+        }],
+    };
 };
 
-const cancelDeletion = () => (showDeleteModal.value = false);
+const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false, 
+    plugins: {
+        legend: {
+            position: 'top',
+        },
+    },
+    layout: {
+        padding: {
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+        },
+    },
+    
+};
 
 const searchQuery = ref('');
 const filteredSurveys = computed(() => {
@@ -109,7 +172,6 @@ function handleProvinceClick(provinceId) {
 
 function colorProvinces(selectedSurvey) {
     if (!selectedSurvey || !selectedSurvey.province_targets) {
-        console.warn('No valid survey or province_targets found:', selectedSurvey);
         return { list: [], total: 0 };
     }
 
@@ -485,24 +547,16 @@ watch(() => selectedSurvey, (newSurvey) => {
                     <div id="hoverText" style="display: none;" class="absolute bg-black bg-opacity-70 text-white p-1.5 rounded pointer-events-none z-[1000]">
                         Province Selected
                     </div>
-                    <div class="ml-5 sm:ml-10 lg:ml-20 mb-5">
-                        <div class="grid grid-cols-3 gap-4">
-                            <div class="flex flex-col items-center justify-between h-full">
+                    <div class="mb-5">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex flex-col items-center h-full">
                                 <div class="w-full sm:w-[200px]">
-                                    <h3 class="text-center text-xl font-semibold mb-3">Responden Based <br>All Location Target</h3>
+                                    <h3 class="text-center text-xl font-semibold">Responden Based <br>All Location Target</h3>
                                 </div>
-                                <div class="w-full sm:w-[200px] h-auto border border-[#6db445] rounded-[20px] flex items-center justify-center box-border p-10">
+                                <div class="mt-5 w-full sm:w-[200px] border border-[#6db445] rounded-[20px] flex items-center justify-center box-border p-10">
                                     <div class="text-5xl">{{ getSurveySubmissions(survey.id) }}/{{ totalTargetResponse }}</div>
                                 </div>
-                            </div>
-
-                            <div class="flex flex-col justify-center items-center h-full">
-                                <div class="w-full sm:w-[200px]">
-                                    <h3 class="text-center text-xl font-semibold">
-                                        Responden Based<br>Provinces Target
-                                    </h3>
-                                </div>
-                                <div class="flex-grow flex items-center justify-center">
+                                <div class="flex-grow flex mt-5">
                                     <ul>
                                         <li v-for="(province, index) in colorProvinces(selectedSurvey).list" :key="index">
                                             - {{ province.name }} <b>({{ province.response }})</b>
@@ -511,8 +565,16 @@ watch(() => selectedSurvey, (newSurvey) => {
                                 </div>
                             </div>
 
-                            <!-- third -->
-                            <div></div>
+                            <div class="flex flex-col items-center justify-center h-full">
+                                <div class="mb-4">
+                                    <h3 class="text-center text-xl font-semibold">
+                                        Responden Based<br>Provinces Target
+                                    </h3>
+                                </div>
+                                <div class="w-[320px] h-[320px]">
+                                    <PieChart :chartData="prepareProvincePieChartData(selectedSurvey, provinces)" :options="chartOptions" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
