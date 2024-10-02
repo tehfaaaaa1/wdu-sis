@@ -3,6 +3,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import BarChart from '@/Components/BarChart.vue';
 import PieChart from '@/Components/PieChart.vue';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Chart, registerables } from 'chart.js';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
@@ -17,6 +19,8 @@ const props = defineProps({
     cities: Array,
     regencies: Array,
     currentSurveyId: Number,
+    chartData: Object,
+    options: Object,
 });
     
 const form = useForm({ search: '' });
@@ -46,7 +50,14 @@ const selectedSurvey = ref(null);
 const filledProvinceCheck = ref(null);
 
 // pie chart
-const BackgroundColors = ['#41B883', '#E46651', '#00D8FF', '#FFAF00', '#cc66ff']
+const canvas = ref(null);
+let chartInstance = null;
+
+Chart.register(...registerables);
+Chart.register(ChartDataLabels);
+
+const BackgroundColors = ['#41B883', '#E46651', '#00D8FF', '#FFAF00', '#cc66ff'];
+
 const prepareProvincePieChartData = (selectedSurvey, provinces) => {
     if (!selectedSurvey || !selectedSurvey.province_targets) {
         console.error('pie Selected survey or province_targets is missing.');
@@ -96,28 +107,43 @@ const prepareProvincePieChartData = (selectedSurvey, provinces) => {
             label: 'Target Responden',
             backgroundColor,
             data,
+            datalabels: {
+                color: '#FFFFFF',
+                font: {
+                    weight: 'bold',
+                    size: 15,
+                },
+                formatter: (value, ctx) => {
+                    return value;
+                },
+            }
         }],
     };
 };
 
-const chartOptions = {
+const pieChartOptions = {
     responsive: true,
-    maintainAspectRatio: false, 
     plugins: {
         legend: {
             position: 'top',
+            labels: {
+                fontSize: 16,
+            },
+        },
+        datalabels: {
+            color: '#fff',
+            font: {
+                size: 14,
+                weight: 'bold',
+            },
+            formatter: (value, context) => {
+                const label = context.chart.data.labels[context.dataIndex];
+                return `${label}: ${value}`;
+            },
         },
     },
-    layout: {
-        padding: {
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-        },
-    },
-    
 };
+
 
 const searchQuery = ref('');
 const filteredSurveys = computed(() => {
@@ -136,12 +162,30 @@ onMounted(() => {
     if (selectedSurvey.value) {
         console.log('Selected Survey:', selectedSurvey.value);
         colorProvinces(selectedSurvey.value);
+
+        const pieChartData = prepareProvincePieChartData(selectedSurvey.value, props.provinces);
+
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        Chart.register(ChartDataLabels);
+
+        if (canvas.value && pieChartData) {
+            chartInstance = new Chart(canvas.value, {
+                type: 'pie',
+                data: pieChartData,
+                options: pieChartOptions,
+                plugins: [ChartDataLabels], 
+            });
+        }
     } else {
         console.warn('No survey found for the given ID.');
     }
 
     attachClickEvents();
 });
+
 
 function getSurveyIdFromRoute() {
     const routeParams = route().params;
@@ -314,6 +358,38 @@ const getSurveySubmissions = (surveyId) => {
 watch(() => selectedSurvey, (newSurvey) => {
     if (newSurvey) {
         colorProvinces(newSurvey);
+
+        const pieChartData = prepareProvincePieChartData(newSurvey, props.provinces);
+
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        Chart.register(ChartDataLabels);
+
+        if (canvas.value && pieChartData) {
+            chartInstance = new Chart(canvas.value, {
+                type: 'pie',
+                data: pieChartData,
+                options: {
+                    ...pieChartOptions,
+                    plugins: {
+                        datalabels: {
+                            color: '#fff',
+                            font: {
+                                size: 14,
+                                weight: 'bold',
+                            },
+                            formatter: (value, context) => {
+                                const label = context.chart.data.labels[context.dataIndex];
+                                return `${label}: ${value}`;
+                            },
+                        },
+                    },
+                },
+                plugins: [ChartDataLabels],
+            });
+        }
     }
 }, { immediate: true });
 
@@ -557,7 +633,7 @@ watch(() => selectedSurvey, (newSurvey) => {
                                 <div class="flex-grow flex mt-5">
                                     <ul>
                                         <li v-for="(province, index) in colorProvinces(selectedSurvey).list" :key="index">
-                                            - {{ province.name }} <b>({{ province.response }})</b>
+                                            {{ province.name }} <b>({{ province.response }})</b>
                                         </li>
                                     </ul>
                                 </div>
@@ -570,7 +646,7 @@ watch(() => selectedSurvey, (newSurvey) => {
                                     </h3>
                                 </div>
                                 <div class="w-[320px] h-[320px]">
-                                    <PieChart :chartData="prepareProvincePieChartData(selectedSurvey, provinces)" :options="chartOptions" />
+                                    <PieChart :chartData="prepareProvincePieChartData(selectedSurvey, provinces)" :options="pieChartOptions" />
                                 </div>
                             </div>
                         </div>
