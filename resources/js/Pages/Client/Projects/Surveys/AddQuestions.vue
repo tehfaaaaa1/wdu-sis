@@ -8,7 +8,8 @@ import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import Index from '@/Pages/API/Index.vue';
+import TextEditor from '@/Components/TextEditor.vue';
+
 const props = defineProps({
     surveys: Object,
     projects: Object,
@@ -27,7 +28,7 @@ const showLogicModal = ref(false);
 const openDropdown = ref(false);
 const QuestionOrFlow = ref('question') // 'question' or 'flow'
 // Note: Customize the functions below if needed
-const pages = ref(props.page.sort((a,b)=>a.order - b.order).map((page) => {
+const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
     page.question.sort((a, b) => a.order - b.order)
     question = page.question.map((item) => {
         let tipe = []
@@ -435,7 +436,7 @@ const handleImage = (event, pgindex, qindex) => {
                         <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                             :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
                             <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                                items-center cursor-move hover:font-semibold">
+                                items-center cursor-grab hover:font-semibold">
                                 <span>{{ item.name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
@@ -451,7 +452,7 @@ const handleImage = (event, pgindex, qindex) => {
                         <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
                             :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
                             <div v-for="item in descType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                                items-center cursor-move hover:font-semibold">
+                                items-center cursor-grab hover:font-semibold">
                                 <span>{{ item.name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
@@ -507,11 +508,11 @@ const handleImage = (event, pgindex, qindex) => {
                 </div>
             </aside>
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-                <VueDraggable v-model="pages" group="pages" :animation="150" class="list-questions select-none"
-                    :class="'bg-white pb-8 rounded-md'" handle=".handle">
-                    <div class="pb-6 rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
+                <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
+                    :class="'pb-8 rounded-md'" handle=".handle">
+                    <div class="rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
                         <div
-                            class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle">
+                            class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle cursor-grab">
                             <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
                                 class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
                             <div class="absolute -right-16 z-10 mt-2 origin-top-right">
@@ -529,8 +530,7 @@ const handleImage = (event, pgindex, qindex) => {
                         </div>
                         <!-- vue draggable : @update:modelValue="logUpdate" -->
                         <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
-                            :class="'bg-white pb-8 rounded-md'" handle=".handle" :scroll-sensitivity="200"
-                            :force-fallback="true">
+                            :class="'bg-white pb-8 rounded-md'" handle=".handle" :scroll-sensitivity="200">
                             <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
                                 <div class="p-5 gap-2 flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -543,11 +543,13 @@ const handleImage = (event, pgindex, qindex) => {
                                     <input v-if="item.types[0] != 'Image' && item.types[0] != 'Paragraph'"
                                         v-model="item.soal" type="text" placeholder="Insert question here"
                                         class="text-sm w-full mx-1 rounded-md">
-                                    <input v-else-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
+                                    <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                         id="file_input" @input="handleImage($event, page_index, index)"
                                         class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
-                                    <textarea v-else-if="item.types[0] == 'Paragraph'" v-model="item.soal"
-                                        class="text-sm w-full mx-1 rounded-md" name="" id="" />
+                                    <div class="w-full" v-if="item.types[0] == 'Paragraph'">
+                                        <TextEditor v-model="item.soal"
+                                            class="h-20 mx-1" name="" :id="'question-text-' + index" />
+                                    </div>
                                     <!-- Question types -->
                                     <Dropdown align="right" width="48" v-if="!item.files">
                                         <template #trigger>
@@ -669,7 +671,7 @@ const handleImage = (event, pgindex, qindex) => {
                                 </div>
                             </div>
                         </VueDraggable>
-                        <div class="border border-gray-500 mt-8 mb-3"
+                        <div class="border border-gray-500 my-5"
                             v-if="pages.length > 1 && page_index != pages.length - 1"></div>
                     </div>
                 </VueDraggable>

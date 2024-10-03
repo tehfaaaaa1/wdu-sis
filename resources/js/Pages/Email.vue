@@ -14,7 +14,7 @@ const filteredSurveys = computed(() => {
     return props.survey.filter(survey => {
         return (
             survey.title.toLowerCase().includes(search.value.toLowerCase())
-        ) ;
+        );
     });
 });
 const form = useForm({
@@ -34,6 +34,26 @@ const submit = () => {
     <AppLayout title="Email">
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+                <div style="background-color:#ffffff;">
+                    <div>
+                        <div style="text-align: center; padding: 20px;">
+                            <img src="/img/wdu-ijo.png" alt="Wahana Data Utama" width="400">
+                            <h1
+                                style="color:#333333; font-family: Arial, sans-serif; font-size: 2em; font-weight: bold;">
+                                Anda diundang untuk mengisi
+                                formulir kami!</h1>
+                            <p style="color:#666666; font-family: Arial, sans-serif; font-size:16px;">
+                                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores sequi, dolor totam
+                                repellendus recusandae velit hic laudantium eligendi exercitationem doloremque
+                                voluptatem excepturi enim dolores voluptate est accusantium suscipit quasi itaque!
+                            </p>
+                            <a href="#"
+                                style="font-family: Arial, Helvetica, sans-serif; background-color:#28a745; color:#ffffff; padding:10px 20px; text-decoration:none; display:inline-block; border-radius:5px;">
+                                Get Started
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <form class="bg-white p-3 rounded-md" @submit.prevent="submit">
                     <h1 class="text-lg font-semibold">Email Send</h1>
                     <input type="email" name="" id=""
@@ -45,20 +65,26 @@ const submit = () => {
                             <h1>Pilih Survey</h1>
                             <Dropdown width="96" align="left">
                                 <template #trigger>
-                                    <input type="text" name="" id="" v-model="search" @click="search = ''" class="w-full mb-2 border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent  focus:shadow-md"
-                                    placeholder="Search Survey">
+                                    <input type="text" name="" id="" v-model="search" @click="search = ''"
+                                        class="w-full mb-2 border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent  focus:shadow-md"
+                                        placeholder="Search Survey">
                                 </template>
                                 <template #content>
-                                    <div class="cursor-pointer p-2 grid " :class="filteredSurveys.length < 5 ? 'grid-cols-1' : 'grid-cols-2'">
-                                        <div class="w-full  text-gray-700 cursor-pointer rounded-sm hover:bg-gray-200 " v-for="survey in filteredSurveys" @input="isi(survey.title)">
-                                            <input type="radio" name="" :id="'survey_'+survey.id" :value="survey" v-model="form.selectedSurvey" class="hidden w-full">
-                                            <label class="text-sm cursor-pointer block px-2 py-1 h-full" :for="'survey_'+survey.id">{{ survey.title}}</label>
+                                    <div class="cursor-pointer p-2 grid "
+                                        :class="filteredSurveys.length < 5 ? 'grid-cols-1' : 'grid-cols-2'">
+                                        <div class="w-full  text-gray-700 cursor-pointer rounded-sm hover:bg-gray-200 "
+                                            v-for="survey in filteredSurveys" @input="isi(survey.title)">
+                                            <input type="radio" name="" :id="'survey_' + survey.id" :value="survey"
+                                                v-model="form.selectedSurvey" class="hidden w-full">
+                                            <label class="text-sm cursor-pointer block px-2 py-1 h-full"
+                                                :for="'survey_' + survey.id">{{ survey.title }}</label>
                                         </div>
-                                        <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700 ">Tidak Ada Survey Yang Sesuai</p>
-                                    </div>  
+                                        <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700 ">Tidak
+                                            Ada Survey Yang Sesuai</p>
+                                    </div>
                                 </template>
                             </Dropdown>
-                        </div>      
+                        </div>
                     </div>
                     <div class="" v-if="form.selectedSurvey">
                         <h2 class="font-semibold text-black">Pilih Akun</h2>
@@ -69,7 +95,8 @@ const submit = () => {
                                     class="checked:text-primary focus:ring-primary" v-model="form.selectedUser"
                                     :value="user">
                                 <label :for="'user_' + user.id" class="pl-1.5 text-sm">{{ user.name }} {{
-                                    form.selectedSurvey.response.some(res => res.user_id == user.id) ? '(sudah Mengisi)' :
+                                    form.selectedSurvey.response.some(res => res.user_id == user.id) ? '(sudah Mengisi)'
+                                        :
                                         '(Belum Mengisi)'
                                 }}</label>
                             </div>

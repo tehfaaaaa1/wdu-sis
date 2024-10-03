@@ -18,7 +18,6 @@
 
 <script setup>
 import { Link } from '@inertiajs/vue3';
-import { defineEmits } from 'vue';
 const props = defineProps({
     links: {
         type: Object,
