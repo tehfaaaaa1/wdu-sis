@@ -46,7 +46,7 @@ class ResponseController extends Controller
                         'role' =>$res->user->currentTeam,
                         'status' => $res->status,
                         'biodata' => $res->user->biodata,
-                        'mulai'=>$res->created_at->format('H:i:s d-m-Y'),
+                        'start'=>$res->created_at->format('H:i:s d-m-Y'),
                         'submit'=>$res->updated_at->format('H:i:s d-m-Y')
                     ];
                 }),

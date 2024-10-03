@@ -10,7 +10,7 @@ const props = defineProps({
     responses: [Array, Object],
     answer: Array,
     biodata: Object,
-    mulai: Object,
+    start: Object,
     submit: Object
 });
 const project = props.projects[0]
@@ -33,7 +33,7 @@ const checked = (choice, q) => {
                         <h3 class="font-medium">Alamat: {{ props.biodata.alamat }}</h3>
                         <h3 class="font-medium">Nomor Telp: {{ props.biodata.no_hp }}</h3>
                         <h3 class="font-medium">Instansi: {{ props.biodata.instansi }}</h3>
-                        <h3 class="font-medium">Waktu Mulai: {{ props.mulai }}</h3>
+                        <h3 class="font-medium">Waktu Mulai: {{ props.start }}</h3>
                         <h3 class="font-medium">Waktu Submit: {{ props.submit }}</h3>
                     </div>
                 </div>
