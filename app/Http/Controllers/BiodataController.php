@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Cookie;
 use Inertia\Inertia;
 use App\Models\Survey;
 use App\Models\Biodata;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Response;
 
 class BiodataController extends Controller
 {
@@ -91,7 +93,9 @@ class BiodataController extends Controller
             'instansi' => $request->instansi,
             'user_id' => $userId,
         ]);
-
+        if(!$request->cookie('startTime_survey_'.$surveyid.'_user_'.$userId)){
+            Cookie::queue(Cookie::make('startTime_survey_'.$surveyid.'_user_'.$userId, now()));
+        }
         return redirect()->route('submission_surveys', [$clientSlug, $projectSlug, $surveyid])->with('success', 'Bio updated successfully.');
     }
 }

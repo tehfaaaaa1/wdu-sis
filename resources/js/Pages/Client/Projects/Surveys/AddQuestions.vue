@@ -681,7 +681,7 @@ const handleImage = (event, pgindex, qindex) => {
                             <select class="flows-dropdown" v-model="selectedPage"
                                 @change="selectedQuestion = null; selectedNextPage = null">
                                 <option :value="''" disabled>Halaman</option>
-                                <option :value="page" v-for="page in pages">{{ page.name }}</option>
+                                <option :value="page" v-for="page in props.page">{{ page.page_name }}</option>
                             </select>
                         </div>
                         <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
@@ -689,15 +689,15 @@ const handleImage = (event, pgindex, qindex) => {
                             <select class="flows-dropdown" v-model="selectedQuestion">
                                 <option :value="null" disabled>Pertanyaan</option>
                                 <option :value="question"
-                                    v-for="question in selectedPage.question.filter(prop => prop.types == 'Radio')">{{
-                                        question.soal }}</option>
+                                    v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">{{
+                                        question.question_text }}</option>
                             </select>
                         </div>
                         <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
                             Pilihan Jawaban
                             <select class="flows-dropdown" v-model="selectedChoice">
                                 <option :value="''" disabled>Pilihan Jawaban</option>
-                                <option :value="option" v-for="option in selectedQuestion.choices">{{ option.pilih }}
+                                <option :value="option" v-for="option in selectedQuestion.choice">{{ option.value }}
                                 </option>
                             </select>
                         </div>
@@ -706,7 +706,7 @@ const handleImage = (event, pgindex, qindex) => {
                             <select class="flows-dropdown" v-model="selectedNextPage">
                                 <option :value="null" disabled>Tujuan Halaman</option>
                                 <option :value="nextpage"
-                                    v-for="nextpage in pages.filter(page => page != selectedPage)">{{ nextpage.name }}
+                                    v-for="nextpage in props.page.filter(page => page != selectedPage)">{{ nextpage.page_name }}
                                 </option>
                             </select>
                         </div>

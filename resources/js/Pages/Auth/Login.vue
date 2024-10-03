@@ -47,6 +47,10 @@ const submit = () => {
     <Head title="Log in" />
 
     <div class="flex items-center justify-center xl:justify-between p-6 sm:p-0">
+        <div class="xl:block hidden w-1/2 rounded-lg h-[93vh] bg-cover bg-no-repeat bg-bottom border-2 border-gray-300 shadow-2xl"
+            style="background-image: url('/img/wdu-building.jpg')">
+            <!-- <div class="h-full shadow-2xl bg-gradient-to-r from-cyan-500 to-blue-500 brightness-50 opacity-15 p-5"></div> -->
+        </div>
         <AuthenticationCard class="xl:w-1/2">
             <template #logo>
                 <AuthenticationCardLogo />
@@ -105,9 +109,6 @@ const submit = () => {
             </form>
         </AuthenticationCard>
 
-        <div class="xl:block hidden w-1/2 rounded-lg mr-6 h-[93vh] bg-cover bg-no-repeat bg-bottom border-2 border-gray-300 shadow-2xl"
-            style="background-image: url('/img/wdu-building.jpg')">
-            <!-- <div class="h-full shadow-2xl bg-gradient-to-r from-cyan-500 to-blue-500 brightness-50 opacity-15 p-5"></div> -->
-        </div>
+        
     </div>
 </template>

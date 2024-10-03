@@ -222,7 +222,7 @@ class QuestionController extends Controller
                                 for($j = $i + 1;$j<count($choices);$j++){
                                     $intersect = array_intersect($choices[$i], $choices[$j]);
                                     if(!empty($intersect)){
-                                        abort(403, 'ha');
+                                        abort(403, 'ada isian yang sama dalam 1 pertanyaan');
                                     }
                                 }
                             }
@@ -281,7 +281,6 @@ class QuestionController extends Controller
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $id){
-        
         $pageId = $request->page['id'];
         $qId = $request->question['id'];
         $qchoiceId = $request->choice['cId'];

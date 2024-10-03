@@ -135,15 +135,15 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                         :value="answe.answer" disabled class="rounded w-full">
                                                 </div>
                                             </div>
-                                            <div class="flex justify-center mt-2"
-                                                v-if="showAllanswer[ind].q[index].value == false">
+                                            <div class="flex justify-center mt-2" 
+                                                v-if="showAllanswer[ind].q[index].value == false && question.answer.length > 3">
                                                 <button
                                                     class="text-sm text-secondary border-b border-transparent hover:border-secondary transition p-1 focus:border-secondary focus:outline-none"
                                                     type="button" @click="showAllanswer[ind].q[index].value = true">
                                                     Show {{ question.answer.length - 3 }} More
                                                 </button>
                                             </div>
-                                            <div class="flex justify-center mt-2" v-else>
+                                            <div class="flex justify-center mt-2" v-else-if="showAllanswer[ind].q[index].value == true && question.answer.length > 3">
                                                 <button type="button"
                                                     class="text-sm text-secondary border-b border-transparent hover:border-secondary transition p-1 focus:border-secondary focus:outline-none"
                                                     @click="showAllanswer[ind].q[index].value = false">Show

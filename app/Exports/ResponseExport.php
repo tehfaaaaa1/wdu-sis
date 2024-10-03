@@ -68,6 +68,7 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             'Nama Responden',
             'Instansi',
             'Email',
+            'Waktu Mulai',
             'Waktu Submit',
         ], $this->question_text);
     }
@@ -105,13 +106,15 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
         foreach ($groupAnswer as $qId => &$answe) {
             $answe = implode(", ", $answe);
         }
+        // dd($response);
         return array_merge(
             [
                 $this->rownumber,
                 $response->user->biodata->nama_responden,
                 $response->user->biodata->instansi,
                 $response->user->email,
-                Date::dateTimeToExcel($response->created_at)
+                $response->created_at->format('H:i:s d-m-Y'),
+                $response->updated_at->format('H:i:s d-m-Y'),
             ],
             $groupAnswer
         );

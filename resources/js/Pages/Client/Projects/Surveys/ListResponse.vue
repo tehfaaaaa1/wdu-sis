@@ -135,6 +135,7 @@ const getSelectedProvinces = (survey, provinces) => {
                                     <th scope="col" class="px-6 py-3">Nama</th>
                                     <th scope="col" class="px-6 py-3">Email</th>
                                     <th scope="col" class="px-6 py-3">Wilayah/Daerah</th>
+                                    <th scope="col" class="px-6 py-3">Role</th>
                                     <th scope="col" class="px-6 py-3 md:w-1/5 text-center">Action</th>
                                 </tr>
                             </thead>
@@ -152,6 +153,9 @@ const getSelectedProvinces = (survey, provinces) => {
                                     </td>
                                     <td class="px-6 py-4">
                                         {{ responses.user.biodata ? responses.user.biodata.alamat : 'Tidak ada alamat' }}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {{  responses.user.current_team_id== 1 ?    'Regular' : 'Enumerator' }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"
