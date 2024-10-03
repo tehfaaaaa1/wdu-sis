@@ -137,7 +137,7 @@ const submit = () => {
                                         </div>
                                     </div>
                                     <div class="" v-if="question.question_type_id == 4">
-                                        <img :src="'/img/'+question.question_text" class="w-full" alt="Image">
+                                        <img :src="'/img/'+question.question_text" class="" alt="Image">
                                     </div>
                                     
                                     <div class="" v-if="question.question_type_id == 5">

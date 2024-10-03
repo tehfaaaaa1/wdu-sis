@@ -8,7 +8,8 @@ import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import Index from '@/Pages/API/Index.vue';
+import TextEditor from '@/Components/TextEditor.vue';
+
 const props = defineProps({
     surveys: Object,
     projects: Object,
@@ -27,7 +28,7 @@ const showLogicModal = ref(false);
 const openDropdown = ref(false);
 const QuestionOrFlow = ref('question') // 'question' or 'flow'
 // Note: Customize the functions below if needed
-const pages = ref(props.page.map((page) => {
+const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
     page.question.sort((a, b) => a.order - b.order)
     question = page.question.map((item) => {
         let tipe = []
@@ -435,7 +436,7 @@ const handleImage = (event, pgindex, qindex) => {
                         <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                             :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
                             <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                                items-center cursor-move hover:font-semibold">
+                                items-center cursor-grab hover:font-semibold">
                                 <span>{{ item.name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
@@ -451,7 +452,7 @@ const handleImage = (event, pgindex, qindex) => {
                         <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
                             :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
                             <div v-for="item in descType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                                items-center cursor-move hover:font-semibold">
+                                items-center cursor-grab hover:font-semibold">
                                 <span>{{ item.name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
@@ -507,161 +508,173 @@ const handleImage = (event, pgindex, qindex) => {
                 </div>
             </aside>
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page_index">
-                    <div class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative">
-                        <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
-                            class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
-                        <div class="absolute -right-16 z-10 mt-2 origin-top-right">
-                            <button type="button" @click="hapus(page_index)"
-                                class="cursor-pointer block bg-white p-3 rounded-full border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                </svg>
-                            </button>
+                <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
+                    :class="'pb-8 rounded-md'" handle=".handle">
+                    <div class="rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
+                        <div
+                            class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle cursor-grab">
+                            <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
+                                class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
+                            <div class="absolute -right-16 z-10 mt-2 origin-top-right">
+                                <button type="button" @click="hapus(page_index)"
+                                    class="cursor-pointer block bg-white p-3 rounded-full border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-6 text-red-500">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
+                                @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
                         </div>
-                        <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
-                            @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
-                    </div>
-                    <!-- vue draggable : @update:modelValue="logUpdate" -->
-                    <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
-                        :class="'bg-white pb-8 rounded-md'" handle=".handle">
-                        <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
-                            <div class="p-5 gap-2 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor"
-                                    class="size-10 cursor-grab handle border-2 rounded-md border-gray-800">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                                </svg>
-                                <!-- Insert question here -->
-                                <input v-if="item.types[0] != 'Image' && item.types[0] != 'Paragraph' " v-model="item.soal" type="text"
-                                    placeholder="Insert question here" class="text-sm w-full mx-1 rounded-md">
-                                <input v-else-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
-                                    id="file_input" @input="handleImage($event, page_index, index)"
-                                    class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
-                                <textarea v-else-if="item.types[0] == 'Paragraph'" v-model="item.soal" class="text-sm w-full mx-1 rounded-md" name="" id=""/>
+                        <!-- vue draggable : @update:modelValue="logUpdate" -->
+                        <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
+                            :class="'bg-white pb-8 rounded-md'" handle=".handle" :scroll-sensitivity="200">
+                            <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
+                                <div class="p-5 gap-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor"
+                                        class="size-10 cursor-grab handle border-2 rounded-md border-gray-800">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                    </svg>
+                                    <!-- Insert question here -->
+                                    <input v-if="item.types[0] != 'Image' && item.types[0] != 'Paragraph'"
+                                        v-model="item.soal" type="text" placeholder="Insert question here"
+                                        class="text-sm w-full mx-1 rounded-md">
+                                    <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
+                                        id="file_input" @input="handleImage($event, page_index, index)"
+                                        class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
+                                    <div class="w-full" v-if="item.types[0] == 'Paragraph'">
+                                        <TextEditor v-model="item.soal"
+                                            class="h-20 mx-1" name="" :id="'question-text-' + index" />
+                                    </div>
                                     <!-- Question types -->
-                                <Dropdown align="right" width="48" v-if="!item.files">
-                                    <template #trigger>
-                                        <button type="button"
-                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                            <p v-for="type in item.types">
-                                                {{ type ?? 'Question Type' }}
-                                            </p>
-                                            <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                        </button>
-                                    </template>
-                                    <template #content class="">
-                                        <div @click="textQuestion(item)" class="block px-4 py-2 text-sm cursor-pointer">
-                                            Text
-                                        </div>
-                                        <div @click="radioQuestion(item)"
-                                            class="block px-4 py-2 text-sm cursor-pointer">
-                                            Single Choice
-                                        </div>
-                                        <div @click="checkboxQuestion(item)"
-                                            class="block px-4 py-2 text-sm cursor-pointer">
-                                            Multiple Choice
-                                        </div>
-                                        <div class="block border-t border-gray-300 py-2 text-center">
-                                            <input type="checkbox" v-model="item.required" true-value="1"
-                                                false-value="0" :id="'q' + index + '-required'" class="cursor-pointer">
-                                            <label :for="'q' + index + '-required'"
-                                                class="pl-2 cursor-pointer select-none w-full">Required</label>
-                                        </div>
-                                    </template>
-                                </Dropdown>
-                                <!-- delete question -->
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" @click="remove(page, index)"
-                                    class="size-10 text-red-600 cursor-pointer" :class="{ 'size-8': item.files }">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-                            </div>
-
-                            <!-- Required notification -->
-                            <div v-if="item.required == 1" class="px-5 mb-2 text-red-500">* Required</div>
-
-                            <!-- Question Choices -->
-                            <!-- text -->
-                            <div class="px-5" v-for="(text, index) in item.texts" :key="index">
-                                <textarea v-model="text.isi" :name="'text-' + item.id" :id="'text-' + item.id"
-                                    placeholder="Jawaban" class="w-full text-sm rounded-md bg-gray-200" disabled />
-                            </div>
-
-                            <!-- single choice -->
-                            <div class="px-5" v-for="(radio, index) in item.choices" :key="index"
-                                v-if="item.types.includes('Radio')">
-                                <div class="flex items-center mb-2">
-                                    <span class="select-none">O</span>
-                                    <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
-                                        :id="'radio' + (index + 1) + '-q' + (item.id)"
-                                        placeholder="Insert single choice"
-                                        class="text-sm mx-4 block w-1/4 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
-
+                                    <Dropdown align="right" width="48" v-if="!item.files">
+                                        <template #trigger>
+                                            <button type="button"
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                                                <p v-for="type in item.types">
+                                                    {{ type ?? 'Question Type' }}
+                                                </p>
+                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                </svg>
+                                            </button>
+                                        </template>
+                                        <template #content class="">
+                                            <div @click="textQuestion(item)"
+                                                class="block px-4 py-2 text-sm cursor-pointer">
+                                                Text
+                                            </div>
+                                            <div @click="radioQuestion(item)"
+                                                class="block px-4 py-2 text-sm cursor-pointer">
+                                                Single Choice
+                                            </div>
+                                            <div @click="checkboxQuestion(item)"
+                                                class="block px-4 py-2 text-sm cursor-pointer">
+                                                Multiple Choice
+                                            </div>
+                                            <div class="block border-t border-gray-300 py-2 text-center">
+                                                <input type="checkbox" v-model="item.required" true-value="1"
+                                                    false-value="0" :id="'q' + index + '-required'"
+                                                    class="cursor-pointer">
+                                                <label :for="'q' + index + '-required'"
+                                                    class="pl-2 cursor-pointer select-none w-full">Required</label>
+                                            </div>
+                                        </template>
+                                    </Dropdown>
+                                    <!-- delete question -->
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor"
-                                        class="size-6 text-red-600 cursor-pointer" @click="deleteRadio(item, index)">
+                                        stroke-width="1.5" stroke="currentColor" @click="remove(page, index)"
+                                        class="size-10 text-red-600 cursor-pointer" :class="{ 'size-8': item.files }">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
-
                                 </div>
-                                <div class="ml-7"
-                                    v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
-                                    <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
-                                        @click="AddRadioOption(item)">
-                                        Add Options
-                                    </a>
+
+                                <!-- Required notification -->
+                                <div v-if="item.required == 1" class="px-5 mb-2 text-red-500">* Required</div>
+
+                                <!-- Question Choices -->
+                                <!-- text -->
+                                <div class="px-5" v-for="(text, index) in item.texts" :key="index">
+                                    <textarea v-model="text.isi" :name="'text-' + item.id" :id="'text-' + item.id"
+                                        placeholder="Jawaban" class="w-full text-sm rounded-md bg-gray-200" disabled />
+                                </div>
+
+                                <!-- single choice -->
+                                <div class="px-5" v-for="(radio, index) in item.choices" :key="index"
+                                    v-if="item.types.includes('Radio')">
+                                    <div class="flex items-center mb-2">
+                                        <span class="select-none">O</span>
+                                        <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
+                                            :id="'radio' + (index + 1) + '-q' + (item.id)"
+                                            placeholder="Insert single choice"
+                                            class="text-sm mx-4 block w-1/4 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="size-6 text-red-600 cursor-pointer"
+                                            @click="deleteRadio(item, index)">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="ml-7"
+                                        v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
+                                        <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddRadioOption(item)">
+                                            Add Options
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- multiple choice -->
+                                <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index"
+                                    v-if="item.types.includes('Checkbox')">
+                                    <div class="flex items-center mb-2">
+                                        <span class="select-none">&#9634;</span>
+                                        <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
+                                            :id="'checkbox' + (index + 1) + '-q' + (item.id)"
+                                            placeholder="Insert multiple choice here"
+                                            class="text-sm mx-4 rounded-md block w-1/4">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="size-6 text-red-600 cursor-pointer"
+                                            @click="deleteCheckbox(item, index)">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="ml-7"
+                                        v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
+                                        <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddCheckboxOption(item)">
+                                            Add Options
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Image -->
+                                <div class="px-5 flex justify-center" v-for="(image, index) in item.files" :key="index">
+                                    <img v-if="image.files != item.soal" :src="image.files" alt="Preview">
+                                    <img v-else :src="'/img/' + item.soal" alt="Preview Image">
+
                                 </div>
                             </div>
-
-                            <!-- multiple choice -->
-                            <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index"
-                                v-if="item.types.includes('Checkbox')">
-                                <div class="flex items-center mb-2">
-                                    <span class="select-none">&#9634;</span>
-                                    <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
-                                        :id="'checkbox' + (index + 1) + '-q' + (item.id)"
-                                        placeholder="Insert multiple choice here"
-                                        class="text-sm mx-4 rounded-md block w-1/4">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor"
-                                        class="size-6 text-red-600 cursor-pointer" @click="deleteCheckbox(item, index)">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
-
-                                </div>
-                                <div class="ml-7"
-                                    v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
-                                    <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
-                                        @click="AddCheckboxOption(item)">
-                                        Add Options
-                                    </a>
-                                </div>
-                            </div>
-
-                            <!-- Image -->
-                            <div class="px-5 flex justify-center" v-for="(image, index) in item.files" :key="index">
-                                <img v-if="image.files != item.soal" :src="image.files" alt="Preview">
-                                <img v-else :src="'/img/' + item.soal" alt="Preview Image">
-
-                            </div>
-                        </div>
-                    </VueDraggable>
-                    <div class="border border-gray-500 mt-8 mb-3"
-                        v-if="pages.length > 1 && page_index != pages.length - 1"></div>
-                </div>
+                        </VueDraggable>
+                        <div class="border border-gray-500 my-5"
+                            v-if="pages.length > 1 && page_index != pages.length - 1"></div>
+                    </div>
+                </VueDraggable>
             </form>
 
             <DialogModal :show="showLogicModal" @close="showLogicModal = false">
@@ -673,7 +686,8 @@ const handleImage = (event, pgindex, qindex) => {
 
                 <template #content>
                     <div class="border border-gray-300 p-4">
-                        <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!</h3>
+                        <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!
+                        </h3>
                         <h3 class="font-bold mb-2 text-red-500">Jika tidak ada pertanyaan berarti anda belum save</h3>
                         <div class="flows-dropdown-label">
                             Halaman Awal
@@ -688,7 +702,8 @@ const handleImage = (event, pgindex, qindex) => {
                             <select class="flows-dropdown" v-model="selectedQuestion">
                                 <option :value="null" disabled>Pertanyaan</option>
                                 <option :value="question"
-                                    v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">{{
+                                    v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
+                                    {{
                                         question.question_text }}</option>
                             </select>
                         </div>
@@ -705,7 +720,8 @@ const handleImage = (event, pgindex, qindex) => {
                             <select class="flows-dropdown" v-model="selectedNextPage">
                                 <option :value="null" disabled>Tujuan Halaman</option>
                                 <option :value="nextpage"
-                                    v-for="nextpage in props.page.filter(page => page != selectedPage)">{{ nextpage.page_name }}
+                                    v-for="nextpage in props.page.filter(page => page != selectedPage)">{{
+                                        nextpage.page_name }}
                                 </option>
                             </select>
                         </div>
