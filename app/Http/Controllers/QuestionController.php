@@ -6,15 +6,16 @@ use App\Models\Flow;
 use Inertia\Inertia;
 use App\Models\Survey;
 use App\Models\Question;
+use Illuminate\Support\Arr;
 use App\Models\QuestionPage;
 use Illuminate\Http\Request;
 use App\Models\QuestionChoice;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\Unique;
-use Illuminate\Support\Facades\File;
 use PhpParser\Node\Stmt\Break_;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Validation\Rules\Unique;
 use function PHPUnit\Framework\arrayHasKey;
 
 class QuestionController extends Controller
@@ -281,12 +282,15 @@ class QuestionController extends Controller
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $id){
+        if(array_search(null, Arr::except($request->all(), 'flow_id'))){
+            abort(403, 'Missing Flow Data');
+        };
         $pageId = $request->page['id'];
         $qId = $request->question['id'];
-        $qchoiceId = $request->choice['cId'];
+        $qchoiceId = $request->choice['id'];
         $nextOrder = $request->next['order'];   
-        $currentOrder = $request->page['order'];
         $flowID = $request->flow_id;
+        $currentOrder = $request->page['order'];
         $request->validate([
             'name' => 'required|string|max:255'
         ]);

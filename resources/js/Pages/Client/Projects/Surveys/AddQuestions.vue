@@ -318,11 +318,10 @@ const selectedNextPage = ref('')
 const flowName = ref(null)
 const flowId = ref(null)
 const floww = (flow) => {
-    selectedPage.value = pages.value.find(a => a.id == flow.question_page_id)
+    selectedPage.value = props.page.find(p => p.id == flow.question_page_id)
     selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
-    selectedChoice.value = selectedQuestion.value.choices.find(c => c.cId == flow.question_choice_id)
-    selectedNextPage.value = pages.value.find(a => a.order == flow.next_page_order)
-    console.log(selectedNextPage.value)
+    selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
+    selectedNextPage.value = props.page.find(a => a.order == flow.next_page_order)
     flowName.value = flow.flow_name
     flowId.value = flow.id
 }
@@ -674,8 +673,8 @@ const handleImage = (event, pgindex, qindex) => {
 
                 <template #content>
                     <div class="border border-gray-300 p-4">
-                        <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!
-                        </h3>
+                        <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!</h3>
+                        <h3 class="font-bold mb-2 text-red-500">Jika tidak ada pertanyaan berarti anda belum save</h3>
                         <div class="flows-dropdown-label">
                             Halaman Awal
                             <select class="flows-dropdown" v-model="selectedPage"
