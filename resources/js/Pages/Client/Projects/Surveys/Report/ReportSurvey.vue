@@ -9,7 +9,9 @@ const props = defineProps({
     page: Array,
     responses: [Array, Object],
     answer: Array,
-    biodata: Object
+    biodata: Object,
+    mulai: Object,
+    submit: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
@@ -31,6 +33,8 @@ const checked = (choice, q) => {
                         <h3 class="font-medium">Alamat: {{ props.biodata.alamat }}</h3>
                         <h3 class="font-medium">Nomor Telp: {{ props.biodata.no_hp }}</h3>
                         <h3 class="font-medium">Instansi: {{ props.biodata.instansi }}</h3>
+                        <h3 class="font-medium">Waktu Mulai: {{ props.mulai }}</h3>
+                        <h3 class="font-medium">Waktu Submit: {{ props.submit }}</h3>
                     </div>
                 </div>
                 <div class="border w-full border-gray-400 my-6"></div>
@@ -68,6 +72,12 @@ const checked = (choice, q) => {
                                                 <input v-if="answe.question_id == question.id" type="text"
                                                     :value="answe.answer" disabled class="rounded w-full">
                                             </div>
+                                        </div>
+                                        <div v-if="question.question_type_id == 4">
+                                            <img :src="'/img/'+question.question_text"/>
+                                        </div>
+                                        <div v-if="question.question_type_id == 5">
+                                            <p>{{ question.question_text }}</p>
                                         </div>
                                     </div>
                                 </div>

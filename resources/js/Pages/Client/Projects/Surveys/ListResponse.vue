@@ -77,7 +77,6 @@ const getSelectedProvinces = (survey, provinces) => {
 
     return { list: provinceList, total: totalTargetResponse };
 };
-
 </script>
 
 <template>
@@ -92,9 +91,8 @@ const getSelectedProvinces = (survey, provinces) => {
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <div class="flex justify-between items-center w-full">
-                                <h2 class="font-semibold text-lg">Summary</h2>
-                                <NavLinkBlue :href="route('allreport', [clientSlug, projectSlug, props.surveys.id])"
-                                    class="bg-secondary text-white">
+                                <h2 class="font-semibold text-lg"> Summary    </h2>
+                                <NavLinkBlue :href="route('allreport', [clientSlug, projectSlug, props.surveys.id])" class="bg-secondary text-white">
                                     Lihat Statistik
                                 </NavLinkBlue>
                             </div>
@@ -131,7 +129,6 @@ const getSelectedProvinces = (survey, provinces) => {
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 sm:table-auto">
                             <thead class="text-xs text-white uppercase bg-primary">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 w-1/12">No.</th>
                                     <th scope="col" class="px-6 py-3">Nama</th>
                                     <th scope="col" class="px-6 py-3">Email</th>
                                     <th scope="col" class="px-6 py-3">Wilayah/Daerah</th>
@@ -142,9 +139,6 @@ const getSelectedProvinces = (survey, provinces) => {
                             <tbody>
                                 <tr v-for="(responses, index) in response" :key="index"
                                     class="bg-white border-b hover:bg-gray-50">
-                                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                        {{ index + 1 }}
-                                    </td>
                                     <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">
                                         {{ responses.user.name }}
                                     </td>
@@ -154,8 +148,8 @@ const getSelectedProvinces = (survey, provinces) => {
                                     <td class="px-6 py-4">
                                         {{ responses.user.biodata ? responses.user.biodata.alamat : 'Tidak ada alamat' }}
                                     </td>
-                                    <td class="px-6 py-4">
-                                        {{  responses.user.current_team_id== 1 ?    'Regular' : 'Enumerator' }}
+                                    <td class="px-6 py-4">    
+                                        {{  responses.role.name == 'Default User' ? 'Regular' : responses.role.name == 'Enumerator' ?'Enumerator' : 'Bukan Keduanya' }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <a :href="route('report_surveys', [clientSlug, projectSlug, props.surveys.id, responses.id])"

@@ -223,7 +223,7 @@ class QuestionController extends Controller
                                 for($j = $i + 1;$j<count($choices);$j++){
                                     $intersect = array_intersect($choices[$i], $choices[$j]);
                                     if(!empty($intersect)){
-                                        abort(403, 'ada isian yang sama dalam 1 pertanyaan');
+                                        abort(403, 'ada pilihan yang sama dalam 1 pertanyaan');
                                     }
                                 }
                             }
@@ -239,7 +239,7 @@ class QuestionController extends Controller
                 );
                 $saveQuestion->question_page_id =  $savePage->id;
                 $saveQuestion->required = $questionData['required'] ?? 0;
-                $saveQuestion->order = $index+1;
+                $saveQuestion->order = $index + 1;
                 $saveQuestion->question_text = $questionData['soal'];
                 $saveQuestion->question_type_id = $questionType;
                 $saveQuestion->save();

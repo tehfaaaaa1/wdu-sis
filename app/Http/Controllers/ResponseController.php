@@ -28,7 +28,7 @@ class ResponseController extends Controller
         $cities = City::all();
         $regencies = Regency::all();
         $provinceTargets = json_decode($survey->province_targets, true);
-
+        
         return Inertia::render( 
             'Client/Projects/Surveys/ListResponse',
             [
@@ -43,8 +43,11 @@ class ResponseController extends Controller
                         'user_id' => $res->user_id,
                         'survey_id' => $res->survey_id,
                         'user' => $res->user,
+                        'role' =>$res->user->currentTeam,
                         'status' => $res->status,
-                        'biodata' => $res->user->biodata
+                        'biodata' => $res->user->biodata,
+                        'mulai'=>$res->created_at->format('H:i:s d-m-Y'),
+                        'submit'=>$res->updated_at->format('H:i:s d-m-Y')
                     ];
                 }),
                 'province_targets' => $provinceTargets,
@@ -90,6 +93,8 @@ class ResponseController extends Controller
                 'clients' => $client,
                 'page' => $formattedPage,
                 'responses' => $response,
+                'mulai' => $response->created_at->format('H:i:s d-m-Y'),
+                'submit' => $response->updated_at->format('H:i:s d-m-Y'),
                 'answer' => $answers,
                 'biodata' => $bio,
             ]
