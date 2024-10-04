@@ -23,7 +23,7 @@ const toolbarOptions = {
         ],
     },
     theme: 'snow',
-    formats: ["bold", "underline", "header", "italic", "link"],
+    formats: ["bold", "underline", "header", "italic", "link", "list"],
     placeholder: "Type something in here!",
 }
 const emit = defineEmits(['update:modelValue']);
