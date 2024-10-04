@@ -48,75 +48,10 @@ const totalTargetResponse = ref(0);
 const selectedSurvey = ref(null);
 
 const filledProvinceCheck = ref(null);
-// bar chart
-const cityAndRegenciesPieChartData = (selectedSurvey, provinces) => {
-    if (!selectedSurvey || !selectedSurvey.province_targets) {
-        console.log('chart No survey or province targets available.');
-        return;
-    }
-
-    let provinceTargets;
-    try {
-        provinceTargets = typeof selectedSurvey.province_targets === 'string'
-            ? JSON.parse(selectedSurvey.province_targets)
-            : selectedSurvey.province_targets;
-        console.log('chart Parsed province targets:', provinceTargets);
-    } catch (error) {
-        console.error('chart Error parsing province_targets:', error);
-    }
-
-    const provinceData = [];
-    const cityData = [];
-    const regencyData = [];
-
-    provinceTargets.forEach(target => {
-        if (target.province_id && target.target_response) {
-            const targetResponse = parseInt(target.target_response, 10);
-            if (!isNaN(targetResponse)) {
-                const province = provinces.find(p => p.id === target.province_id);
-                const provinceName = province ? province.name : `Province ${target.province_id}`;
-                provinceData.push({
-                    province_name: provinceName,
-                    response: targetResponse,
-                });
-            }
-        }
-
-        if (target.cities && Array.isArray(target.cities)) {
-            target.cities.forEach(city => {
-                if (city.city_id && city.target_response_city) {
-                    const cityTargetResponse = parseInt(city.target_response_city, 10);
-                    if (!isNaN(cityTargetResponse)) {
-                        cityData.push({
-                            city_id: city.city_id,
-                            response: cityTargetResponse,
-                        });
-                    }
-                }
-            });
-        }
-
-        if (target.regencies && Array.isArray(target.regencies)) {
-            target.regencies.forEach(regency => {
-                if (regency.regency_id && regency.target_response_regency) {
-                    const regencyTargetResponse = parseInt(regency.target_response_regency, 10);
-                    if (!isNaN(regencyTargetResponse)) {
-                        regencyData.push({
-                            regency_id: regency.regency_id,
-                            response: regencyTargetResponse,
-                        });
-                    }
-                }
-            });
-        }
-
-        console.log('bar city data', provinceData, cityData);
-        console.log('bar regency data', provinceData, regencyData);
-    });
-};
 
 
-// pie chart
+
+// pie chart and bar chart
 const canvas = ref(null);
 let chartInstance = null;
 
@@ -134,6 +69,91 @@ const BackgroundColors = [
     '#FF6633', '#336633', '#FF9966', '#6699FF', '#FF6699'   
 ];
 
+// bar chart
+const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
+    if (!selectedSurvey || !selectedSurvey.province_targets) {
+        return {
+            labels: [],
+            datasets: [
+                { label: 'Cities', backgroundColor: [], data: [] },
+                { label: 'Regencies', backgroundColor: [], data: [] }
+            ]
+        };
+    }
+
+    let provinceTargets;
+    try {
+        provinceTargets = typeof selectedSurvey.province_targets === 'string'
+            ? JSON.parse(selectedSurvey.province_targets)
+            : selectedSurvey.province_targets;
+    } catch (error) {
+        return {
+            labels: [],
+            datasets: [
+                { label: 'Cities', backgroundColor: [], data: [] },
+                { label: 'Regencies', backgroundColor: [], data: [] }
+            ]
+        };
+    }
+
+    const cityLabels = [];
+    const regencyLabels = [];
+    const cityData = [];
+    const regencyData = [];
+    let chartTitle = 'Unknown Province';
+
+    provinceTargets.forEach(target => {
+        if (target.province_id) {
+            const province = provinces.find(p => p.id === target.province_id);
+            chartTitle = province ? province.name : `Province ${target.province_id}`;
+
+            if (target.cities && Array.isArray(target.cities)) {
+                target.cities.forEach(city => {
+                    if (city.city_id && city.target_response_city) {
+                        const cityTargetResponse = parseInt(city.target_response_city, 10);
+                        if (!isNaN(cityTargetResponse)) {
+                            cityLabels.push(`City ${city.city_id}`);
+                            cityData.push(cityTargetResponse);
+                        }
+                    }
+                });
+            }
+
+            if (target.regencies && Array.isArray(target.regencies)) {
+                target.regencies.forEach(regency => {
+                    if (regency.regency_id && regency.target_response_regency) {
+                        const regencyTargetResponse = parseInt(regency.target_response_regency, 10);
+                        if (!isNaN(regencyTargetResponse)) {
+                            regencyLabels.push(`Regency ${regency.regency_id}`);
+                            regencyData.push(regencyTargetResponse);
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    const labels = [...cityLabels, ...regencyLabels];
+
+    return {
+        chartTitle,
+        labels,
+        datasets: [
+            {
+                label: 'Cities',
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                data: cityData,
+            },
+            {
+                label: 'Regencies',
+                backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                data: regencyData,
+            }
+        ],
+    };
+};
+
+// pie data
 const prepareProvincePieChartData = (selectedSurvey, provinces) => {
     if (!selectedSurvey || !selectedSurvey.province_targets) {
         return { labels: [], datasets: [{ label: 'No Data', backgroundColor: [], data: [] }] };
@@ -237,31 +257,45 @@ onMounted(() => {
     selectedSurvey.value = props.surveys.find(survey => survey.id === surveyId);
 
     if (selectedSurvey.value) {
-        console.log('Selected Survey:', selectedSurvey.value);
-        colorProvinces(selectedSurvey.value);
+        const chartData = cityAndRegencyBarChartData(selectedSurvey.value, props.provinces);
 
-        const pieChartData = prepareProvincePieChartData(selectedSurvey.value, props.provinces);
-
-        if (chartInstance) {
-            chartInstance.destroy();
-        }
-
-        Chart.register(ChartDataLabels);
-
-        if (canvas.value && pieChartData) {
-            chartInstance = new Chart(canvas.value, {
-                type: 'pie',
-                data: pieChartData,
-                options: pieChartOptions,
-                plugins: [ChartDataLabels], 
-            });
+        if (chartData) {
+            barChartData.value = chartData;
+            chartOptions.value = {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: {
+                        display: true,
+                        text: chartData.chartTitle,
+                    }
+                }
+            };
         }
     } else {
         console.warn('No survey found for the given ID.');
     }
-
-    attachClickEvents();
 });
+
+function createOrUpdatePieChart(pieChartData) {
+    if (!canvas.value || !pieChartData) {
+        console.warn('Pie chart cannot be created, missing canvas or data.');
+        return;
+    }
+
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    Chart.register(ChartDataLabels);
+    
+    chartInstance = new Chart(canvas.value, {
+        type: 'pie',
+        data: pieChartData,
+        options: pieChartOptions,
+        plugins: [ChartDataLabels],
+    });
+}
 
 
 function getSurveyIdFromRoute() {
@@ -742,6 +776,7 @@ watch(() => selectedSurvey, (newSurvey) => {
                                     <PieChart :chartData="prepareProvincePieChartData(selectedSurvey, provinces)" :options="pieChartOptions" />
                                 </div>
                             </div>
+                            <BarChart :chartData="cityAndRegencyBarChartData(selectedSurvey, provinces)" :options="pieChartOptions" />
                         </div>
                     </div>
                 </div>
