@@ -48,6 +48,73 @@ const totalTargetResponse = ref(0);
 const selectedSurvey = ref(null);
 
 const filledProvinceCheck = ref(null);
+// bar chart
+const cityAndRegenciesPieChartData = (selectedSurvey, provinces) => {
+    if (!selectedSurvey || !selectedSurvey.province_targets) {
+        console.log('chart No survey or province targets available.');
+        return;
+    }
+
+    let provinceTargets;
+    try {
+        provinceTargets = typeof selectedSurvey.province_targets === 'string'
+            ? JSON.parse(selectedSurvey.province_targets)
+            : selectedSurvey.province_targets;
+        console.log('chart Parsed province targets:', provinceTargets);
+    } catch (error) {
+        console.error('chart Error parsing province_targets:', error);
+    }
+
+    const provinceData = [];
+    const cityData = [];
+    const regencyData = [];
+
+    provinceTargets.forEach(target => {
+        if (target.province_id && target.target_response) {
+            const targetResponse = parseInt(target.target_response, 10);
+            if (!isNaN(targetResponse)) {
+                const province = provinces.find(p => p.id === target.province_id);
+                const provinceName = province ? province.name : `Province ${target.province_id}`;
+                provinceData.push({
+                    province_name: provinceName,
+                    response: targetResponse,
+                });
+            }
+        }
+
+        if (target.cities && Array.isArray(target.cities)) {
+            target.cities.forEach(city => {
+                if (city.city_id && city.target_response_city) {
+                    const cityTargetResponse = parseInt(city.target_response_city, 10);
+                    if (!isNaN(cityTargetResponse)) {
+                        cityData.push({
+                            city_id: city.city_id,
+                            response: cityTargetResponse,
+                        });
+                    }
+                }
+            });
+        }
+
+        if (target.regencies && Array.isArray(target.regencies)) {
+            target.regencies.forEach(regency => {
+                if (regency.regency_id && regency.target_response_regency) {
+                    const regencyTargetResponse = parseInt(regency.target_response_regency, 10);
+                    if (!isNaN(regencyTargetResponse)) {
+                        regencyData.push({
+                            regency_id: regency.regency_id,
+                            response: regencyTargetResponse,
+                        });
+                    }
+                }
+            });
+        }
+
+        console.log('bar city data', provinceData, cityData);
+        console.log('bar regency data', provinceData, regencyData);
+    });
+};
+
 
 // pie chart
 const canvas = ref(null);
@@ -69,7 +136,6 @@ const BackgroundColors = [
 
 const prepareProvincePieChartData = (selectedSurvey, provinces) => {
     if (!selectedSurvey || !selectedSurvey.province_targets) {
-        console.error('pie Selected survey or province_targets is missing.');
         return { labels: [], datasets: [{ label: 'No Data', backgroundColor: [], data: [] }] };
     }
 
