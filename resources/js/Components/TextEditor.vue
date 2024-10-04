@@ -1,43 +1,27 @@
 <template>
-
-    <div ref="editor"></div>
-
+    <QuillyEditor ref="editor" v-model="model" :options="toolbarOptions" />
 </template>
-<script setup>
+<script setup lang="ts">
 import Quill from 'quill';
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import { onMounted, ref, defineEmits } from 'vue';
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.snow.css';
+import { QuillyEditor } from 'vue-quilly';
+import { onMounted, ref } from 'vue';
 
-const props = defineProps({
-    modelValue: { type: String, default: '' }
-})
-const editor = ref(null);
 const toolbarOptions = {
+    theme: 'snow', // If you need Quill theme
     modules: {
-        toolbar: [
-            [{ header: [1, 2, false] }],
-            ['bold', 'italic', 'underline'],
-            [{ list: 'ordered' }, { list: 'bullet' }],
-            ['clean'],  [{ 'indent': '-1'}, { 'indent': '+1' }],
-            [{ 'color': [] }, { 'background': [] }], 
-            [{ 'align': [] }],
-        ],
+        toolbar: true,
     },
-    theme: 'snow',
-    formats: ["bold", "underline", "header", "italic", "link", "list", "indent", "color", "background", "align"],
-    placeholder: "Type something in here!",
+    placeholder: 'Insert text here...',
+    readOnly: false
 }
-const emit = defineEmits(['update:modelValue']);
+const editor = ref<InstanceType<typeof QuillyEditor>>()
+const model = ref<string>('<p>Hello Quilly!</p>')
+// Quill instance
+let quill: Quill | null = null
 onMounted(() => {
-    const quill = new Quill(editor.value, { ...toolbarOptions });
-    quill.root.innerHTML = props.modelValue;
-
-    quill.on('text-change', function () {
-        
-        emit('update:modelValue', quill.getText() ? quill.root.innerHTML : '');
-    })
-
-    // currentValue = props.modelValue;
+    quill = editor.value?.initialize(Quill)!
 })
+
 </script>

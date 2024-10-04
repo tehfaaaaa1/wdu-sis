@@ -93,8 +93,9 @@ const showAllanswer = ref(props.page.map((p) => ({
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                     :key="index">
                                     <div class="block mb-2.5">
-                                        <div class="font-semibold flex gap-x-1" v-if="question.question_type_id <=3">
-                                            {{ index + 1 }}. <label v-html="question.question_text"></label>{{ ' (' +responses.length + ' Response)' }}
+                                        <div class="font-semibold flex gap-x-1" v-if="question.question_type_id <= 3">
+                                            {{ index + 1 }}. <label v-html="question.question_text"
+                                                class="output"></label>{{ ' (' + responses.length + ' Response)' }}
                                         </div>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2" class="flex gap-x-10">
@@ -125,9 +126,10 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                 :chart-options="chartOptions" />
                                         </div>
                                         <div v-if="question.question_type_id == 4">
-                                            <img :src="'/img/'+question.question_text"/>
+                                            <img :src="'/img/' + question.question_text" />
                                         </div>
-                                        <div class=""v-if="question.question_type_id ==5" v-html="question.question_text"></div>
+                                        <div class="output" v-if="question.question_type_id == 5"
+                                            v-html="question.question_text"></div>
                                         <!-- Handling textarea for question type 1 -->
                                         <div v-if="question.question_type_id == 1">
                                             <div class="px-5 mt-2 " v-for="(answe, Aindex) in question.answer"
@@ -138,7 +140,7 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                         :value="answe.answer" disabled class="rounded w-full">
                                                 </div>
                                             </div>
-                                            <div class="flex justify-center mt-2" 
+                                            <div class="flex justify-center mt-2"
                                                 v-if="showAllanswer[ind].q[index].value == false && question.answer.length > 3">
                                                 <button
                                                     class="text-sm text-secondary border-b border-transparent hover:border-secondary transition p-1 focus:border-secondary focus:outline-none"
@@ -146,7 +148,8 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                     Show {{ question.answer.length - 3 }} More
                                                 </button>
                                             </div>
-                                            <div class="flex justify-center mt-2" v-else-if="showAllanswer[ind].q[index].value == true && question.answer.length > 3">
+                                            <div class="flex justify-center mt-2"
+                                                v-else-if="showAllanswer[ind].q[index].value == true && question.answer.length > 3">
                                                 <button type="button"
                                                     class="text-sm text-secondary border-b border-transparent hover:border-secondary transition p-1 focus:border-secondary focus:outline-none"
                                                     @click="showAllanswer[ind].q[index].value = false">Show
@@ -163,3 +166,23 @@ const showAllanswer = ref(props.page.map((p) => ({
         </main>
     </AppLayout>
 </template>
+<style>
+.output ul,
+.output ol {
+    padding-left: 20px;
+    /* Indentation for lists */
+}
+
+.output ol {
+    list-style-type: decimal;
+}
+
+.output ul {
+    list-style-type: disc;
+}
+
+.output li {
+    margin-bottom: 5px;
+    /* Space between list items */
+}
+</style>

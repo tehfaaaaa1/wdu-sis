@@ -108,7 +108,7 @@ const submit = () => {
                         <div class="p-5 flex w-full">
                             <form @submit.prevent="submit" class="w-full">
                                 <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
-                                    <div v-if="question.question_type_id <=3" class="flex gap-x-1"> {{ qIndex + 1 }}. <label v-html="question.question_text"></label></div>
+                                    <div v-if="question.question_type_id <=3" class="flex gap-x-1"> {{ qIndex + 1 }}. <label v-html="question.question_text" class="output"></label></div>
                                     <!-- Handling radio inputs for question type 2 -->
                                     <div v-if="question.question_type_id == 2">
                                         <div v-for="(list, i) in question.choice" :key="i">
@@ -140,7 +140,7 @@ const submit = () => {
                                         <img :src="'/img/'+question.question_text" class="" alt="Image">
                                     </div>
                                     
-                                    <div v-html="question.question_text" class="" v-if="question.question_type_id == 5">
+                                    <div v-html="question.question_text" class="output" v-if="question.question_type_id == 5">
                                     </div>
 
                                     <!-- Handling textarea for question type 1 -->
@@ -169,3 +169,20 @@ const submit = () => {
         </main>
     </div>
 </template>
+
+<style>
+.output ul, .output ol {
+  padding-left: 20px; /* Indentation for lists */
+}
+
+.output ol {
+    list-style-type: decimal;
+}
+.output ul {
+    list-style-type: disc;
+}
+
+.output li {
+  margin-bottom: 5px; /* Space between list items */
+}
+</style>

@@ -367,10 +367,11 @@ const handleImage = (event, pgindex, qindex) => {
         reader.readAsDataURL(input.files[0])
     }
 }
+
+// # TEXT EDITOR
 const page_index = ref(null);
 const qIndex = ref(null);
 const textEditor = ref(false);
-console.log(pages.value[0])
 const openTextEditor = (pgindex, q_index) => {
     textEditor.value = !textEditor.value
     page_index.value = pgindex
@@ -520,9 +521,9 @@ const openTextEditor = (pgindex, q_index) => {
             </aside>
 
             <!-- Might try to make this as component -->
-            <div v-show="textEditor" class="fixed inset-0 z-30" @click="textEditor = false"
+            <div v-show="textEditor" class="fixed inset-0 z-20" @click="textEditor = false"
                 @focusout="textEditor = false" />
-            <aside class="w-[26%] min-h-fit sticky top-11 bg-white z-40 float-right p-3 pt-0" v-if="textEditor">
+            <aside class="w-[26%] min-h-fit sticky top-11 bg-white z-30 float-right p-3 pt-0" v-if="textEditor">
                 <!-- Isi text editor sidebar -->
                 <div class="" v-show="textEditor">
                     <h2 class="bg-white text-center font-semibold py-2.5 select-none w-full">
@@ -566,8 +567,8 @@ const openTextEditor = (pgindex, q_index) => {
                                     </svg>
                                     <!-- Insert question here -->
                                     <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
-                                        v-html="item.soal || ''" type="text" placeholder="Insert question here"
-                                        class="text-sm w-full mx-1 rounded-md cursor-pointer" />
+                                        v-html="item.soal" type="text" placeholder="Insert question here"
+                                        class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]" />
                                     <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                         id="file_input" @input="handleImage($event, page_index, index)"
                                         class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
@@ -614,7 +615,7 @@ const openTextEditor = (pgindex, q_index) => {
                                     <!-- delete question -->
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" @click="remove(page, index)"
-                                        class="size-10 text-red-600 cursor-pointer z-30"
+                                        class="size-10 text-red-600 cursor-pointer z-10"
                                         :class="{ 'size-8': item.files }">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -727,8 +728,8 @@ const openTextEditor = (pgindex, q_index) => {
                                 <option :value="null" disabled>Pertanyaan</option>
                                 <option :value="question"
                                     v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
-                                    {{
-                                        question.question_text }}</option>
+                                    {{ question.question_text }}
+                                </option>
                             </select>
                         </div>
                         <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
@@ -829,5 +830,26 @@ const openTextEditor = (pgindex, q_index) => {
     justify-content: space-between;
     margin-bottom: 0.75rem;
     font-size: 1rem;
+}
+</style>
+
+<style>
+.output ul,
+.output ol {
+    padding-left: 20px;
+    /* Indentation for lists */
+}
+
+.output ol {
+    list-style-type: decimal;
+}
+
+.output ul {
+    list-style-type: disc;
+}
+
+.output li {
+    margin-bottom: 5px;
+    /* Space between list items */
 }
 </style>
