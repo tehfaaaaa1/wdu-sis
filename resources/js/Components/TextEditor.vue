@@ -18,12 +18,14 @@ const toolbarOptions = {
         toolbar: [
             [{ header: [1, 2, false] }],
             ['bold', 'italic', 'underline'],
-            // ['image'],
             [{ list: 'ordered' }, { list: 'bullet' }],
+            ['clean'],  [{ 'indent': '-1'}, { 'indent': '+1' }],
+            [{ 'color': [] }, { 'background': [] }], 
+            [{ 'align': [] }],
         ],
     },
     theme: 'snow',
-    formats: ["bold", "underline", "header", "italic", "link", "list"],
+    formats: ["bold", "underline", "header", "italic", "link", "list", "indent", "color", "background", "align"],
     placeholder: "Type something in here!",
 }
 const emit = defineEmits(['update:modelValue']);

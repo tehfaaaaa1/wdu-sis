@@ -47,8 +47,8 @@ const checked = (choice, q) => {
                             <form class="w-full">
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                     :key="index">
-                                    <div class="block mb-2.5">
-                                        <p class="font-semibold">{{ index + 1 }}. <label>{{ question.question_text}}</label></p>
+                                    <div class="block mb-2.5" v-if="question.question_type_id <=3">
+                                        <div class="font-semibold flex gap-x-1">{{ index + 1 }}. <label v-html="question.question_text"></label></div>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2">
                                             <div v-for="(list, i) in question.choice" :key="i">
@@ -76,8 +76,7 @@ const checked = (choice, q) => {
                                         <div v-if="question.question_type_id == 4">
                                             <img :src="'/img/'+question.question_text"/>
                                         </div>
-                                        <div v-if="question.question_type_id == 5">
-                                            <p>{{ question.question_text }}</p>
+                                        <div v-html="question.question_text" v-if="question.question_type_id == 5">
                                         </div>
                                     </div>
                                 </div>

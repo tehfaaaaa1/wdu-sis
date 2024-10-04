@@ -53,7 +53,9 @@ class BiodataController extends Controller
         User::where('id', Auth::user()->id)->update([
             'biodata_id' => $biodata->id,
         ]);
-                
+        if(!$request->cookie('startTime_survey_'.$surveyid.'_user_'.$userId)){
+            Cookie::queue(Cookie::make('startTime_survey_'.$surveyid.'_user_'.$userId, now()));
+        }        
         return redirect(route('submission_surveys',[$clientSlug, $projectSlug, $surveyid]));
     }
     

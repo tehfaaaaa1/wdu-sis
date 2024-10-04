@@ -98,7 +98,7 @@ const submit = () => {
         <main>
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="">
-                    <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md select-none">
+                    <div class="text-center text-2xl font-semibold py-4 bg-primary text-white rounded-t-md select-none">
                         <h2>{{ currentPage.page_name }}</h2>
                     </div>
                     <div class="bg-white rounded-b-md">
@@ -108,7 +108,7 @@ const submit = () => {
                         <div class="p-5 flex w-full">
                             <form @submit.prevent="submit" class="w-full">
                                 <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
-                                    <p v-if="question.question_type_id <=3">{{ qIndex + 1 }}. <label>{{ question.question_text }}</label></p>
+                                    <div v-if="question.question_type_id <=3" class="flex gap-x-1"> {{ qIndex + 1 }}. <label v-html="question.question_text"></label></div>
                                     <!-- Handling radio inputs for question type 2 -->
                                     <div v-if="question.question_type_id == 2">
                                         <div v-for="(list, i) in question.choice" :key="i">
@@ -140,8 +140,7 @@ const submit = () => {
                                         <img :src="'/img/'+question.question_text" class="" alt="Image">
                                     </div>
                                     
-                                    <div class="" v-if="question.question_type_id == 5">
-                                        <p>{{ question.question_text }}</p>
+                                    <div v-html="question.question_text" class="" v-if="question.question_type_id == 5">
                                     </div>
 
                                     <!-- Handling textarea for question type 1 -->

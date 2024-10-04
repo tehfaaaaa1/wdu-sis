@@ -93,10 +93,9 @@ const showAllanswer = ref(props.page.map((p) => ({
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                     :key="index">
                                     <div class="block mb-2.5">
-                                        <p class="font-semibold">
-                                            {{ index + 1 }}. <label>{{ question.question_text }}{{ ' (' +
-                                                responses.length + ' Response)' }}</label>
-                                        </p>
+                                        <div class="font-semibold flex gap-x-1" v-if="question.question_type_id <=3">
+                                            {{ index + 1 }}. <label v-html="question.question_text"></label>{{ ' (' +responses.length + ' Response)' }}
+                                        </div>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2" class="flex gap-x-10">
                                             <div class="">
@@ -125,6 +124,10 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                 :key="count(ind, index, question.choice, question.answer, question)"
                                                 :chart-options="chartOptions" />
                                         </div>
+                                        <div v-if="question.question_type_id == 4">
+                                            <img :src="'/img/'+question.question_text"/>
+                                        </div>
+                                        <div class=""v-if="question.question_type_id ==5" v-html="question.question_text"></div>
                                         <!-- Handling textarea for question type 1 -->
                                         <div v-if="question.question_type_id == 1">
                                             <div class="px-5 mt-2 " v-for="(answe, Aindex) in question.answer"

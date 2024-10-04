@@ -83,7 +83,7 @@ const getSelectedProvinces = (survey, provinces) => {
     <AppLayout title="Monitor Survey">
         <main class="min-h-screen">
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="text-center text-3xl font-semibold py-5 bg-ijo-terang text-white rounded-t-md">
+                <div class="text-center text-2xl font-semibold py-4 bg-primary text-white rounded-t-md">
                     <h2>{{ props.surveys.title }}</h2>
                 </div>
                 <div class="bg-white rounded-b-md">
@@ -91,7 +91,7 @@ const getSelectedProvinces = (survey, provinces) => {
                         <p class="text-base text-justify line-clamp-3"></p>
                         <div class="p-5 mt-2 border-2 border-gray-400">
                             <div class="flex justify-between items-center w-full">
-                                <h2 class="font-semibold text-lg"> Summary    </h2>
+                                <h2 class="font-semibold text-lg"> Summary</h2>
                                 <NavLinkBlue :href="route('allreport', [clientSlug, projectSlug, props.surveys.id])" class="bg-secondary text-white">
                                     Lihat Statistik
                                 </NavLinkBlue>
