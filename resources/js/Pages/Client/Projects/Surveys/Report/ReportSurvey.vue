@@ -47,8 +47,9 @@ const checked = (choice, q) => {
                             <form class="w-full">
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                     :key="index">
-                                    <div class="block mb-2.5">
-                                        <p class="font-semibold">{{ index + 1 }}. <label>{{ question.question_text}}</label></p>
+                                    <div class="block mb-2.5" v-if="question.question_type_id <= 3">
+                                        <div class="font-semibold flex gap-x-1">{{ index + 1 }}. <label
+                                                v-html="question.question_text" class="output"></label></div>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2">
                                             <div v-for="(list, i) in question.choice" :key="i">
@@ -74,11 +75,10 @@ const checked = (choice, q) => {
                                             </div>
                                         </div>
                                         <div v-if="question.question_type_id == 4">
-                                            <img :src="'/img/'+question.question_text"/>
+                                            <img :src="'/img/' + question.question_text" />
                                         </div>
-                                        <div v-if="question.question_type_id == 5">
-                                            <p>{{ question.question_text }}</p>
-                                        </div>
+                                        <div v-html="question.question_text" v-if="question.question_type_id == 5"
+                                            class="output"></div>
                                     </div>
                                 </div>
                             </form>
@@ -89,3 +89,23 @@ const checked = (choice, q) => {
         </main>
     </AppLayout>
 </template>
+<style>
+.output ul,
+.output ol {
+    padding-left: 20px;
+    /* Indentation for lists */
+}
+
+.output ol {
+    list-style-type: decimal;
+}
+
+.output ul {
+    list-style-type: disc;
+}
+
+.output li {
+    margin-bottom: 5px;
+    /* Space between list items */
+}
+</style>

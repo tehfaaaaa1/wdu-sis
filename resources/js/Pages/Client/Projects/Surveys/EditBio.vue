@@ -35,7 +35,7 @@ const submit = () => {
     <Head :title="'Biodata'"/>
         <main class="min-h-screen bg-gray-300">
             <div class="mx-auto max-w-xl lg:max-w-2xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="text-center text-3xl font-semibold py-5 bg-primary text-white rounded-t-md">
+                <div class="text-center text-2xl font-semibold py-4 bg-primary text-white rounded-t-md">
                     <h2>Isi Biodata</h2>
                 </div>
                 <div class="bg-white rounded-b-md">

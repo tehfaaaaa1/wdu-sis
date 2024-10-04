@@ -37,7 +37,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
 
     public function query()
     {
-        return Question::query()->where('survey_id', $this->survey_id)->orderBy('question_page_id')->orderBy('order');
+        return Question::query()->where('survey_id', $this->survey_id)->where('question_type_id', '<=', 3 )->orderBy('question_page_id')->orderBy('order');
     }
 
     public function startCell(): string
@@ -54,7 +54,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
     if ($row->question_type_id != 1 && $row->question_type_id <= 3) {
             $hitung = [];
             $mapRows = [
-                [$this->rownumber, $row->question_text], 
+                [$this->rownumber, strip_tags($row->question_text)], 
                 ['', '', 'Response Percent', 'Response Count'],
             ];
             foreach ($choice as $index => $c) {

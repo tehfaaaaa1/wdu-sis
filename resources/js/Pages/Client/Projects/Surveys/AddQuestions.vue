@@ -367,6 +367,16 @@ const handleImage = (event, pgindex, qindex) => {
         reader.readAsDataURL(input.files[0])
     }
 }
+
+// # TEXT EDITOR
+const page_index = ref(null);
+const qIndex = ref(null);
+const textEditor = ref(false);
+const openTextEditor = (pgindex, q_index) => {
+    textEditor.value = !textEditor.value
+    page_index.value = pgindex
+    qIndex.value = q_index
+}
 </script>
 
 <template>
@@ -414,7 +424,9 @@ const handleImage = (event, pgindex, qindex) => {
                     </div>
                 </div>
             </header>
+
             <div class="absolute h-[96.5%] w-full bg-white opacity-50 z-40" v-if="props.surveys.status == 1"></div>
+
             <aside class="sticky bg-gray-200 min-h-full top-11 z-30">
                 <div class="absolute lg:w-1/5">
                     <div class="flex" id="question-or-flow">
@@ -507,6 +519,20 @@ const handleImage = (event, pgindex, qindex) => {
                     </div>
                 </div>
             </aside>
+
+            <!-- Might try to make this as component -->
+            <div v-show="textEditor" class="fixed inset-0 z-20" @click="textEditor = false"
+                @focusout="textEditor = false" />
+            <aside class="w-[26%] min-h-fit sticky top-11 bg-white z-30 float-right p-3 pt-0" v-if="textEditor">
+                <!-- Isi text editor sidebar -->
+                <div class="" v-show="textEditor">
+                    <h2 class="bg-white text-center font-semibold py-2.5 select-none w-full">
+                        Text Editor</h2>
+                    <TextEditor v-model="pages[page_index].question[qIndex].soal" class="h-20 mx-1"
+                        v-if="page_index != null" />
+                </div>
+            </aside>
+
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
                     :class="'pb-8 rounded-md'" handle=".handle">
@@ -540,18 +566,16 @@ const handleImage = (event, pgindex, qindex) => {
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
                                     <!-- Insert question here -->
-                                    <input v-if="item.types[0] != 'Image' && item.types[0] != 'Paragraph'"
-                                        v-model="item.soal" type="text" placeholder="Insert question here"
-                                        class="text-sm w-full mx-1 rounded-md">
+                                    <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
+                                        v-html="item.soal" type="text" placeholder="Insert question here"
+                                        class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]" />
                                     <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                         id="file_input" @input="handleImage($event, page_index, index)"
                                         class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
-                                    <div class="w-full" v-if="item.types[0] == 'Paragraph'">
-                                        <TextEditor v-model="item.soal"
-                                            class="h-20 mx-1" name="" :id="'question-text-' + index" />
-                                    </div>
+
                                     <!-- Question types -->
-                                    <Dropdown align="right" width="48" v-if="!item.files">
+                                    <Dropdown align="right" width="48"
+                                        v-if="!descType.some(obj => obj.types == item.types)">
                                         <template #trigger>
                                             <button type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
@@ -591,7 +615,8 @@ const handleImage = (event, pgindex, qindex) => {
                                     <!-- delete question -->
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" @click="remove(page, index)"
-                                        class="size-10 text-red-600 cursor-pointer" :class="{ 'size-8': item.files }">
+                                        class="size-10 text-red-600 cursor-pointer z-10"
+                                        :class="{ 'size-8': item.files }">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                     </svg>
@@ -703,8 +728,8 @@ const handleImage = (event, pgindex, qindex) => {
                                 <option :value="null" disabled>Pertanyaan</option>
                                 <option :value="question"
                                     v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
-                                    {{
-                                        question.question_text }}</option>
+                                    {{ question.question_text }}
+                                </option>
                             </select>
                         </div>
                         <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
@@ -805,5 +830,26 @@ const handleImage = (event, pgindex, qindex) => {
     justify-content: space-between;
     margin-bottom: 0.75rem;
     font-size: 1rem;
+}
+</style>
+
+<style>
+.output ul,
+.output ol {
+    padding-left: 20px;
+    /* Indentation for lists */
+}
+
+.output ol {
+    list-style-type: decimal;
+}
+
+.output ul {
+    list-style-type: disc;
+}
+
+.output li {
+    margin-bottom: 5px;
+    /* Space between list items */
 }
 </style>

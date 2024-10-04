@@ -34,15 +34,15 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
-        $this->question = $question->toArray();
+        $this->question = $question->where('question_type_id', '<=', 3)->toArray();
         usort($this->question, function ($a, $b) {
             if($a['question_page_id'] == $b['question_page_id']){
                 return $a['order'] >= $b['order'] ;
             }
             return $a['question_page_id'] >= $b['question_page_id'];
         });
-        foreach($this->question as $index =>$quest){
-            $this->question_text[$index] = $quest['question_text'];
+        foreach($this->question as $index => $quest){ 
+                $this->question_text[$index] = strip_tags($quest['question_text']);
         }
         foreach ($question as $q) {
             if ($q->question_type_id == 2 || $q->question_type_id == 3) {
@@ -102,7 +102,6 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
                 return $value != null;
             });
         }
-
         foreach ($groupAnswer as $qId => &$answe) {
             $answe = implode(", ", $answe);
         }
