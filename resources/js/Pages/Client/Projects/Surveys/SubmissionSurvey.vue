@@ -72,8 +72,17 @@ onMounted(() => {
     if (savedForm) {
         form.page = JSON.parse(savedForm);
     }
+    const logicq = form.page[currentIndex.value].question
+    logicq.forEach(function (element, index) {
+        if(form.page[currentIndex.value].answer.some(a => a.radios == element.question_choice_id)){
+            if (element.logic_type == 'showif') {
+               currentPage.value.question[index].logic_type = 'hideif'
+            } else if(element.logic_type == 'hideif'){
+               currentPage.value.question[index].logic_type = 'showif'
+            }
+        } 
+    });
 });
-
 watch(() => form.page,
     debounce((newVal) => {
         localStorage.setItem(storageKey, JSON.stringify(newVal));
@@ -89,6 +98,20 @@ const submit = () => {
         }
     });
 };
+
+const showhide = (pgindex, qindex, value) =>{   
+    let showhideQ = form.page[pgindex].question
+    showhideQ.forEach(function (element, index){
+        if(element.question_choice_id == value){
+            if (element.logic_type == 'showif' ) {
+               currentPage.value.question[index].logic_type = 'hideif'
+            } else if(element.logic_type == 'hideif' ){
+               currentPage.value.question[index].logic_type = 'showif'
+            }
+        } else {}
+    });
+}
+
 </script>
 
 <template>
@@ -108,13 +131,13 @@ const submit = () => {
                         <div class="p-5 flex w-full">
                             <form @submit.prevent="submit" class="w-full">
                                 <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
-                                    <div v-if="question.question_type_id <=3" class="flex gap-x-1"> {{ qIndex + 1 }}. <label v-html="question.question_text" class="output"></label></div>
+                                    <div v-if="question.question_type_id <=3 && question.logic_type != 'showif'" class="flex gap-x-1" > <label v-html="question.question_text" class="output"></label></div>
                                     <!-- Handling radio inputs for question type 2 -->
                                     <div v-if="question.question_type_id == 2">
                                         <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="radio"
                                                 :id="'qradio' + (list.question_id) + '-option' + (i + 1)"
-                                                :value="list.id"
+                                                :value="list.id" @input=" showhide(currentIndex, qIndex, list.id)"
                                                 v-model="form.page[currentIndex].answer[qIndex].radios" />
                                             <label v-if="list.question_id === question.id" class="px-3"
                                                 :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
@@ -144,7 +167,7 @@ const submit = () => {
                                     </div>
 
                                     <!-- Handling textarea for question type 1 -->
-                                    <div v-if="question.question_type_id == 1">
+                                    <div v-if="question.question_type_id == 1 && question.logic_type != 'showif'">
                                         <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
                                             v-model="form.page[currentIndex].answer[qIndex].texts" />
                                     </div>
