@@ -561,7 +561,7 @@ const openTextEditor = (pgindex, q_index) => {
                                 <div class="p-5 gap-2 flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor"
-                                        class="size-10 cursor-grab handle border-2 rounded-md border-gray-800">
+                                        class="cursor-grab handle rounded-md" :class="!descType.some(obj => obj.types == item.types) ? 'w-10 h-8' : 'size-8'">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
@@ -792,6 +792,10 @@ const openTextEditor = (pgindex, q_index) => {
     </AppLayout>
 </template>
 
+<style>
+@import url('/resources/css/quill-overwrite.css');
+</style>
+
 <style scoped>
 .list-questions:empty {
     padding: 1rem;
@@ -830,26 +834,5 @@ const openTextEditor = (pgindex, q_index) => {
     justify-content: space-between;
     margin-bottom: 0.75rem;
     font-size: 1rem;
-}
-</style>
-
-<style>
-.output ul,
-.output ol {
-    padding-left: 20px;
-    /* Indentation for lists */
-}
-
-.output ol {
-    list-style-type: decimal;
-}
-
-.output ul {
-    list-style-type: disc;
-}
-
-.output li {
-    margin-bottom: 5px;
-    /* Space between list items */
 }
 </style>

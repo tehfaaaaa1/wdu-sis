@@ -9,7 +9,7 @@ import { QuillyEditor } from 'vue-quilly';
 import { onMounted, ref } from 'vue';
 
 const toolbarOptions = {
-    theme: 'snow', // If you need Quill theme
+    theme: 'snow',
     modules: {
         toolbar: true,
     },

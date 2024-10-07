@@ -171,18 +171,5 @@ const submit = () => {
 </template>
 
 <style>
-.output ul, .output ol {
-  padding-left: 20px; /* Indentation for lists */
-}
-
-.output ol {
-    list-style-type: decimal;
-}
-.output ul {
-    list-style-type: disc;
-}
-
-.output li {
-  margin-bottom: 5px; /* Space between list items */
-}
+@import url('/resources/css/quill-overwrite.css');
 </style>
