@@ -112,7 +112,7 @@ function cloneQuestion(element) {
             break;
     }
     return {
-        soal: '', texts: texts, choices: choice, types: [element.types], required, lastChoiceIndex: lastCindex
+        soal: '', texts: texts, choices: choice, types: [element.types], required : 0, lastChoiceIndex: lastCindex
     };
 }
 
@@ -377,6 +377,9 @@ const openTextEditor = (pgindex, q_index) => {
     page_index.value = pgindex
     qIndex.value = q_index
 }
+function stripTags(str) {
+    return str.replace(/(<([^>]+)>)/gi, '');
+}
 </script>
 
 <template>
@@ -442,8 +445,7 @@ const openTextEditor = (pgindex, q_index) => {
                         </h1>
                     </div>
                     <div class="" id="add-question" v-if="QuestionOrFlow == 'question'">
-                        <p
-                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full">
+                        <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full">
                             Questions</p>
                         <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                             :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
@@ -528,7 +530,7 @@ const openTextEditor = (pgindex, q_index) => {
                 <div class="" v-show="textEditor">
                     <h2 class="bg-white text-center font-semibold py-2.5 select-none w-full">
                         Text Editor</h2>
-                    <TextEditor v-model="pages[page_index].question[qIndex].soal" class="h-20 mx-1"
+                    <TextEditor v-model="pages[page_index].question[qIndex].soal" class=" h-20 mx-1"
                         v-if="page_index != null" />
                 </div>
             </aside>
@@ -561,14 +563,14 @@ const openTextEditor = (pgindex, q_index) => {
                                 <div class="p-5 gap-2 flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor"
-                                        class="cursor-grab handle rounded-md" :class="!descType.some(obj => obj.types == item.types) ? 'w-10 h-8' : 'size-8'">
+                                        class="size-10 cursor-grab handle border-2 rounded-md border-gray-800">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
                                     <!-- Insert question here -->
                                     <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
-                                        v-html="item.soal" type="text" placeholder="Insert question here"
-                                        class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]" />
+                                        v-html="item.soal" type="text" placeholder="Insert question here" 
+                                        class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]" contenteditable="false" data-text="Insert question here"/>
                                     <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                         id="file_input" @input="handleImage($event, page_index, index)"
                                         class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
@@ -726,9 +728,9 @@ const openTextEditor = (pgindex, q_index) => {
                             Pertanyaan
                             <select class="flows-dropdown" v-model="selectedQuestion">
                                 <option :value="null" disabled>Pertanyaan</option>
-                                <option :value="question"
+                                <option :value="question" class=""
                                     v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
-                                    {{ question.question_text }}
+                                    {{stripTags(question.question_text)  }}
                                 </option>
                             </select>
                         </div>
@@ -792,10 +794,6 @@ const openTextEditor = (pgindex, q_index) => {
     </AppLayout>
 </template>
 
-<style>
-@import url('/resources/css/quill-overwrite.css');
-</style>
-
 <style scoped>
 .list-questions:empty {
     padding: 1rem;
@@ -827,7 +825,10 @@ const openTextEditor = (pgindex, q_index) => {
     width: 30%;
     cursor: pointer;
 }
-
+[contentEditable=false]:empty:not(:focus):before {
+  content: attr(data-text);
+  color: rgba(107,114,128);
+}
 .flows-dropdown-label {
     display: flex;
     align-items: center;
@@ -835,4 +836,26 @@ const openTextEditor = (pgindex, q_index) => {
     margin-bottom: 0.75rem;
     font-size: 1rem;
 }
+</style>
+
+<style>
+.output ul,
+.output ol {
+    padding-left: 20px;
+    /* Indentation for lists */
+}
+
+.output ol {
+    list-style-type: decimal;
+}
+
+.output ul {
+    list-style-type: disc;
+}
+
+.output li {
+    margin-bottom: 5px;
+    /* Space between list items */
+}
+
 </style>
