@@ -112,7 +112,7 @@ function cloneQuestion(element) {
             break;
     }
     return {
-        soal: '', texts: texts, choices: choice, types: [element.types], required : 0, lastChoiceIndex: lastCindex
+        soal: '', texts: texts, choices: choice, types: [element.types], required: 0, lastChoiceIndex: lastCindex
     };
 }
 
@@ -436,7 +436,7 @@ function stripTags(str) {
                         <h1 @click="QuestionOrFlow = 'question'"
                             class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
                             :class="{ 'border-ijo-terang': QuestionOrFlow == 'question' }">
-                            Questions
+                            Question
                         </h1>
                         <h1 @click="QuestionOrFlow = 'flow'"
                             class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
@@ -445,8 +445,8 @@ function stripTags(str) {
                         </h1>
                     </div>
                     <div class="" id="add-question" v-if="QuestionOrFlow == 'question'">
-                        <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full">
-                            Questions</p>
+                        <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
+                            Question Types</p>
                         <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
                             :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
                             <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
@@ -460,8 +460,7 @@ function stripTags(str) {
                             </div>
                         </VueDraggable>
 
-                        <p
-                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full">
+                        <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
                             Descriptions</p>
                         <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
                             :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
@@ -562,15 +561,16 @@ function stripTags(str) {
                             <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
                                 <div class="p-5 gap-2 flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor"
-                                        class="size-10 cursor-grab handle border-2 rounded-md border-gray-800">
+                                        stroke-width="1.5" stroke="currentColor" class="cursor-move handle rounded-md"
+                                        :class="!descType.some(obj => obj.types == item.types) ? 'w-10 h-8' : 'size-8'">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
                                     <!-- Insert question here -->
                                     <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
-                                        v-html="item.soal" type="text" placeholder="Insert question here" 
-                                        class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]" contenteditable="false" data-text="Insert question here"/>
+                                        v-html="item.soal" type="text" placeholder="Insert question here"
+                                        class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"
+                                        contenteditable="false" data-text="Insert question here" />
                                     <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                         id="file_input" @input="handleImage($event, page_index, index)"
                                         class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
@@ -730,7 +730,7 @@ function stripTags(str) {
                                 <option :value="null" disabled>Pertanyaan</option>
                                 <option :value="question" class=""
                                     v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
-                                    {{stripTags(question.question_text)  }}
+                                    {{ stripTags(question.question_text) }}
                                 </option>
                             </select>
                         </div>
@@ -825,10 +825,12 @@ function stripTags(str) {
     width: 30%;
     cursor: pointer;
 }
+
 [contentEditable=false]:empty:not(:focus):before {
-  content: attr(data-text);
-  color: rgba(107,114,128);
+    content: attr(data-text);
+    color: rgba(107, 114, 128);
 }
+
 .flows-dropdown-label {
     display: flex;
     align-items: center;
@@ -839,23 +841,5 @@ function stripTags(str) {
 </style>
 
 <style>
-.output ul,
-.output ol {
-    padding-left: 20px;
-    /* Indentation for lists */
-}
-
-.output ol {
-    list-style-type: decimal;
-}
-
-.output ul {
-    list-style-type: disc;
-}
-
-.output li {
-    margin-bottom: 5px;
-    /* Space between list items */
-}
-
+@import url('/resources/css/quill-overwrite.css');
 </style>
