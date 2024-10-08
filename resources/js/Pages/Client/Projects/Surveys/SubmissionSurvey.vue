@@ -73,8 +73,8 @@ onMounted(() => {
         form.page = JSON.parse(savedForm);
     }
     const logicq = currentPage.value.question
-    logicq.forEach(function (item, indx){
-        if(form.page[currentIndex.value].answer.some(a=> a.radios == item.question_choice_id)){
+    logicq.forEach(function (item, indx) {
+        if (form.page[currentIndex.value].answer.some(a => a.radios == item.question_choice_id)) {
             item.logic_type == 'hide' ? item.logic_type = 'show' : ''
         } else {
             item.logic_type = props.page[currentIndex.value].question[indx].logic_type
@@ -85,7 +85,7 @@ onMounted(() => {
 watch(() => form.page,
     debounce((newVal) => {
         localStorage.setItem(storageKey, JSON.stringify(newVal));
-    }, 300), 
+    }, 300),
     { deep: true }
 );
 
@@ -97,9 +97,18 @@ const submit = () => {
         }
     });
 };
-
-const showhide = (pgindex, qindex, value) =>{   
-    
+const showQuestion = ref(null)
+const showhide = (pgindex, qindex, value) => {
+    let showhideQ = currentPage.value.question
+    showhideQ.forEach(function (element, index) {
+        if (value == element.question_choice_id) {
+            if (element.logic_type == 'hide') {
+                element.logic_type = 'show'
+            }
+        } else {
+            element.logic_type = props.page[currentIndex.value].question[index].logic_type
+        }
+    });
 }
 
 </script>
@@ -111,19 +120,23 @@ const showhide = (pgindex, qindex, value) =>{
         <main>
             <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="">
-                    <div class="text-center text-2xl font-semibold py-4 bg-primary text-white rounded-t-md select-none">
-                        <h2>{{ currentPage.page_name }}</h2>
-                    </div>
+                    <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
                     <div class="bg-white rounded-b-md">
+                        <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">{{ currentPage.page_name }}</h2>
                         <!-- <div class="border-b-2 p-5 border-gray-500">
                                 <p class="text-base text-justify select-none">{{ props.surveys.desc }}</p>
                             </div> -->
                         <div class="p-5 flex w-full">
                             <form @submit.prevent="submit" class="w-full">
-                                <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
-                                    <div v-if="question.question_type_id <=3 && question.question_logic_type_id != 2" class="flex gap-x-1" > <label v-html="question.question_text" class="output"></label></div>
+                                <div v-for="(question, qIndex) in currentPage.question" :key="qIndex"
+                                    class="block mb-4">
+                                    <div v-if="question.question_type_id <= 3 && question.logic_type != 'hide'"
+                                        class="flex gap-x-1">
+                                        <label v-html="question.question_text" class="output"></label>
+                                    </div>
+
                                     <!-- Handling radio inputs for question type 2 -->
-                                    <div v-if="question.question_type_id == 2 && question.question_logic_type_id != 2">
+                                    <div v-if="question.question_type_id == 2">
                                         <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="radio"
                                                 :id="'qradio' + (list.question_id) + '-option' + (i + 1)"
@@ -137,7 +150,7 @@ const showhide = (pgindex, qindex, value) =>{
                                     </div>
 
                                     <!-- Handling checkbox for question type 3 -->
-                                    <div v-if="question.question_type_id == 3 && question.question_logic_type_id != 2">
+                                    <div v-if="question.question_type_id == 3">
                                         <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="checkbox"
                                                 :id="'qcheck' + (list.question_id) + '-option' + (i + 1)"
@@ -149,17 +162,20 @@ const showhide = (pgindex, qindex, value) =>{
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="" v-if="question.question_type_id == 4">
-                                        <img :src="'/img/'+question.question_text" class="" alt="Image">
-                                    </div>
-                                    
-                                    <div v-html="question.question_text" class="output" v-if="question.question_type_id == 5">
-                                    </div>
 
                                     <!-- Handling textarea for question type 1 -->
-                                    <div v-if="question.question_type_id == 1 && question.question_logic_type_id != 2">
+                                    <div v-if="question.question_type_id == 1 && question.logic_type != 'hide'">
                                         <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
                                             v-model="form.page[currentIndex].answer[qIndex].texts" />
+                                    </div>
+
+                                    <!-- Handling Descriptions -->
+                                    <div class="" v-if="question.question_type_id == 4">
+                                        <img :src="'/img/' + question.question_text" class="" alt="Image">
+                                    </div>
+
+                                    <div v-html="question.question_text" class="output"
+                                        v-if="question.question_type_id == 5">
                                     </div>
                                 </div>
                                 <div class="flex justify-between">
