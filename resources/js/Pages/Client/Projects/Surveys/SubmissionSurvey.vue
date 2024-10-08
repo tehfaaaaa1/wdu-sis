@@ -72,14 +72,19 @@ onMounted(() => {
     if (savedForm) {
         form.page = JSON.parse(savedForm);
     }
-    const logicq = currentPage.value.question
-    logicq.forEach(function (item, indx){
-        if(form.page[currentIndex.value].answer.some(a=> a.radios == item.question_choice_id)){
-            item.logic_type == 'hide' ? item.logic_type = 'show' : ''
-        } else {
-            item.logic_type = props.page[currentIndex.value].question[indx].logic_type
+    let showhideQ = currentPage.value.question
+    showhideQ.forEach(function (element, index){
+        if(form.page[currentIndex.value].answer.some(a=> a.radios == element.question_choice_id)){
+            if(element.question_logic_type_id == 2){
+                element.question_logic_type_id = 3
+            } else if(element.question_logic_type_id == 3){
+                element.question_logic_type_id = 2
+            }
+        } else if(form.page[currentIndex.value].answer.some(a=> a.radios == element.question_choice_id)){
+            let ps = props.page[currentIndex.value].question.find(q=> q.id == element.id)
+            element.question_logic_type_id = ps.logic_type
         }
-    })
+    });
 
 });
 watch(() => form.page,
