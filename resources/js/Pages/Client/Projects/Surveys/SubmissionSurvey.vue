@@ -107,8 +107,11 @@ const showhide = (pgindex, qindex, value) => {
     let showhideQ = currentPage.value.question
     showhideQ.forEach(function (element, index) {
         if (value == element.question_choice_id) {
+            // change type show if -> show to display question
             if (element.question_logic_type_id == 2) {
-                element.question_logic_type_id = 3
+                element.question_logic_type_id = 1
+
+            // change  type hide if -> show if to hide question
             } else if (element.question_logic_type_id == 3) {
                 element.question_logic_type_id = 2
             }

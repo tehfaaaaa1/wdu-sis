@@ -550,42 +550,49 @@ watch(() => textEditor.value, () => {
                 enter-to-class="transform opacity-100 translate-x-0" leave-active-class="transition ease-in duration-75"
                 leave-from-class="transform opacity-100 translate-x-0" leave-to-class="transform translate-x-3">
                 <aside
-                    class="w-[50%] h-screen fixed top-0 right-0 bg-gray-200 z-50 py-3 pt-0 border border-gray-300 overflow-y-auto"
+                    class="w-[50%] h-screen fixed top-0 right-0 bg-neutral-200 z-50 py-3 pt-0 border border-gray-300 overflow-y-auto"
                     v-if="textEditor">
                     <!-- Isi text editor sidebar -->
                     <div v-show="textEditor">
                         <div class="bg-white w-full py-2.5 select-none border-b border-gray-300 mb-3">
-                            <h2 class="text-center font-semibold">
-                                Edit Question</h2>
+                            <h2 class="text-center font-semibold text-lg">
+                                Edit Question
+                            </h2>
                         </div>
-                        <div class="m-2" id="edit-question-text">
-                            <h3 class="font-bold mx-3">Text Editor</h3>
-                            <div class="mx-3 my-1.5 bg-white">
+                        <div class="my-2 mx-4 px-3" id="edit-question-text">
+                            <h3 class="font-bold text-base">Text Editor</h3>
+                            <div class="my-1 bg-white">
                                 <TextEditor v-model="pages[page_index].question[qIndex].soal" class=""
                                     v-if="page_index != null" />
                             </div>
                         </div>
-                        <div class="m-2 mt-4" id="edit-question-logic">
-                            <h3 class="font-bold mx-3">Display Logic</h3>
-                            <div class="">
-                                <select v-model="pages[page_index].question[qIndex].logic_type" name="" id="">
+                        <div class="my-2 mx-4 mt-4 px-3" id="edit-question-logic">
+                            <h3 class="font-bold text-base">Display Logic</h3>
+                            <div class="my-1">
+                                <select v-model="pages[page_index].question[qIndex].logic_type" class="cursor-pointer text-sm">
                                     <option v-for="type in logictype" :value="type.id">{{ type.logic_type }}</option>
                                 </select>
                             </div>
-                            <div class="mx-3 my-1.5 bg-white" v-if="pages[page_index].question[qIndex].logic_type > 1">
-                                <label for="logic-question">Pilih Pertanyaan</label>
-                                <select v-model="questionForlogic" id="logic-question">
-                                    <option value="" disabled>Pertanyaan</option>
-                                    <option
+                            <div class="my-2 bg-white block py-3 px-4 border border-gray-300" v-if="pages[page_index].question[qIndex].logic_type > 1">
+                                <div class="flex justify-between items-center text-sm">
+                                    <label for="logic-question">Pilih Pertanyaan</label>
+                                    <select v-model="questionForlogic" id="logic-question" class="w-1/2 text-sm cursor-pointer">
+                                        <option :value="''" disabled>Pertanyaan</option>
+                                        <option
                                         v-for="question in pages[page_index].question.filter(q => q.id != pages[page_index].question[qIndex].id && q.id != null)"
-                                        :value="question">{{ stripTags(question.soal) }}</option>
-                                </select>
-                                <label for="logic-target">Pilih Jawaban</label>
-                                <select v-if="questionForlogic"
-                                    v-model="pages[page_index].question[qIndex].logic_choice" id="logic-target">
-                                    <option v-for="choice in questionForlogic.choices" :value="choice.cId">{{
-                                        choice.pilih }}</option>
-                                </select>
+                                        :value="question">{{ stripTags(question.soal) }}
+                                    </option>
+                                    </select>
+                                </div>
+                                <div class="mt-2 flex justify-between items-center text-sm ">
+                                    <label for="logic-target ">Pilih Jawaban</label>
+                                    <select v-if="questionForlogic" class="w-1/2 text-sm cursor-pointer"
+                                        v-model="pages[page_index].question[qIndex].logic_choice" id="logic-target">
+                                        <option v-for="choice in questionForlogic.choices" :value="choice.cId">
+                                            {{ choice.pilih }}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -635,8 +642,7 @@ watch(() => textEditor.value, () => {
                                         class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
 
                                     <!-- Question types -->
-                                    <Dropdown align="right" width="48"
-                                        v-if="!descType.some(obj => obj.types == item.types)">
+                                    <Dropdown align="right" width="48">
                                         <template #trigger>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor"
@@ -646,22 +652,26 @@ watch(() => textEditor.value, () => {
                                             </svg>
                                         </template>
                                         <template #content class="">
-                                            <div @click="textQuestion(item)" class="px-4 py-2 text-sm cursor-pointer">
-                                                Text
-                                            </div>
-                                            <div @click="radioQuestion(item)" class="px-4 py-2 text-sm cursor-pointer">
-                                                Single Choice
-                                            </div>
-                                            <div @click="checkboxQuestion(item)"
-                                                class="px-4 py-2 text-sm cursor-pointer">
-                                                Multiple Choice
-                                            </div>
-                                            <div class="py-2 text-center border-t border-gray-300">
-                                                <input type="checkbox" v-model="item.required" true-value="1"
-                                                    false-value="0" :id="'q' + index + '-optional'"
-                                                    class="cursor-pointer">
-                                                <label :for="'q' + index + '-optional'"
-                                                    class="pl-2 cursor-pointer select-none w-full text-sm">Optional</label>
+                                            <div class="" v-if="!descType.some(obj => obj.types == item.types)">
+                                                <div @click="textQuestion(item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer">
+                                                    Text
+                                                </div>
+                                                <div @click="radioQuestion(item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer">
+                                                    Single Choice
+                                                </div>
+                                                <div @click="checkboxQuestion(item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer">
+                                                    Multiple Choice
+                                                </div>
+                                                <div class="py-2 text-center border-t border-gray-300">
+                                                    <input type="checkbox" v-model="item.required" true-value="1"
+                                                        false-value="0" :id="'q' + index + '-optional'"
+                                                        class="cursor-pointer">
+                                                    <label :for="'q' + index + '-optional'"
+                                                        class="pl-2 cursor-pointer select-none w-full text-sm">Optional</label>
+                                                </div>
                                             </div>
                                             <!-- delete question -->
                                             <button type="button"
