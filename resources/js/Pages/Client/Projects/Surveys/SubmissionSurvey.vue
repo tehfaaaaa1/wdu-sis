@@ -75,9 +75,7 @@ onMounted(() => {
     const logicq = currentPage.value.question
     logicq.forEach(function (item, indx){
         if(form.page[currentIndex.value].answer.some(a=> a.radios == item.question_choice_id)){
-            if(item.logic_type == 'hide'){
-                item.logic_type = 'show'
-            }
+            item.logic_type == 'hide' ? item.logic_type = 'show' : ''
         } else {
             item.logic_type = props.page[currentIndex.value].question[indx].logic_type
         }
@@ -144,7 +142,6 @@ const showhide = (pgindex, qindex, value) =>{
                                                 :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
                                                 {{ list.value }}
                                             </label>
-                                            {{ form.page[currentIndex].answer[qIndex].radios }}
                                         </div>
                                     </div>
 

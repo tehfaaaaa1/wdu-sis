@@ -93,7 +93,7 @@ class ResponseController extends Controller
                 'clients' => $client,
                 'page' => $formattedPage,
                 'responses' => $response,
-                'mulai' => $response->created_at->format('H:i:s d-m-Y'),
+                'start' => $response->created_at->format('H:i:s d-m-Y'),
                 'submit' => $response->updated_at->format('H:i:s d-m-Y'),
                 'answer' => $answers,
                 'biodata' => $bio,

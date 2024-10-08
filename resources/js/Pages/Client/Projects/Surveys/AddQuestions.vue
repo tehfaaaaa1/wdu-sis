@@ -463,9 +463,8 @@ function stripTags(str) {
                         <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
                             Descriptions</p>
                         <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                            :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
-                            <div v-for="item in descType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                                items-center cursor-grab hover:font-semibold">
+                            :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype"> 
+                            <div v-for="item in descType" :key="item.types"  class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-grab hover:font-semibold">
                                 <span>{{ item.name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
@@ -480,14 +479,14 @@ function stripTags(str) {
                             :class="{ 'border-b': !showAddPage }">
                             Add Page
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-gray-500">
+                                stroke="currentColor" class="size-6 text-gray-500 transition ease-in-out duration-200" :class="showAddPage ? '-rotate-0':'-rotate-90'">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                             </svg>
                         </button>
                         <transition enter-active-class="transition ease-out duration-200"
-                            enter-from-class="transform scale-95" enter-to-class="transform opacity-100 scale-100"
+                            enter-from-class="transform -translate-y-3" enter-to-class="transform opacity-100 translate-y-0"
                             leave-active-class="transition ease-in duration-75"
-                            leave-from-class="transform opacity-100 scale-100" leave-to-class="transform scale-95">
+                            leave-from-class="transform opacity-100 translate-y-0" leave-to-class="transform -translate-y-3">
                             <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"
                                 class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
                                 <input type="text" id="showAddPage" v-model="form.page_name"
@@ -510,6 +509,7 @@ function stripTags(str) {
                                 @click="showLogicModal = true; floww(flow)">
                                 <!-- All created flows will be listed here -->
                                 {{ index + 1 + '. ' + flow.flow_name }}
+   
                             </div>
                         </div>
                         <div class="border-0 border-gray-300 py-2 px-4">
@@ -566,7 +566,7 @@ function stripTags(str) {
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
-                                    <!-- Insert question here -->
+                                    <!-- Insert question here --> 
                                     <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
                                         v-html="item.soal" type="text" placeholder="Insert question here"
                                         class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"
@@ -595,7 +595,7 @@ function stripTags(str) {
                                         <template #content class="">
                                             <div @click="textQuestion(item)"
                                                 class="block px-4 py-2 text-sm cursor-pointer">
-                                                Text
+                                                Text 
                                             </div>
                                             <div @click="radioQuestion(item)"
                                                 class="block px-4 py-2 text-sm cursor-pointer">

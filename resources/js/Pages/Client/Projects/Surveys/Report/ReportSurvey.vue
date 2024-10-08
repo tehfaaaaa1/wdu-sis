@@ -18,7 +18,6 @@ const client = props.clients[0]
 const checked = (choice, q) => {
     return q.answer.some(ans => ans.answer == choice.id && ans.response_id == props.responses.id);
 };
-
 </script>
 
 <template>
