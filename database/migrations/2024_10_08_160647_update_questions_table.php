@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('questions', function (Blueprint $table) {
-            $table->string('logic_type')->nullable();
-            $table->foreignId('question_choice_id')->nullable()->constrained(
-                table: 'question_choices',
-                indexName: 'question_question_choice_id',
+            $table->dropColumn('logic_type');
+            $table->foreignId('question_logic_type_id')->nullable()->constrained(
+                table: 'question_logic_types',
+                indexName: 'question_question_logic_type_id',
             )->onDelete('cascade');
         });
     }
@@ -26,8 +26,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('questions', function (Blueprint $table) {
-           $table->dropColumn('logic_type');
-           $table->dropColumn('question_choice_id');
+            $table->string('logic_type')->nullable();
+            $table->dropColumn('question_logic_type_id');
         });
     }
 };

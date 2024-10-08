@@ -26,6 +26,14 @@ class DatabaseSeeder extends Seeder
         ]);
         DB::table('teams')->insert(
             [
+            'name' => 'Klien',
+            'personal_team' => 1,
+            'user_id' => 1, 
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+        DB::table('teams')->insert(
+            [
             'name' => 'Enumerator',
             'personal_team' => 1,
             'user_id' => 1, 

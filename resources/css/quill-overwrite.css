@@ -11,8 +11,3 @@
 .output ul {
     list-style-type: disc;
 }
-
-.output li {
-    margin-bottom: 5px;
-    /* Space between list items */
-}

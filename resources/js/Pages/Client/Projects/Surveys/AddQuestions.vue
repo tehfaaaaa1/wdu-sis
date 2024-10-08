@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
@@ -16,7 +16,8 @@ const props = defineProps({
     clients: Object,
     page: Object,
     flows: Object,
-    surveyall: Object
+    surveyall: Object,
+    logictype: Object
 })
 const project = props.projects[0];
 const client = props.clients[0];
@@ -65,7 +66,7 @@ const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
             default:
                 break;
         }
-        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex }
+        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex, logic_type: item.question_logic_type_id ?? 1, logic_choice: item.question_choice_id ?? null }
     })
     return { id: page.id, order: page.order, name: page.page_name, question: question }
 }))
@@ -112,7 +113,7 @@ function cloneQuestion(element) {
             break;
     }
     return {
-        soal: '', texts: texts, choices: choice, types: [element.types], required: 0, lastChoiceIndex: lastCindex
+        soal: '', texts: texts, choices: choice, types: [element.types], required: 0, lastChoiceIndex: lastCindex, logic_type: 1, logic_choice: null
     };
 }
 
@@ -305,6 +306,7 @@ const status = () => {
 onMounted(() => {
     // Attach the event listener when the component is mounted
     window.addEventListener('beforeunload', handleBeforeUnload);
+
 });
 
 onBeforeUnmount(() => {
@@ -372,14 +374,29 @@ const handleImage = (event, pgindex, qindex) => {
 const page_index = ref(null);
 const qIndex = ref(null);
 const textEditor = ref(false);
+const questionForlogic = ref(null)
 const openTextEditor = (pgindex, q_index) => {
     textEditor.value = !textEditor.value
     page_index.value = pgindex
     qIndex.value = q_index
+    if (pages.value[pgindex].question[q_index].logic_choice != null) {
+        questionForlogic.value = pages.value[pgindex].question.find(q => q.choices.some(c => c.cId == pages.value[pgindex].question[q_index].logic_choice))
+    } else {
+        questionForlogic.value = null
+    }
 }
 function stripTags(str) {
     return str.replace(/(<([^>]+)>)/gi, '');
 }
+watch(() => textEditor.value, () => {
+    if (textEditor.value == true) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = null;
+    }
+})
+
+
 </script>
 
 <template>
@@ -463,8 +480,9 @@ function stripTags(str) {
                         <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
                             Descriptions</p>
                         <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                            :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype"> 
-                            <div v-for="item in descType" :key="item.types"  class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-grab hover:font-semibold">
+                            :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
+                            <div v-for="item in descType" :key="item.types"
+                                class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-grab hover:font-semibold">
                                 <span>{{ item.name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
@@ -479,14 +497,17 @@ function stripTags(str) {
                             :class="{ 'border-b': !showAddPage }">
                             Add Page
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-gray-500 transition ease-in-out duration-200" :class="showAddPage ? '-rotate-0':'-rotate-90'">
+                                stroke="currentColor" class="size-6 text-gray-500 transition ease-in-out duration-200"
+                                :class="showAddPage ? '-rotate-0' : '-rotate-90'">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                             </svg>
                         </button>
                         <transition enter-active-class="transition ease-out duration-200"
-                            enter-from-class="transform -translate-y-3" enter-to-class="transform opacity-100 translate-y-0"
+                            enter-from-class="transform -translate-y-3"
+                            enter-to-class="transform opacity-100 translate-y-0"
                             leave-active-class="transition ease-in duration-75"
-                            leave-from-class="transform opacity-100 translate-y-0" leave-to-class="transform -translate-y-3">
+                            leave-from-class="transform opacity-100 translate-y-0"
+                            leave-to-class="transform -translate-y-3">
                             <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"
                                 class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
                                 <input type="text" id="showAddPage" v-model="form.page_name"
@@ -508,8 +529,8 @@ function stripTags(str) {
                             <div class="flows" v-for="(flow, index) in flows" :key="index"
                                 @click="showLogicModal = true; floww(flow)">
                                 <!-- All created flows will be listed here -->
-                                {{ index + 1 + '. ' + flow.flow_name }}
-   
+                                {{ flow.flow_name }}
+
                             </div>
                         </div>
                         <div class="border-0 border-gray-300 py-2 px-4">
@@ -522,24 +543,61 @@ function stripTags(str) {
             </aside>
 
             <!-- Might try to make this as component -->
-            <div v-show="textEditor" class="fixed inset-0 z-20" @click="textEditor = false"
-                @focusout="textEditor = false" />
-            <aside class="w-[26%] min-h-fit sticky top-11 bg-white z-30 float-right p-3 pt-0" v-if="textEditor">
-                <!-- Isi text editor sidebar -->
-                <div class="" v-show="textEditor">
-                    <h2 class="bg-white text-center font-semibold py-2.5 select-none w-full">
-                        Text Editor</h2>
-                    <TextEditor v-model="pages[page_index].question[qIndex].soal" class=" h-20 mx-1"
-                        v-if="page_index != null" />
-                </div>
-            </aside>
+            <div v-show="textEditor" class="fixed inset-0 bg-black opacity-70 z-50 overflow-hidden"
+                @click="textEditor = false; questionForlogic = null"
+                @focusout="textEditor = false; questionForlogic = null" />
+            <transition enter-active-class="transition ease-out duration-200" enter-from-class="transform translate-x-3"
+                enter-to-class="transform opacity-100 translate-x-0" leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 translate-x-0" leave-to-class="transform translate-x-3">
+                <aside
+                    class="w-[50%] h-screen fixed top-0 right-0 bg-gray-200 z-50 py-3 pt-0 border border-gray-300 overflow-y-auto"
+                    v-if="textEditor">
+                    <!-- Isi text editor sidebar -->
+                    <div v-show="textEditor">
+                        <div class="bg-white w-full py-2.5 select-none border-b border-gray-300 mb-3">
+                            <h2 class="text-center font-semibold">
+                                Edit Question</h2>
+                        </div>
+                        <div class="m-2" id="edit-question-text">
+                            <h3 class="font-bold mx-3">Text Editor</h3>
+                            <div class="mx-3 my-1.5 bg-white">
+                                <TextEditor v-model="pages[page_index].question[qIndex].soal" class=""
+                                    v-if="page_index != null" />
+                            </div>
+                        </div>
+                        <div class="m-2 mt-4" id="edit-question-logic">
+                            <h3 class="font-bold mx-3">Display Logic</h3>
+                            <div class="">
+                                <select v-model="pages[page_index].question[qIndex].logic_type" name="" id="">
+                                    <option v-for="type in logictype" :value="type.id">{{ type.logic_type }}</option>
+                                </select>
+                            </div>
+                            <div class="mx-3 my-1.5 bg-white" v-if="pages[page_index].question[qIndex].logic_type > 1">
+                                <label for="logic-question">Pilih Pertanyaan</label>
+                                <select v-model="questionForlogic" id="logic-question">
+                                    <option value="" disabled>Pertanyaan</option>
+                                    <option
+                                        v-for="question in pages[page_index].question.filter(q => q.id != pages[page_index].question[qIndex].id && q.id != null)"
+                                        :value="question">{{ stripTags(question.soal) }}</option>
+                                </select>
+                                <label for="logic-target">Pilih Jawaban</label>
+                                <select v-if="questionForlogic"
+                                    v-model="pages[page_index].question[qIndex].logic_choice" id="logic-target">
+                                    <option v-for="choice in questionForlogic.choices" :value="choice.cId">{{
+                                        choice.pilih }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </transition>
 
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
                     :class="'pb-8 rounded-md'" handle=".handle">
                     <div class="rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
                         <div
-                            class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle cursor-grab">
+                            class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle cursor-move">
                             <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
                                 class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
                             <div class="absolute -right-16 z-10 mt-2 origin-top-right">
@@ -562,11 +620,12 @@ function stripTags(str) {
                                 <div class="p-5 gap-2 flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="cursor-move handle rounded-md"
-                                        :class="!descType.some(obj => obj.types == item.types) ? 'w-10 h-8' : 'size-8'">
+                                        :class="!descType.some(obj => obj.types == item.types) ? 'w-9 h-8' : 'size-8'">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
-                                    <!-- Insert question here --> 
+                                    <!-- Insert question here -->
+                                    <!-- {{ item  }} -->
                                     <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
                                         v-html="item.soal" type="text" placeholder="Insert question here"
                                         class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"
@@ -579,49 +638,44 @@ function stripTags(str) {
                                     <Dropdown align="right" width="48"
                                         v-if="!descType.some(obj => obj.types == item.types)">
                                         <template #trigger>
-                                            <button type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                                <p v-for="type in item.types">
-                                                    {{ type ?? 'Question Type' }}
-                                                </p>
-                                                <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                    stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                                </svg>
-                                            </button>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor"
+                                                class="size-6 text-gray-700 cursor-pointer hover:text-gray-500 focus:text-gray-500">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                            </svg>
                                         </template>
                                         <template #content class="">
-                                            <div @click="textQuestion(item)"
-                                                class="block px-4 py-2 text-sm cursor-pointer">
-                                                Text 
+                                            <div @click="textQuestion(item)" class="px-4 py-2 text-sm cursor-pointer">
+                                                Text
                                             </div>
-                                            <div @click="radioQuestion(item)"
-                                                class="block px-4 py-2 text-sm cursor-pointer">
+                                            <div @click="radioQuestion(item)" class="px-4 py-2 text-sm cursor-pointer">
                                                 Single Choice
                                             </div>
                                             <div @click="checkboxQuestion(item)"
-                                                class="block px-4 py-2 text-sm cursor-pointer">
+                                                class="px-4 py-2 text-sm cursor-pointer">
                                                 Multiple Choice
                                             </div>
-                                            <div class="block border-t border-gray-300 py-2 text-center">
+                                            <div class="py-2 text-center border-t border-gray-300">
                                                 <input type="checkbox" v-model="item.required" true-value="1"
-                                                    false-value="0" :id="'q' + index + '-required'"
+                                                    false-value="0" :id="'q' + index + '-optional'"
                                                     class="cursor-pointer">
-                                                <label :for="'q' + index + '-required'"
-                                                    class="pl-2 cursor-pointer select-none w-full">Required</label>
+                                                <label :for="'q' + index + '-optional'"
+                                                    class="pl-2 cursor-pointer select-none w-full text-sm">Optional</label>
                                             </div>
+                                            <!-- delete question -->
+                                            <button type="button"
+                                                class="cursor-pointer w-full flex items-center justify-center py-2 gap-x-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor"
+                                                    @click="remove(page, index)" class="size-6 text-red-600 z-10">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                </svg>
+                                                <p class="text-sm">Delete</p>
+                                            </button>
                                         </template>
                                     </Dropdown>
-                                    <!-- delete question -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" @click="remove(page, index)"
-                                        class="size-10 text-red-600 cursor-pointer z-10"
-                                        :class="{ 'size-8': item.files }">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
                                 </div>
 
                                 <!-- Required notification -->

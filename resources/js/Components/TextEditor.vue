@@ -25,3 +25,9 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+.ql-container {
+    height: 200px;
+}
+</style>
