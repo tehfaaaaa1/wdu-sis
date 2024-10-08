@@ -238,7 +238,7 @@ class QuestionController extends Controller
                             break;
                     }
                 }
-                dd($pageData);
+                // dd($pageData);
                 // Save or update the question
                 $saveQuestion = Question::firstOrNew(
                     ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id]

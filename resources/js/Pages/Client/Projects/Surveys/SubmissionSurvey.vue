@@ -99,16 +99,7 @@ const submit = () => {
 };
 
 const showhide = (pgindex, qindex, value) =>{   
-    let showhideQ = currentPage.value.question
-    showhideQ.forEach(function (element, index){
-        if(value == element.question_choice_id){
-            if(element.logic_type == 'hide'){
-                element.logic_type = 'show'
-            }
-        } else {
-            element.logic_type = props.page[currentIndex.value].question[index].logic_type
-        }
-    });
+    
 }
 
 </script>
@@ -130,9 +121,9 @@ const showhide = (pgindex, qindex, value) =>{
                         <div class="p-5 flex w-full">
                             <form @submit.prevent="submit" class="w-full">
                                 <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
-                                    <div v-if="question.question_type_id <=3 && question.logic_type != 'hide'" class="flex gap-x-1" > <label v-html="question.question_text" class="output"></label></div>
+                                    <div v-if="question.question_type_id <=3 && question.question_logic_type_id != 2" class="flex gap-x-1" > <label v-html="question.question_text" class="output"></label></div>
                                     <!-- Handling radio inputs for question type 2 -->
-                                    <div v-if="question.question_type_id == 2">
+                                    <div v-if="question.question_type_id == 2 && question.question_logic_type_id != 2">
                                         <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="radio"
                                                 :id="'qradio' + (list.question_id) + '-option' + (i + 1)"
@@ -146,7 +137,7 @@ const showhide = (pgindex, qindex, value) =>{
                                     </div>
 
                                     <!-- Handling checkbox for question type 3 -->
-                                    <div v-if="question.question_type_id == 3">
+                                    <div v-if="question.question_type_id == 3 && question.question_logic_type_id != 2">
                                         <div v-for="(list, i) in question.choice" :key="i">
                                             <input v-if="list.question_id === question.id" type="checkbox"
                                                 :id="'qcheck' + (list.question_id) + '-option' + (i + 1)"
@@ -166,7 +157,7 @@ const showhide = (pgindex, qindex, value) =>{
                                     </div>
 
                                     <!-- Handling textarea for question type 1 -->
-                                    <div v-if="question.question_type_id == 1 && question.logic_type != 'hide'">
+                                    <div v-if="question.question_type_id == 1 && question.question_logic_type_id != 2">
                                         <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
                                             v-model="form.page[currentIndex].answer[qIndex].texts" />
                                     </div>
