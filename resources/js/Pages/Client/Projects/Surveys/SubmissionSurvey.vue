@@ -97,16 +97,19 @@ const submit = () => {
         }
     });
 };
-const showQuestion = ref(null)
+
 const showhide = (pgindex, qindex, value) => {
     let showhideQ = currentPage.value.question
     showhideQ.forEach(function (element, index) {
         if (value == element.question_choice_id) {
-            if (element.logic_type == 'hide') {
-                element.logic_type = 'show'
+            if (element.question_logic_type_id == 2) {
+                element.question_logic_type_id = 3
+            } else if (element.question_logic_type_id == 3) {
+                element.question_logic_type_id = 2
             }
-        } else {
-            element.logic_type = props.page[currentIndex.value].question[index].logic_type
+        } else if (value != element.question_choice_id) {
+            let ps = props.page[currentIndex.value].question.find(q => q.id == element.id)
+            element.question_logic_type_id = ps.logic_type
         }
     });
 }
@@ -117,82 +120,75 @@ const showhide = (pgindex, qindex, value) => {
 
     <Head :title="'Isi Survey'" />
     <div class="min-h-screen bg-gray-300">
-        <main>
-            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="">
-                    <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
-                    <div class="bg-white rounded-b-md">
-                        <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">{{ currentPage.page_name }}</h2>
-                        <!-- <div class="border-b-2 p-5 border-gray-500">
+        <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
+            <div class="bg-white rounded-b-md">
+                <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">{{ currentPage.page_name
+                    }}</h2>
+                <!-- <div class="border-b-2 p-5 border-gray-500">
                                 <p class="text-base text-justify select-none">{{ props.surveys.desc }}</p>
                             </div> -->
-                        <div class="p-5 flex w-full">
-                            <form @submit.prevent="submit" class="w-full">
-                                <div v-for="(question, qIndex) in currentPage.question" :key="qIndex"
-                                    class="block mb-4">
-                                    <div v-if="question.question_type_id <= 3 && question.logic_type != 'hide'"
-                                        class="flex gap-x-1">
-                                        <label v-html="question.question_text" class="output"></label>
-                                    </div>
+                <div class="p-5 flex w-full">
+                    <form @submit.prevent="submit" class="w-full">
+                        <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
+                            <div v-if="question.question_type_id <= 3 && question.question_logic_type_id != 2"
+                                class="flex gap-x-1">
+                                <label v-html="question.question_text" class="output"></label>
+                            </div>
 
-                                    <!-- Handling radio inputs for question type 2 -->
-                                    <div v-if="question.question_type_id == 2">
-                                        <div v-for="(list, i) in question.choice" :key="i">
-                                            <input v-if="list.question_id === question.id" type="radio"
-                                                :id="'qradio' + (list.question_id) + '-option' + (i + 1)"
-                                                :value="list.id" @input="showhide(currentIndex, qIndex, list.id)"
-                                                v-model="form.page[currentIndex].answer[qIndex].radios" />
-                                            <label v-if="list.question_id === question.id" class="px-3"
-                                                :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
-                                                {{ list.value }}
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <!-- Handling checkbox for question type 3 -->
-                                    <div v-if="question.question_type_id == 3">
-                                        <div v-for="(list, i) in question.choice" :key="i">
-                                            <input v-if="list.question_id === question.id" type="checkbox"
-                                                :id="'qcheck' + (list.question_id) + '-option' + (i + 1)"
-                                                :value="list.id"
-                                                v-model="form.page[currentIndex].answer[qIndex].checkboxes" />
-                                            <label class="px-3"
-                                                :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
-                                                {{ list.value }}
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <!-- Handling textarea for question type 1 -->
-                                    <div v-if="question.question_type_id == 1 && question.logic_type != 'hide'">
-                                        <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
-                                            v-model="form.page[currentIndex].answer[qIndex].texts" />
-                                    </div>
-
-                                    <!-- Handling Descriptions -->
-                                    <div class="" v-if="question.question_type_id == 4">
-                                        <img :src="'/img/' + question.question_text" class="" alt="Image">
-                                    </div>
-
-                                    <div v-html="question.question_text" class="output"
-                                        v-if="question.question_type_id == 5">
-                                    </div>
+                            <!-- Handling radio inputs for question type 2 -->
+                            <div v-if="question.question_type_id == 2 && question.question_logic_type_id != 2">
+                                <div v-for="(list, i) in question.choice" :key="i">
+                                    <input v-if="list.question_id === question.id" type="radio"
+                                        :id="'qradio' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
+                                        @input="showhide(currentIndex, qIndex, list.id)"
+                                        v-model="form.page[currentIndex].answer[qIndex].radios" />
+                                    <label v-if="list.question_id === question.id" class="px-3"
+                                        :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
+                                        {{ list.value }}
+                                    </label>
                                 </div>
-                                <div class="flex justify-between">
-                                    <button v-if="currentIndex > 0" class="border-2 border-primary px-3 py-2"
-                                        type="button" @click="prevPage">previous</button>
-                                    <button @click="nextPage" type="button" class="border-2 border-primary px-3 py-2"
-                                        v-if="!lastPage">Next</button>
+                            </div>
 
-                                    <PrimaryButton class="flex justify-center md:mb-6 text-center" v-if="lastPage"
-                                        :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                        Submit Survey
-                                    </PrimaryButton>
-                                    <!-- <Pagination class="flex justify-center md:mb-6 text-center" :links="{prev_page_url: urlPrev, next_page_url: nextPage}" /> -->
+                            <!-- Handling checkbox for question type 3 -->
+                            <div v-if="question.question_type_id == 3 && question.question_logic_type_id != 2">
+                                <div v-for="(list, i) in question.choice" :key="i">
+                                    <input v-if="list.question_id === question.id" type="checkbox"
+                                        :id="'qcheck' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
+                                        v-model="form.page[currentIndex].answer[qIndex].checkboxes" />
+                                    <label class="px-3" :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
+                                        {{ list.value }}
+                                    </label>
                                 </div>
-                            </form>
+                            </div>
+
+                            <!-- Handling textarea for question type 1 -->
+                            <div v-if="question.question_type_id == 1 && question.question_logic_type_id != 2">
+                                <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
+                                    v-model="form.page[currentIndex].answer[qIndex].texts" />
+                            </div>
+
+                            <!-- Handling Descriptions -->
+                            <div class="" v-if="question.question_type_id == 4">
+                                <img :src="'/img/' + question.question_text" class="" alt="Image">
+                            </div>
+
+                            <div v-html="question.question_text" class="output" v-if="question.question_type_id == 5">
+                            </div>
+
                         </div>
-                    </div>
+                        <div class="flex justify-between">
+                            <button v-if="currentIndex > 0" class="border-2 border-primary px-3 py-2" type="button"
+                                @click="prevPage">previous</button>
+                            <button @click="nextPage" type="button" class="border-2 border-primary px-3 py-2"
+                                v-if="!lastPage">Next</button>
+
+                            <PrimaryButton class="flex justify-center md:mb-6 text-center" v-if="lastPage"
+                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                                Submit Survey
+                            </PrimaryButton>
+                        </div>
+                    </form>
                 </div>
             </div>
         </main>

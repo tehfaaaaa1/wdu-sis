@@ -105,6 +105,7 @@ class AnswerController extends Controller
                         'order' => $q->order,
                         'required' => $q->required,
                         'logic_type' => $q->question_logic_type_id,
+                        'logic_name' => $q->logic->logic_type,
                         'choice' => $q->choice,
                     ];
                 }),
