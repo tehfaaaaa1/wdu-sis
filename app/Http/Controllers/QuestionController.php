@@ -286,7 +286,7 @@ class QuestionController extends Controller
         });
 
         // Additional logic for final submission, such as notifications or marking survey as complete
-        return redirect()->route('question_surveys', [$clientSlug, $projectSlug, $id])->with('success', 'Survey created successfully.');
+        return back()->with('success', 'Survey created successfully.');
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $id){

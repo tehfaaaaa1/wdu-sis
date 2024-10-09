@@ -73,15 +73,15 @@ onMounted(() => {
         form.page = JSON.parse(savedForm);
     }
     let showhideQ = currentPage.value.question
-    showhideQ.forEach(function (element, index){
-        if(form.page[currentIndex.value].answer.some(a=> a.radios == element.question_choice_id)){
-            if(element.question_logic_type_id == 2){
+    showhideQ.forEach(function (element, index) {
+        if (form.page[currentIndex.value].answer.some(a => a.radios == element.question_choice_id)) {
+            if (element.question_logic_type_id == 2) {
                 element.question_logic_type_id = 3
-            } else if(element.question_logic_type_id == 3){
+            } else if (element.question_logic_type_id == 3) {
                 element.question_logic_type_id = 2
             }
-        } else if(form.page[currentIndex.value].answer.some(a=> a.radios == element.question_choice_id)){
-            let ps = props.page[currentIndex.value].question.find(q=> q.id == element.id)
+        } else if (form.page[currentIndex.value].answer.some(a => a.radios == element.question_choice_id)) {
+            let ps = props.page[currentIndex.value].question.find(q => q.id == element.id)
             element.question_logic_type_id = ps.logic_type
         }
     });
@@ -167,7 +167,7 @@ const showhide = (pgindex, qindex, value) => {
 
 <template>
 
-    <Head :title="'Isi Survey'" />    
+    <Head :title="'Isi Survey'" />
     <div class="min-h-screen bg-gray-300">
         <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
