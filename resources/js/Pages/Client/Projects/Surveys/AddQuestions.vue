@@ -577,17 +577,18 @@ watch(() => textEditor.value, () => {
                                 <div class="flex justify-between items-center text-sm">
                                     <label for="logic-question">Pilih Pertanyaan</label>
                                     <select v-model="questionForlogic" id="logic-question" class="w-1/2 text-sm cursor-pointer">
-                                        <option :value="''" disabled>Pertanyaan</option>
+                                        <option :value="null" disabled>Pertanyaan</option>
                                         <option
                                         v-for="question in pages[page_index].question.filter(q => q.id != pages[page_index].question[qIndex].id && q.id != null)"
                                         :value="question">{{ stripTags(question.soal) }}
                                     </option>
                                     </select>
                                 </div>
-                                <div class="mt-2 flex justify-between items-center text-sm ">
+                                <div v-if="questionForlogic" class="mt-2 flex justify-between items-center text-sm ">
                                     <label for="logic-target ">Pilih Jawaban</label>
-                                    <select v-if="questionForlogic" class="w-1/2 text-sm cursor-pointer"
+                                    <select  class="w-1/2 text-sm cursor-pointer"
                                         v-model="pages[page_index].question[qIndex].logic_choice" id="logic-target">
+                                        <option :value="null" disabled>Jawaban Pemicu</option>
                                         <option v-for="choice in questionForlogic.choices" :value="choice.cId">
                                             {{ choice.pilih }}
                                         </option>

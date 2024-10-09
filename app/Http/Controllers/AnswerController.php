@@ -104,6 +104,7 @@ class AnswerController extends Controller
                         'survey_id' => $q->survey_id,
                         'order' => $q->order,
                         'required' => $q->required,
+                        'question_choice_id' =>$q->question_choice_id,
                         'logic_type' => $q->question_logic_type_id,
                         'logic_name' => $q->logic->logic_type,
                         'choice' => $q->choice,

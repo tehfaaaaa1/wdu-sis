@@ -104,29 +104,70 @@ const submit = () => {
 };
 
 const showhide = (pgindex, qindex, value) => {
-    let showhideQ = currentPage.value.question
-    showhideQ.forEach(function (element, index) {
-        if (value == element.question_choice_id) {
-            // change type show if -> show to display question
-            if (element.question_logic_type_id == 2) {
-                element.question_logic_type_id = 1
+    const currentQuestions = currentPage.value.question;
+    const currentQuestion = currentQuestions[qindex];
 
-            // change  type hide if -> show if to hide question
-            } else if (element.question_logic_type_id == 3) {
-                element.question_logic_type_id = 2
+    // Helper function to reset answers based on question type
+    const resetAnswer = (element, index) => {
+        if (element.question_type_id === 1) {
+            form.page[pgindex].answer[index].texts = '';
+        } else if (element.question_type_id === 2) {
+            form.page[pgindex].answer[index].radios = [];
+        } else if (element.question_type_id === 3) {
+            form.page[pgindex].answer[index].checkboxes = [];
+        }
+    };
+
+    // Recursive function to reset answers for all child questions
+    const resetChildAnswers = (parentQuestion) => {
+        currentQuestions.forEach((element, index) => {
+            if (parentQuestion.choice.some(c => c.id === element.question_choice_id)) {
+                resetAnswer(element, index);
+                // Recursively reset child answers of the current child
+                resetChildAnswers(element);
             }
-        } else if (value != element.question_choice_id) {
-            let ps = props.page[currentIndex.value].question.find(q => q.id == element.id)
-            element.question_logic_type_id = ps.logic_type
+        });
+    };
+
+    // Main logic to show/hide questions and reset answers
+    currentQuestions.forEach((element, index) => {
+        if (value === element.question_choice_id) {
+            // Show the question
+            if (element.question_logic_type_id === 2) {
+                element.question_logic_type_id = 1;
+            }
+            // Hide the question
+            else if (element.question_logic_type_id === 3) {
+                element.question_logic_type_id = 2;
+            }
+        } else if (value !== element.question_choice_id && element.id !== currentQuestion.id) {
+            const matchedQuestion = currentQuestions.find(que =>
+                que.choice.some(c => c.id === currentQuestion.question_choice_id)
+            ) || false;
+
+            const originalQuestion = props.page[currentIndex.value].question.find(q => q.id === element.id);
+
+            if (
+                currentQuestion.question_choice_id !== element.question_choice_id &&
+                matchedQuestion.question_choice_id !== element.question_choice_id
+            ) {
+                element.question_logic_type_id = originalQuestion.logic_type;
+            }
+
+            if (currentQuestion.choice.some(c => c.id === element.question_choice_id)) {
+                resetAnswer(element, index);
+                // Reset child questions recursively
+                resetChildAnswers(element);
+            }
         }
     });
-}
+};
 
 </script>
 
 <template>
 
-    <Head :title="'Isi Survey'" />
+    <Head :title="'Isi Survey'" />    
     <div class="min-h-screen bg-gray-300">
         <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
