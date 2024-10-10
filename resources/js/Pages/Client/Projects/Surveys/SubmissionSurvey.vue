@@ -172,49 +172,47 @@ const showhide = (pgindex, qindex, value) => {
         <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
             <div class="bg-white rounded-b-md">
-                <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">{{ currentPage.page_name
-                    }}</h2>
-                <!-- <div class="border-b-2 p-5 border-gray-500">
-                                <p class="text-base text-justify select-none">{{ props.surveys.desc }}</p>
-                            </div> -->
-                <div class="p-5 flex w-full">
-                    <form @submit.prevent="submit" class="w-full">
-                        <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
-                            <div v-if="question.question_type_id <= 3 && question.question_logic_type_id != 2"
-                                class="flex gap-x-1">
+                <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">
+                    {{ currentPage.page_name }}</h2>
+
+                <form @submit.prevent="submit" class="w-full">
+                    <div class="p-5 pb-1">
+                        <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="mb-4">
+                            <div v-if="question.question_type_id <= 3 && question.question_logic_type_id != 2">
                                 <label v-html="question.question_text" class="output"></label>
-                            </div>
 
-                            <!-- Handling radio inputs for question type 2 -->
-                            <div v-if="question.question_type_id == 2 && question.question_logic_type_id != 2">
-                                <div v-for="(list, i) in question.choice" :key="i">
-                                    <input v-if="list.question_id === question.id" type="radio"
-                                        :id="'qradio' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
-                                        @input="showhide(currentIndex, qIndex, list.id)"
-                                        v-model="form.page[currentIndex].answer[qIndex].radios" />
-                                    <label v-if="list.question_id === question.id" class="px-3"
-                                        :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
-                                        {{ list.value }}
-                                    </label>
+                                <!-- Handling radio inputs for question type 2 -->
+                                <div v-if="question.question_type_id == 2 && question.question_logic_type_id != 2">
+                                    <div v-for="(list, i) in question.choice" :key="i">
+                                        <input v-if="list.question_id === question.id" type="radio"
+                                            :id="'qradio' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
+                                            @input="showhide(currentIndex, qIndex, list.id)"
+                                            v-model="form.page[currentIndex].answer[qIndex].radios" />
+                                        <label v-if="list.question_id === question.id" class="px-3"
+                                            :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
+                                            {{ list.value }}
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Handling checkbox for question type 3 -->
-                            <div v-if="question.question_type_id == 3 && question.question_logic_type_id != 2">
-                                <div v-for="(list, i) in question.choice" :key="i">
-                                    <input v-if="list.question_id === question.id" type="checkbox"
-                                        :id="'qcheck' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
-                                        v-model="form.page[currentIndex].answer[qIndex].checkboxes" />
-                                    <label class="px-3" :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
-                                        {{ list.value }}
-                                    </label>
+                                <!-- Handling checkbox for question type 3 -->
+                                <div v-if="question.question_type_id == 3 && question.question_logic_type_id != 2">
+                                    <div v-for="(list, i) in question.choice" :key="i">
+                                        <input v-if="list.question_id === question.id" type="checkbox"
+                                            :id="'qcheck' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
+                                            v-model="form.page[currentIndex].answer[qIndex].checkboxes" />
+                                        <label class="px-3" :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
+                                            {{ list.value }}
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Handling textarea for question type 1 -->
-                            <div v-if="question.question_type_id == 1 && question.question_logic_type_id != 2">
-                                <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
-                                    v-model="form.page[currentIndex].answer[qIndex].texts" />
+                                <!-- Handling textarea for question type 1 -->
+                                <div v-if="question.question_type_id == 1 && question.question_logic_type_id != 2">
+                                    <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
+                                        v-model="form.page[currentIndex].answer[qIndex].texts" />
+                                </div>
+
                             </div>
 
                             <!-- Handling Descriptions -->
@@ -224,21 +222,20 @@ const showhide = (pgindex, qindex, value) => {
 
                             <div v-html="question.question_text" class="output" v-if="question.question_type_id == 5">
                             </div>
-
                         </div>
-                        <div class="flex justify-between">
-                            <button v-if="currentIndex > 0" class="border-2 border-primary px-3 py-2" type="button"
-                                @click="prevPage">previous</button>
-                            <button @click="nextPage" type="button" class="border-2 border-primary px-3 py-2"
-                                v-if="!lastPage">Next</button>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-gray-400 py-4 px-5">
+                        <button v-if="currentIndex > 0" class="border-2 border-primary px-3 py-2 text-sm" type="button"
+                            @click="prevPage">Previous</button>
+                        <button @click="nextPage" type="button" class="border-2 border-primary px-3 py-2 text-sm"
+                            v-if="!lastPage">Next</button>
 
-                            <PrimaryButton class="flex justify-center md:mb-6 text-center" v-if="lastPage"
-                                :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Submit Survey
-                            </PrimaryButton>
-                        </div>
-                    </form>
-                </div>
+                        <PrimaryButton class="flex justify-center text-center" v-if="lastPage"
+                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                            Submit Survey
+                        </PrimaryButton>
+                    </div>
+                </form>
             </div>
         </main>
     </div>
