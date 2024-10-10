@@ -99,14 +99,14 @@ class AnswerController extends Controller
                 'question' => $p->question->map(function ($q) {
                     return [
                         'id' => $q->id,
-                        'question_text' => $q->question_text,
+                        'question_text' => $q->question_text,  
                         'question_type_id' => $q->question_type_id,
                         'survey_id' => $q->survey_id,
                         'order' => $q->order,
                         'required' => $q->required,
-                        'question_choice_id' =>$q->question_choice_id,
-                        'logic_type' => $q->question_logic_type_id,
-                        'logic_name' => $q->logic->logic_type,
+                        'question_choice_id' =>$q->question_choice_id ?? null,
+                        'logic_type' => $q->question_logic_type_id ?? null,
+                        'logic_name' => $q->logic->logic_type?? null,
                         'choice' => $q->choice,
                     ];
                 }),

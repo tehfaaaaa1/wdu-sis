@@ -398,7 +398,7 @@ watch(() => textEditor.value, () => {
 
 
 </script>
-
+    
 <template>
     <AppLayout title="Tambah Pertanyaan Survey">
 
@@ -582,7 +582,7 @@ watch(() => textEditor.value, () => {
                                         v-for="question in pages[page_index].question.filter(q => q.id != pages[page_index].question[qIndex].id && q.id != null)"
                                         :value="question">{{ stripTags(question.soal) }}
                                     </option>
-                                    </select>
+                                    </select>  
                                 </div>
                                 <div v-if="questionForlogic" class="mt-2 flex justify-between items-center text-sm ">
                                     <label for="logic-target ">Pilih Jawaban</label>
@@ -598,7 +598,7 @@ watch(() => textEditor.value, () => {
                         </div>
                     </div>
                 </aside>
-            </transition>
+            </transition> 
 
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"

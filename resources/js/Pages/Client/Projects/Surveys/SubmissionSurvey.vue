@@ -102,7 +102,6 @@ const submit = () => {
         }
     });
 };
-
 const showhide = (pgindex, qindex, value) => {
     const currentQuestions = currentPage.value.question;
     const currentQuestion = currentQuestions[qindex];
@@ -118,13 +117,13 @@ const showhide = (pgindex, qindex, value) => {
         }
     };
 
-    // Recursive function to reset answers for all child questions
+    // Recursive function to reset answers for all child questions (only downward)
     const resetChildAnswers = (parentQuestion) => {
         currentQuestions.forEach((element, index) => {
             if (parentQuestion.choice.some(c => c.id === element.question_choice_id)) {
                 resetAnswer(element, index);
                 // Recursively reset child answers of the current child
-                resetChildAnswers(element);
+                resetChildAnswers(element);  // Only flow downward to children
             }
         });
     };
@@ -145,18 +144,34 @@ const showhide = (pgindex, qindex, value) => {
                 que.choice.some(c => c.id === currentQuestion.question_choice_id)
             ) || false;
 
+            const parentQuestion = matchedQuestion ? currentQuestions.find(quee =>
+                quee.choice.some(c => c.id === matchedQuestion.question_choice_id)
+            ) : null;
+
+            // Identify only children and descendants
+            const team = matchedQuestion ? currentQuestions.filter(qq => qq.id!=currentQuestion.id &&
+                matchedQuestion.choice.some(cc => cc.id === qq.question_choice_id)
+            ) : [];
+
             const originalQuestion = props.page[currentIndex.value].question.find(q => q.id === element.id);
 
+            const s = team ? currentQuestions.filter(p=> team.some(t=>t.choice.some(c=>c.id == p.question_choice_id))) :null
+            // Ensure no change to any ancestors (only affect children)
             if (
                 currentQuestion.question_choice_id !== element.question_choice_id &&
-                matchedQuestion.question_choice_id !== element.question_choice_id
+                matchedQuestion?.question_choice_id !== element.question_choice_id &&
+                !team.some(t => t.question_choice_id === element.question_choice_id) && // Fix here: ensure no child shares same question_choice_id
+                parentQuestion?.question_choice_id !== element.question_choice_id &&
+                !s.some(ss=> ss.question_choice_id === element.question_choice_id)
             ) {
+                console.log(matchedQuestion, element, team, parentQuestion, s);
                 element.question_logic_type_id = originalQuestion.logic_type;
             }
 
+            // Only reset descendants (not siblings or parents)
             if (currentQuestion.choice.some(c => c.id === element.question_choice_id)) {
                 resetAnswer(element, index);
-                // Reset child questions recursively
+                // Reset child questions recursively (downward flow only)
                 resetChildAnswers(element);
             }
         }
@@ -182,6 +197,7 @@ const showhide = (pgindex, qindex, value) => {
                         <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
                             <div v-if="question.question_type_id <= 3 && question.question_logic_type_id != 2"
                                 class="flex gap-x-1">
+                                {{question.question_choice_id ??'sa'}}
                                 <label v-html="question.question_text" class="output"></label>
                             </div>
 
