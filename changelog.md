@@ -1,3 +1,25 @@
+## October
+### 8 Oct 2024
+- Feature Available : Question Logic
+  - Placed under text editor
+- Refitted UI to implement Question Logic
+
+### 7 Oct 2024
+- Entering Development : Question Logic
+
+### 4 Oct 2024
+- Barchart data for city and province WIP
+- More updates on Survey Details (location)
+- Feature Available : Text Editor in AddQuestions
+
+### 3 Oct 2024
+- In Development : Text Editor
+- Added start time and submit in Report and Submission
+- Bug Fixes to flow
+
+### 2 Oct 2024
+- Added image and paragraph in AddQuestion
+
 ## September
 ### 30 Sep 2024
 - Added Map in Location Survey
