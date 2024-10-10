@@ -9,7 +9,7 @@ import { QuillyEditor } from 'vue-quilly';
 import { onMounted, ref } from 'vue';
 
 const toolbarOptions = {
-    theme: 'snow', // If you need Quill theme
+    theme: 'snow',
     modules: {
         toolbar: true,
     },
@@ -25,3 +25,9 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+.ql-container {
+    height: 200px;
+}
+</style>

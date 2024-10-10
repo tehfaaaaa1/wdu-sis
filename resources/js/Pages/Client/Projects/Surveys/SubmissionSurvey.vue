@@ -72,12 +72,25 @@ onMounted(() => {
     if (savedForm) {
         form.page = JSON.parse(savedForm);
     }
-});
+    let showhideQ = currentPage.value.question
+    showhideQ.forEach(function (element, index) {
+        if (form.page[currentIndex.value].answer.some(a => a.radios == element.question_choice_id)) {
+            if (element.question_logic_type_id == 2) {
+                element.question_logic_type_id = 3
+            } else if (element.question_logic_type_id == 3) {
+                element.question_logic_type_id = 2
+            }
+        } else if (form.page[currentIndex.value].answer.some(a => a.radios == element.question_choice_id)) {
+            let ps = props.page[currentIndex.value].question.find(q => q.id == element.id)
+            element.question_logic_type_id = ps.logic_type
+        }
+    });
 
+});
 watch(() => form.page,
     debounce((newVal) => {
         localStorage.setItem(storageKey, JSON.stringify(newVal));
-    }, 300), 
+    }, 300),
     { deep: true }
 );
 
@@ -89,100 +102,145 @@ const submit = () => {
         }
     });
 };
+
+const showhide = (pgindex, qindex, value) => {
+    const currentQuestions = currentPage.value.question;
+    const currentQuestion = currentQuestions[qindex];
+
+    // Helper function to reset answers based on question type
+    const resetAnswer = (element, index) => {
+        if (element.question_type_id === 1) {
+            form.page[pgindex].answer[index].texts = '';
+        } else if (element.question_type_id === 2) {
+            form.page[pgindex].answer[index].radios = [];
+        } else if (element.question_type_id === 3) {
+            form.page[pgindex].answer[index].checkboxes = [];
+        }
+    };
+
+    // Recursive function to reset answers for all child questions
+    const resetChildAnswers = (parentQuestion) => {
+        currentQuestions.forEach((element, index) => {
+            if (parentQuestion.choice.some(c => c.id === element.question_choice_id)) {
+                resetAnswer(element, index);
+                // Recursively reset child answers of the current child
+                resetChildAnswers(element);
+            }
+        });
+    };
+
+    // Main logic to show/hide questions and reset answers
+    currentQuestions.forEach((element, index) => {
+        if (value === element.question_choice_id) {
+            // Show the question
+            if (element.question_logic_type_id === 2) {
+                element.question_logic_type_id = 1;
+            }
+            // Hide the question
+            else if (element.question_logic_type_id === 3) {
+                element.question_logic_type_id = 2;
+            }
+        } else if (value !== element.question_choice_id && element.id !== currentQuestion.id) {
+            const matchedQuestion = currentQuestions.find(que =>
+                que.choice.some(c => c.id === currentQuestion.question_choice_id)
+            ) || false;
+
+            const originalQuestion = props.page[currentIndex.value].question.find(q => q.id === element.id);
+
+            if (
+                currentQuestion.question_choice_id !== element.question_choice_id &&
+                matchedQuestion.question_choice_id !== element.question_choice_id
+            ) {
+                element.question_logic_type_id = originalQuestion.logic_type;
+            }
+
+            if (currentQuestion.choice.some(c => c.id === element.question_choice_id)) {
+                resetAnswer(element, index);
+                // Reset child questions recursively
+                resetChildAnswers(element);
+            }
+        }
+    });
+};
+
 </script>
 
 <template>
 
     <Head :title="'Isi Survey'" />
     <div class="min-h-screen bg-gray-300">
-        <main>
-            <div class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="">
-                    <div class="text-center text-2xl font-semibold py-4 bg-primary text-white rounded-t-md select-none">
-                        <h2>{{ currentPage.page_name }}</h2>
-                    </div>
-                    <div class="bg-white rounded-b-md">
-                        <!-- <div class="border-b-2 p-5 border-gray-500">
-                                <p class="text-base text-justify select-none">{{ props.surveys.desc }}</p>
-                            </div> -->
-                        <div class="p-5 flex w-full">
-                            <form @submit.prevent="submit" class="w-full">
-                                <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="block mb-4">
-                                    <div v-if="question.question_type_id <=3" class="flex gap-x-1"> {{ qIndex + 1 }}. <label v-html="question.question_text" class="output"></label></div>
-                                    <!-- Handling radio inputs for question type 2 -->
-                                    <div v-if="question.question_type_id == 2">
-                                        <div v-for="(list, i) in question.choice" :key="i">
-                                            <input v-if="list.question_id === question.id" type="radio"
-                                                :id="'qradio' + (list.question_id) + '-option' + (i + 1)"
-                                                :value="list.id"
-                                                v-model="form.page[currentIndex].answer[qIndex].radios" />
-                                            <label v-if="list.question_id === question.id" class="px-3"
-                                                :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
-                                                {{ list.value }}
-                                            </label>
-                                        </div>
-                                    </div>
+        <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+            <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
+            <div class="bg-white rounded-b-md">
+                <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">
+                    {{ currentPage.page_name }}</h2>
 
-                                    <!-- Handling checkbox for question type 3 -->
-                                    <div v-if="question.question_type_id == 3">
-                                        <div v-for="(list, i) in question.choice" :key="i">
-                                            <input v-if="list.question_id === question.id" type="checkbox"
-                                                :id="'qcheck' + (list.question_id) + '-option' + (i + 1)"
-                                                :value="list.id"
-                                                v-model="form.page[currentIndex].answer[qIndex].checkboxes" />
-                                            <label class="px-3"
-                                                :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
-                                                {{ list.value }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="" v-if="question.question_type_id == 4">
-                                        <img :src="'/img/'+question.question_text" class="" alt="Image">
-                                    </div>
-                                    
-                                    <div v-html="question.question_text" class="output" v-if="question.question_type_id == 5">
-                                    </div>
+                <form @submit.prevent="submit" class="w-full">
+                    <div class="p-5 pb-1">
+                        <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="mb-4">
+                            <div v-if="question.question_type_id <= 3 && question.question_logic_type_id != 2">
+                                <label v-html="question.question_text" class="output"></label>
 
-                                    <!-- Handling textarea for question type 1 -->
-                                    <div v-if="question.question_type_id == 1">
-                                        <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
-                                            v-model="form.page[currentIndex].answer[qIndex].texts" />
+                                <!-- Handling radio inputs for question type 2 -->
+                                <div v-if="question.question_type_id == 2 && question.question_logic_type_id != 2">
+                                    <div v-for="(list, i) in question.choice" :key="i">
+                                        <input v-if="list.question_id === question.id" type="radio"
+                                            :id="'qradio' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
+                                            @input="showhide(currentIndex, qIndex, list.id)"
+                                            v-model="form.page[currentIndex].answer[qIndex].radios" />
+                                        <label v-if="list.question_id === question.id" class="px-3"
+                                            :for="'qradio' + (list.question_id) + '-option' + (i + 1)">
+                                            {{ list.value }}
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="flex justify-between">
-                                    <button v-if="currentIndex > 0" class="border-2 border-primary px-3 py-2"
-                                        type="button" @click="prevPage">previous</button>
-                                    <button @click="nextPage" type="button" class="border-2 border-primary px-3 py-2"
-                                        v-if="!lastPage">Next</button>
 
-                                    <PrimaryButton class="flex justify-center md:mb-6 text-center" v-if="lastPage"
-                                        :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                        Submit Survey
-                                    </PrimaryButton>
-                                    <!-- <Pagination class="flex justify-center md:mb-6 text-center" :links="{prev_page_url: urlPrev, next_page_url: nextPage}" /> -->
+                                <!-- Handling checkbox for question type 3 -->
+                                <div v-if="question.question_type_id == 3 && question.question_logic_type_id != 2">
+                                    <div v-for="(list, i) in question.choice" :key="i">
+                                        <input v-if="list.question_id === question.id" type="checkbox"
+                                            :id="'qcheck' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
+                                            v-model="form.page[currentIndex].answer[qIndex].checkboxes" />
+                                        <label class="px-3" :for="'qcheck' + (list.question_id) + '-option' + (i + 1)">
+                                            {{ list.value }}
+                                        </label>
+                                    </div>
                                 </div>
-                            </form>
+
+                                <!-- Handling textarea for question type 1 -->
+                                <div v-if="question.question_type_id == 1 && question.question_logic_type_id != 2">
+                                    <textarea title="Answer" placeholder="Jawaban open-ended" class="w-full h-20"
+                                        v-model="form.page[currentIndex].answer[qIndex].texts" />
+                                </div>
+
+                            </div>
+
+                            <!-- Handling Descriptions -->
+                            <div class="" v-if="question.question_type_id == 4">
+                                <img :src="'/img/' + question.question_text" class="" alt="Image">
+                            </div>
+
+                            <div v-html="question.question_text" class="output" v-if="question.question_type_id == 5">
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <div class="flex justify-between items-center border-t border-gray-400 py-4 px-5">
+                        <button v-if="currentIndex > 0" class="border-2 border-primary px-3 py-2 text-sm" type="button"
+                            @click="prevPage">Previous</button>
+                        <button @click="nextPage" type="button" class="border-2 border-primary px-3 py-2 text-sm"
+                            v-if="!lastPage">Next</button>
+
+                        <PrimaryButton class="flex justify-center text-center" v-if="lastPage"
+                            :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                            Submit Survey
+                        </PrimaryButton>
+                    </div>
+                </form>
             </div>
         </main>
     </div>
 </template>
 
 <style>
-.output ul, .output ol {
-  padding-left: 20px; /* Indentation for lists */
-}
-
-.output ol {
-    list-style-type: decimal;
-}
-.output ul {
-    list-style-type: disc;
-}
-
-.output li {
-  margin-bottom: 5px; /* Space between list items */
-}
+@import url('/resources/css/quill-overwrite.css');
 </style>

@@ -32,7 +32,9 @@ class Question extends Model
     public function page(): BelongsTo{
         return $this->belongsTo(QuestionPage::class);
     }
-    public function flow() : HasMany{
+    public function logic(): BelongsTo{
+        return $this->belongsTo(QuestionLogicType::class, 'question_logic_type_id');
+    }    public function flow() : HasMany{
         return $this->hasMany(Flow::class);
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 use App\Models\QuestionPage;
 use Illuminate\Http\Request;
 use App\Models\QuestionChoice;
+use App\Models\QuestionLogicType;
 use PhpParser\Node\Stmt\Break_;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -26,6 +27,7 @@ class QuestionController extends Controller
         $survey =  Survey::findOrFail($id);
         $question = Question::where('survey_id',  $id)->get();
         $page = QuestionPage::where('survey_id', $id)->get();
+        $logic_type = QuestionLogicType::all();
         $project = DB::table('projects')
         ->where('slug', $projectSlug)
         ->get();
@@ -64,6 +66,7 @@ class QuestionController extends Controller
                 // 'c_lastId' => $c_lastId,
                 'flows'=> $flow,
                 'surveyall' => $surveyall,
+                'logictype'=>$logic_type
             ]
         );
     }
@@ -153,6 +156,8 @@ class QuestionController extends Controller
             'data.*.question.*.files' => 'array',
             'data.*.question.*.id' => 'nullable|numeric',
             'data.*.question.*.order' => 'nullable|integer',
+            'data.*.question.*.logic_choice' => 'nullable|integer',
+            'data.*.question.*.logic_type' => 'nullable|integer',
         ]);
         // dd($validatedData);
         $survey = Survey::findOrFail($request->survey);
@@ -233,6 +238,7 @@ class QuestionController extends Controller
                             break;
                     }
                 }
+                // dd($pageData);
                 // Save or update the question
                 $saveQuestion = Question::firstOrNew(
                     ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id]
@@ -242,6 +248,8 @@ class QuestionController extends Controller
                 $saveQuestion->order = $index + 1;
                 $saveQuestion->question_text = $questionData['soal'];
                 $saveQuestion->question_type_id = $questionType;
+                $saveQuestion->question_logic_type_id = $questionData['logic_type'];
+                $saveQuestion->question_choice_id = $questionData['logic_choice'] ?? null;
                 $saveQuestion->save();
 
                 $processedQuestionIds[] = $saveQuestion->id;
@@ -278,7 +286,7 @@ class QuestionController extends Controller
         });
 
         // Additional logic for final submission, such as notifications or marking survey as complete
-        return redirect()->route('question_surveys', [$clientSlug, $projectSlug, $id])->with('success', 'Survey created successfully.');
+        return back()->with('success', 'Survey created successfully.');
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $id){

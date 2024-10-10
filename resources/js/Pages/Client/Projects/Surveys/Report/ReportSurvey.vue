@@ -18,7 +18,6 @@ const client = props.clients[0]
 const checked = (choice, q) => {
     return q.answer.some(ans => ans.answer == choice.id && ans.response_id == props.responses.id);
 };
-
 </script>
 
 <template>
@@ -90,22 +89,5 @@ const checked = (choice, q) => {
     </AppLayout>
 </template>
 <style>
-.output ul,
-.output ol {
-    padding-left: 20px;
-    /* Indentation for lists */
-}
-
-.output ol {
-    list-style-type: decimal;
-}
-
-.output ul {
-    list-style-type: disc;
-}
-
-.output li {
-    margin-bottom: 5px;
-    /* Space between list items */
-}
+@import url('/resources/css/quill-overwrite.css');
 </style>

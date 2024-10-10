@@ -69,7 +69,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
         return $mapRows;
     } else if ($row->question_type_id == 1) {
         return [
-            [$this->rownumber, $row->question_text], 
+            [$this->rownumber, strip_tags($row->question_text)], 
             ['', (string)$totalResponse ?? (string)'no' . ' Responses' ],
             [''],
         ];
