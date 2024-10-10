@@ -52,6 +52,7 @@ const filledProvinceCheck = ref(null);
 
 
 // pie chart and bar chart
+const barChartData = ref([]);
 const canvas = ref(null);
 let chartInstance = null;
 
@@ -72,13 +73,7 @@ const BackgroundColors = [
 // bar chart
 const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
     if (!selectedSurvey || !selectedSurvey.province_targets) {
-        return {
-            labels: [],
-            datasets: [
-                { label: 'Cities', backgroundColor: [], data: [] },
-                { label: 'Regencies', backgroundColor: [], data: [] }
-            ]
-        };
+        return [];
     }
 
     let provinceTargets;
@@ -87,22 +82,16 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
             ? JSON.parse(selectedSurvey.province_targets)
             : selectedSurvey.province_targets;
     } catch (error) {
-        return {
-            labels: [],
-            datasets: [
-                { label: 'Cities', backgroundColor: [], data: [] },
-                { label: 'Regencies', backgroundColor: [], data: [] }
-            ]
-        };
+        return [];
     }
 
-    const cityLabels = [];
-    const regencyLabels = [];
-    const cityData = [];
-    const regencyData = [];
-    let chartTitle = 'Unknown Province';
+    return provinceTargets.map(target => {
+        const cityLabels = [];
+        const regencyLabels = [];
+        const cityData = [];
+        const regencyData = [];
+        let chartTitle = 'Unknown Province';
 
-    provinceTargets.forEach(target => {
         if (target.province_id) {
             const province = provinces.find(p => p.id === target.province_id);
             chartTitle = province ? province.name : `Province ${target.province_id}`;
@@ -131,27 +120,28 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
                 });
             }
         }
+
+        const labels = [...cityLabels, ...regencyLabels];
+
+        return {
+            chartTitle,
+            labels,
+            datasets: [
+                {
+                    label: 'Cities',
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    data: cityData,
+                },
+                {
+                    label: 'Regencies',
+                    backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                    data: regencyData,
+                }
+            ],
+        };
     });
-
-    const labels = [...cityLabels, ...regencyLabels];
-
-    return {
-        chartTitle,
-        labels,
-        datasets: [
-            {
-                label: 'Cities',
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                data: cityData,
-            },
-            {
-                label: 'Regencies',
-                backgroundColor: 'rgba(255, 206, 86, 0.6)',
-                data: regencyData,
-            }
-        ],
-    };
 };
+
 
 // pie data
 const prepareProvincePieChartData = (selectedSurvey, provinces) => {
@@ -261,16 +251,6 @@ onMounted(() => {
 
         if (chartData) {
             barChartData.value = chartData;
-            chartOptions.value = {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: {
-                        display: true,
-                        text: chartData.chartTitle,
-                    }
-                }
-            };
         }
     } else {
         console.warn('No survey found for the given ID.');
@@ -517,8 +497,11 @@ watch(() => selectedSurvey, (newSurvey) => {
                 plugins: [ChartDataLabels],
             });
         }
+
+        barChartData.value = cityAndRegencyBarChartData(newSurvey, props.provinces);
     }
 }, { immediate: true });
+
 
 </script>
 
@@ -776,11 +759,15 @@ watch(() => selectedSurvey, (newSurvey) => {
                                     <PieChart :chartData="prepareProvincePieChartData(selectedSurvey, provinces)" :options="pieChartOptions" />
                                 </div>
                             </div>
-                            <BarChart :chartData="cityAndRegencyBarChartData(selectedSurvey, provinces)" :options="pieChartOptions" />
+                            <div v-for="(chartData, index) in barChartData" :key="index">
+                                <h3>{{ chartData.chartTitle }}</h3>
+                                <BarChart :chartData="chartData" :options="pieChartOptions" />
+                            </div>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </main>
     </AppLayout>
 </template>
