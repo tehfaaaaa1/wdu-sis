@@ -20,6 +20,7 @@ const filteredSurveys = computed(() => {
 const form = useForm({
     selectedSurvey: '',
     selectedUser: '',
+    file: '',
 })
 const isi = (surveyTitle) => {
     search.value = surveyTitle
@@ -29,31 +30,21 @@ const submit = () => {
         onFinish: () => form.reset(),
     });
 };
+
+const importContact = () => {
+    form.post(route('contact.import'))
+}
 </script>
 <template>
     <AppLayout title="Email">
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-                <div style="background-color:#ffffff;">
-                    <div>
-                        <div style="text-align: center; padding: 20px;">
-                            <img src="/img/wdu-ijo.png" alt="Wahana Data Utama" width="400">
-                            <h1
-                                style="color:#333333; font-family: Arial, sans-serif; font-size: 2em; font-weight: bold;">
-                                Anda diundang untuk mengisi
-                                formulir kami!</h1>
-                            <p style="color:#666666; font-family: Arial, sans-serif; font-size:16px;">
-                                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Maiores sequi, dolor totam
-                                repellendus recusandae velit hic laudantium eligendi exercitationem doloremque
-                                voluptatem excepturi enim dolores voluptate est accusantium suscipit quasi itaque!
-                            </p>
-                            <a href="#"
-                                style="font-family: Arial, Helvetica, sans-serif; background-color:#28a745; color:#ffffff; padding:10px 20px; text-decoration:none; display:inline-block; border-radius:5px;">
-                                Get Started
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <form @submit.prevent="importContact">
+                    <h1 class="text-lg font-semibold">Import File</h1>
+                    <input type="file" @change="form.file = $event.target.files[0]">
+                    <button type="submit">Import</button>
+                </form>
+
                 <form class="bg-white p-3 rounded-md" @submit.prevent="submit">
                     <h1 class="text-lg font-semibold">Email Send</h1>
                     <input type="email" name="" id=""

@@ -47,6 +47,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::get('/email', [HomeController::class, 'email'])->name('email');
     // Route::get('/email-send', [HomeController::class, 'sendEmail'])->name('email.send');
     Route::get('/email-send', function () { return View::make('emails.testMail'); })->name('email.send');
+    Route::post('/import-contact', [HomeController::class, 'importContact'])->name('contact.import');
     // Client
     Route::prefix('/client')->group(function (){
         

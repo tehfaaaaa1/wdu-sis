@@ -17,7 +17,9 @@ export default {
             colors: {
                 primary: "#5EB54D",
                 secondary: "#027DC0",
+                'biru-gelap': "#006da8",
                 "ijo-terang": "#6FD358",
+                "ijo-gelap": "#54a145",
               },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],

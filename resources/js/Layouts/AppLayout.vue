@@ -85,7 +85,7 @@ const logout = () => {
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-primary px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary transition ease-in-out duration-150">
+                                                class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-primary px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-ijo-gelap transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.current_team.name }}
 
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"

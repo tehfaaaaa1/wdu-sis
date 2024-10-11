@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ContactsImport;
 use Hash;
 use App\Models\Team;
 use App\Models\User;
@@ -12,6 +13,7 @@ use App\Models\Response;
 use Illuminate\Http\Request;
 use illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HomeController extends Controller
 {
@@ -102,5 +104,10 @@ class HomeController extends Controller
         Mail::to('admin@gmail.com')->send(new TestMail($mailData));
 
         echo "Mail send successfully !!";
+    }
+
+    public function importContact(Request $request) {
+        // dd($request->file('file'));
+        Excel::import(new ContactsImport, $request->file('file'));
     }
 }
