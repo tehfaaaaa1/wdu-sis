@@ -75,39 +75,5 @@ class HomeController extends Controller
             return 'user Not Found';
         }
     }
-    public function email()
-    {
-        $survey = Survey::all();
-        $users = User::all();
-        $response = Response::all();
-        foreach ($survey as $s) {
-            $project = $s->project;
-            $client = $project->client;
-            $res = $s->response;
-        }
-
-        return Inertia::render('Email', [
-            'survey' => $survey,
-            'users' => $users,
-            'response' => $response
-        ]);
-    }
-
-    public function sendEmail(Request $request)
-    {
-        $logo = public_path('img\wdu-ijo.png');
-        $mailData = [
-            'title' => 'Questionnaire Submission Invitation',
-            'logo' => $logo,
-        ];
-
-        Mail::to('admin@gmail.com')->send(new TestMail($mailData));
-
-        echo "Mail send successfully !!";
-    }
-
-    public function importContact(Request $request) {
-        // dd($request->file('file'));
-        Excel::import(new ContactsImport, $request->file('file'));
-    }
+ 
 }

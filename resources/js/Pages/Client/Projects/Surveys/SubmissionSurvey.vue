@@ -178,7 +178,7 @@ const showhide = (pgindex, qindex, value) => {
     });
 };
 
-</script>
+</script>  
 
 <template>
 
@@ -188,7 +188,7 @@ const showhide = (pgindex, qindex, value) => {
             <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
             <div class="bg-white rounded-b-md">
                 <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">
-                    {{ currentPage.page_name }}</h2>
+                    {{ currentPage.page_name }}</h2>  
 
                 <form @submit.prevent="submit" class="w-full">
                     <div class="p-5 pb-1">

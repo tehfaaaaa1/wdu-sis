@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CampaignController;
 use Inertia\Inertia;
 use App\Mail\TestMail;
 use Illuminate\Support\Facades\DB;
@@ -44,10 +45,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             'client_name' => $client->client_name ?? 'No client assigned',
         ]);
     })->name('dashboard');
-    Route::get('/email', [HomeController::class, 'email'])->name('email');
-    // Route::get('/email-send', [HomeController::class, 'sendEmail'])->name('email.send');
-    Route::get('/email-send', function () { return View::make('emails.testMail'); })->name('email.send');
-    Route::post('/import-contact', [HomeController::class, 'importContact'])->name('contact.import');
+    Route::prefix('/campaign')->group(function () {
+        Route::get('/', [CampaignController::class, 'index'])->name('campaigns');
+        Route::get('/create-campaign', [CampaignController::class, 'create'])->name('create-campaign');
+        // Route::get('/email-send', [HomeController::class, 'sendEmail'])->name('email.send');
+        Route::get('/send', function () { return View::make('emails.testMail'); })->name('email.send');
+        Route::post('/import-contact', [CampaignController::class, 'importContact'])->name('contact.import');
+    });
     // Client
     Route::prefix('/client')->group(function (){
         
