@@ -39,13 +39,14 @@ const importContact = () => {
     <AppLayout title="Email">
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
-                <form @submit.prevent="importContact">
+                <!-- <form @submit.prevent="importContact">
                     <h1 class="text-lg font-semibold">Import File</h1>
                     <input type="file" @change="form.file = $event.target.files[0]">
                     <button type="submit">Import</button>
-                </form>
+                </form> -->
 
-                <form class="bg-white p-3 rounded-md" @submit.prevent="submit">
+                <form class="bg-white p-3 rounded-md border-t-8 border-primary" @submit.prevent="submit">
+                    <h1 class="text-lg font-semibold"></h1>
                     <h1 class="text-lg font-semibold">Email Send</h1>
                     <input type="email" name="" id=""
                         class=" border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent focus:shadow-md"
