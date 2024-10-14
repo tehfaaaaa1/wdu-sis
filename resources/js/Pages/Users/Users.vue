@@ -7,6 +7,7 @@ import { ref } from 'vue';
 import NavLink from '@/Components/NavLink.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { isEmpty } from 'lodash';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 const props = defineProps({
     users: Object,
@@ -23,7 +24,7 @@ const form = useForm({
     })),
     search: '',
     noteam: '',
-    noclient:'',
+    noclient: '',
 });
 const showDeleteModal = ref(false);
 const selectedUserId = ref(null);
@@ -55,10 +56,9 @@ const search = () => {
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
-                    <NavLink :href="route('users.create')"
-                        class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
-                        Add User
-                    </NavLink>
+                    <SecondaryButton :href="route('users.create')">
+                        Create User
+                    </SecondaryButton>
                 </div>
                 <div class="w-1/4 flex items-center py-2 text-sm">
                     <input type="text" v-model="form.search" @keyup.enter="search"
@@ -68,7 +68,8 @@ const search = () => {
                         <DropdownAlt width="52">
                             <template #trigger>
                                 <button class="bg-secondary hover:bg-biru-gelap transition p-2 px-4 rounded-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-5 text-white">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
                                     </svg>
@@ -80,11 +81,14 @@ const search = () => {
                                     <div class="Teams">
                                         <p class="text-xs text-gray-500 mb-1">Teams</p>
                                         <div class="mb-1.5">
-                                            <input type="checkbox" class="checked:text-primary focus:ring-primary" v-model="form.noteam" id="noteam" name="noteam" value="">
+                                            <input type="checkbox" class="checked:text-primary focus:ring-primary"
+                                                v-model="form.noteam" id="noteam" name="noteam" value="">
                                             <label class="px-2" for="noteam">No Team</label>
                                         </div>
                                         <div class="mb-1.5 flex items-center" v-for="(t, index) in team" :key="index">
-                                            <input type="checkbox" class="checked:text-primary focus:ring-primary" :id="'team' + t.id" :name="'team' + t.id" v-model="form.team[index].tim" :value="t.name">
+                                            <input type="checkbox" class="checked:text-primary focus:ring-primary"
+                                                :id="'team' + t.id" :name="'team' + t.id" v-model="form.team[index].tim"
+                                                :value="t.name">
                                             <label class="px-2" :for="'team' + t.id">{{ t.name }}</label>
                                         </div>
                                         <hr class="my-3">
@@ -92,18 +96,22 @@ const search = () => {
                                     <div class="Client">
                                         <p class="text-xs text-gray-500 mb-1">Clients</p>
                                         <div class="No Client mb-1.5">
-                                            <input type="checkbox" class="checked:text-primary focus:ring-primary" v-model="form.noclient" id="noclient" name="noclient" value="">
+                                            <input type="checkbox" class="checked:text-primary focus:ring-primary"
+                                                v-model="form.noclient" id="noclient" name="noclient" value="">
                                             <label class="px-2" for="noclient">No Client</label>
                                         </div>
                                         <div class="mb-1.5 flex items-center" v-for="(c, index) in client" :key="index">
-                                            <input type="checkbox" class="checked:text-primary focus:ring-primary" :id="'client' + c.id + index" :name="'client' + c.id + index" v-model="form.client[index].isi" :value="c.slug">
+                                            <input type="checkbox" class="checked:text-primary focus:ring-primary"
+                                                :id="'client' + c.id + index" :name="'client' + c.id + index"
+                                                v-model="form.client[index].isi" :value="c.slug">
                                             <label class="px-2" :for="'client' + c.id + index">
                                                 {{ c.client_name }}
                                             </label>
                                         </div>
                                         <hr class="my-3">
                                     </div>
-                                    <button type="button" @click="search" class="w-full hover:bg-white hover:text-primary hover:ring-2 hover:ring-primary transition bg-primary py-2 rounded-md text-white text-center">Filter</button>
+                                    <button type="button" @click="search"
+                                        class="w-full hover:bg-white hover:text-primary hover:ring-2 hover:ring-primary transition bg-primary py-2 rounded-md text-white text-center">Filter</button>
                                 </div>
                             </template>
                         </DropdownAlt>
