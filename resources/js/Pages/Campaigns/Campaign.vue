@@ -1,10 +1,13 @@
 <script setup>
+import DialogModal from '@/Components/DialogModal.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import NavLink from '@/Components/NavLink.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
+import Show from '../Profile/Show.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 const props = defineProps({
     survey: Object,
     users: Object,
@@ -35,9 +38,19 @@ const submit = () => {
 const importContact = () => {
     form.post(route('contact.import'))
 }
+const ShowCreate = ref(false)
+const CampaignName = ref(null)
+const newCampaign = ()=>{
+    CampaignName.value = null
+}
+const createCampaign =()=>{
+    form.transform(()=>({
+        name: CampaignName.value
+    })).post(route('create-campaign'), {onSuccess:ShowCreate.value = false})
+}
 </script>
 <template>
-    <AppLayout title="Email">
+    <AppLayout title="Campaign">
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <!-- <form @submit.prevent="importContact">
@@ -46,10 +59,9 @@ const importContact = () => {
                     <button type="submit">Import</button>
                 </form> -->
                 <div class="">
-                    <NavLink :href="route()"
-                    class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4">
+                    <SecondaryButton @click="ShowCreate = true; newCampaign()">
                         Create Campaign
-                    </NavLink>
+                    </SecondaryButton>
                 </div>
                 <form class="bg-white p-3 rounded-md" @submit.prevent="submit">
                     <h1 class="text-lg font-semibold">Email Send</h1>
@@ -107,6 +119,30 @@ const importContact = () => {
                         </PrimaryButton>
                     </div>
                 </form>
+
+                <DialogModal :show="ShowCreate" @close="ShowCreate = false">
+                    <template #title>
+                        <div>
+                            Create Campaign
+                        </div>
+                    </template>
+                    <template #content>
+                        <div class="block w-full border border-gray-300 p-4">
+                            <div class="flex justify-between items-center text-base">
+                                Campaign name
+                                <input v-model="CampaignName" type="text" placeholder="Campaign Name" class="border-0 py-2 shadow-sm ring-1 ring-inset ring-gray-500 focus:ring-gray-500 focus:ring-inset text-sm lg:text-sm sm:text-sm sm:leading-6" />
+                            </div>
+                        </div>
+                    </template>
+                    <template #footer>
+                        <div class="flex items-center justify-between w-full">
+                            <button type="button" class="inline-flex items-center rounded-md px-5 bg-red-500 py-2 text-sm mr-3 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition" @click="ShowCreate = false">
+                                Back
+                            </button>
+                            <PrimaryButton @click="createCampaign()">Save</PrimaryButton>
+                        </div>
+                    </template>
+                </DialogModal>
             </div>
         </main>
 

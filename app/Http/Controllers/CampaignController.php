@@ -32,8 +32,15 @@ class CampaignController extends Controller
             'response' => $response
         ]);
     }
-    public function create(){
-        
+    public function details(){
+        $survey = Survey::all();
+
+        return Inertia::render('Campaigns/CampaignDetails',[
+            'survey' => $survey
+        ]);
+    }
+    public function store(Request $request) {
+        dd($request);
     }
     public function sendEmail(Request $request)
     {

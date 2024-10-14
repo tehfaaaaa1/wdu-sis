@@ -849,8 +849,8 @@ watch(() => textEditor.value, () => {
 
                 <template #footer>
                     <div class="flex items-center justify-between w-full">
-                        <SecondaryButton @click="showLogicModal = false" class="hover:bg-red-500 hover:text-white">Back
-                        </SecondaryButton>
+                        <button @click="showLogicModal = false" type="button" class="inline-flex items-center rounded-md px-5 bg-red-500 py-2 text-sm mr-3 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2transition">Back
+                        </button>
                         <PrimaryButton @click="createFlow()">Save</PrimaryButton>
                     </div>
                 </template>
