@@ -28,9 +28,7 @@ const isi = (surveyTitle) => {
     search.value = surveyTitle
 }
 
-const importContact = () => {
-    form.post(route('contact.import'))
-}
+
 const ShowCreate = ref(false)
 const CampaignName = ref(null)
 const newCampaign = () => {

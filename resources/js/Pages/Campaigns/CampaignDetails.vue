@@ -8,7 +8,7 @@ const props = defineProps({
 
 </script>
 <template>
-    <AppLayout title="Create Campaign">
+    <AppLayout title=" Campaign Details">
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="mb-3">
@@ -18,10 +18,7 @@ const props = defineProps({
                 <form action="" class="bg-white block rounded-sm">
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Subject</h1>
-                        <div class="block">
-                            <h2>{{ campaign.subject ?? 'Give a Suitable subjectline to this campaign.' }}</h2>
-                            <PrimaryButton v-if="campaign.subject == null">Add Subject</PrimaryButton>
-                        </div>
+                        <input type="text" placeholder="Subject"/>
                     </div>
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Sender</h1>

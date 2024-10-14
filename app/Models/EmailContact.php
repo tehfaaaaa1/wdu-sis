@@ -16,4 +16,5 @@ class EmailContact extends Model
         'company',
         'occupation',
     ];
+    
 }
