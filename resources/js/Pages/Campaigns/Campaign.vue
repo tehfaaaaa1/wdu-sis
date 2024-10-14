@@ -26,11 +26,6 @@ const form = useForm({
 const isi = (surveyTitle) => {
     search.value = surveyTitle
 }
-const submit = () => {
-    form.get(route('email.send'), {
-        onFinish: () => form.reset(),
-    });
-};
 
 const importContact = () => {
     form.post(route('contact.import'))
@@ -38,77 +33,82 @@ const importContact = () => {
 </script>
 <template>
     <AppLayout title="Email">
-        <main class="min-h-screen">
-            <div class="mx-auto mt-5 rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <!-- <form @submit.prevent="importContact">
+        <main class="min-h-screen max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- <form @submit.prevent="importContact">
                     <h1 class="text-lg font-semibold">Import File</h1>
                     <input type="file" @change="form.file = $event.target.files[0]">
                     <button type="submit">Import</button>
                 </form> -->
-                <div class="">
-                    <NavLink :href="route()"
-                    class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4">
-                        Create Campaign
-                    </NavLink>
+                <div class="flex justify-between items-center mb-5">
+                    <div class="w-1/2 sm:w-full">
+                        <NavLink :href="route('create_client_page')"
+                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
+                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary transition">
+                            Create Campaign
+                        </NavLink>
+                    </div>
+                    <div class="flex items-center  py-2 text-sm w-52">
+                        <input type="text" v-model="searchQuery"
+                            class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-1 focus:ring-primary focus:border-primary"
+                            placeholder="Search">
+                    </div>
                 </div>
-                <form class="bg-white p-3 rounded-md" @submit.prevent="submit">
-                    <h1 class="text-lg font-semibold">Email Send</h1>
-                    <input type="email" name="" id=""
-                        class=" border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent focus:shadow-md"
-                        placeholder="Email">
-                    <div class="flex items-center mt-2" name='content'>
-                        <!-- <h2 class="font-semibold text-black">Pilih Survey</h2> -->
-                        <div class="relative">
-                            <h1>Pilih Survey</h1>
-                            <Dropdown width="96" align="left">
-                                <template #trigger>
-                                    <input type="text" name="" id="" v-model="search" @click="search = ''"
-                                        class="w-full mb-2 border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent  focus:shadow-md"
-                                        placeholder="Search Survey">
-                                </template>
-                                <template #content>
-                                    <div class="cursor-pointer p-2 grid "
-                                        :class="filteredSurveys.length < 5 ? 'grid-cols-1' : 'grid-cols-2'">
-                                        <div class="w-full  text-gray-700 cursor-pointer rounded-sm hover:bg-gray-200 "
-                                            v-for="survey in filteredSurveys" @input="isi(survey.title)">
-                                            <input type="radio" name="" :id="'survey_' + survey.id" :value="survey"
-                                                v-model="form.selectedSurvey" class="hidden w-full">
-                                            <label class="text-sm cursor-pointer block px-2 py-1 h-full"
-                                                :for="'survey_' + survey.id">{{ survey.title }}</label>
-                                        </div>
-                                        <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700 ">Tidak
-                                            Ada Survey Yang Sesuai</p>
+            <form class="bg-white p-3 rounded-md">
+                <h1 class="text-lg font-semibold">Email Send</h1>
+                <input type="email" name="" id=""
+                    class=" border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent focus:shadow-md"
+                    placeholder="Email">
+                <div class="flex items-center mt-2" name='content'>
+                    <!-- <h2 class="font-semibold text-black">Pilih Survey</h2> -->
+                    <div class="relative">
+                        <h1>Pilih Survey</h1>
+                        <Dropdown width="96" align="left">
+                            <template #trigger>
+                                <input type="text" name="" id="" v-model="search" @click="search = ''"
+                                    class="w-full mb-2 border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent  focus:shadow-md"
+                                    placeholder="Search Survey">
+                            </template>
+                            <template #content>
+                                <div class="cursor-pointer p-2 grid "
+                                    :class="filteredSurveys.length < 5 ? 'grid-cols-1' : 'grid-cols-2'">
+                                    <div class="w-full  text-gray-700 cursor-pointer rounded-sm hover:bg-gray-200 "
+                                        v-for="survey in filteredSurveys" @input="isi(survey.title)">
+                                        <input type="radio" name="" :id="'survey_' + survey.id" :value="survey"
+                                            v-model="form.selectedSurvey" class="hidden w-full">
+                                        <label class="text-sm cursor-pointer block px-2 py-1 h-full"
+                                            :for="'survey_' + survey.id">{{ survey.title }}</label>
                                     </div>
-                                </template>
-                            </Dropdown>
+                                    <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700 ">Tidak
+                                        Ada Survey Yang Sesuai</p>
+                                </div>
+                            </template>
+                        </Dropdown>
+                    </div>
+                </div>
+                <div class="" v-if="form.selectedSurvey">
+                    <h2 class="font-semibold text-black">Pilih Akun</h2>
+                    <div class="w-full grid grid-cols-2 gap-2 text-gray-700">
+                        <div class=""
+                            v-for="user in users.filter(user => user.client_id == form.selectedSurvey.project.client.id && form.selectedSurvey.response.every(res => res.user_id != user.id))">
+                            <input type="radio" :id="'user_' + user.id" name="user_id"
+                                class="checked:text-primary focus:ring-primary" v-model="form.selectedUser"
+                                :value="user">
+                            <label :for="'user_' + user.id" class="pl-1.5 text-sm">{{ user.name }} {{
+                                form.selectedSurvey.response.some(res => res.user_id == user.id) ? '(sudah Mengisi)'
+                                    :
+                                    '(Belum Mengisi)'
+                            }}</label>
                         </div>
                     </div>
-                    <div class="" v-if="form.selectedSurvey">
-                        <h2 class="font-semibold text-black">Pilih Akun</h2>
-                        <div class="w-full grid grid-cols-2 gap-2 text-gray-700">
-                            <div class=""
-                                v-for="user in users.filter(user => user.client_id == form.selectedSurvey.project.client.id && form.selectedSurvey.response.every(res => res.user_id != user.id))">
-                                <input type="radio" :id="'user_' + user.id" name="user_id"
-                                    class="checked:text-primary focus:ring-primary" v-model="form.selectedUser"
-                                    :value="user">
-                                <label :for="'user_' + user.id" class="pl-1.5 text-sm">{{ user.name }} {{
-                                    form.selectedSurvey.response.some(res => res.user_id == user.id) ? '(sudah Mengisi)'
-                                        :
-                                        '(Belum Mengisi)'
-                                }}</label>
-                            </div>
-                        </div>
-                    </div>
+                </div>
 
-                    <div class="my-4">
-                        <PrimaryButton class="justify-center mt-2" :class="{ 'opacity-25': form.processing }"
-                            :disabled="form.processing">
-                            Send Email
-                        </PrimaryButton>
-                    </div>
-                </form>
-            </div>
+                <div class="my-4">
+                    <PrimaryButton class="justify-center mt-2" :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing">
+                        Send Email
+                    </PrimaryButton>
+                </div>
+            </form>
         </main>
-
     </AppLayout>
 </template>

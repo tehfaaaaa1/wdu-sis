@@ -11,16 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('campaigns', function (Blueprint $table) {
+        Schema::create('senders', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('subject')->nullable();
-            $table->string('sender')->nullable();
-            $table->foreignId('recipient_id')->nullable()->constrained(
-                table: 'recipients',
-                indexName: 'campaigns_recipient_id',
-            )->nullOnDelete();
-            $table->string('content')->nullable();
+            $table->string('email');
+            $table->string('reply_address');
             $table->timestamps();
         });
     }

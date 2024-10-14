@@ -230,20 +230,16 @@ const logout = () => {
                 <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
                     class="lg:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                            :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
-                            Admin Panel
-                        </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('listclient')" :active="route().current('listclient')">
                             Client
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin'" :href="route('users')"
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5" :href="route('users')"
                             :active="route().current('users')">
                             User
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5" :href="route('campaigns')"
+                            :active="route().current('campaigns')">
+                            Campaigns
                         </ResponsiveNavLink>
                     </div>
 

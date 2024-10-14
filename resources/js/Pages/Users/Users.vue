@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import DropdownAlt from '@/Components/DropdownAlt.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
-import { useForm } from '@inertiajs/vue3';
+import { useForm, Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import NavLink from '@/Components/NavLink.vue';
 import Pagination from '@/Components/Pagination.vue';
@@ -52,15 +52,8 @@ const search = () => {
 
 <template>
     <AppLayout title="Users">
-        <template #header>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Users
-                </h2>
-            </div>
-        </template>
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center mb-6">
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
                     <NavLink :href="route('users.create')"
                         class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
@@ -74,7 +67,7 @@ const search = () => {
                     <div class="relative" id="filter">
                         <DropdownAlt width="52">
                             <template #trigger>
-                                <button class="bg-secondary p-2 px-4 rounded-md">
+                                <button class="bg-secondary hover:bg-biru-gelap transition p-2 px-4 rounded-md">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-white">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
@@ -166,7 +159,7 @@ const search = () => {
                     <Pagination :links="users.links" />
                 </div>
             </div>
-        </div>
+        </main>
 
         <DeleteConfirmation :show="showDeleteModal" @confirm="confirmDeletion" @cancel="cancelDeletion" />
     </AppLayout>
