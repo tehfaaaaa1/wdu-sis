@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\ContactController;
 use Inertia\Inertia;
 use App\Mail\TestMail;
 use Illuminate\Support\Facades\DB;
@@ -45,13 +46,21 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             'client_name' => $client->client_name ?? 'No client assigned',
         ]);
     })->name('dashboard');
+    Route::prefix('/contact')->group(function (){
+        Route::get('/', [ContactController::class, 'contact'])->name('list-contact');
+        Route::get('/recipient-list', [ContactController::class, 'recipient'])->name('list-recipient');
+        Route::get('/recipient/{id}/details', [ContactController::class, 'details'])->name('recipient-details');
+        Route::get('/recipient/{id}/add-contact', [ContactController::class, 'addContact'])->name('add-contact');
+        Route::post('/recipient/{id}/addcontact', [ContactController::class,'storeContact'])->name('store-contact');
+        Route::post('/create-recipient', [ContactController::class, 'createRecipient'])->name('create-recipient');
+        Route::post('/recipient/{id}/import-contact', [ContactController::class, 'importContact'])->name('contact.import');
+    });
     Route::prefix('/campaign')->group(function () {
         Route::get('/', [CampaignController::class, 'index'])->name('campaigns');
         Route::post('/create-campaign', [CampaignController::class, 'store'])->name('create-campaign');
         Route::get('/{id}/details', [CampaignController::class, 'details'])->name('details');
         // Route::get('/email-send', [HomeController::class, 'sendEmail'])->name('email.send');
         Route::get('/send', function () { return View::make('emails.testMail'); })->name('email.send');
-        Route::post('/import-contact', [CampaignController::class, 'importContact'])->name('contact.import');
     });
     // Client
     Route::prefix('/client')->group(function (){

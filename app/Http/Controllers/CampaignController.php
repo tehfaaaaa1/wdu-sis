@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campaign;
+use App\Models\EmailContact;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Mail\TestMail;
@@ -71,9 +72,7 @@ class CampaignController extends Controller
 
         echo "Mail send successfully !!";
     }
-
-    public function importContact(Request $request) {
-        // dd($request->file('file'));
-        Excel::import(new ContactsImport, $request->file('file'));
-    }
+    // contact
+    
+    
 }

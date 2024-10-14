@@ -22,7 +22,6 @@ const switchToTeam = (team) => {
         preserveState: false,
     });
 };
-
 const logout = () => {
     router.post(route('logout'));
 };
@@ -72,6 +71,10 @@ const logout = () => {
                                 <NavLink class="focus:text-primary" v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('campaigns')"
                                     :active="route().current('campaigns')">
                                     Campaigns
+                                </NavLink>
+                                <NavLink class="focus:text-primary" v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('list-contact')"
+                                    :active="route().current('list-contact') || route().current('list-recipient')">
+                                    Contact
                                 </NavLink>
                             </div>
                         </div>

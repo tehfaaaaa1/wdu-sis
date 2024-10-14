@@ -6,6 +6,7 @@ import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 
 
 const props = defineProps({ clients: Object, })
@@ -59,11 +60,10 @@ const filteredClients = computed(() => {
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('create_client_page')"
-                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary transition">
-                            Add Clients
-                        </NavLink>
+                        <SecondaryButton :href="route('create_client_page')"
+                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'">
+                            Create Client
+                        </SecondaryButton>
                     </div>
                     <div class="flex items-center py-2 text-sm w-52">
                         <input type="text" v-model="searchQuery"

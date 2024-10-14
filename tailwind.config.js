@@ -20,22 +20,25 @@ export default {
                 'biru-gelap': "#006da8",
                 "ijo-terang": "#6FD358",
                 "ijo-gelap": "#54a145",
-              },
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
             spacing: {
                 330: "21.875rem",
-              },
-              listStyleType: {
+            },
+            listStyleType: {
                 none: 'none',
                 disc: 'disc',
                 decimal: 'decimal',
                 square: 'square',
-              },
-              gridTemplateRows: {
+            },
+            gridTemplateRows: {
                 // Simple 13 row grid
                 '13': 'repeat(13, minmax(0, 1fr))',
+            },
+            borderWidth: {
+                '6': '6px',
             },
         },
     },
