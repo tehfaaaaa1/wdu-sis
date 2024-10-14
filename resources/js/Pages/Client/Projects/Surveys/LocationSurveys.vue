@@ -85,61 +85,69 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
         return [];
     }
 
-    return provinceTargets.map(target => {
-        const cityLabels = [];
-        const regencyLabels = [];
-        const cityData = [];
-        const regencyData = [];
-        let chartTitle = 'Unknown Province';
+    return provinceTargets
+        .map(target => {
+            const cityLabels = [];
+            const regencyLabels = [];
+            const cityData = [];
+            const regencyData = [];
+            let chartTitle = 'Unknown Province';
 
-        if (target.province_id) {
-            const province = provinces.find(p => p.id === target.province_id);
-            chartTitle = province ? province.name : `Province ${target.province_id}`;
+            if (target.province_id) {
+                const province = provinces.find(p => p.id === target.province_id);
+                chartTitle = province ? province.name : `Province ${target.province_id}`;
 
-            if (target.cities && Array.isArray(target.cities)) {
-                target.cities.forEach(city => {
-                    if (city.city_id && city.target_response_city) {
-                        const cityTargetResponse = parseInt(city.target_response_city, 10);
-                        if (!isNaN(cityTargetResponse)) {
-                            cityLabels.push(`City ${city.city_id}`);
-                            cityData.push(cityTargetResponse);
+                if (target.cities && Array.isArray(target.cities) && target.cities.length > 0) {
+                    target.cities.forEach(city => {
+                        if (city.city_id && city.target_response_city) {
+                            const cityTargetResponse = parseInt(city.target_response_city, 10);
+                            const foundCity = props.cities ? props.cities.find(c => c.id === city.city_id) : null;
+                            const cityName = foundCity ? foundCity.name : `City ${city.city_id}`;
+                            if (!isNaN(cityTargetResponse)) {
+                                cityLabels.push(cityName);
+                                cityData.push(cityTargetResponse);
+                            }
                         }
-                    }
-                });
-            }
-
-            if (target.regencies && Array.isArray(target.regencies)) {
-                target.regencies.forEach(regency => {
-                    if (regency.regency_id && regency.target_response_regency) {
-                        const regencyTargetResponse = parseInt(regency.target_response_regency, 10);
-                        if (!isNaN(regencyTargetResponse)) {
-                            regencyLabels.push(`Regency ${regency.regency_id}`);
-                            regencyData.push(regencyTargetResponse);
-                        }
-                    }
-                });
-            }
-        }
-
-        const labels = [...cityLabels, ...regencyLabels];
-
-        return {
-            chartTitle,
-            labels,
-            datasets: [
-                {
-                    label: 'Cities',
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    data: cityData,
-                },
-                {
-                    label: 'Regencies',
-                    backgroundColor: 'rgba(255, 206, 86, 0.6)',
-                    data: regencyData,
+                    });
                 }
-            ],
-        };
-    });
+
+                if (target.regencies && Array.isArray(target.regencies) && target.regencies.length > 0) {
+                    target.regencies.forEach(regency => {
+                        if (regency.regency_id && regency.target_response_regency) {
+                            const regencyTargetResponse = parseInt(regency.target_response_regency, 10);
+                            if (!isNaN(regencyTargetResponse)) {
+                                regencyLabels.push(`Regency ${regency.regency_id}`);
+                                regencyData.push(regencyTargetResponse);
+                            }
+                        }
+                    });
+                }
+            }
+
+            const labels = [...cityLabels, ...regencyLabels];
+
+            if (labels.length > 0) {
+                return {
+                    chartTitle,
+                    labels,
+                    datasets: [
+                        {
+                            label: 'Cities',
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            data: cityData,
+                        },
+                        {
+                            label: 'Regencies',
+                            backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                            data: regencyData,
+                        }
+                    ],
+                };
+            }
+
+            return null;
+        })
+        .filter(data => data !== null); 
 };
 
 
@@ -535,11 +543,6 @@ watch(() => selectedSurvey, (newSurvey) => {
                         </NavLink>
                     </div>
 
-                    <div class="flex items-center px-4 py-2 text-sm w-60">
-                        <input type="text" v-model="searchQuery"
-                            class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-none focus:shadow-md"
-                            placeholder="Search">
-                    </div>
                 </div>
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-gray-500 text-left">
@@ -759,8 +762,10 @@ watch(() => selectedSurvey, (newSurvey) => {
                                     <PieChart :chartData="prepareProvincePieChartData(selectedSurvey, provinces)" :options="pieChartOptions" />
                                 </div>
                             </div>
-                            <div v-for="(chartData, index) in barChartData" :key="index">
-                                <h3>{{ chartData.chartTitle }}</h3>
+                            <div v-for="(chartData, index) in barChartData" :key="index" class="flex flex-col items-center h-full mt-5">
+                                <div class="text-center">
+                                    <h3>{{ chartData.chartTitle }}</h3>
+                                </div>
                                 <BarChart :chartData="chartData" :options="pieChartOptions" />
                             </div>
 
