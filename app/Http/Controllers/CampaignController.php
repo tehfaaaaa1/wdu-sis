@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campaign;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Mail\TestMail;
@@ -20,6 +21,7 @@ class CampaignController extends Controller
         $survey = Survey::all();
         $users = User::all();
         $response = Response::all();
+        $campg = Campaign::all();
         foreach ($survey as $s) {
             $project = $s->project;
             $client = $project->client;
@@ -29,18 +31,33 @@ class CampaignController extends Controller
         return Inertia::render('Campaigns/Campaign', [
             'survey' => $survey,
             'users' => $users,
-            'response' => $response
+            'response' => $response,
+            'campaigns'=> collect($campg)->map(function ($c)  {
+                return [
+                    'id'=> $c->id,
+                    'name'=> $c->name,
+                    'dibuat'=>$c->created_at->format('M d Y H:i'),
+                    'upadte' =>$c->updated_at->format('M d Y H:i')
+                ];
+            })
         ]);
     }
-    public function details(){
-        $survey = Survey::all();
-
+    public function details($id){
+        $campg = Campaign::where('id', $id)->first();
         return Inertia::render('Campaigns/CampaignDetails',[
-            'survey' => $survey
+            'campaign'=> $campg,
+            'created' => $campg->created_at->format('M d,Y H:i')
         ]);
     }
     public function store(Request $request) {
-        dd($request);
+        // dd($request);
+        $validated = $request->validate([
+            'name' => 'string|max:255',
+        ]);
+        Campaign::create([
+            'name' => $validated['name'],
+        ]);
+        return redirect()->route('campaigns')->with('succes', 'Succes Add Campaign');
     }
     public function sendEmail(Request $request)
     {
