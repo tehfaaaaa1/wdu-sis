@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::prefix('/campaign')->group(function () {
         Route::get('/', [CampaignController::class, 'index'])->name('campaigns');
         Route::post('/create-campaign', [CampaignController::class, 'store'])->name('create-campaign');
-        Route::get('/details', [CampaignController::class, 'details'])->name('details');
+        Route::get('/{id}/details', [CampaignController::class, 'details'])->name('details');
         // Route::get('/email-send', [HomeController::class, 'sendEmail'])->name('email.send');
         Route::get('/send', function () { return View::make('emails.testMail'); })->name('email.send');
         Route::post('/import-contact', [CampaignController::class, 'importContact'])->name('contact.import');

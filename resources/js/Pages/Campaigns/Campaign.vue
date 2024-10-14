@@ -11,7 +11,8 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 const props = defineProps({
     survey: Object,
     users: Object,
-    response: Object
+    response: Object,
+    campaigns: Object
 })
 const search = ref('')
 const filteredSurveys = computed(() => {
@@ -58,62 +59,16 @@ const createCampaign =()=>{
                         Create Campaign
                     </SecondaryButton>
                 </div>
-            <form class="bg-white p-3 rounded-md">
-                <h1 class="text-lg font-semibold">Email Send</h1>
-                <input type="email" name="" id=""
-                    class=" border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent focus:shadow-md"
-                    placeholder="Email">
-                <div class="flex items-center mt-2" name='content'>
-                    <!-- <h2 class="font-semibold text-black">Pilih Survey</h2> -->
-                    <div class="relative">
-                        <h1>Pilih Survey</h1>
-                        <Dropdown width="96" align="left">
-                            <template #trigger>
-                                <input type="text" name="" id="" v-model="search" @click="search = ''"
-                                    class="w-full mb-2 border-primary rounded-md text-sm placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-transparent  focus:shadow-md"
-                                    placeholder="Search Survey">
-                            </template>
-                            <template #content>
-                                <div class="cursor-pointer p-2 grid "
-                                    :class="filteredSurveys.length < 5 ? 'grid-cols-1' : 'grid-cols-2'">
-                                    <div class="w-full  text-gray-700 cursor-pointer rounded-sm hover:bg-gray-200 "
-                                        v-for="survey in filteredSurveys" @input="isi(survey.title)">
-                                        <input type="radio" name="" :id="'survey_' + survey.id" :value="survey"
-                                            v-model="form.selectedSurvey" class="hidden w-full">
-                                        <label class="text-sm cursor-pointer block px-2 py-1 h-full"
-                                            :for="'survey_' + survey.id">{{ survey.title }}</label>
-                                    </div>
-                                    <p v-if="filteredSurveys.length == 0" class="px-2 text-sm text-gray-700 ">Tidak
-                                        Ada Survey Yang Sesuai</p>
-                                </div>
-                            </template>
-                        </Dropdown>
-                    </div>
-                </div>
-                <div class="" v-if="form.selectedSurvey">
-                    <h2 class="font-semibold text-black">Pilih Akun</h2>
-                    <div class="w-full grid grid-cols-2 gap-2 text-gray-700">
-                        <div class=""
-                            v-for="user in users.filter(user => user.client_id == form.selectedSurvey.project.client.id && form.selectedSurvey.response.every(res => res.user_id != user.id))">
-                            <input type="radio" :id="'user_' + user.id" name="user_id"
-                                class="checked:text-primary focus:ring-primary" v-model="form.selectedUser"
-                                :value="user">
-                            <label :for="'user_' + user.id" class="pl-1.5 text-sm">{{ user.name }} {{
-                                form.selectedSurvey.response.some(res => res.user_id == user.id) ? '(sudah Mengisi)'
-                                    :
-                                    '(Belum Mengisi)'
-                            }}</label>
+            <div class="bg-white p-3">
+                <div class="block" v-for="(campaign, index) in campaigns" :key="index">
+                    <div class="flex items-center w-full">
+                        <div class="block">
+                         <a :href="route('details',[campaign.id])">{{ campaign.name }}</a>
+                         <p>Sent On {{ campaign.dibuat }}</p>
                         </div>
                     </div>
                 </div>
-
-                    <div class="my-4">
-                        <PrimaryButton class="justify-center mt-2" :class="{ 'opacity-25': form.processing }"
-                            :disabled="form.processing">
-                            Send Email
-                        </PrimaryButton>
-                    </div>
-                </form>
+            </div>
 
                 <DialogModal :show="ShowCreate" @close="ShowCreate = false">
                     <template #title>
