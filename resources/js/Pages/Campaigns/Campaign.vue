@@ -31,9 +31,7 @@ const isi = (surveyTitle) => {
     search.value = surveyTitle
 }
 
-const importContact = () => {
-    form.post(route('contact.import'))
-}
+
 const ShowCreate = ref(false)
 const CampaignName = ref(null)
 const newCampaign = ()=>{
@@ -54,7 +52,7 @@ const createCampaign =()=>{
                     <input type="file" @change="form.file = $event.target.files[0]">
                     <button type="submit">Import</button>
                 </form> -->
-                <div class="">
+                <div class="flex gap-x-5">
                     <SecondaryButton @click="ShowCreate = true; newCampaign()">
                         Create Campaign
                     </SecondaryButton>
@@ -63,8 +61,8 @@ const createCampaign =()=>{
                 <div class="block" v-for="(campaign, index) in campaigns" :key="index">
                     <div class="flex items-center w-full">
                         <div class="block">
-                         <a :href="route('details',[campaign.id])">{{ campaign.name }}</a>
-                         <p>Sent On {{ campaign.dibuat }}</p>
+                            <a class="text-lg font-medium" :href="route('details',[campaign.id])">{{ campaign.name }}</a>
+                            <p class="text-sm">Sent On {{ campaign.dibuat }}</p>
                         </div>
                     </div>
                 </div>
