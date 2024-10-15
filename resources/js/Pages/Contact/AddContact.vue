@@ -72,10 +72,10 @@ const importContact = () => {
                 <div class="block">
                     <form @submit.prevent="addcontact">
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg gap-x-3">
-                            <table class="w-full  text-sm text-left rtl:text-right text-gray-500">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 border-separate">
                                 <thead class="text uppercase">
                                     <tr>
-                                        <th scope="col" class="sticky left-0 px-6 py-3 bg-white shadow-2xl">Email</th>
+                                        <th scope="col" class="sticky left-0 px-6 py-3 bg-white border-r border-gray-300">Email</th>
                                         <th scope="col" class="px-6 py-3">First Name</th>
                                         <th scope="col" class="px-6 py-3">Last Name</th>
                                         <th scope="col" class="px-6 py-3">Company</th>
@@ -83,8 +83,8 @@ const importContact = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="" v-for="(contact, index) in contacts" :key="index">
-                                        <td class="bg-white shadow-2xl sticky left-0 px-6 py-4 font-medium text-gray-900"><input type="email" class="sticky left-0" placeholder="Email" v-model="contacts[index].email" /></td>
+                                    <tr class="relative" v-for="(contact, index) in contacts" :key="index">
+                                        <td class="bg-white sticky left-0 px-6 py-4 font-medium text-gray-900 border-r border-gray-300"><input type="email" placeholder="Email" v-model="contacts[index].email" /></td>
                                         <td class="px-6 py-4 font-medium text-gray-900"> <input type="text" placeholder="First Name" v-model="contacts[index].first_name" /></td>
                                         <td class="px-6 py-4 font-medium text-gray-900"><input type="text" placeholder="Last Name" v-model="contacts[index].last_name" /></td>
                                         <td class="px-6 py-4 font-medium text-gray-900"> <input type="text" placeholder="Company" v-model="contacts[index].company" /></td>
@@ -95,7 +95,7 @@ const importContact = () => {
                         </div>
                         <button type="button" @click="add">Add</button>
                         <div class="my-4 text-center">
-                            <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
+                            <PrimaryButton class="px-2 justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                                 :disabled="form.processing">
                                 Add Contact
                             </PrimaryButton>
@@ -106,3 +106,9 @@ const importContact = () => {
         </main>
     </AppLayout>
 </template>
+
+<style scoped>
+.shadow-right {
+    box-shadow: 10px 0px 5px -1px #888;
+}
+</style>
