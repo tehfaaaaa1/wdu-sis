@@ -54,8 +54,18 @@ const newSender = ()=>{
                                 <SecondaryButton type="button" @click="addSender = !addSender; addSenderNew = false">
                                     {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
                                 </SecondaryButton>
-                                <PrimaryButton type="button" v-show="addSender" @click="addSenderNew = ! addSendernew">Add New</PrimaryButton>
                             </div>
+                                <div class="w-full p-3 shadow-md rounded-sm" v-show="addSender">
+                                    <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
+                                        <input type="radio" :id="'sender_' + sender.id"
+                                            class="checked:text-primary focus:ring-primary" v-model="form.sender_id"
+                                            :value="sender.id" />
+                                        <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
+                                            {{ sender.email }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <PrimaryButton type="button" v-show="addSender" @click="addSenderNew = ! addSendernew">Or Add New</PrimaryButton>
                             <div class="block" v-show="addSenderNew">
                                 <input type="text" name="" placeholder="name" v-model="form.sender_name">
                                 <input type="email" name="" placeholder="email" v-model="form.sender_email">
@@ -63,16 +73,6 @@ const newSender = ()=>{
                                 <button type="button" @click="newSender">Add</button>
                             </div>
 
-                            <div class="w-full p-3 shadow-md rounded-sm" v-show="addSender">
-                                <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
-                                    <input type="radio" :id="'sender_' + sender.id"
-                                        class="checked:text-primary focus:ring-primary" v-model="form.sender_id"
-                                        :value="sender.id" />
-                                    <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
-                                        {{ sender.email }}
-                                    </label>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="form-field">
