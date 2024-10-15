@@ -33,9 +33,10 @@ class ContactController extends Controller
         ]);
         Recipient::create(['name'=> $validated['name']]);
     }
-    public function importContact(Request $request) {
-        // dd($request->file('file'));
-        Excel::import(new ContactsImport, $request->file('file'));
+
+
+    public function importContact(Request $request, $id) {
+        Excel::import(new ContactsImport($id), $request->file('file'));
     }
 
     public function details($id) {
