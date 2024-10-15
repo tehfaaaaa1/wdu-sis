@@ -30,6 +30,6 @@ class ContactsImport implements ToModel, WithHeadingRow
         return ContactRecipient::firstOrCreate([
             'email_contact_id'=> $emailC->id ?? $emailC->id,
             'recipient_id' => $this->id ?? $this->id
-        ]);
+        ]   );
     }
 }
