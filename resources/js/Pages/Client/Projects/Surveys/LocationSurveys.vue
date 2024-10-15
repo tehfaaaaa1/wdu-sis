@@ -87,8 +87,7 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
 
     return provinceTargets
         .map(target => {
-            const cityLabels = [];
-            const regencyLabels = [];
+            const labels = [];
             const cityData = [];
             const regencyData = [];
             let chartTitle = 'Unknown Province';
@@ -104,8 +103,9 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
                             const foundCity = props.cities ? props.cities.find(c => c.id === city.city_id) : null;
                             const cityName = foundCity ? foundCity.name : `City ${city.city_id}`;
                             if (!isNaN(cityTargetResponse)) {
-                                cityLabels.push(cityName);
+                                labels.push(cityName);
                                 cityData.push(cityTargetResponse);
+                                regencyData.push(null);
                             }
                         }
                     });
@@ -115,16 +115,17 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
                     target.regencies.forEach(regency => {
                         if (regency.regency_id && regency.target_response_regency) {
                             const regencyTargetResponse = parseInt(regency.target_response_regency, 10);
+                            const foundRegency = props.regencies ? props.regencies.find(r => r.id === regency.regency_id) : null;
+                            const regencyName = foundRegency ? foundRegency.name : `Regency ${regency.regency_id}`;
                             if (!isNaN(regencyTargetResponse)) {
-                                regencyLabels.push(`Regency ${regency.regency_id}`);
+                                labels.push(regencyName);
+                                cityData.push(null);
                                 regencyData.push(regencyTargetResponse);
                             }
                         }
                     });
                 }
             }
-
-            const labels = [...cityLabels, ...regencyLabels];
 
             if (labels.length > 0) {
                 return {
@@ -135,11 +136,13 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
                             label: 'Cities',
                             backgroundColor: 'rgba(54, 162, 235, 0.6)',
                             data: cityData,
+                            barPercentage: 1,
                         },
                         {
                             label: 'Regencies',
                             backgroundColor: 'rgba(255, 206, 86, 0.6)',
                             data: regencyData,
+                            barThickness: 30,
                         }
                     ],
                 };
@@ -147,9 +150,8 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
 
             return null;
         })
-        .filter(data => data !== null); 
+        .filter(data => data !== null);
 };
-
 
 // pie data
 const prepareProvincePieChartData = (selectedSurvey, provinces) => {
@@ -762,14 +764,16 @@ watch(() => selectedSurvey, (newSurvey) => {
                                     <PieChart :chartData="prepareProvincePieChartData(selectedSurvey, provinces)" :options="pieChartOptions" />
                                 </div>
                             </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4">    
                             <div v-for="(chartData, index) in barChartData" :key="index" class="flex flex-col items-center h-full mt-5">
                                 <div class="text-center">
                                     <h3>{{ chartData.chartTitle }}</h3>
                                 </div>
                                 <BarChart :chartData="chartData" :options="pieChartOptions" />
                             </div>
-
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
