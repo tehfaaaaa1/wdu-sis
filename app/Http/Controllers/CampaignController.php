@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\EmailContact;
+use App\Models\Recipient;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Mail\TestMail;
@@ -45,10 +46,23 @@ class CampaignController extends Controller
     }
     public function details($id){
         $campg = Campaign::where('id', $id)->first();
+        $rec = $campg->recipient;
+        $recipient = Recipient::all();
         return Inertia::render('Campaigns/CampaignDetails',[
             'campaign'=> $campg,
-            'created' => $campg->created_at->format('M d,Y H:i')
+            'created' => $campg->created_at->format('M d,Y H:i'),
+            'recipients' => $recipient,
         ]);
+    }
+    public function addData(Request $request, $id) {
+        // dd($request->subject);
+        $campaign = Campaign::firstOrNew(['id'=>$id??null]);
+        $campaign->subject = $request->subject ?? null;
+        $campaign->sender = $request->sender ?? null;
+        $campaign->recipient_id = $request->recipient_id ?? null;
+        $campaign->content = $request->isi ?? null;
+        $campaign->save();
+        return back();
     }
     public function store(Request $request) {
         // dd($request);

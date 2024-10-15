@@ -136,15 +136,52 @@ const cityAndRegencyBarChartData = (selectedSurvey, provinces) => {
                             label: 'Cities',
                             backgroundColor: 'rgba(54, 162, 235, 0.6)',
                             data: cityData,
-                            barPercentage: 1,
+                            barPercentage: 0.4,
                         },
                         {
                             label: 'Regencies',
                             backgroundColor: 'rgba(255, 206, 86, 0.6)',
                             data: regencyData,
-                            barThickness: 30,
+                            barThickness: 10,
                         }
                     ],
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 10,
+                                    },
+                                },
+                            },
+                            y: {
+                                ticks: {
+                                    font: {
+                                        size: 10,
+                                    },
+                                },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    font: {
+                                        size: 10,
+                                    },
+                                },
+                            },
+                        },
+                        layout: {
+                            padding: {
+                                top: 10,
+                                bottom: 10,
+                                left: 5,
+                                right: 5,
+                            },
+                        },
+                    },
                 };
             }
 
@@ -765,18 +802,25 @@ watch(() => selectedSurvey, (newSurvey) => {
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="grid grid-cols-3 gap-4">    
-                            <div v-for="(chartData, index) in barChartData" :key="index" class="flex flex-col items-center h-full mt-5">
-                                <div class="text-center">
-                                    <h3>{{ chartData.chartTitle }}</h3>
-                                </div>
-                                <BarChart :chartData="chartData" :options="pieChartOptions" />
-                            </div>
+                        <hr class="border-t-1 border-gray-400 m-10" />
+                        <div>
+                            <h3 class="text-center text-xl font-semibold">Responden Based City / Regency Target</h3>
                         </div>
+                        <div class="max-w-7xl mx-3">
+                            <div class="grid grid-cols-3 gap-2">    
+                                <div v-for="(chartData, index) in barChartData" :key="index" class="flex flex-col items-center h-full mt-3 p-2">
+                                    <div class="text-center">
+                                        <h3 class="text-sm">{{ chartData.chartTitle }}</h3>
+                                    </div>
+                                    <div class="w-3/4 h-48">
+                                        <BarChart :chartData="chartData" :options="pieChartOptions" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
         </main>
     </AppLayout>
 </template>
