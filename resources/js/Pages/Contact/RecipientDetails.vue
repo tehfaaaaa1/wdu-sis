@@ -27,6 +27,7 @@ console.log(props.recipient)
                 </div>
                 <div class="bg-white rounded-sm">
                     <div class="" v-for="(rec, index) in props.contact" :key="index">
+                        <!-- {{ recipient }} -->
                         {{ rec.email_contact.email }}
                     </div>
                 </div>
