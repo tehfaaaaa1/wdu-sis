@@ -72,10 +72,10 @@ const importContact = () => {
                 <div class="block">
                     <form @submit.prevent="addcontact">
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg gap-x-3">
-                            <table class="w-full  text-sm text-left rtl:text-right text-gray-500">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 relative border-separate border border-gray-200">
                                 <thead class="text uppercase">
-                                    <tr>
-                                        <th scope="col" class="sticky left-0 px-6 py-3 bg-white shadow-2xl">Email</th>
+                                    <tr class="">
+                                        <th scope="col" class=" border-r border-gray-200 sticky left-0 px-6 py-3 bg-white shadow-2xl">Email</th>
                                         <th scope="col" class="px-6 py-3">First Name</th>
                                         <th scope="col" class="px-6 py-3">Last Name</th>
                                         <th scope="col" class="px-6 py-3">Company</th>
@@ -84,16 +84,30 @@ const importContact = () => {
                                 </thead>
                                 <tbody>
                                     <tr class="" v-for="(contact, index) in contacts" :key="index">
-                                        <td class="bg-white shadow-2xl sticky left-0 px-6 py-4 font-medium text-gray-900"><input type="email" class="sticky left-0" placeholder="Email" v-model="contacts[index].email" /></td>
-                                        <td class="px-6 py-4 font-medium text-gray-900"> <input type="text" placeholder="First Name" v-model="contacts[index].first_name" /></td>
-                                        <td class="px-6 py-4 font-medium text-gray-900"><input type="text" placeholder="Last Name" v-model="contacts[index].last_name" /></td>
-                                        <td class="px-6 py-4 font-medium text-gray-900"> <input type="text" placeholder="Company" v-model="contacts[index].company" /></td>
-                                        <td class="px-6 py-4 font-medium text-gray-900"><input type="text" placeholder="Occupation" v-model="contacts[index].occupation" /></td>
+                                        <td class="border-r border-gray-200 bg-white shadow-xl sticky z-50 left-0 px-6 py-4 font-medium text-gray-900">
+                                            <input type="email" class="sticky left-0" placeholder="Email" v-model="contacts[index].email" />
+                                        </td>
+                                        <td class="px-6 py-4 font-medium text-gray-900"> 
+                                            <input type="text" placeholder="First Name" v-model="contacts[index].first_name" />
+                                        </td>
+                                        <td class="px-6 py-4 font-medium text-gray-900">
+                                            <input type="text" placeholder="Last Name" v-model="contacts[index].last_name" />
+                                        </td>
+                                        <td class="px-6 py-4 font-medium text-gray-900">
+                                             <input type="text" placeholder="Company" v-model="contacts[index].company" />
+                                        </td>
+                                        <td class="px-6 py-4 font-medium text-gray-900">
+                                            <input type="text" placeholder="Occupation" v-model="contacts[index].occupation" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="">
+                                            <PrimaryButton class="!my-0" type="button" @click="add">Add</PrimaryButton>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <button type="button" @click="add">Add</button>
                         <div class="my-4 text-center">
                             <PrimaryButton class="w-full justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                                 :disabled="form.processing">
