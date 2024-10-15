@@ -70,38 +70,39 @@ const importContact = () => {
                         <SecondaryButton class="!my-0 !py-2.5" type="submit">Import</SecondaryButton>
                     </div>
                 </form>
-                <div class="border-b border-gray-300 mb-3"></div>
                 <div class="block">
                     <form @submit.prevent="addcontact">
-                        <div class="relative overflow-x-auto shadow-md sm:rounded-lg gap-x-3">
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 border-separate">
+                        <div class="relative overflow-x-auto sm:rounded-sm gap-x-3">
+                            <table class="w-full text-sm text-left rtl:text-right border-spacing-[-1px] text-gray-500 border-separate">
                                 <thead class="text uppercase">
-                                    <tr>
-                                        <th scope="col"
-                                            class="sticky left-0 px-6 py-3 bg-white border-r border-gray-300">Email</th>
-                                        <th scope="col" class="px-6 py-3">First Name</th>
-                                        <th scope="col" class="px-6 py-3">Last Name</th>
-                                        <th scope="col" class="px-6 py-3">Company</th>
-                                        <th scope="col" class="px-6 py-3">Occupation</th>
+                                    <tr class="border border-gray-300">
+                                        <th scope="col" class="sticky left-0 border border-gray-300 px-6 py-3 z-10 bg-white">Email</th>
+                                        <th scope="col" class="px-6 py-3 border-y border-gray-300">First Name</th>
+                                        <th scope="col" class="px-6 py-3 border-y border-gray-300">Last Name</th>
+                                        <th scope="col" class="px-6 py-3 border-y border-gray-300">Company</th>
+                                        <th scope="col" class="px-6 py-3 border-y border-r border-gray-300">Occupation</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="relative" v-for="(contact, index) in contacts" :key="index">
-                                        <td
-                                            class="bg-white sticky left-0 px-6 py-4 font-medium text-gray-900 border-r border-gray-300">
-                                            <input type="email" placeholder="Email" v-model="contacts[index].email" />
+                                    <tr class="" v-for="(contact, index) in contacts" :key="index">
+                                        <td class="bg-white sticky left-0 px-4 py-3 font-medium text-gray-900 border border-t-0 border-gray-300 shadow-right">
+                                            <input class="placeholder:text placeholder:font-normal" type="email" placeholder="Email" v-model="contacts[index].email" />
                                         </td>
-                                        <td class="px-6 py-4 font-medium text-gray-900"> <input type="text"
-                                                placeholder="First Name" v-model="contacts[index].first_name" /></td>
-                                        <td class="px-6 py-4 font-medium text-gray-900"><input type="text"
-                                                placeholder="Last Name" v-model="contacts[index].last_name" /></td>
-                                        <td class="px-6 py-4 font-medium text-gray-900"> <input type="text"
-                                                placeholder="Company" v-model="contacts[index].company" /></td>
-                                        <td class="px-6 py-4 font-medium text-gray-900"><input type="text"
-                                                placeholder="Occupation" v-model="contacts[index].occupation" /></td>
+                                        <td class="px-4 py-3 border-b border-gray-200 font-medium text-gray-900"> 
+                                            <input class="placeholder:text-sm placeholder:font-normal"  type="text" placeholder="First Name" v-model="contacts[index].first_name" />
+                                        </td>
+                                        <td class="px-4 py-3 border-b border-gray-200 font-medium text-gray-900">
+                                            <input class="placeholder:text-sm placeholder:font-normal"  type="text" placeholder="Last Name" v-model="contacts[index].last_name" />
+                                        </td>
+                                        <td class="px-4 py-3 border-b border-gray-200 font-medium text-gray-900">
+                                            <input class="placeholder:text-sm placeholder:font-normal"  type="text" placeholder="Company" v-model="contacts[index].company" />
+                                        </td>
+                                        <td class="px-4 py-3 border-b border-r border-gray-200 font-medium text-gray-900">
+                                            <input class="placeholder:text-sm placeholder:font-normal"  type="text"placeholder="Occupation" v-model="contacts[index].occupation" />
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <td class="px-6">
+                                    <tr class="border-2 border-gray-200">
+                                        <td class="bg-white sticky left-0 px-4 py-3 font-medium text-gray-900">
                                             <PrimaryButton class="" type="button" @click="add">Add</PrimaryButton>
                                         </td>
                                     </tr>
@@ -123,6 +124,6 @@ const importContact = () => {
 
 <style scoped>
 .shadow-right {
-    box-shadow: 10px 0px 5px -1px #888;
+    box-shadow: 10px 10px 5px -2px #888;
 }
 </style>
