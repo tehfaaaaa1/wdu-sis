@@ -51,7 +51,7 @@ const newSender = ()=>{
                         <div class="block px-3 w-full">
                             <div :class="campaign.sender_id == null ? 'block' : 'flex justify-between'" class="w-full">
                                 <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
-                                <SecondaryButton type="button" @click="addSender = !addSender; addSenderNew = false">
+                                <SecondaryButton class="!m-0" type="button" @click="addSender = !addSender; addSenderNew = false">
                                     {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
                                 </SecondaryButton>
                             </div>
@@ -65,7 +65,7 @@ const newSender = ()=>{
                                         </label>
                                     </div>
                                 </div>
-                                <PrimaryButton type="button" v-show="addSender" @click="addSenderNew = ! addSendernew">Or Add New</PrimaryButton>
+                            <PrimaryButton class="!my-0" type="button" v-show="addSender" @click="addSenderNew = ! addSendernew">Or Add New</PrimaryButton>
                             <div class="block" v-show="addSenderNew">
                                 <input type="text" name="" placeholder="name" v-model="form.sender_name">
                                 <input type="email" name="" placeholder="email" v-model="form.sender_email">
@@ -81,7 +81,7 @@ const newSender = ()=>{
                             <div :class="campaign.recipient_id == null ? 'block' : 'flex justify-between'"
                                 class="w-full">
                                 <h2>{{ campaign.recipient?.name ?? 'Choose the recipient or create new.' }}</h2>
-                                <SecondaryButton type="button" @click="addRecipient = !addRecipient">
+                                <SecondaryButton class="!m-0" type="button" @click="addRecipient = !addRecipient">
                                     {{ campaign.recipient_id == null ? 'Add Recipient' : 'Edit Recipient' }}
                                 </SecondaryButton>
                             </div>
@@ -121,6 +121,7 @@ const newSender = ()=>{
     display: flex;
     border-bottom: 1px solid gray;
     padding: 1rem;
+    min-height: 5rem;
 }
 
 .form-field:last-child {

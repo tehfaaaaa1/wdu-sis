@@ -28,7 +28,7 @@ const createRecipient = () => {
         <main class="min-h-screen">
             <div class="mx-auto rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex gap-x-5 mb-5">
-                    <SecondaryButton @click="ShowCreate = true; newRecipient()">
+                    <SecondaryButton class="mb-0 mt-3" @click="ShowCreate = true; newRecipient()">
                         Create Recipient
                     </SecondaryButton>
                 </div>
