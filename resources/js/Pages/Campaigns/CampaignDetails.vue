@@ -13,16 +13,23 @@ const props = defineProps({
     senders: Object,
 })
 const addSender = ref(false);
+const addSenderNew = ref(false);
 const addRecipient = ref(false);
 console.log(props.campaign)
 const form = useForm({
     subject: props.campaign.subject ?? '',
     sender_id: props.campaign.sender_id ?? '',
     recipient_id: props.campaign.recipient_id ?? '',
-    isi: props.campaign.content ?? ''
+    isi: props.campaign.content ?? '',
+    sender_name: '',
+    sender_email: '',
+    sender_reply:''
 })
 const submit = () => {
     form.post(route('campaign-data', [props.campaign.id]))
+}
+const newSender = ()=>{
+    form.post(route('add-sender'))
 }
 </script>
 <template>
@@ -44,9 +51,16 @@ const submit = () => {
                         <div class="block px-3 w-full">
                             <div :class="campaign.sender_id == null ? 'block' : 'flex justify-between'" class="w-full">
                                 <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
-                                <SecondaryButton type="button" @click="addSender = !addSender">
+                                <SecondaryButton type="button" @click="addSender = !addSender; addSenderNew = false">
                                     {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
                                 </SecondaryButton>
+                                <PrimaryButton type="button" v-show="addSender" @click="addSenderNew = ! addSendernew">Add New</PrimaryButton>
+                            </div>
+                            <div class="block" v-show="addSenderNew">
+                                <input type="text" name="" placeholder="name" v-model="form.sender_name">
+                                <input type="email" name="" placeholder="email" v-model="form.sender_email">
+                                <input type="email" name="" placeholder="Reply Address" v-model="form.sender_reply">
+                                <button type="button" @click="newSender">Add</button>
                             </div>
 
                             <div class="w-full p-3 shadow-md rounded-sm" v-show="addSender">

@@ -90,7 +90,21 @@ class CampaignController extends Controller
 
         echo "Mail send successfully !!";
     }
-    // contact
+    // sender
+    public function addSender(Request $request) {
+        $validate = $request->validate([
+            'sender_name'=> 'required|string|max:255',
+            'sender_email' => 'required|email|max:255',
+            'sender_reply'=> 'required|email|max:255',
+        ]);
+
+        Sender::create([
+            'name' => $validate['sender_name'],
+            'email'=> $validate['sender_email'],
+            'reply_address' => $validate['sender_reply'],
+        ]);
+        return back();
+    }
     
     
 }
