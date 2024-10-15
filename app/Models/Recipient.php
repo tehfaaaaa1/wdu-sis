@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Recipient extends Model
 {
     use HasFactory;
-    protected $fillable =[
+    protected $fillable = [
         'name',
     ];
-    public function contact_recipient() : HasMany{
+    public function contact_recipient(): HasMany
+    {
         return $this->hasMany(ContactRecipient::class);
     }
 }

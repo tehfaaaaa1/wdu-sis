@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('subject')->nullable();
-            $table->string('sender')->nullable();
+            $table->foreignId('sender_id')->nullable()->constrained(
+                table: 'senders',
+                indexName: 'campaigns_sender_id',
+            )->nullOnDelete();
             $table->foreignId('recipient_id')->nullable()->constrained(
                 table: 'recipients',
                 indexName: 'campaigns_recipient_id',

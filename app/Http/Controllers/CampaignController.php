@@ -12,6 +12,7 @@ use App\Models\Survey;
 use App\Models\Response;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
+use App\Models\Sender;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -45,12 +46,15 @@ class CampaignController extends Controller
         ]);
     }
     public function details($id){
-        $campg = Campaign::where('id', $id)->first();
-        $rec = $campg->recipient;
+        $campaign = Campaign::where('id', $id)->first();
+        $send = $campaign->sender;
+        $rec = $campaign->recipient;
         $recipient = Recipient::all();
+        $sender = Sender::all();
         return Inertia::render('Campaigns/CampaignDetails',[
-            'campaign'=> $campg,
-            'created' => $campg->created_at->format('M d,Y H:i'),
+            'campaign'=> $campaign,
+            'created' => $campaign->created_at->format('M d,Y H:i'),
+            'senders' => $sender,
             'recipients' => $recipient,
         ]);
     }
@@ -58,7 +62,7 @@ class CampaignController extends Controller
         // dd($request->subject);
         $campaign = Campaign::firstOrNew(['id'=>$id??null]);
         $campaign->subject = $request->subject ?? null;
-        $campaign->sender = $request->sender ?? null;
+        $campaign->sender_id = $request->sender_id ?? null;
         $campaign->recipient_id = $request->recipient_id ?? null;
         $campaign->content = $request->isi ?? null;
         $campaign->save();
@@ -72,7 +76,7 @@ class CampaignController extends Controller
         Campaign::create([
             'name' => $validated['name'],
         ]);
-        return redirect()->route('campaigns')->with('succes', 'Succes Add Campaign');
+        return redirect()->route('campaigns')->with('success', 'Success Add Campaign');
     }
     public function sendEmail(Request $request)
     {

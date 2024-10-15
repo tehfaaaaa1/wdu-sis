@@ -9,16 +9,19 @@ import { ref, watch, onMounted } from 'vue';
 const props = defineProps({
     campaign: Object,
     created: String,
-    recipients: Object
+    recipients: Object,
+    senders: Object,
 })
+const addSender = ref(false);
 const addRecipient = ref(false);
+console.log(props.campaign)
 const form = useForm({
     subject: props.campaign.subject ?? '',
-    sender:props.campaign.sender ?? '',
-    recipient_id : props.campaign.recipient_id ?? '',
-    isi:props.campaign.content ?? ''
+    sender_id: props.campaign.sender_id ?? '',
+    recipient_id: props.campaign.recipient_id ?? '',
+    isi: props.campaign.content ?? ''
 })
-const submit = ()=>{
+const submit = () => {
     form.post(route('campaign-data', [props.campaign.id]))
 }
 </script>
@@ -34,30 +37,49 @@ const submit = ()=>{
                 <form action="" @submit.prevent="submit" class="bg-white block rounded-sm">
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Subject</h1>
-                        <input v-model="form.subject" type="text" placeholder="Subject"/>
+                        <input v-model="form.subject" type="text" placeholder="Subject" class="w-1/2 text-sm" />
                     </div>
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Sender</h1>
-                        <div class="block">
-                            <h2>{{ campaign.sender ?? 'Who is Sending This Email' }}</h2>
-                            <PrimaryButton v-if="campaign.subject == null">Add Sender Details</PrimaryButton>
+                        <div class="block px-3 w-full">
+                            <div :class="campaign.sender_id == null ? 'block' : 'flex justify-between'" class="w-full">
+                                <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
+                                <SecondaryButton type="button" @click="addSender = !addSender">
+                                    {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
+                                </SecondaryButton>
+                            </div>
+
+                            <div class="w-full p-3 shadow-md rounded-sm" v-show="addSender">
+                                <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
+                                    <input type="radio" :id="'sender_' + sender.id"
+                                        class="checked:text-primary focus:ring-primary" v-model="form.sender_id"
+                                        :value="sender.id" />
+                                    <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
+                                        {{ sender.email }}
+                                    </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Recipient</h1>
                         <div class="block px-3 w-full">
-                            <div :class="campaign.recipient_id == null ? 'block' : 'flex justify-between'" class="w-full">
+                            <div :class="campaign.recipient_id == null ? 'block' : 'flex justify-between'"
+                                class="w-full">
                                 <h2>{{ campaign.recipient?.name ?? 'Choose the recipient or create new.' }}</h2>
-                                <SecondaryButton type="button" @click="addRecipient =! addRecipient">
+                                <SecondaryButton type="button" @click="addRecipient = !addRecipient">
                                     {{ campaign.recipient_id == null ? 'Add Recipient' : 'Edit Recipient' }}
                                 </SecondaryButton>
                             </div>
 
                             <div class="w-full p-3 shadow-md rounded-sm" v-show="addRecipient">
                                 <div class="" v-for="(recipient, rIndex) in recipients" :key="rIndex">
-                                    <input type="radio" :id="'recipient_' + recipient.id" name="recipient_id" class="checked:text-primary focus:ring-primary"
-                                    v-model="form.recipient_id" :value="recipient.id" />
-                                <label :for="'recipient_' + recipient.id" class="pl-1.5 text-sm">{{ recipient.name }}</label>
+                                    <input type="radio" :id="'recipient_' + recipient.id" name="recipient_id"
+                                        class="checked:text-primary focus:ring-primary" v-model="form.recipient_id"
+                                        :value="recipient.id" />
+                                    <label :for="'recipient_' + recipient.id" class="pl-1.5 text-sm">
+                                        {{ recipient.name }}
+                                    </label>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +87,7 @@ const submit = ()=>{
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Content</h1>
                         <div class="block">
-                           Content
+                            Content
                         </div>
                     </div>
                     <div class="m-4">
