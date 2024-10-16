@@ -75,7 +75,7 @@ class ClientController extends Controller
             'image' => $fileName,
             'alamat' => $validated['alamat'],
             'phone' => $validated['phone'],
-            'slug' => Str::slug($validated['client_name']),
+            'slug' => Str::slug($validated['client_name'].now()),
             'desc' => $validated['desc'],
             'created_at' => now(),
             'updated_at' => now(),

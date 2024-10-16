@@ -39,9 +39,10 @@ class ContactController extends Controller
         $validated = $request->validate([
             'name'=> 'required|string|max:255'
         ]);
+        // dd(str::slug($validated['name'].now()));
         Recipient::create([
             'name'=> $validated['name'],
-            'slug'=> Str::slug($validated['name'])
+            'slug'=> Str::slug($validated['name'].now())
         ]);
     }
 

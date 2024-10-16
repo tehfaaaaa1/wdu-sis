@@ -77,7 +77,7 @@ class CampaignController extends Controller
         ]);
         Campaign::create([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['name'])
+            'slug' => Str::slug($validated['name'].now())
         ]);
         return redirect()->route('campaigns')->with('success', 'Success Add Campaign');
     }
