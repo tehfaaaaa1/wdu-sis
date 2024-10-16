@@ -814,7 +814,7 @@ watch(() => selectedSurvey, (newSurvey) => {
                                     </div>
                                     <div class="w-3/4 h-48">
                                         <BarChart :chartData="chartData" :options="pieChartOptions" />
-                                    </div>
+                                    </div>  
                                 </div>
                             </div>
                         </div>
