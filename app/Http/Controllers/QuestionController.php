@@ -248,7 +248,7 @@ class QuestionController extends Controller
                 $saveQuestion->order = $index + 1;
                 $saveQuestion->question_text = $questionData['soal'];
                 $saveQuestion->question_type_id = $questionType;
-                $saveQuestion->question_logic_type_id = $questionData['logic_type'];
+                $saveQuestion->question_logic_type_id = $questionData['logic_type'] ?? null; 
                 $saveQuestion->question_choice_id = $questionData['logic_choice'] ?? null;
                 $saveQuestion->save();
 
