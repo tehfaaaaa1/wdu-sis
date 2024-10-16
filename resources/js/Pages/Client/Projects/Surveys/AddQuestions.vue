@@ -670,10 +670,9 @@ watch(() => textEditor.value, () => {
                                                     Multiple Choice
                                                 </div>
                                                 <div class="py-2 text-center border-t border-gray-300">
-                                                    <input type="checkbox" v-model="item.required" true-value="1"
-                                                        false-value="0" :id="'q' + index + '-optional'" value="0"
+                                                    <input type="checkbox" v-model="item.required" :id="'q' + index + '-optional'+(item.id??item.soal)" true-value="0" false-value="1"
                                                         class="cursor-pointer">
-                                                    <label :for="'q' + index + '-optional'"
+                                                    <label :for="'q' + index + '-optional'+(item.id??item.soal)"
                                                         class="pl-2 cursor-pointer select-none w-full text-sm">Optional</label>
                                                 </div>
                                             </div>

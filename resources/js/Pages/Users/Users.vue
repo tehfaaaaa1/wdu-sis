@@ -56,9 +56,10 @@ const search = () => {
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
-                    <SecondaryButton @click="() => form.get(route('users.create'))">
+                    <NavLink class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4" 
+                    :href="route('users.create')">
                         Create User
-                    </SecondaryButton>
+                    </NavLink>
                 </div>
                 <div class="w-1/4 flex items-center py-2 text-sm">
                     <input type="text" v-model="form.search" @keyup.enter="search"

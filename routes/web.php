@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             'client_name' => $client->client_name ?? 'No client assigned',
         ]);
     })->name('dashboard');
+    //Contact and Recipient
     Route::prefix('/contact')->group(function (){
         Route::get('/', [ContactController::class, 'contact'])->name('list-contact');
         Route::get('/recipient-list', [ContactController::class, 'recipient'])->name('list-recipient');
@@ -55,6 +56,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::post('/recipient/{Recipient:slug}/addcontact', [ContactController::class,'storeContact'])->name('store-contact');
         Route::post('/recipient/{Recipient:slug}/import-contact', [ContactController::class, 'importContact'])->name('contact.import');
     });
+    //campaign
     Route::prefix('/campaign')->group(function () {
         Route::get('/', [CampaignController::class, 'index'])->name('campaigns');
         Route::post('/create-campaign', [CampaignController::class, 'store'])->name('create-campaign');
