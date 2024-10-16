@@ -12,10 +12,10 @@ const props = defineProps({
         <div class="mx-auto rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
-                    <NavLink :href="route('list-recipient')"
+                    <!-- <NavLink :href="route('list-recipient')"
                         class="bg-primary !mb-0 !mt-3 text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
                         Recipient
-                    </NavLink>
+                    </NavLink> -->
                 </div>
             </div>
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
