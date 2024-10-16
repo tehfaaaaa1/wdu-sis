@@ -12,11 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->dropColumn('sender');
-            $table->foreignId('sender_id')->after('subject')->nullable()->constrained(
-                table: 'senders',
-                indexName: 'campaigns_sender_id',
-            )->nullOnDelete();
+            $table->string('slug')->after('name')->unique()->nullable();
         });
     }
 
@@ -25,9 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('campaigns', function (Blueprint $table) {
-            $table->dropForeign('campaigns_sender_id');
-            $table->dropColumn('sender_id');
-        });
+    
     }
 };

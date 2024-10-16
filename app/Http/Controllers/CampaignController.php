@@ -11,6 +11,7 @@ use App\Mail\TestMail;
 use App\Models\Survey;
 use App\Models\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Imports\ContactsImport;
 use App\Models\Sender;
 use Illuminate\Support\Facades\Mail;
@@ -39,14 +40,15 @@ class CampaignController extends Controller
                 return [
                     'id'=> $c->id,
                     'name'=> $c->name,
+                    'slug'=> $c->slug,
                     'dibuat'=>$c->created_at->format('M d Y H:i'),
                     'upadte' =>$c->updated_at->format('M d Y H:i')
                 ];
             })
         ]);
     }
-    public function details($id){
-        $campaign = Campaign::where('id', $id)->first();
+    public function details($slug){
+        $campaign = Campaign::where('slug', $slug)->first();
         $send = $campaign->sender;
         $rec = $campaign->recipient;
         $recipient = Recipient::all();
@@ -58,9 +60,9 @@ class CampaignController extends Controller
             'recipients' => $recipient,
         ]);
     }
-    public function addData(Request $request, $id) {
+    public function addData(Request $request, $slug) {
         // dd($request->subject);
-        $campaign = Campaign::firstOrNew(['id'=>$id??null]);
+        $campaign = Campaign::firstOrNew(['slug'=>$slug??null]);
         $campaign->subject = $request->subject ?? null;
         $campaign->sender_id = $request->sender_id ?? null;
         $campaign->recipient_id = $request->recipient_id ?? null;
@@ -75,6 +77,7 @@ class CampaignController extends Controller
         ]);
         Campaign::create([
             'name' => $validated['name'],
+            'slug' => Str::slug($validated['name'])
         ]);
         return redirect()->route('campaigns')->with('success', 'Success Add Campaign');
     }

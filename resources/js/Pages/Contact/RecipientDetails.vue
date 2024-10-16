@@ -15,8 +15,8 @@ console.log(props.recipient)
             <div class="mx-auto mt-5 rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
                     <div class="w-1/2 sm:w-full">
-                        <NavLink :href="route('add-contact', [recipient[0].id])"
-                            class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
+                        <NavLink :href="route('add-contact', [recipient[0].slug])"
+                            class="bg-primary mb-0 text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
                             Add Contact
                         </NavLink>
                     </div>

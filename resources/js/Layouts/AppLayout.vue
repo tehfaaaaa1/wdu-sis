@@ -96,7 +96,7 @@ const openn = ref(false)
                                                     v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
                                                     :href="route('list-contact')"
                                                     :active="route().current('list-contact')">
-                                                    Contact
+                                                    List Contact
                                                 </NavLinkNoBg>
                                                 <NavLinkNoBg class="focus:text-primary w-full"
                                                     v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class ContactController extends Controller
 {
@@ -28,6 +29,7 @@ class ContactController extends Controller
                 return[
                     'id' => $r->id,
                     'name' => $r->name,
+                    'slug' => $r->slug,
                     'dibuat'=> $r->created_at->format('M d Y H:i'),
                 ];
             })
@@ -37,16 +39,19 @@ class ContactController extends Controller
         $validated = $request->validate([
             'name'=> 'required|string|max:255'
         ]);
-        Recipient::create(['name'=> $validated['name']]);
+        Recipient::create([
+            'name'=> $validated['name'],
+            'slug'=> Str::slug($validated['name'])
+        ]);
     }
 
 
-    public function importContact(Request $request, $id) {
-        Excel::import(new ContactsImport($id), $request->file('file'));
+    public function importContact(Request $request, $slug) {
+        Excel::import(new ContactsImport($slug), $request->file('file'));
     }
 
-    public function details($id) {
-        $rec = Recipient::where('id', $id)->get();
+    public function details($slug) {
+        $rec = Recipient::where('slug', $slug)->get();
         foreach($rec as $r){
             // dd($r->contact_recipient->);
             $contactrecipient = $r->contact_recipient;
@@ -61,13 +66,14 @@ class ContactController extends Controller
     }
 
 
-    public function addContact($id){
-        $rec = Recipient::where('id', $id)->first();
+    public function addContact($slug){
+        $rec = Recipient::where('slug', $slug)->first();
         return Inertia::render('Contact/AddContact',[
             'recipient'=>$rec
         ]);
     }
-    public function storeContact(Request $request, $id) {
+    public function storeContact(Request $request, $slug) {
+        $recip = Recipient::where('slug', $slug)->first();
         $validate = $request->validate([
             'data' => 'required|array',
             'data.*.email' => 'required|email',
@@ -76,7 +82,6 @@ class ContactController extends Controller
             'data.*.company' => 'required|string',
             'data.*.occupation' => 'required|string',
         ]);
-        
         foreach($validate['data'] as $data){
             // dd($data);
             $contact = EmailContact::firstOrnew(['email'=> $data['email'] ?? $data['email']]);
@@ -89,12 +94,12 @@ class ContactController extends Controller
 
             $conrep =ContactRecipient::firstOrNew([
                 'email_contact_id'=> $contact->id ?? $contact->id,
-                'recipient_id' => $id ?? $id
+                'recipient_id' => $id ?? $recip['id']
             ]);
             $conrep->email_contact_id = $contact->id;
-            $conrep->recipient_id = $id;
+            $conrep->recipient_id = $recip['id'];
             $conrep->save();
         }
-        return redirect()->route('recipient-details',[$id]);
+        return redirect()->route('recipient-details',[$recip['slug']]);
     }
 }

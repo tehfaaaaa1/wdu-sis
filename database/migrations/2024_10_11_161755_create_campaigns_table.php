@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug')->unique()->nullable();
             $table->string('subject')->nullable();
             $table->foreignId('sender_id')->nullable()->constrained(
                 table: 'senders',
