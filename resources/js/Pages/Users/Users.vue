@@ -56,7 +56,7 @@ const search = () => {
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
-                    <SecondaryButton :href="route('users.create')">
+                    <SecondaryButton @click="() => form.get(route('users.create'))">
                         Create User
                     </SecondaryButton>
                 </div>

@@ -802,8 +802,8 @@ watch(() => selectedSurvey, (newSurvey) => {
                                 </div>
                             </div>
                         </div>
-                        <hr class="border-t-1 border-gray-400 m-10" />
-                        <div>
+                        <div v-if="barChartData && barChartData.length > 0">
+                            <hr class="border-t-1 border-gray-400 my-5" style="height: 2px;" />
                             <h3 class="text-center text-xl font-semibold">Responden Based City / Regency Target</h3>
                         </div>
                         <div class="max-w-7xl mx-3">
