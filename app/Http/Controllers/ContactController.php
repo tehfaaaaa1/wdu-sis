@@ -62,9 +62,16 @@ class ContactController extends Controller
         ]);
     }
     public function storeContact(Request $request, $id) {
-        $datas = $request->data;
-        // dd($datas);
-        foreach($datas as $data){
+        $validate = $request->validate([
+            'data' => 'required|array',
+            'data.*.email' => 'required|email',
+            'data.*.first_name' => 'required|string',
+            'data.*.last_name' => 'required|string',
+            'data.*.company' => 'required|string',
+            'data.*.occupation' => 'required|string',
+        ]);
+        
+        foreach($validate['data'] as $data){
             // dd($data);
             $contact = EmailContact::firstOrnew(['email'=> $data['email'] ?? $data['email']]);
             // $contact->email = $data['email'];

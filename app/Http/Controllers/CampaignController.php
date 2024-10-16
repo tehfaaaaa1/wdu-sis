@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\EmailContact;
+use App\Models\Recipient;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Mail\TestMail;
@@ -11,6 +12,7 @@ use App\Models\Survey;
 use App\Models\Response;
 use Illuminate\Http\Request;
 use App\Imports\ContactsImport;
+use App\Models\Sender;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -44,11 +46,27 @@ class CampaignController extends Controller
         ]);
     }
     public function details($id){
-        $campg = Campaign::where('id', $id)->first();
+        $campaign = Campaign::where('id', $id)->first();
+        $send = $campaign->sender;
+        $rec = $campaign->recipient;
+        $recipient = Recipient::all();
+        $sender = Sender::all();
         return Inertia::render('Campaigns/CampaignDetails',[
-            'campaign'=> $campg,
-            'created' => $campg->created_at->format('M d,Y H:i')
+            'campaign'=> $campaign,
+            'created' => $campaign->created_at->format('M d,Y H:i'),
+            'senders' => $sender,
+            'recipients' => $recipient,
         ]);
+    }
+    public function addData(Request $request, $id) {
+        // dd($request->subject);
+        $campaign = Campaign::firstOrNew(['id'=>$id??null]);
+        $campaign->subject = $request->subject ?? null;
+        $campaign->sender_id = $request->sender_id ?? null;
+        $campaign->recipient_id = $request->recipient_id ?? null;
+        $campaign->content = $request->isi ?? null;
+        $campaign->save();
+        return back();
     }
     public function store(Request $request) {
         // dd($request);
@@ -58,7 +76,7 @@ class CampaignController extends Controller
         Campaign::create([
             'name' => $validated['name'],
         ]);
-        return redirect()->route('campaigns')->with('succes', 'Succes Add Campaign');
+        return redirect()->route('campaigns')->with('success', 'Success Add Campaign');
     }
     public function sendEmail(Request $request)
     {
@@ -72,7 +90,21 @@ class CampaignController extends Controller
 
         echo "Mail send successfully !!";
     }
-    // contact
+    // sender
+    public function addSender(Request $request) {
+        $validate = $request->validate([
+            'sender_name'=> 'required|string|max:255',
+            'sender_email' => 'required|email|max:255',
+            'sender_reply'=> 'required|email|max:255',
+        ]);
+
+        Sender::create([
+            'name' => $validate['sender_name'],
+            'email'=> $validate['sender_email'],
+            'reply_address' => $validate['sender_reply'],
+        ]);
+        return back();
+    }
     
     
 }

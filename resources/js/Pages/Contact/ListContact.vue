@@ -1,17 +1,19 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
+import Dropdown from '@/Components/Dropdown.vue';
 const props = defineProps({
     contact: Object
-})           
+})
 
 </script>
 <template>
     <AppLayout title="List Contact">
-        <div class="mx-auto mt-5 rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div class="mx-auto rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
-                    <NavLink :href="route('list-recipient')" class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
+                    <NavLink :href="route('list-recipient')"
+                        class="bg-primary !mb-0 !mt-3 text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
                         Recipient
                     </NavLink>
                 </div>
@@ -25,12 +27,13 @@ const props = defineProps({
                             <th scope="col" class="px-6 py-3">Last Name</th>
                             <th scope="col" class="px-6 py-3">Company</th>
                             <th scope="col" class="px-6 py-3">Occupation</th>
-                            <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
+                            <th scope="col" class="px-6 py-3 md:w-1/12"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(contact, index) in contact" :key="index" class="bg-white border-b hover:bg-gray-50">
-                            <td scope="row" class="px-6 py-4 font-medium text-gray-900">
+                        <tr v-for="(contact, index) in contact" :key="index"
+                            class="bg-white border-b hover:bg-gray-50 group">
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 break-words">
                                 {{ contact.email }}
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 break-words">
@@ -40,16 +43,34 @@ const props = defineProps({
                                 {{ contact.last_name }}
                             </td>
                             <td class="px-6 py-4">
-                                {{  contact.company }}
+                                {{ contact.company }}
                             </td>
                             <td class="px-6 py-4">
                                 {{ contact.occupation }}
                             </td>
-                            <td class="px-6 py-4">
-                                <!-- <a :href="route('edit_user', user.id)"
-                                    class="font-medium text-blue-600 hover:underline mr-4 py-1 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Edit</a>
-                                <a @click="hapus(user.id)"
-                                    class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a> -->
+                            <td class="px-6 py-4 flex justify-end">
+                                <Dropdown width="36">
+                                    <template #trigger>
+                                        <div
+                                            class="collapse group-hover:visible w-12 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:ring-1 ring-inset ring-gray-300 cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                            </svg>
+                                        </div>
+                                    </template>
+                                    <template #content>
+                                        <div class="py-1">
+                                            <a
+                                                :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
+                                            </a>
+                                            <a
+                                                :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Delete
+                                            </a>
+                                        </div>
+                                    </template>
+                                </Dropdown>
                             </td>
                         </tr>
                     </tbody>
