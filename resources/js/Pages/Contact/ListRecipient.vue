@@ -38,7 +38,9 @@ const createRecipient = () => {
                     <div class="block" v-for="(recipient, index) in recipients" :key="index">
                         <div class="flex items-center w-full p-3 hover:bg-gray-50 item-row">
                             <div class="block">
-                                <a :href="route('add-contact', [recipient.id])">{{ recipient.name }}</a>
+                                <a :href="route('recipient-details', [recipient.id])">{{ recipient.name }}</a>
+                                <p class="text-xs">Created At {{ recipient.dibuat }}</p>
+                                <!-- {{ recipient }} -->
                             </div>
                         </div>
                     </div>

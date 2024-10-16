@@ -23,12 +23,12 @@ const form = useForm({
     isi: props.campaign.content ?? '',
     sender_name: '',
     sender_email: '',
-    sender_reply:''
+    sender_reply: ''
 })
 const submit = () => {
     form.post(route('campaign-data', [props.campaign.id]))
 }
-const newSender = ()=>{
+const newSender = () => {
     form.post(route('add-sender'))
 }
 </script>
@@ -36,36 +36,42 @@ const newSender = ()=>{
     <AppLayout title=" Campaign Details">
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-                <NavLink :href="route('campaigns')">Back</NavLink>
-                <div class="mb-3">
-                    <h1 class="text-xl font-medium">{{ campaign.name }}</h1>
-                    <p>Draft | Created on {{ created }}</p>
-                </div>
+                <a :href="route('campaigns')"
+                    class="mb-3 inline-flex items-center rounded-md px-5 py-2 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition">
+                    Back
+                </a>
                 <form action="" @submit.prevent="submit" class="bg-white block rounded-sm">
+                    <div class="p-3 border-b" style="border-color: rgb(128, 128, 128);">
+                        <h1 class="text-xl font-medium">{{ campaign.name }}</h1>
+                        <p class="text-sm text-gray-500">Draft | Created on {{ created }}</p>
+                    </div>
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Subject</h1>
-                        <input v-model="form.subject" type="text" placeholder="Subject" class="w-1/2 text-sm" />
+                        <input v-model="form.subject" type="text" placeholder="Subject"
+                            class="w-full px-3 h-10 rounded-md text-sm" />
                     </div>
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Sender</h1>
                         <div class="block px-3 w-full">
                             <div :class="campaign.sender_id == null ? 'block' : 'flex justify-between'" class="w-full">
                                 <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
-                                <SecondaryButton class="!m-0" type="button" @click="addSender = !addSender; addSenderNew = false">
+                                <SecondaryButton class="!m-0" type="button"
+                                    @click="addSender = !addSender; addSenderNew = false">
                                     {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
                                 </SecondaryButton>
                             </div>
-                                <div class="w-full p-3 shadow-md rounded-sm" v-show="addSender">
-                                    <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
-                                        <input type="radio" :id="'sender_' + sender.id"
-                                            class="checked:text-primary focus:ring-primary" v-model="form.sender_id"
-                                            :value="sender.id" />
-                                        <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
-                                            {{ sender.email }}
-                                        </label>
-                                    </div>
+                            <div class="w-full p-3 shadow-md rounded-sm" v-show="addSender">
+                                <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
+                                    <input type="radio" :id="'sender_' + sender.id"
+                                        class="checked:text-primary focus:ring-primary" v-model="form.sender_id"
+                                        :value="sender.id" />
+                                    <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
+                                        {{ sender.email }}
+                                    </label>
                                 </div>
-                            <PrimaryButton class="!my-0" type="button" v-show="addSender" @click="addSenderNew = ! addSendernew">Or Add New</PrimaryButton>
+                            </div>
+                            <PrimaryButton class="!my-0" type="button" v-show="addSender"
+                                @click="addSenderNew = !addSendernew">Or Add New</PrimaryButton>
                             <div class="block" v-show="addSenderNew">
                                 <input type="text" name="" placeholder="name" v-model="form.sender_name">
                                 <input type="email" name="" placeholder="email" v-model="form.sender_email">
@@ -100,11 +106,11 @@ const newSender = ()=>{
                     </div>
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Content</h1>
-                        <div class="block">
+                        <div class="block w-full px-3">
                             Content
                         </div>
                     </div>
-                    <div class="m-4">
+                    <div class="p-4">
                         <PrimaryButton class=" justify-center mt-2" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
                             Save

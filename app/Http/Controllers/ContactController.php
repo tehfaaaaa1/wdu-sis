@@ -24,7 +24,13 @@ class ContactController extends Controller
     public function recipient() {
         $recipient = Recipient::all();
         return Inertia::render('Contact/ListRecipient', [
-            'recipients'=> $recipient
+            'recipients'=> collect($recipient)->map(function ($r) {
+                return[
+                    'id' => $r->id,
+                    'name' => $r->name,
+                    'dibuat'=> $r->created_at->format('M d Y H:i'),
+                ];
+            })
         ]);
     }
     public function createRecipient(Request $request) {

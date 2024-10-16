@@ -398,7 +398,7 @@ watch(() => textEditor.value, () => {
 
 
 </script>
-    
+
 <template>
     <AppLayout title="Tambah Pertanyaan Survey">
 
@@ -569,24 +569,27 @@ watch(() => textEditor.value, () => {
                         <div class="my-2 mx-4 mt-4 px-3" id="edit-question-logic">
                             <h3 class="font-bold text-base">Display Logic</h3>
                             <div class="my-1">
-                                <select v-model="pages[page_index].question[qIndex].logic_type" class="cursor-pointer text-sm">
+                                <select v-model="pages[page_index].question[qIndex].logic_type"
+                                    class="cursor-pointer text-sm">
                                     <option v-for="type in logictype" :value="type.id">{{ type.logic_type }}</option>
                                 </select>
                             </div>
-                            <div class="my-2 bg-white block py-3 px-4 border border-gray-300" v-if="pages[page_index].question[qIndex].logic_type > 1">
+                            <div class="my-2 bg-white block py-3 px-4 border border-gray-300"
+                                v-if="pages[page_index].question[qIndex].logic_type > 1">
                                 <div class="flex justify-between items-center text-sm">
                                     <label for="logic-question">Pilih Pertanyaan</label>
-                                    <select v-model="questionForlogic" id="logic-question" class="w-1/2 text-sm cursor-pointer">
+                                    <select v-model="questionForlogic" id="logic-question"
+                                        class="w-1/2 text-sm cursor-pointer">
                                         <option :value="null" disabled>Pertanyaan</option>
                                         <option
-                                        v-for="question in pages[page_index].question.filter(q => q.id != pages[page_index].question[qIndex].id && q.id != null)"
-                                        :value="question">{{ stripTags(question.soal) }}
-                                    </option>
-                                    </select>  
+                                            v-for="question in pages[page_index].question.filter(q => q.id != pages[page_index].question[qIndex].id && q.id != null)"
+                                            :value="question">{{ stripTags(question.soal) }}
+                                        </option>
+                                    </select>
                                 </div>
                                 <div v-if="questionForlogic" class="mt-2 flex justify-between items-center text-sm ">
                                     <label for="logic-target ">Pilih Jawaban</label>
-                                    <select  class="w-1/2 text-sm cursor-pointer"
+                                    <select class="w-1/2 text-sm cursor-pointer"
                                         v-model="pages[page_index].question[qIndex].logic_choice" id="logic-target">
                                         <option :value="null" disabled>Jawaban Pemicu</option>
                                         <option v-for="choice in questionForlogic.choices" :value="choice.cId">
@@ -598,7 +601,7 @@ watch(() => textEditor.value, () => {
                         </div>
                     </div>
                 </aside>
-            </transition> 
+            </transition>
 
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
@@ -849,7 +852,9 @@ watch(() => textEditor.value, () => {
 
                 <template #footer>
                     <div class="flex items-center justify-between w-full">
-                        <button @click="showLogicModal = false" type="button" class="inline-flex items-center rounded-md px-5 bg-red-500 py-2 text-sm mr-3 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2transition">Back
+                        <button @click="showLogicModal = false" type="button"
+                            class="inline-flex items-center rounded-md px-5 py-2 bg-red-500 text-sm mr-3 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition">
+                            Back
                         </button>
                         <PrimaryButton @click="createFlow()">Save</PrimaryButton>
                     </div>
