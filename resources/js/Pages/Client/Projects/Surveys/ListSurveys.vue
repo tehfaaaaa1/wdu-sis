@@ -182,20 +182,20 @@ const getSurveySubmissions = (surveyId) => {
                         </svg>
                     </div>
 
-                    <div class="flex justify-between items-center mb-5">
-                        <div class="w-1/2 sm:w-full">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="w-1/2 sm:w-full flex items-center">
                             <NavLink :href="route('create_surveys', [ clientSlug, projectSlug])"
                                 v-if="$page.props.auth.user.usertype === 'superadmin'"
-                                class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-m hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
+                                class="bg-primary my-0 text-white font-medium text-sm px-6 mr-5 py-2 rounded-m hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
                                 Tambah Kuisioner
                             </NavLink>
                             <NavLink :href="route('projects', [clientSlug])"
-                                class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
+                                class="bg-primary my-0 text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
                                 Back to Project
                             </NavLink>
                         </div>
 
-                        <div class="flex items-center px-4 py-2 text-sm w-60">
+                        <div class="flex items-center px-4 text-sm w-60">
                             <input type="text" v-model="searchQuery"
                                 class="w-full border-primary rounded-md text-sm placeholder:text-center placeholder:font-thin focus:ring-2 focus:ring-primary focus:border-none focus:shadow-md"
                                 placeholder="Search">
