@@ -86,7 +86,7 @@ const cancelDeletion = () => {
                                         </div>
                                     </template>
                                     <template #content>
-                                        <div class="py-1">
+                                        <div class="py-1 sticky bg-white z-50">
                                             <a :href="route('edit-contact-2',[contact.id])"
                                                 :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
                                             </a>
