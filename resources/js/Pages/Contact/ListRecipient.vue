@@ -22,7 +22,7 @@ const createRecipient = () => {
         name: RecipientName.value
     })).post(route('create-recipient'), { onSuccess: ShowCreate.value = false })
 }
-console.log(props.recipients)
+
 </script>
 <template>
     <AppLayout title="Recipient">
@@ -37,13 +37,13 @@ console.log(props.recipients)
                     <h2 class="font-semibold text-lg p-3">All Recipients</h2>
                     <div class="border-b border-gray-200"></div>
                     <div class="block" v-for="(recipient, index) in recipients" :key="index">
-                        <div class="flex items-center w-full p-3 hover:bg-gray-50 item-row">
+                        <a class="flex items-center w-full p-3 hover:bg-gray-50 item-row" :href="route('recipient-details', [recipient.slug])">
                             <div class="block">
-                                <a :href="route('recipient-details', [recipient.slug])">{{ recipient.name }}</a>
+                                <h1 >{{ recipient.name }}</h1>
                                 <p class="text-xs">Created At {{ recipient.dibuat }}</p>
                                 <!-- {{ recipient }} -->
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -83,7 +83,7 @@ console.log(props.recipients)
     color: gray;
 }
 
-.item-row:hover a {
+.item-row:hover h1 {
     color: #5EB54D;
 }
 

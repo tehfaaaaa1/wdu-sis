@@ -15,10 +15,12 @@ use Illuminate\Support\Str;
 class ContactController extends Controller
 {
     // Contact
-    public function contact() {
-        $contact = EmailContact::all();
+    public function contact(Request $request) {
+        // dd($request->getQueryString());
+        $contact = EmailContact::filter(request(['search']))->paginate(20)->withQueryString()->onEachSide(2);
         return Inertia::render('Contact/ListContact', [
-            'contact' => $contact
+            'contact' => $contact,
+            'search' => $request->getQueryString()
         ]);
     }
     public function importContact(Request $request, $slug) {
