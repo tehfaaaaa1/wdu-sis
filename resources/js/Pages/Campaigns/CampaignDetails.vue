@@ -12,8 +12,8 @@ const props = defineProps({
     recipients: Object,
     senders: Object,
 })
-const addSender = ref(false);
 const addSenderNew = ref(false);
+const addSender = ref(false);
 const addRecipient = ref(false);
 console.log(props.campaign)
 const form = useForm({
@@ -56,7 +56,7 @@ const newSender = () => {
                             <div :class="campaign.sender_id == null ? 'block' : 'flex justify-between'" class="w-full">
                                 <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
                                 <SecondaryButton class="!m-0" type="button"
-                                    @click="addSender = !addSender; addSenderNew = false">
+                                    @click="addSender = !addSender; addSenderNew ==true? addSenderNew = false :''">
                                     {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
                                 </SecondaryButton>
                             </div>
@@ -70,8 +70,8 @@ const newSender = () => {
                                     </label>
                                 </div>
                             </div>
-                            <PrimaryButton class="!my-0" type="button" v-show="addSender"
-                                @click="addSenderNew = !addSendernew">Or Add New</PrimaryButton>
+                            <PrimaryButton class="mt-2" type="button" v-show="addSender"
+                                @click="addSenderNew = ! addSenderNew">Or Add New</PrimaryButton>
                             <div class="block" v-show="addSenderNew">
                                 <input type="text" name="" placeholder="name" v-model="form.sender_name">
                                 <input type="email" name="" placeholder="email" v-model="form.sender_email">
@@ -81,6 +81,7 @@ const newSender = () => {
 
                         </div>
                     </div>
+                    <!-- Recipient -->
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Recipient</h1>
                         <div class="block px-3 w-full">
@@ -91,7 +92,7 @@ const newSender = () => {
                                     {{ campaign.recipient_id == null ? 'Add Recipient' : 'Edit Recipient' }}
                                 </SecondaryButton>
                             </div>
-
+                            
                             <div class="w-full p-3 shadow-md rounded-sm" v-show="addRecipient">
                                 <div class="" v-for="(recipient, rIndex) in recipients" :key="rIndex">
                                     <input type="radio" :id="'recipient_' + recipient.id" name="recipient_id"

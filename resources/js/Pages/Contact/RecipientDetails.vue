@@ -76,11 +76,11 @@ console.log(props.recipient)
                                         </template>
                                         <template #content>
                                             <div class="py-1">
-                                                <a
+                                                <a :href="route('edit-contact', [recipient[0].slug,contact.email_contact.id])"
                                                     :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
                                                 </a>
-                                                <a
-                                                    :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Delete
+                                                <a :href="route('remove-contact', [recipient[0].slug,contact.id])"
+                                                    :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Remove
                                                 </a>
                                             </div>
                                         </template>

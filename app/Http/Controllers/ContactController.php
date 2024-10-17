@@ -14,14 +14,53 @@ use Illuminate\Support\Str;
 
 class ContactController extends Controller
 {
-    //
-    
+    // Contact
     public function contact() {
         $contact = EmailContact::all();
         return Inertia::render('Contact/ListContact', [
             'contact' => $contact
         ]);
     }
+    public function importContact(Request $request, $slug) {
+        Excel::import(new ContactsImport($slug), $request->file('file'));
+    }
+    public function editContact($slug, $id){
+        $rec = Recipient::where('slug', $slug)->first();
+        $contact = EmailContact::where('id', $id)->first();
+        return Inertia::render('Contact/EditContact', [
+            'contact'=> $contact,
+            'recipient' => $rec
+        ]);
+    }
+    public function updateContact(Request $request, $slug, $id) {
+        $validate = $request->validate([
+            'email' => 'required|email|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company' => 'required|string|max:255',
+            'occupation' => 'required|string|max:255',
+        ]);
+        EmailContact::where('id', $id)->update([
+            'email' => $validate['email'],
+            'first_name' => $validate['first_name'],
+            'last_name'=> $validate['last_name'],
+            'company'=> $validate['company'],
+            'occupation'=> $validate['occupation']
+        ]);
+        return redirect()->route('recipient-details', [$slug]);
+    }
+    public function remove(Request $request, $slug, $id) {
+        $contact_rec = ContactRecipient::where('id',$id)->first();
+        if(!$contact_rec){
+            return response()->json([
+                'status' => '500',
+                'error' => 'Contact not found'
+            ]);
+        }
+        ContactRecipient::where('id', $id)->delete();
+        return redirect()->route('recipient-details', [$slug]);
+    }
+    // Recipient
     public function recipient() {
         $recipient = Recipient::all();
         return Inertia::render('Contact/ListRecipient', [
@@ -46,11 +85,6 @@ class ContactController extends Controller
         ]);
     }
 
-
-    public function importContact(Request $request, $slug) {
-        Excel::import(new ContactsImport($slug), $request->file('file'));
-    }
-
     public function details($slug) {
         $rec = Recipient::where('slug', $slug)->get();
         foreach($rec as $r){
@@ -65,7 +99,6 @@ class ContactController extends Controller
             'contact' => $contactrecipient
         ]);
     }
-
 
     public function addContact($slug){
         $rec = Recipient::where('slug', $slug)->first();
