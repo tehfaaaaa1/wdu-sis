@@ -32,6 +32,12 @@ class ContactController extends Controller
             'recipient' => $rec
         ]);
     }
+    public function editContact2( $id){
+        $contact = EmailContact::where('id', $id)->first();
+        return Inertia::render('Contact/EditContact', [
+            'contact'=> $contact
+        ]);
+    }
     public function updateContact(Request $request, $slug, $id) {
         $validate = $request->validate([
             'email' => 'required|email|max:255',
@@ -49,16 +55,33 @@ class ContactController extends Controller
         ]);
         return redirect()->route('recipient-details', [$slug]);
     }
-    public function remove(Request $request, $slug, $id) {
-        $contact_rec = ContactRecipient::where('id',$id)->first();
-        if(!$contact_rec){
+    public function updateContact2(Request $request,$id) {
+        $validate = $request->validate([
+            'email' => 'required|email|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company' => 'required|string|max:255',
+            'occupation' => 'required|string|max:255',
+        ]);
+        EmailContact::where('id', $id)->update([
+            'email' => $validate['email'],
+            'first_name' => $validate['first_name'],
+            'last_name'=> $validate['last_name'],
+            'company'=> $validate['company'],
+            'occupation'=> $validate['occupation']
+        ]);
+        return redirect()->route('list-contact');
+    }
+    public function delete($con_id) {
+        $email_con = EmailContact::where('id',$con_id)->first();
+        if(!$email_con){
             return response()->json([
                 'status' => '500',
                 'error' => 'Contact not found'
             ]);
         }
-        ContactRecipient::where('id', $id)->delete();
-        return redirect()->route('recipient-details', [$slug]);
+        EmailContact::where('id', $con_id)->delete();
+        return redirect()->route('list-contact');
     }
     // Recipient
     public function recipient() {
@@ -99,7 +122,17 @@ class ContactController extends Controller
             'contact' => $contactrecipient
         ]);
     }
-
+    public function remove(Request $request, $slug, $id) {
+        $contact_rec = ContactRecipient::where('id',$id)->first();
+        if(!$contact_rec){
+            return response()->json([
+                'status' => '500',
+                'error' => 'Contact not found'
+            ]);
+        }
+        ContactRecipient::where('id', $id)->delete();
+        return redirect()->route('recipient-details', [$slug]);
+    }
     public function addContact($slug){
         $rec = Recipient::where('slug', $slug)->first();
         return Inertia::render('Contact/AddContact',[

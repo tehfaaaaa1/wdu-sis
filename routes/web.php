@@ -56,8 +56,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::post('/recipient/{Recipient:slug}/addcontact', [ContactController::class,'storeContact'])->name('store-contact');
         Route::post('/recipient/{Recipient:slug}/import-contact', [ContactController::class, 'importContact'])->name('contact.import');
         Route::get('/edit-contact/{Recipient:slug}/{Contact:id}', [ContactController::class, 'editContact'])->name('edit-contact');
+        Route::get('/edit-contact/{Contact:id}', [ContactController::class, 'editContact2'])->name('edit-contact-2');
         Route::post('/update-contact/{Recipient:slug}/{Contact:id}', [ContactController::class, 'updateContact'])->name('update-contact');
+        Route::post('/update-contact/{Contact:id}', [ContactController::class, 'updateContact2'])->name('update-contact-2');
         Route::get('/remove-contact/{Recipient:slug}/{ContactRecipient:id}', [ContactController::class, 'remove'])->name('remove-contact');
+        Route::get('/remove-contact/{Contact:id}', [ContactController::class, 'delete'])->name('delete-contact');
     });
     //campaign
     Route::prefix('/campaign')->group(function () {

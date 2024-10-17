@@ -24,7 +24,7 @@ const form = useForm({
     occupation:props.contact.occupation,
 })
 const submit = ()=>{
-    form.get(route('update-contact', [props.recipient.slug ,props.contact.id]))
+    props.recipient ? form.post(route('update-contact', [props.recipient.slug ,props.contact.id])) : form.post(route('update-contact-2', [props.contact.id]))
 }
 </script>
 <template>

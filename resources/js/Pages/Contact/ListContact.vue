@@ -1,18 +1,43 @@
 <script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { ref, computed } from 'vue';
 import NavLink from '@/Components/NavLink.vue';
 import Dropdown from '@/Components/Dropdown.vue';
+import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
+
 const props = defineProps({
     contact: Object
 })
+const form = useForm({
 
+})
+
+const showDeleteModal = ref(false);
+const selectedContactId = ref(null);
+const hapus = (id) => {
+    selectedContactId.value = id;
+    showDeleteModal.value = true;
+};
+
+const confirmDeletion = () => {
+    form.get(route('delete-contact', selectedContactId.value), {
+        onFinish: () => {
+            showDeleteModal.value = false;
+        }
+    })
+}
+
+const cancelDeletion = () => {
+    showDeleteModal.value = false;
+}
 </script>
 <template>
     <AppLayout title="List Contact">
         <div class="mx-auto rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
-                    <!-- <NavLink :href="route('list-recipient')"
+                    <!-- <NavLink :href="routae('list-recipient')"
                         class="bg-primary !mb-0 !mt-3 text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
                         Recipient
                     </NavLink> -->
@@ -62,10 +87,10 @@ const props = defineProps({
                                     </template>
                                     <template #content>
                                         <div class="py-1">
-                                            <a
+                                            <a :href="route('edit-contact-2',[contact.id])"
                                                 :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
                                             </a>
-                                            <a
+                                            <a @click ="hapus(contact.id)"   
                                                 :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Delete
                                             </a>
                                         </div>
@@ -87,5 +112,6 @@ const props = defineProps({
                 </div> -->
             </div>
         </div>
+        <DeleteConfirmation :show="showDeleteModal" @confirm="confirmDeletion" @cancel="cancelDeletion" />
     </AppLayout>
 </template>

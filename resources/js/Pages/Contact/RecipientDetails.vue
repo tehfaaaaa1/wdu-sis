@@ -2,11 +2,34 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import NavLink from '@/Components/NavLink.vue';
-
+import {ref} from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 const props = defineProps({
     recipient: Object,
     contact: Object
 })
+const showRemoveModal = ref(false);
+const selectedContactId = ref(null);
+const hapus = (id) => {
+    selectedContactId.value = id;
+    showRemoveModal.value = true;
+};
+const form = useForm([
+
+])
+const confirmRemove = () => {   
+    form.get(route('remove-contact', [props.recipient[0].slug,selectedContactId.value]), {
+        onFinish: () => {
+            showRemoveModal.value = false;
+        }
+    })
+}
+
+const cancelRemove = () => {
+    showRemoveModal.value = false;
+}
+
 console.log(props.recipient)
 </script>
 <template>
@@ -45,24 +68,24 @@ console.log(props.recipient)
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(contact, index) in props.contact" :key="index"
+                            <tr v-for="(contact_rec, index) in props.contact" :key="index"
                                 class="bg-white border-b hover:bg-gray-50 group">
                                 <td scope="row" class="px-6 py-4 font-medium text-gray-900 break-words">
-                                    {{ contact.email_contact.email }}
+                                    {{ contact_rec.email_contact.email }}
                                 </td>
                                 <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 break-words">
-                                    {{ contact.email_contact.first_name }}
+                                    {{ contact_rec.email_contact.first_name }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ contact.email_contact.last_name }}
+                                    {{ contact_rec.email_contact.last_name }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ contact.email_contact.company }}
+                                    {{ contact_rec.email_contact.company }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    {{ contact.email_contact.occupation }}
+                                    {{ contact_rec.email_contact.occupation }}
                                 </td>
-                                <td class="px-6 py-4 flex justify-end">
+                                <td class="px-6 py-4 text-end">
                                     <Dropdown width="36">
                                         <template #trigger>
                                             <div
@@ -75,11 +98,11 @@ console.log(props.recipient)
                                             </div>
                                         </template>
                                         <template #content>
-                                            <div class="py-1">
-                                                <a :href="route('edit-contact', [recipient[0].slug,contact.email_contact.id])"
+                                            <div class="py-1 text-start">
+                                                <a :href="route('edit-contact', [recipient[0].slug,contact_rec?.email_contact?.id])"
                                                     :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
                                                 </a>
-                                                <a :href="route('remove-contact', [recipient[0].slug,contact.id])"
+                                                <a @click ="hapus(contact_rec.id)"
                                                     :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Remove
                                                 </a>
                                             </div>
@@ -92,5 +115,20 @@ console.log(props.recipient)
                 </div>
             </div>
         </main>
+        <div v-show="showRemoveModal" class="fixed inset-0 flex items-center justify-center z-50">
+        <div class="absolute inset-0 bg-gray-600 opacity-75"></div>
+        <div class="bg-white p-6 rounded-lg shadow-lg z-10">
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">Confirm Remove</h2>
+            <p class="text-gray-600 mb-6">Are you sure want to Remove? This action cannot be undone.</p>
+            <div class="flex justify-end space-x-4">    
+                <button @click="cancelRemove" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
+                    Cancel
+                </button>
+                <button @click="confirmRemove" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                    Remove
+                </button>
+            </div>
+        </div>
+    </div>
     </AppLayout>
 </template>
