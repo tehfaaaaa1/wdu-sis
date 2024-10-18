@@ -2,12 +2,12 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import DropdownAlt from '@/Components/DropdownAlt.vue';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
-import { useForm, Head } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import NavLink from '@/Components/NavLink.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { isEmpty } from 'lodash';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
+import Dropdown from '@/Components/Dropdown.vue';
 
 const props = defineProps({
     users: Object,
@@ -56,8 +56,9 @@ const search = () => {
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
-                    <NavLink class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4" 
-                    :href="route('users.create')">
+                    <NavLink
+                        class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4"
+                        :href="route('users.create')">
                         Create User
                     </NavLink>
                 </div>
@@ -128,11 +129,11 @@ const search = () => {
                             <th scope="col" class="px-6 py-3 w-[10%]">User Type</th>
                             <th scope="col" class="px-6 py-3">Team</th>
                             <th scope="col" class="px-6 py-3">Client</th>
-                            <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
+                            <th scope="col" class="px-6 py-3 md:w-1/12"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users.data" :key="user.id" class="bg-white border-b hover:bg-gray-50">
+                        <tr v-for="user in users.data" :key="user.id" class="bg-white border-b hover:bg-gray-50 group">
                             <td scope="row" class="px-6 py-4 font-medium text-gray-900">
                                 {{ user.name }}
                             </td>
@@ -148,11 +149,29 @@ const search = () => {
                             <td class="px-6 py-4">
                                 {{ user.client != null ? user.client.client_name : 'No Client' }}
                             </td>
-                            <td class="px-6 py-4">
-                                <a :href="route('edit_user', user.id)"
-                                    class="font-medium text-blue-600 hover:underline mr-4 py-1 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Edit</a>
-                                <a @click="hapus(user.id)"
-                                    class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
+                            <td class="px-6 py-4 flex justify-end">
+                                <Dropdown width="36">
+                                    <template #trigger>
+                                        <div
+                                            class="collapse group-hover:visible w-12 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:ring-1 ring-inset ring-gray-300 cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                            </svg>
+                                        </div>
+                                    </template>
+                                    <template #content>
+                                        <div class="py-1">
+                                            <a :href="route('edit-user', [user.id])"
+                                                :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
+                                            </a>
+                                            <a @click="hapus(user.id)"
+                                                :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Delete
+                                            </a>
+                                        </div>
+                                    </template>
+                                </Dropdown>
                             </td>
                         </tr>
                     </tbody>
