@@ -72,8 +72,8 @@ console.log(props.recipient)
                                 <tr v-for="(contact_rec, index) in props.contact" :key="index"
                                     class="bg-white border-b hover:bg-gray-50 group">
                                     <td scope="row" class="px-6 py-4 font-medium text-gray-900 break-words">
+                                        {{ contact_rec.email_contact.email }}
                                     </td>
-                                    {{ contact_rec.email_contact.email }}
                                     <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 break-words">
                                         {{ contact_rec.email_contact.first_name }}
                                     </td>
