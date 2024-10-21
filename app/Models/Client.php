@@ -20,7 +20,6 @@ class Client extends Model
     ];
 
     public function project() : HasMany{
-
         return $this->hasMany(Project::class);
     }
 }

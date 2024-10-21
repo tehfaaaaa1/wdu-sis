@@ -29,7 +29,9 @@ onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
 
 const widthClass = computed(() => {
     return {
+        '36': 'w-36',
         '48': 'w-48',
+        '96' : 'w-96'
     }[props.width.toString()];
 });
 
@@ -48,12 +50,12 @@ const alignmentClasses = computed(() => {
 
 <template>
     <div class="relative">
-        <div @click="open = ! open">
+        <div @click="open = ! open" @focusin="open = !open">
             <slot name="trigger" />
         </div>
 
         <!-- Full Screen Dropdown Overlay -->
-        <div v-show="open" class="fixed inset-0 z-40" @click="open = false" />
+        <div v-show="open" class="fixed inset-0 z-40" @click="open = false" @focusout="open = false"/>
 
         <transition
             enter-active-class="transition ease-out duration-200"

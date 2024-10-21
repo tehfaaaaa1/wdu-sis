@@ -7,6 +7,7 @@ import { ref } from 'vue';
 import NavLink from '@/Components/NavLink.vue';
 import Pagination from '@/Components/Pagination.vue';
 import { isEmpty } from 'lodash';
+import Dropdown from '@/Components/Dropdown.vue';
 
 const props = defineProps({
     users: Object,
@@ -23,7 +24,7 @@ const form = useForm({
     })),
     search: '',
     noteam: '',
-    noclient:'',
+    noclient: '',
 });
 const showDeleteModal = ref(false);
 const selectedUserId = ref(null);
@@ -52,19 +53,13 @@ const search = () => {
 
 <template>
     <AppLayout title="Users">
-        <template #header>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Users
-                </h2>
-            </div>
-        </template>
-        <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center mb-6">
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center mb-5">
                 <div class="w-1/2 sm:w-full">
-                    <NavLink :href="route('users.create')"
-                        class="bg-primary text-white text-sm font-medium px-6 py-2.5 rounded-md hover:bg-white hover:text-primary transition">
-                        Add User
+                    <NavLink
+                        class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4"
+                        :href="route('users.create')">
+                        Create User
                     </NavLink>
                 </div>
                 <div class="w-1/4 flex items-center py-2 text-sm">
@@ -74,8 +69,9 @@ const search = () => {
                     <div class="relative" id="filter">
                         <DropdownAlt width="52">
                             <template #trigger>
-                                <button class="bg-secondary p-2 px-4 rounded-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-white">
+                                <button class="bg-secondary hover:bg-biru-gelap transition p-2 px-4 rounded-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-5 text-white">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
                                     </svg>
@@ -87,11 +83,14 @@ const search = () => {
                                     <div class="Teams">
                                         <p class="text-xs text-gray-500 mb-1">Teams</p>
                                         <div class="mb-1.5">
-                                            <input type="checkbox" class="checked:text-primary focus:ring-primary" v-model="form.noteam" id="noteam" name="noteam" value="">
+                                            <input type="checkbox" class="checked:text-primary focus:ring-primary"
+                                                v-model="form.noteam" id="noteam" name="noteam" value="">
                                             <label class="px-2" for="noteam">No Team</label>
                                         </div>
                                         <div class="mb-1.5 flex items-center" v-for="(t, index) in team" :key="index">
-                                            <input type="checkbox" class="checked:text-primary focus:ring-primary" :id="'team' + t.id" :name="'team' + t.id" v-model="form.team[index].tim" :value="t.name">
+                                            <input type="checkbox" class="checked:text-primary focus:ring-primary"
+                                                :id="'team' + t.id" :name="'team' + t.id" v-model="form.team[index].tim"
+                                                :value="t.name">
                                             <label class="px-2" :for="'team' + t.id">{{ t.name }}</label>
                                         </div>
                                         <hr class="my-3">
@@ -99,18 +98,22 @@ const search = () => {
                                     <div class="Client">
                                         <p class="text-xs text-gray-500 mb-1">Clients</p>
                                         <div class="No Client mb-1.5">
-                                            <input type="checkbox" class="checked:text-primary focus:ring-primary" v-model="form.noclient" id="noclient" name="noclient" value="">
+                                            <input type="checkbox" class="checked:text-primary focus:ring-primary"
+                                                v-model="form.noclient" id="noclient" name="noclient" value="">
                                             <label class="px-2" for="noclient">No Client</label>
                                         </div>
                                         <div class="mb-1.5 flex items-center" v-for="(c, index) in client" :key="index">
-                                            <input type="checkbox" class="checked:text-primary focus:ring-primary" :id="'client' + c.id + index" :name="'client' + c.id + index" v-model="form.client[index].isi" :value="c.slug">
+                                            <input type="checkbox" class="checked:text-primary focus:ring-primary"
+                                                :id="'client' + c.id + index" :name="'client' + c.id + index"
+                                                v-model="form.client[index].isi" :value="c.slug">
                                             <label class="px-2" :for="'client' + c.id + index">
                                                 {{ c.client_name }}
                                             </label>
                                         </div>
                                         <hr class="my-3">
                                     </div>
-                                    <button type="button" @click="search" class="w-full hover:bg-white hover:text-primary hover:ring-2 hover:ring-primary transition bg-primary py-2 rounded-md text-white text-center">Filter</button>
+                                    <button type="button" @click="search"
+                                        class="w-full hover:bg-white hover:text-primary hover:ring-2 hover:ring-primary transition bg-primary py-2 rounded-md text-white text-center">Filter</button>
                                 </div>
                             </template>
                         </DropdownAlt>
@@ -126,11 +129,11 @@ const search = () => {
                             <th scope="col" class="px-6 py-3 w-[10%]">User Type</th>
                             <th scope="col" class="px-6 py-3">Team</th>
                             <th scope="col" class="px-6 py-3">Client</th>
-                            <th scope="col" class="px-6 py-3 md:w-1/6">Action</th>
+                            <th scope="col" class="px-6 py-3 md:w-1/12"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="user in users.data" :key="user.id" class="bg-white border-b hover:bg-gray-50">
+                        <tr v-for="user in users.data" :key="user.id" class="bg-white border-b hover:bg-gray-50 group">
                             <td scope="row" class="px-6 py-4 font-medium text-gray-900">
                                 {{ user.name }}
                             </td>
@@ -146,11 +149,29 @@ const search = () => {
                             <td class="px-6 py-4">
                                 {{ user.client != null ? user.client.client_name : 'No Client' }}
                             </td>
-                            <td class="px-6 py-4">
-                                <a :href="route('edit_user', user.id)"
-                                    class="font-medium text-blue-600 hover:underline mr-4 py-1 focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-blue-500 focus:shadow-sm">Edit</a>
-                                <a @click="hapus(user.id)"
-                                    class="font-medium text-red-600 hover:underline cursor-pointer">Delete</a>
+                            <td class="px-6 py-4 flex justify-end">
+                                <Dropdown width="36">
+                                    <template #trigger>
+                                        <div
+                                            class="collapse group-hover:visible w-12 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:ring-1 ring-inset ring-gray-300 cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                            </svg>
+                                        </div>
+                                    </template>
+                                    <template #content>
+                                        <div class="py-1">
+                                            <a :href="route('edit-user', [user.id])"
+                                                :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
+                                            </a>
+                                            <a @click="hapus(user.id)"
+                                                :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Delete
+                                            </a>
+                                        </div>
+                                    </template>
+                                </Dropdown>
                             </td>
                         </tr>
                     </tbody>
@@ -166,7 +187,7 @@ const search = () => {
                     <Pagination :links="users.links" />
                 </div>
             </div>
-        </div>
+        </main>
 
         <DeleteConfirmation :show="showDeleteModal" @confirm="confirmDeletion" @cancel="cancelDeletion" />
     </AppLayout>

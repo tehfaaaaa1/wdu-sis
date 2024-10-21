@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::table('questions', function (Blueprint $table) {
-        //     $table->integer('order')->unique(false)->change();
-        // });
+        Schema::create('question_logic_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('logic_type');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -21,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('question_logic_types');
     }
 };

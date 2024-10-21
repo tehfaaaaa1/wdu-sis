@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Exports\ReportExport;
 use Inertia\Inertia;
 use App\Models\Answer;
 use App\Models\Survey;
 use App\Models\Biodata;
 use App\Models\Province;
+use App\Models\City;
+use App\Models\Regency;
 use App\Models\Response;
 use App\Models\QuestionPage;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ResponseController extends Controller
 {
@@ -23,8 +25,10 @@ class ResponseController extends Controller
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
         $totalRes = count($response);
         $provinces = Province::all();
+        $cities = City::all();
+        $regencies = Regency::all();
         $provinceTargets = json_decode($survey->province_targets, true);
-
+        
         return Inertia::render( 
             'Client/Projects/Surveys/ListResponse',
             [
@@ -39,11 +43,16 @@ class ResponseController extends Controller
                         'user_id' => $res->user_id,
                         'survey_id' => $res->survey_id,
                         'user' => $res->user,
+                        'role' =>$res->user->currentTeam,
                         'status' => $res->status,
-                        'biodata' => $res->user->biodata
+                        'biodata' => $res->user->biodata,
+                        'start'=>$res->created_at->format('H:i:s d-m-Y'),
+                        'submit'=>$res->updated_at->format('H:i:s d-m-Y')
                     ];
                 }),
-                'province_targets' => $provinceTargets
+                'province_targets' => $provinceTargets,
+                'cities' => $cities,
+                'regencies' => $regencies,
             ]
         );
     }
@@ -84,6 +93,8 @@ class ResponseController extends Controller
                 'clients' => $client,
                 'page' => $formattedPage,
                 'responses' => $response,
+                'start' => $response->created_at->format('H:i:s d-m-Y'),
+                'submit' => $response->updated_at->format('H:i:s d-m-Y'),
                 'answer' => $answers,
                 'biodata' => $bio,
             ]
@@ -125,5 +136,9 @@ class ResponseController extends Controller
                 'responses' => $response,
             ]
         );
+    }
+    public function export($clientSlug, $projectSlug, $surveyId){
+        $survey = Survey::where('id', $surveyId)->first();
+        return (new ReportExport($surveyId, $survey->title, $survey->question, $survey->response))->download('Survey '.$survey->title.'.xlsx', \Maatwebsite\Excel\Excel::XLSX, ['Content-Type' => 'xlsx']);
     }
 }

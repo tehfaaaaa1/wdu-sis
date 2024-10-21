@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('question_pages', function (Blueprint $table) {
-            $table->integer('order')->nullable();
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->string('slug')->after('name')->unique()->nullable();
         });
     }
 
@@ -21,5 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
+    
     }
 };

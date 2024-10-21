@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use queue;
 use App\Models\Flow;
 use Inertia\Inertia;
 use App\Models\Answer;
@@ -10,6 +11,7 @@ use App\Models\QuestionPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Cookie;
 
 class AnswerController extends Controller
 {
@@ -21,13 +23,18 @@ class AnswerController extends Controller
         $page = $request['page'];
         $clientSlug = $request['client_slug'];
         $projectSlug = $request['project_slug'];
-
+        $start = $request->cookie('startTime_survey_'.$id.'_user_'.Auth::user()->id);
         // Create a new response
         $response = new Response;
         $response->user_id = Auth::user()->id;
         $response->survey_id = $id;
         $response->status = 1;
+        $response->created_at = $start;
+        $response->updated_at = now();
         $response->save();
+        if($request->cookie('startTime_survey_'.$id.'_user_'.Auth::user()->id)){
+            Cookie::queue(Cookie::forget('startTime_survey_'.$id.'_user_'.Auth::user()->id));
+        }
         foreach($page as $p){
             $questions = $p['question'];
             $answers = $p['answer']; // Get all answers
@@ -71,7 +78,7 @@ class AnswerController extends Controller
         $jawab->save();
     }
 
-    public function submission(Survey $surveyModel, $clientSlug, $projectSlug, $id)
+    public function submission(Survey $surveyModel, $clientSlug, $projectSlug, $id, Request $request)
     {
         // Fetch survey, questions, project, client
         $survey = Survey::findOrFail($id);
@@ -92,17 +99,20 @@ class AnswerController extends Controller
                 'question' => $p->question->map(function ($q) {
                     return [
                         'id' => $q->id,
-                        'question_text' => $q->question_text,
+                        'question_text' => $q->question_text,  
                         'question_type_id' => $q->question_type_id,
                         'survey_id' => $q->survey_id,
                         'order' => $q->order,
                         'required' => $q->required,
+                        'question_choice_id' =>$q->question_choice_id ?? null,
+                        'logic_type' => $q->question_logic_type_id ?? null,
+                        'logic_name' => $q->logic->logic_type?? null,
                         'choice' => $q->choice,
                     ];
                 }),
             ];
         });
-
+        
         // Render the view
         return Inertia::render(
             'Client/Projects/Surveys/SubmissionSurvey',
@@ -112,7 +122,7 @@ class AnswerController extends Controller
                 'clients' => $client,
                 'page' => $formattedPage,
                 'pagee' => $page,
-                'flow' => $flow
+                'flow' => $flow,
                 // 'responses' => $res['id'] ?? null
             ]
         );

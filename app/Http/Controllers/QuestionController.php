@@ -3,14 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Flow;
-use App\Models\QuestionPage;
 use Inertia\Inertia;
 use App\Models\Survey;
 use App\Models\Question;
+use Illuminate\Support\Arr;
+use App\Models\QuestionPage;
 use Illuminate\Http\Request;
 use App\Models\QuestionChoice;
+use App\Models\QuestionLogicType;
+use PhpParser\Node\Stmt\Break_;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Validation\Rules\Unique;
+use function PHPUnit\Framework\arrayHasKey;
 
 class QuestionController extends Controller
 {
@@ -20,6 +27,7 @@ class QuestionController extends Controller
         $survey =  Survey::findOrFail($id);
         $question = Question::where('survey_id',  $id)->get();
         $page = QuestionPage::where('survey_id', $id)->get();
+        $logic_type = QuestionLogicType::all();
         $project = DB::table('projects')
         ->where('slug', $projectSlug)
         ->get();
@@ -58,6 +66,7 @@ class QuestionController extends Controller
                 // 'c_lastId' => $c_lastId,
                 'flows'=> $flow,
                 'surveyall' => $surveyall,
+                'logictype'=>$logic_type
             ]
         );
     }
@@ -134,22 +143,25 @@ class QuestionController extends Controller
     public function manualSave(Request $request, $clientSlug, $projectSlug, $id)
     {
         // Validate the incoming request data
+        // dd($request);
         $validatedData = $request->validate([
             'data' => 'required|array',
             'data.*.question' => 'required|array',
             'data.*.id' => 'nullable|numeric',
             'data.*.name' => 'required|string',
-            'data.*.question.*.soal' => 'required|string|max:255',
+            'data.*.question.*.soal' => 'required',
             'data.*.question.*.types' => 'required|array',
-            'data.*.question.*.required' => 'required|boolean',
+            'data.*.question.*.required' => 'boolean',
             'data.*.question.*.choices' => 'array',
+            'data.*.question.*.files' => 'array',
             'data.*.question.*.id' => 'nullable|numeric',
             'data.*.question.*.order' => 'nullable|integer',
+            'data.*.question.*.logic_choice' => 'nullable|integer',
+            'data.*.question.*.logic_type' => 'nullable|integer',
         ]);
         // dd($validatedData);
         $survey = Survey::findOrFail($request->survey);
         // Save or update the questions
-
         // Retrieve existing questions for the page
         $existingPages = QuestionPage::where('survey_id', $survey->id)
             ->get()
@@ -182,8 +194,25 @@ class QuestionController extends Controller
                 $choices = [];
 
                 // Process the question types and handle choices
-                foreach ($questionData['types'] as $type) {
+                foreach ($questionData['types'] as $qind => $type) {
                     switch ($type) {
+                        case 'Paragraph':
+                            $questionType = 5;
+                            $choices =[];
+                            break;
+                        case 'Image':
+                            $questionType = 4;
+                            $choices = [];
+                            if($questionData['soal'] != $questionData['files'][0]['files']){   
+                                if ($questionData['soal'] && File::exists(public_path('img/') . $questionData['soal'])) {
+                                    Storage::disk('public')->delete(public_path('img/') . $questionData['soal']);
+                                    unlink(public_path('img/') . $questionData['soal']);
+                                }
+                                $fileName =date('YmdHi') . $questionData['soal']->getClientOriginalName();
+                                $questionData['soal']->move(public_path('img'), $fileName);
+                                $questionData['soal'] = $fileName;
+                        }
+                        break;
                         case 'Text':
                             $questionType = 1;
                             $choices = []; // Clear any existing choices for Text type
@@ -199,7 +228,7 @@ class QuestionController extends Controller
                                 for($j = $i + 1;$j<count($choices);$j++){
                                     $intersect = array_intersect($choices[$i], $choices[$j]);
                                     if(!empty($intersect)){
-                                        abort(403, 'ha');
+                                        abort(403, 'ada pilihan yang sama dalam 1 pertanyaan');
                                     }
                                 }
                             }
@@ -209,15 +238,18 @@ class QuestionController extends Controller
                             break;
                     }
                 }
+                // dd($pageData);
                 // Save or update the question
                 $saveQuestion = Question::firstOrNew(
                     ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id]
                 );
                 $saveQuestion->question_page_id =  $savePage->id;
-                $saveQuestion->required = $questionData['required'];
-                $saveQuestion->order = $index+1;
+                $saveQuestion->required = $questionData['required'] ?? 1;
+                $saveQuestion->order = $index + 1;
                 $saveQuestion->question_text = $questionData['soal'];
                 $saveQuestion->question_type_id = $questionType;
+                $saveQuestion->question_logic_type_id = $questionData['logic_type'];
+                $saveQuestion->question_choice_id = $questionData['logic_choice'] ?? null;
                 $saveQuestion->save();
 
                 $processedQuestionIds[] = $saveQuestion->id;
@@ -245,27 +277,28 @@ class QuestionController extends Controller
             }
 
             // Delete any existing questions that were not processed
+            $existingQuestions->except($processedQuestionIds)->each(function ($question) {
+                $question->delete();
+            });
         }
-        
-        $existingQuestions->except($processedQuestionIds)->each(function ($question) {
-            $question->delete();
-        });
         $existingPages->except($processedPageIds)->each(function ($page) {
             $page->delete();
         });
 
         // Additional logic for final submission, such as notifications or marking survey as complete
-        return redirect()->route('question_surveys', [$clientSlug, $projectSlug, $id])->with('success', 'Survey created successfully.');
+        return back()->with('success', 'Survey created successfully.');
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $id){
-        
+        if(array_search(null, Arr::except($request->all(), 'flow_id'))){
+            abort(403, 'Missing Flow Data');
+        };
         $pageId = $request->page['id'];
         $qId = $request->question['id'];
-        $qchoiceId = $request->choice['cId'];
+        $qchoiceId = $request->choice['id'];
         $nextOrder = $request->next['order'];   
-        $currentOrder = $request->page['order'];
         $flowID = $request->flow_id;
+        $currentOrder = $request->page['order'];
         $request->validate([
             'name' => 'required|string|max:255'
         ]);

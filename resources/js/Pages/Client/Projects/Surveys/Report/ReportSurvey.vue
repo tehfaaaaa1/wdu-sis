@@ -9,14 +9,15 @@ const props = defineProps({
     page: Array,
     responses: [Array, Object],
     answer: Array,
-    biodata: Object
+    biodata: Object,
+    start: Object,
+    submit: Object
 });
 const project = props.projects[0]
 const client = props.clients[0]
 const checked = (choice, q) => {
     return q.answer.some(ans => ans.answer == choice.id && ans.response_id == props.responses.id);
 };
-
 </script>
 
 <template>
@@ -31,6 +32,8 @@ const checked = (choice, q) => {
                         <h3 class="font-medium">Alamat: {{ props.biodata.alamat }}</h3>
                         <h3 class="font-medium">Nomor Telp: {{ props.biodata.no_hp }}</h3>
                         <h3 class="font-medium">Instansi: {{ props.biodata.instansi }}</h3>
+                        <h3 class="font-medium">Waktu Mulai: {{ props.start }}</h3>
+                        <h3 class="font-medium">Waktu Submit: {{ props.submit }}</h3>
                     </div>
                 </div>
                 <div class="border w-full border-gray-400 my-6"></div>
@@ -43,8 +46,9 @@ const checked = (choice, q) => {
                             <form class="w-full">
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                     :key="index">
-                                    <div class="block mb-2.5">
-                                        <p class="font-semibold">{{ index + 1 }}. <label>{{ question.question_text}}</label></p>
+                                    <div class="block mb-2.5" v-if="question.question_type_id <= 3">
+                                        <div class="font-semibold flex gap-x-1">{{ index + 1 }}. <label
+                                                v-html="question.question_text" class="output"></label></div>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2">
                                             <div v-for="(list, i) in question.choice" :key="i">
@@ -69,6 +73,11 @@ const checked = (choice, q) => {
                                                     :value="answe.answer" disabled class="rounded w-full">
                                             </div>
                                         </div>
+                                        <div v-if="question.question_type_id == 4">
+                                            <img :src="'/img/' + question.question_text" />
+                                        </div>
+                                        <div v-html="question.question_text" v-if="question.question_type_id == 5"
+                                            class="output"></div>
                                     </div>
                                 </div>
                             </form>
@@ -79,3 +88,6 @@ const checked = (choice, q) => {
         </main>
     </AppLayout>
 </template>
+<style>
+@import url('/resources/css/quill-overwrite.css');
+</style>

@@ -16,10 +16,10 @@ const props = defineProps({
 });
 const project = props.projects[0]
 const client = props.clients[0]
-const BackgroundColors = ['#41B883','#E46651' , '#00D8FF','#FFAF00' , '#cc66ff']
-const PieChartData =(
-    props.page.map((page)=>({
-        question:page.question.map(()=>({
+const BackgroundColors = ['#41B883', '#E46651', '#00D8FF', '#FFAF00', '#cc66ff']
+const PieChartData = (
+    props.page.map((page) => ({
+        question: page.question.map(() => ({
             labels: [],
             datasets: [{
                 label: ['Response'],
@@ -30,14 +30,14 @@ const PieChartData =(
     }))
 )
 
-const BarChartData =(
-    props.page.map((page)=>({
-        question:page.question.map((q)=>({
+const BarChartData = (
+    props.page.map((page) => ({
+        question: page.question.map((q) => ({
             labels: ['Response'],
-            datasets: q.choice.map((c, index)=>({
-                label: c.value +' ('+((q.answer.filter(a=>a.answer == c.id).length *100) / q.answer.length).toFixed(2)+'%)',
+            datasets: q.choice.map((c, index) => ({
+                label: c.value + ' (' + ((q.answer.filter(a => a.answer == c.id).length * 100) / q.answer.length).toFixed(2) + '%)',
                 backgroundColor: BackgroundColors[index],
-                data: [q.answer.filter(a=>a.answer == c.id ).length]
+                data: [q.answer.filter(a => a.answer == c.id).length]
             }))
         }))
     }))
@@ -59,12 +59,12 @@ const chartOptions = {
 
 const count = (pgind, qind, choice, answer, question) => {
     const all = answer.length
-    if(PieChartData[pgind].question[qind].labels.length != choice.length){
+    if (PieChartData[pgind].question[qind].labels.length != choice.length) {
         choice.forEach((element, ind) => {
-            const persentage = ((answer.filter(a=>a.answer == element.id).length *100) / all).toFixed(2)
-            if(question.question_type_id == 2){
-                PieChartData[pgind].question[qind].labels.push(element.value+' ('+ persentage +'%)' )
-                PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a=>a.answer == element.id).length)
+            const persentage = ((answer.filter(a => a.answer == element.id).length * 100) / all).toFixed(2)
+            if (question.question_type_id == 2) {
+                PieChartData[pgind].question[qind].labels.push(element.value + ' (' + persentage + '%)')
+                PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a => a.answer == element.id).length)
             }
         })
     } else {
@@ -90,11 +90,13 @@ const showAllanswer = ref(props.page.map((p) => ({
                     <div class="bg-white rounded-b-md overflow-x-auto">
                         <div class="p-5 flex w-full">
                             <form class="w-full">
-                                <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)" :key="index">
+                                <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
+                                    :key="index">
                                     <div class="block mb-2.5">
-                                        <p class="font-semibold">
-                                            {{ index + 1 }}. <label>{{ question.question_text }}</label>
-                                        </p>
+                                        <div class="font-semibold flex gap-x-1" v-if="question.question_type_id <= 3">
+                                            {{ index + 1 }}. <label v-html="question.question_text"
+                                                class="output"></label>{{ ' (' + responses.length + ' Response)' }}
+                                        </div>
                                         <!-- Handling radio inputs for question type 2 -->
                                         <div v-if="question.question_type_id == 2" class="flex gap-x-10">
                                             <div class="">
@@ -123,6 +125,11 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                 :key="count(ind, index, question.choice, question.answer, question)"
                                                 :chart-options="chartOptions" />
                                         </div>
+                                        <div v-if="question.question_type_id == 4">
+                                            <img :src="'/img/' + question.question_text" />
+                                        </div>
+                                        <div class="output" v-if="question.question_type_id == 5"
+                                            v-html="question.question_text"></div>
                                         <!-- Handling textarea for question type 1 -->
                                         <div v-if="question.question_type_id == 1">
                                             <div class="px-5 mt-2 " v-for="(answe, Aindex) in question.answer"
@@ -134,13 +141,15 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                 </div>
                                             </div>
                                             <div class="flex justify-center mt-2"
-                                                v-if="showAllanswer[ind].q[index].value == false">
+                                                v-if="showAllanswer[ind].q[index].value == false && question.answer.length > 3">
                                                 <button
                                                     class="text-sm text-secondary border-b border-transparent hover:border-secondary transition p-1 focus:border-secondary focus:outline-none"
-                                                    type="button" @click="showAllanswer[ind].q[index].value = true">Show
-                                                    All</button>
+                                                    type="button" @click="showAllanswer[ind].q[index].value = true">
+                                                    Show {{ question.answer.length - 3 }} More
+                                                </button>
                                             </div>
-                                            <div class="flex justify-center mt-2" v-else>
+                                            <div class="flex justify-center mt-2"
+                                                v-else-if="showAllanswer[ind].q[index].value == true && question.answer.length > 3">
                                                 <button type="button"
                                                     class="text-sm text-secondary border-b border-transparent hover:border-secondary transition p-1 focus:border-secondary focus:outline-none"
                                                     @click="showAllanswer[ind].q[index].value = false">Show
@@ -157,3 +166,6 @@ const showAllanswer = ref(props.page.map((p) => ({
         </main>
     </AppLayout>
 </template>
+<style>
+@import url('/resources/css/quill-overwrite.css');
+</style>

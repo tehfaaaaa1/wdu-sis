@@ -1,0 +1,141 @@
+<script setup>
+import NavLink from '@/Components/NavLink.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import { useForm } from '@inertiajs/vue3';
+import { ref, watch, onMounted } from 'vue';
+
+const props = defineProps({
+    campaign: Object,
+    created: String,
+    recipients: Object,
+    senders: Object,
+})
+const addSenderNew = ref(false);
+const addSender = ref(false);
+const addRecipient = ref(false);
+console.log(props.campaign)
+const form = useForm({
+    subject: props.campaign.subject ?? '',
+    sender_id: props.campaign.sender_id ?? '',
+    recipient_id: props.campaign.recipient_id ?? '',
+    isi: props.campaign.content ?? '',
+    sender_name: '',
+    sender_email: '',
+    sender_reply: ''
+})
+const submit = () => {
+    form.post(route('campaign-data', [props.campaign.slug]))
+}
+const newSender = () => {
+    form.post(route('add-sender'))
+}
+</script>
+<template>
+    <AppLayout title=" Campaign Details">
+        <main class="min-h-screen">
+            <div class="mx-auto mt-5 rounded-md max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+                <a :href="route('campaigns')"
+                    class="mb-3 inline-flex items-center rounded-md px-5 py-2 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition">
+                    Back
+                </a>
+                <form action="" @submit.prevent="submit" class="bg-white block rounded-sm">
+                    <div class="p-3 border-b" style="border-color: rgb(128, 128, 128);">
+                        <h1 class="text-xl font-medium">{{ campaign.name }}</h1>
+                        <p class="text-sm text-gray-500">Draft | Created on {{ created }}</p>
+                    </div>
+                    <div class="form-field">
+                        <h1 class="font-medium w-1/5">Subject</h1>
+                        <input v-model="form.subject" type="text" placeholder="Subject"
+                            class="w-full px-3 h-10 rounded-md text-sm" />
+                    </div>
+                    <div class="form-field">
+                        <h1 class="font-medium w-1/5">Sender</h1>
+                        <div class="block px-3 w-full">
+                            <div :class="campaign.sender_id == null ? 'block' : 'flex justify-between'" class="w-full">
+                                <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
+                                <SecondaryButton class="!m-0" type="button"
+                                    @click="addSender = !addSender; addSenderNew ==true? addSenderNew = false :''">
+                                    {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
+                                </SecondaryButton>
+                            </div>
+                            <div class="w-full p-3 shadow-md rounded-sm" v-show="addSender">
+                                <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
+                                    <input type="radio" :id="'sender_' + sender.id"
+                                        class="checked:text-primary focus:ring-primary" v-model="form.sender_id"
+                                        :value="sender.id" />
+                                    <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
+                                        {{ sender.email }}
+                                    </label>
+                                </div>
+                            </div>
+                            <PrimaryButton class="mt-2" type="button" v-show="addSender"
+                                @click="addSenderNew = ! addSenderNew">Or Add New</PrimaryButton>
+                            <div class="block" v-show="addSenderNew">
+                                <input type="text" name="" placeholder="name" v-model="form.sender_name">
+                                <input type="email" name="" placeholder="email" v-model="form.sender_email">
+                                <input type="email" name="" placeholder="Reply Address" v-model="form.sender_reply">
+                                <button type="button" @click="newSender">Add</button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- Recipient -->
+                    <div class="form-field">
+                        <h1 class="font-medium w-1/5">Recipient</h1>
+                        <div class="block px-3 w-full">
+                            <div :class="campaign.recipient_id == null ? 'block' : 'flex justify-between'"
+                                class="w-full">
+                                <h2>{{ campaign.recipient?.name ?? 'Choose the recipient or create new.' }}</h2>
+                                <SecondaryButton class="!m-0" type="button" @click="addRecipient = !addRecipient">
+                                    {{ campaign.recipient_id == null ? 'Add Recipient' : 'Edit Recipient' }}
+                                </SecondaryButton>
+                            </div>
+                            
+                            <div class="w-full p-3 shadow-md rounded-sm" v-show="addRecipient">
+                                <div class="" v-for="(recipient, rIndex) in recipients" :key="rIndex">
+                                    <input type="radio" :id="'recipient_' + recipient.id" name="recipient_id"
+                                        class="checked:text-primary focus:ring-primary" v-model="form.recipient_id"
+                                        :value="recipient.id" />
+                                    <label :for="'recipient_' + recipient.id" class="pl-1.5 text-sm">
+                                        {{ recipient.name }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <h1 class="font-medium w-1/5">Content</h1>
+                        <div class="block w-full px-3">
+                            Content
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <PrimaryButton class=" justify-center mt-2" :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing">
+                            Save
+                        </PrimaryButton>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </AppLayout>
+</template>
+
+<style scoped>
+.form-field {
+    display: flex;
+    border-bottom: 1px solid gray;
+    padding: 1rem;
+    min-height: 5rem;
+}
+
+.form-field:last-child {
+    border: 0;
+}
+
+.form-field h2 {
+    margin-bottom: 0.25rem;
+}
+</style>

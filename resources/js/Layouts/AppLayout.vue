@@ -8,6 +8,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import Footer from '@/Components/Footer.vue';
+import NavLinkNoBg from '@/Components/NavLinkNoBg.vue';
 
 defineProps({
     title: String,
@@ -22,10 +23,10 @@ const switchToTeam = (team) => {
         preserveState: false,
     });
 };
-
 const logout = () => {
     router.post(route('logout'));
 };
+const openn = ref(false)
 </script>
 
 <template>
@@ -36,14 +37,15 @@ const logout = () => {
         <Banner />
 
         <div class="min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100">
+            <nav class="bg-white border-b border-gray-100 z-50">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center ">
-                                <Link :href="route('listclient')" class="focus:outline-none focus:ring-2 focus:ring-primary p-2 focus:rounded-sm">
+                                <Link :href="route('listclient')"
+                                    class="focus:outline-none focus:ring-2 focus:ring-primary p-2 focus:rounded-sm">
                                 <ApplicationMark class="block w-72" />
                                 </Link>
                             </div>
@@ -58,13 +60,56 @@ const logout = () => {
                                     :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
                                     Admin Panel
                                 </NavLink> -->
-                                <NavLink class="focus:text-primary" :href="route('listclient')" :active="route().current('listclient')">
+                                <NavLink class="focus:text-primary" :href="route('listclient')"
+                                    :active="route().current('listclient')">
                                     Client
                                 </NavLink>
-                                <NavLink class="focus:text-primary" v-if="$page.props.auth.user.usertype === 'superadmin'|| $page.props.auth.user.current_team_id === 5" :href="route('users')"
-                                    :active="route().current('users')">
+                                <NavLink class="focus:text-primary "
+                                    v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                                    :href="route('users')" :active="route().current('users')">
                                     User
                                 </NavLink>
+                                <NavLink class="focus:text-primary"
+                                    v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                                    :href="route('campaigns')" :active="route().current('campaigns')">
+                                    Campaigns
+                                </NavLink>
+                                <div class="relative">
+                                    <div @mouseenter="openn = true" @mouseleave="openn = false">
+                                        <NavLink class="focus:text-primary" :href="route('list-contact')"
+                                            v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                                            :active="route().current('list-contact') || route().current('list-recipient')">
+                                            Contact
+                                        </NavLink>
+                                    </div>
+
+                                    <transition enter-active-class="transition ease-out duration-200"
+                                        enter-from-class="transform opacity-0 scale-100"
+                                        enter-to-class="transform opacity-100 scale-100"
+                                        leave-active-class="transition ease-in duration-75"
+                                        leave-from-class="transform opacity-100 scale-100"
+                                        leave-to-class="transform opacity-0 scale-95">
+                                        <div v-show="openn" class="absolute z-50 rounded-md shadow-lg w-40"
+                                            @mouseenter="openn = true" @mouseleave="openn = false">
+                                            <div class="py-1 rounded-md ring-1 ring-black ring-opacity-5 bg-white">
+                                                <NavLinkNoBg class="focus:text-primary w-full"
+                                                    v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                                                    :href="route('list-contact')"
+                                                    :active="route().current('list-contact')">
+                                                    List Contact
+                                                </NavLinkNoBg>
+                                                <NavLinkNoBg class="focus:text-primary w-full mb-2"
+                                                    v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                                                    :href="route('list-recipient')"
+                                                    :active="route().current('list-recipient')">
+                                                    Manage Recipient
+                                                </NavLinkNoBg>
+                                            </div>
+                                        </div>
+                                    </transition>
+                                </div>
+
+
                             </div>
                         </div>
 
@@ -81,7 +126,7 @@ const logout = () => {
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-primary px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary transition ease-in-out duration-150">
+                                                class="inline-flex items-center focus:outline-none focus:ring-2 focus:ring-primary px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-primary hover:bg-ijo-gelap transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.current_team.name }}
 
                                                 <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -226,20 +271,18 @@ const logout = () => {
                 <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }"
                     class="lg:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
-                            v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
-                            :href="route('dashboard.admin')" :active="route().current('dashboard.admin')">
-                            Admin Panel
-                        </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('listclient')" :active="route().current('listclient')">
                             Client
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink v-if="$page.props.auth.user.usertype === 'superadmin'" :href="route('users')"
-                            :active="route().current('users')">
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                            :href="route('users')" :active="route().current('users')">
                             User
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                            :href="route('campaigns')" :active="route().current('campaigns')">
+                            Campaigns
                         </ResponsiveNavLink>
                     </div>
 
@@ -316,7 +359,8 @@ const logout = () => {
                                                         <svg v-if="team.id == $page.props.auth.user.current_team_id"
                                                             class="me-2 h-5 w-5 text-primary"
                                                             xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                            viewBox="0 0 24 24" stroke-width="1.5"
+                                                            stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                                 d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                         </svg>
@@ -338,9 +382,9 @@ const logout = () => {
                 <div class="max-w-10xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
-            </header> 
+            </header>
 
-            <!-- Page Content -->   
+            <!-- Page Content -->
             <main>
                 <slot />
             </main>

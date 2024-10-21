@@ -1,6 +1,6 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import { VueDraggable } from 'vue-draggable-plus';
@@ -8,13 +8,16 @@ import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextEditor from '@/Components/TextEditor.vue';
+
 const props = defineProps({
     surveys: Object,
     projects: Object,
     clients: Object,
     page: Object,
     flows: Object,
-    surveyall: Object
+    surveyall: Object,
+    logictype: Object
 })
 const project = props.projects[0];
 const client = props.clients[0];
@@ -26,33 +29,44 @@ const showLogicModal = ref(false);
 const openDropdown = ref(false);
 const QuestionOrFlow = ref('question') // 'question' or 'flow'
 // Note: Customize the functions below if needed
-const pages = ref(props.page.map((page) => {
+const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
     page.question.sort((a, b) => a.order - b.order)
     question = page.question.map((item) => {
         let tipe = []
         let text = []
         let choice = []
+        let files = []
         let lastCindex = ''
-        // pilihan = []
-        if (item.question_type_id == 2) {
-            tipe = ['Radio']
-            choice = item.choice.map((isi) => {
-                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-            })
-            lastCindex = choice.length - 1
-            // pilihan = [{pilih : item.choice.value}]
-        } else if (item.question_type_id == 3) {
-            tipe = ['Checkbox']
-            choice = item.choice.map((isi) => {
-                return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-            })
-            lastCindex = choice.length - 1
-            // pilihan = [{pilih : item.choice.value}]
-        } else if (item.question_type_id == 1) {
-            tipe = ['Text']
-            text = [{ isi: '' }]
+        switch (item.question_type_id) {
+            case 1:
+                tipe = ['Text']
+                text = [{ isi: '' }]
+                break;
+            case 2:
+                tipe = ['Radio']
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                })
+                lastCindex = choice.length - 1
+                break;
+            case 3:
+                tipe = ['Checkbox']
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                })
+                lastCindex = choice.length - 1
+                break;
+            case 4:
+                tipe = ['Image']
+                files = [{ files: item.question_text }]
+                break;
+            case 5:
+                tipe = ['Paragraph']
+                break;
+            default:
+                break;
         }
-        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, lastChoiceIndex: lastCindex }
+        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex, logic_type: item.question_logic_type_id ?? 1, logic_choice: item.question_choice_id ?? null }
     })
     return { id: page.id, order: page.order, name: page.page_name, question: question }
 }))
@@ -67,7 +81,13 @@ const questionsType = ref([
     { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
     { types: 'Radio', name: 'Yes / No', choices: '' },
 ]);
-function clone(element) {
+
+const descType = ref([
+    { types: 'Image', name: 'Image', files: '' },
+    { types: 'Paragraph', name: 'Paragraph' },
+])
+
+function cloneQuestion(element) {
     let texts = []
     let choice = []
     let required = 0
@@ -93,7 +113,22 @@ function clone(element) {
             break;
     }
     return {
-        soal: '', texts: texts, choices: choice, types: [element.types], required, lastChoiceIndex: lastCindex
+        soal: '', texts: texts, choices: choice, types: [element.types], required: 1, lastChoiceIndex: lastCindex, logic_type: 1, logic_choice: null
+    };
+}
+
+function cloneDesc(element) {
+    let file = []
+    switch (element.name) {
+        case 'Image':
+            file = [{ files: '' }]
+            break;
+
+        default:
+            break;
+    }
+    return {
+        soal: '', types: [element.types], files: file
     };
 }
 
@@ -167,6 +202,7 @@ function checkboxQuestion(question) {
         question.lastChoiceIndex = question.choices.length - 1; // update radio index
     }
 }
+
 // add
 function AddRadioOption(question) {
     const radio = { pilih: '' };
@@ -225,15 +261,6 @@ const form = useForm({
 
 // Save Mechanic
 const savingStatus = ref('')
-// const autoSaveForm = debounce(() => {
-//     savingStatus.value = 'saving'
-//     form.post(route('auto-save-question', [props.surveys.id, form.client_slug, form.project_slug]), { preserveState: true }, {
-//         preserveState: true,
-//         onSuccess: () => { savingStatus.value = 'saved' },
-//         onError: () => { savingStatus.value = 'error' }
-//     })
-// }, 2000)
-// watch(form, autoSaveForm, { deep: true })
 const handleBeforeUnload = (event) => {
     event.preventDefault();
     event.returnValue = ''; // This is required for the alert to be shown in some browsers
@@ -279,6 +306,7 @@ const status = () => {
 onMounted(() => {
     // Attach the event listener when the component is mounted
     window.addEventListener('beforeunload', handleBeforeUnload);
+
 });
 
 onBeforeUnmount(() => {
@@ -293,11 +321,10 @@ const selectedNextPage = ref('')
 const flowName = ref(null)
 const flowId = ref(null)
 const floww = (flow) => {
-    selectedPage.value = pages.value.find(a => a.id == flow.question_page_id)
+    selectedPage.value = props.page.find(p => p.id == flow.question_page_id)
     selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
-    selectedChoice.value = selectedQuestion.value.choices.find(c => c.cId == flow.question_choice_id)
-    selectedNextPage.value = pages.value.find(a => a.order == flow.next_page_order)
-    console.log(selectedNextPage.value)
+    selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
+    selectedNextPage.value = props.page.find(a => a.order == flow.next_page_order)
     flowName.value = flow.flow_name
     flowId.value = flow.id
 }
@@ -324,58 +351,109 @@ const hapusFlow = ref(false)
 const confirmDeletionFlow = (flow) => {
     form.get(route('delete-flow', [form.client_slug, form.project_slug, props.surveys.id, flow]), { onSuccess: hapusFlow.value = false });
 }
+
+// PREVIEW IMAGE
+const handleImage = (event, pgindex, qindex) => {
+    pages.value[pgindex].question[qindex].soal = event.target.files[0];
+    pages.value[pgindex].question[qindex].files[0].files = event.target.files[0];
+    var input = event.target;
+    if (input.files) {
+        if (pages.value[pgindex].question[qindex].files[0].files.size / 1024 > 2048) {
+            alert('EXCEED IMAGE SIZE LIMIT');
+            exit;
+        }
+        var reader = new FileReader();
+        reader.onload = (e) => {
+            pages.value[pgindex].question[qindex].files[0].files = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0])
+    }
+}
+
+// # TEXT EDITOR
+const page_index = ref(null);
+const qIndex = ref(null);
+const textEditor = ref(false);
+const questionForlogic = ref(null)
+const openTextEditor = (pgindex, q_index) => {
+    textEditor.value = !textEditor.value
+    page_index.value = pgindex
+    qIndex.value = q_index
+    if (pages.value[pgindex].question[q_index].logic_choice != null) {
+        questionForlogic.value = pages.value[pgindex].question.find(q => q.choices.some(c => c.cId == pages.value[pgindex].question[q_index].logic_choice))
+    } else {
+        questionForlogic.value = null
+    }
+}
+function stripTags(str) {
+    return str.replace(/(<([^>]+)>)/gi, '');
+}
+watch(() => textEditor.value, () => {
+    if (textEditor.value == true) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = null;
+    }
+})
+
+
 </script>
 
 <template>
     <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen relative">
-            <header class="bg-white grid grid-cols-3 items-center border-b border-gray-300 sticky top-0 z-50">
+            <header class="bg-white grid grid-cols-2 items-center border-b border-gray-300 sticky top-0 z-50">
                 <div class="flex items-center gap-x-4">
-                    <a :href="route('listsurvey', [client['slug'], project['slug']])" class="flex justify-center items-center font-semibold text-white focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-red-500 bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
+                    <a :href="route('listsurvey', [client['slug'], project['slug']])"
+                        class="flex justify-center items-center font-semibold text-white focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-red-500 bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="size-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                         </svg>
                         Back
                     </a>
+                    <h2 class="text-center font-semibold text-xl">
+                        {{ props.surveys.title }}
+                    </h2>
                 </div>
-                <h2 class="text-center font-semibold text-xl">
-                    {{ props.surveys.title }}
-                </h2>
-                <div class="grid grid-cols-3 items-center justify-items-end">
-                    <div class="save-status">
-                        <p v-if="savingStatus === 'saving'" class="text-center">Saving...</p>
-                        <p v-if="savingStatus === 'saved'" class="text-center font-semibold">All changes saved.</p>
-                        <p v-if="savingStatus === 'error'" class="text-center font-semibold">Error saving data.</p>
+                <div class="grid grid-cols-2 items-center justify-items-end">
+                    <div class="save-status flex justify-start">
+                        <p v-if="savingStatus === 'saving'" class="text-wrap">Saving...</p>
+                        <p v-if="savingStatus === 'saved'" class="font-semibold text-wrap">All changes saved.</p>
+                        <p v-if="savingStatus === 'error'" class="font-semibold text-wrap">Error saving data.</p>
                     </div>
-                    <form class="bg-white flex items-center" @submit.prevent="submitForm">
-                        <button type="submit"
-                            class="py-2 px-2 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:rounded-sm text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                                stroke="currentColor" class="size-5">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                            </svg>
-                            Save Questions
-                        </button>
-                    </form>
-                    <form @submit.prevent="status">
-                        <button type="submit"
-                            class="py-2.5 px-10 flex focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-secondary justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
-                            {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
-                        </button>
-                    </form>
+                    <div class="save-publish flex items-center gap-4">
+                        <form class="bg-white" @submit.prevent="submitForm">
+                            <button type="submit"
+                                class="py-2 px-2 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:rounded-sm text-sky-500 hover:text-sky-600 font-semibold flex justify-center items-center gap-2 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                    stroke="currentColor" class="size-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                                Save Questions
+                            </button>
+                        </form>
+                        <form @submit.prevent="status">
+                            <button type="submit"
+                                class="py-2.5 px-10 flex focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-secondary justify-center items-center font-semibold text-white bg-secondary hover:bg-[#016094] transition">
+                                {{ props.surveys.status == 0 ? 'Publish' : 'Unpublish' }}
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </header>
+
             <div class="absolute h-[96.5%] w-full bg-white opacity-50 z-40" v-if="props.surveys.status == 1"></div>
+
             <aside class="sticky bg-gray-200 min-h-full top-11 z-30">
                 <div class="absolute lg:w-1/5">
                     <div class="flex" id="question-or-flow">
                         <h1 @click="QuestionOrFlow = 'question'"
                             class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
                             :class="{ 'border-ijo-terang': QuestionOrFlow == 'question' }">
-                            Questions
+                            Question
                         </h1>
                         <h1 @click="QuestionOrFlow = 'flow'"
                             class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
@@ -384,10 +462,12 @@ const confirmDeletionFlow = (flow) => {
                         </h1>
                     </div>
                     <div class="" id="add-question" v-if="QuestionOrFlow == 'question'">
+                        <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
+                            Question Types</p>
                         <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                            :animation="150" :clone="clone" :sort="false" class="list-qtype">
+                            :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
                             <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                                items-center cursor-move hover:font-semibold">
+                                items-center cursor-grab hover:font-semibold">
                                 <span>{{ item.name }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
@@ -396,19 +476,38 @@ const confirmDeletionFlow = (flow) => {
                                 </svg>
                             </div>
                         </VueDraggable>
+
+                        <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
+                            Descriptions</p>
+                        <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
+                            :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
+                            <div v-for="item in descType" :key="item.types"
+                                class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-grab hover:font-semibold">
+                                <span>{{ item.name }}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                </svg>
+                            </div>
+                        </VueDraggable>
+
                         <button type="button" class="bg-white border-gray-300 py-2 focus: px-4 flex justify-between
                         items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
                             :class="{ 'border-b': !showAddPage }">
                             Add Page
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-gray-500">
+                                stroke="currentColor" class="size-6 text-gray-500 transition ease-in-out duration-200"
+                                :class="showAddPage ? '-rotate-0' : '-rotate-90'">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                             </svg>
                         </button>
                         <transition enter-active-class="transition ease-out duration-200"
-                            enter-from-class="transform scale-95" enter-to-class="transform opacity-100 scale-100"
+                            enter-from-class="transform -translate-y-3"
+                            enter-to-class="transform opacity-100 translate-y-0"
                             leave-active-class="transition ease-in duration-75"
-                            leave-from-class="transform opacity-100 scale-100" leave-to-class="transform scale-95">
+                            leave-from-class="transform opacity-100 translate-y-0"
+                            leave-to-class="transform -translate-y-3">
                             <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"
                                 class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
                                 <input type="text" id="showAddPage" v-model="form.page_name"
@@ -430,7 +529,8 @@ const confirmDeletionFlow = (flow) => {
                             <div class="flows" v-for="(flow, index) in flows" :key="index"
                                 @click="showLogicModal = true; floww(flow)">
                                 <!-- All created flows will be listed here -->
-                                {{ index + 1 + '. ' + flow.flow_name }}
+                                {{ flow.flow_name }}
+
                             </div>
                         </div>
                         <div class="border-0 border-gray-300 py-2 px-4">
@@ -441,178 +541,234 @@ const confirmDeletionFlow = (flow) => {
                     </div>
                 </div>
             </aside>
-            <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="pb-6 rounded-md" v-for="(page, page_index) in pages" :key="page_index">
-                    <div class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative">
-                        <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
-                            class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
-                        <div class="absolute -right-16 z-10 mt-2 origin-top-right">
-                            <button type="button" @click="hapus(page_index)"
-                                class="cursor-pointer block bg-white p-3 rounded-full border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-red-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                </svg>
-                            </button>
-                            <!-- <div class="flex flex-col space-y-2 group">
-                                <div class="absolute top-12">
-                                    <transition enter-active-class="transition ease-in duration-75"
-                                        enter-from-class="transform opacity-50 -translate-y-4"
-                                        enter-to-class="transform opacity-100 translate-y-0"
-                                        leave-active-class="transition ease-in duration-75"
-                                        leave-from-class="transform opacity-100 translate-y-0"
-                                        leave-to-class="transform opacity-0 -translate-y-4">
-                                        <div v-if="openDropdown" class="flex flex-col space-y-2" @click="open = false">
 
-                                            <div @click="showLogicModal = true"
-                                                class="cursor-pointer block bg-white p-3 rounded-full border border-gray-300 shadow-md">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5" />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </transition>
-                                </div>
-                            </div> -->
+            <!-- Might try to make this as component -->
+            <div v-show="textEditor" class="fixed inset-0 bg-black opacity-70 z-50 overflow-hidden"
+                @click="textEditor = false; questionForlogic = null"
+                @focusout="textEditor = false; questionForlogic = null" />
+            <transition enter-active-class="transition ease-out duration-200" enter-from-class="transform translate-x-3"
+                enter-to-class="transform opacity-100 translate-x-0" leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 translate-x-0" leave-to-class="transform translate-x-3">
+                <aside
+                    class="w-[50%] h-screen fixed top-0 right-0 bg-neutral-200 z-50 py-3 pt-0 border border-gray-300 overflow-y-auto"
+                    v-if="textEditor">
+                    <!-- Isi text editor sidebar -->
+                    <div v-show="textEditor">
+                        <div class="bg-white w-full py-2.5 select-none border-b border-gray-300 mb-3">
+                            <h2 class="text-center font-semibold text-lg">
+                                Edit Question
+                            </h2>
                         </div>
-                        <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
-                            @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
+                        <div class="my-2 mx-4 px-3" id="edit-question-text">
+                            <h3 class="font-bold text-base">Text Editor</h3>
+                            <div class="my-1 bg-white">
+                                <TextEditor v-model="pages[page_index].question[qIndex].soal" class=""
+                                    v-if="page_index != null" />
+                            </div>
+                        </div>
+                        <div class="my-2 mx-4 mt-4 px-3" id="edit-question-logic">
+                            <h3 class="font-bold text-base">Display Logic</h3>
+                            <div class="my-1">
+                                <select v-model="pages[page_index].question[qIndex].logic_type"
+                                    class="cursor-pointer text-sm">
+                                    <option v-for="type in logictype" :value="type.id">{{ type.logic_type }}</option>
+                                </select>
+                            </div>
+                            <div class="my-2 bg-white block py-3 px-4 border border-gray-300"
+                                v-if="pages[page_index].question[qIndex].logic_type > 1">
+                                <div class="flex justify-between items-center text-sm">
+                                    <label for="logic-question">Pilih Pertanyaan</label>
+                                    <select v-model="questionForlogic" id="logic-question"
+                                        class="w-1/2 text-sm cursor-pointer">
+                                        <option :value="null" disabled>Pertanyaan</option>
+                                        <option
+                                            v-for="question in pages[page_index].question.filter(q => q.id != pages[page_index].question[qIndex].id && q.id != null)"
+                                            :value="question">{{ stripTags(question.soal) }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div v-if="questionForlogic" class="mt-2 flex justify-between items-center text-sm ">
+                                    <label for="logic-target ">Pilih Jawaban</label>
+                                    <select class="w-1/2 text-sm cursor-pointer"
+                                        v-model="pages[page_index].question[qIndex].logic_choice" id="logic-target">
+                                        <option :value="null" disabled>Jawaban Pemicu</option>
+                                        <option v-for="choice in questionForlogic.choices" :value="choice.cId">
+                                            {{ choice.pilih }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- vue draggable : @update:modelValue="logUpdate" -->
-                    <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
-                        :class="'bg-white pb-8 rounded-md'" handle=".handle">
-                        <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
-                            <div class="p-5 gap-2 flex items-center">
-                                <!-- Order of question -->
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor"
-                                    class="size-10 cursor-grab handle border-2 rounded-md border-gray-800">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                                </svg>
+                </aside>
+            </transition>
 
-                                <p class="ml-2">{{ index + 1 }}.</p>
-
-                                <!-- Insert question here -->
-                                <input v-model="item.soal" type="text" placeholder="Insert question here"
-                                    class="text-sm w-full mx-1 rounded-md">
-
-                                <!-- Question types -->
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <button type="button"
-                                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                            <p v-for="type in item.types">
-                                                {{ type ?? 'Question Type' }}
-                                            </p>
-                                            <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                        </button>
-                                    </template>
-                                    <template #content class="">
-                                        <div @click="textQuestion(item)" class="block px-4 py-2 text-sm cursor-pointer">
-                                            Text
-                                        </div>
-                                        <div @click="radioQuestion(item)"
-                                            class="block px-4 py-2 text-sm cursor-pointer">
-                                            Single Choice
-                                        </div>
-                                        <div @click="checkboxQuestion(item)"
-                                            class="block px-4 py-2 text-sm cursor-pointer">
-                                            Multiple Choice
-                                        </div>
-                                        <div class="block border-t border-gray-300 py-2 text-center">
-                                            <input type="checkbox" v-model="item.required" true-value="1"
-                                                false-value="0" :id="'q' + index + '-required'" class="cursor-pointer">
-                                            <label :for="'q' + index + '-required'"
-                                                class="pl-2 cursor-pointer select-none w-full">Required</label>
-                                        </div>
-                                    </template>
-                                </Dropdown>
-                                <!-- delete question -->
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" @click="remove(page, index)"
-                                    class="size-10 text-red-600 cursor-pointer">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-                            </div>
-
-                            <!-- Required notification -->
-                            <div v-if="item.required == 1" class="px-5 mb-2 text-red-500">* Required</div>
-
-                            <!-- Question Choices -->
-                            <!-- text -->
-                            <div class="px-5" v-for="(text, index) in item.texts" :key="index">
-                                <textarea v-model="text.isi" :name="'text-' + item.id" :id="'text-' + item.id"
-                                    placeholder="Jawaban" class="w-full text-sm rounded-md bg-gray-200" disabled />
-                            </div>
-
-                            <!-- single choice -->
-                            <div class="px-5" v-for="(radio, index) in item.choices" :key="index"
-                                v-if="item.types.includes('Radio')">
-                                <div class="flex items-center mb-2">
-                                    <span class="select-none">O</span>
-                                    <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
-                                        :id="'radio' + (index + 1) + '-q' + (item.id)"
-                                        placeholder="Insert single choice"
-                                        class="text-sm mx-4 block w-1/4 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
-
+            <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
+                <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
+                    :class="'pb-8 rounded-md'" handle=".handle">
+                    <div class="rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
+                        <div
+                            class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle cursor-move">
+                            <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
+                                class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
+                            <div class="absolute -right-16 z-10 mt-2 origin-top-right">
+                                <button type="button" @click="hapus(page_index)"
+                                    class="cursor-pointer block bg-white p-3 rounded-full border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor"
-                                        class="size-6 text-red-600 cursor-pointer" @click="deleteRadio(item, index)">
+                                        stroke-width="1.5" stroke="currentColor" class="size-6 text-red-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                     </svg>
-
-                                </div>
-                                <div class="ml-7"
-                                    v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
-                                    <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
-                                        @click="AddRadioOption(item)">
-                                        Add Options
-                                    </a>
-                                </div>
+                                </button>
                             </div>
-
-                            <!-- multiple choice -->
-                            <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index"
-                                v-if="item.types.includes('Checkbox')">
-                                <div class="flex items-center mb-2">
-                                    <span class="select-none">&#9634;</span>
-                                    <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
-                                        :id="'checkbox' + (index + 1) + '-q' + (item.id)"
-                                        placeholder="Insert multiple choice here"
-                                        class="text-sm mx-4 rounded-md block w-1/4">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor"
-                                        class="size-6 text-red-600 cursor-pointer" @click="deleteCheckbox(item, index)">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                    </svg>
-
-                                </div>
-                                <div class="ml-7"
-                                    v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
-                                    <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
-                                        @click="AddCheckboxOption(item)">
-                                        Add Options
-                                    </a>
-                                </div>
-                            </div>
+                            <DeleteConfirmation v-if="showDeleteModal" :show="showDeleteModal"
+                                @confirm="confirmDeletion(pages)" @cancel="cancelDeletion" />
                         </div>
-                    </VueDraggable>
-                    <div class="border border-gray-500 mt-8 mb-3"
-                        v-if="pages.length > 1 && page_index != pages.length - 1"></div>
-                </div>
+                        <!-- vue draggable : @update:modelValue="logUpdate" -->
+                        <VueDraggable v-model="page.question" group="questions" :animation="150" class="list-questions"
+                            :class="'bg-white pb-8 rounded-md'" handle=".handle" :scroll-sensitivity="200">
+                            <div v-for="(item, index) in page.question" :key="index" class="list-questions-item">
+                                <div class="p-5 gap-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="cursor-move handle rounded-md"
+                                        :class="!descType.some(obj => obj.types == item.types) ? 'w-9 h-8' : 'size-8'">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
+                                    </svg>
+                                    <!-- Insert question here -->
+                                    <!-- {{ item  }} -->
+                                    <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
+                                        v-html="item.soal" type="text" placeholder="Insert question here"
+                                        class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"
+                                        contenteditable="false" data-text="Insert question here" />
+                                    <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
+                                        id="file_input" @input="handleImage($event, page_index, index)"
+                                        class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
+
+                                    <!-- Question types -->
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor"
+                                                class="size-6 text-gray-700 cursor-pointer hover:text-gray-500 focus:text-gray-500">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                            </svg>
+                                        </template>
+                                        <template #content class="">
+                                            <div class="" v-if="!descType.some(obj => obj.types == item.types)">
+                                                <div @click="textQuestion(item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer">
+                                                    Text
+                                                </div>
+                                                <div @click="radioQuestion(item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer">
+                                                    Single Choice
+                                                </div>
+                                                <div @click="checkboxQuestion(item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer">
+                                                    Multiple Choice
+                                                </div>
+                                                <div class="py-2 text-center border-t border-gray-300">
+                                                    <input type="checkbox" v-model="item.required" :id="'q' + index + '-optional'+(item.id??item.soal)" true-value="0" false-value="1"
+                                                        class="cursor-pointer">
+                                                    <label :for="'q' + index + '-optional'+(item.id??item.soal)"
+                                                        class="pl-2 cursor-pointer select-none w-full text-sm">Optional</label>
+                                                </div>
+                                            </div>
+                                            <!-- delete question -->
+                                            <button type="button"  @click="remove(page, index)"
+                                                class="cursor-pointer w-full flex items-center justify-center py-2 gap-x-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor"
+                                                    class="size-6 text-red-600 z-10">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                </svg>
+                                                <p class="text-sm">Delete</p>
+                                            </button>
+                                        </template>
+                                    </Dropdown>
+                                </div>
+
+                                <!-- Required notification -->
+                                <div v-if="item.required == 1" class="px-5 mb-2 text-red-500">* Required</div>
+
+                                <!-- Question Choices -->
+                                <!-- text -->
+                                <div class="px-5" v-for="(text, index) in item.texts" :key="index">
+                                    <textarea v-model="text.isi" :name="'text-' + item.id" :id="'text-' + item.id"
+                                        placeholder="Jawaban" class="w-full text-sm rounded-md bg-gray-200" disabled />
+                                </div>
+
+                                <!-- single choice -->
+                                <div class="px-5" v-for="(radio, index) in item.choices" :key="index"
+                                    v-if="item.types.includes('Radio')">
+                                    <div class="flex items-center mb-2">
+                                        <span class="select-none">O</span>
+                                        <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
+                                            :id="'radio' + (index + 1) + '-q' + (item.id)"
+                                            placeholder="Insert single choice"
+                                            class="text-sm mx-4 block w-1/4 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="size-6 text-red-600 cursor-pointer"
+                                            @click="deleteRadio(item, index)">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="ml-7"
+                                        v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
+                                        <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddRadioOption(item)">
+                                            Add Options
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- multiple choice -->
+                                <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index"
+                                    v-if="item.types.includes('Checkbox')">
+                                    <div class="flex items-center mb-2">
+                                        <span class="select-none">&#9634;</span>
+                                        <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
+                                            :id="'checkbox' + (index + 1) + '-q' + (item.id)"
+                                            placeholder="Insert multiple choice here"
+                                            class="text-sm mx-4 rounded-md block w-1/4">
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="size-6 text-red-600 cursor-pointer"
+                                            @click="deleteCheckbox(item, index)">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="ml-7"
+                                        v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
+                                        <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddCheckboxOption(item)">
+                                            Add Options
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Image -->
+                                <div class="px-5 flex justify-center" v-for="(image, index) in item.files" :key="index">
+                                    <img v-if="image.files != item.soal" :src="image.files" alt="Preview">
+                                    <img v-else :src="'/img/' + item.soal" alt="Preview Image">
+
+                                </div>
+                            </div>
+                        </VueDraggable>
+                        <div class="border border-gray-500 my-5"
+                            v-if="pages.length > 1 && page_index != pages.length - 1"></div>
+                    </div>
+                </VueDraggable>
             </form>
 
             <DialogModal :show="showLogicModal" @close="showLogicModal = false">
@@ -626,28 +782,30 @@ const confirmDeletionFlow = (flow) => {
                     <div class="border border-gray-300 p-4">
                         <h3 class="font-bold mb-2 text-red-500">Reminder : <u>Simpan Pertanyaan</u> terlebih dahulu!
                         </h3>
+                        <h3 class="font-bold mb-2 text-red-500">Jika tidak ada pertanyaan berarti anda belum save</h3>
                         <div class="flows-dropdown-label">
                             Halaman Awal
                             <select class="flows-dropdown" v-model="selectedPage"
                                 @change="selectedQuestion = null; selectedNextPage = null">
                                 <option :value="''" disabled>Halaman</option>
-                                <option :value="page" v-for="page in pages">{{ page.name }}</option>
+                                <option :value="page" v-for="page in props.page">{{ page.page_name }}</option>
                             </select>
                         </div>
                         <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
                             Pertanyaan
                             <select class="flows-dropdown" v-model="selectedQuestion">
                                 <option :value="null" disabled>Pertanyaan</option>
-                                <option :value="question"
-                                    v-for="question in selectedPage.question.filter(prop => prop.types == 'Radio')">{{
-                                        question.soal }}</option>
+                                <option :value="question" class=""
+                                    v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
+                                    {{ stripTags(question.question_text) }}
+                                </option>
                             </select>
                         </div>
                         <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
                             Pilihan Jawaban
                             <select class="flows-dropdown" v-model="selectedChoice">
                                 <option :value="''" disabled>Pilihan Jawaban</option>
-                                <option :value="option" v-for="option in selectedQuestion.choices">{{ option.pilih }}
+                                <option :value="option" v-for="option in selectedQuestion.choice">{{ option.value }}
                                 </option>
                             </select>
                         </div>
@@ -656,7 +814,8 @@ const confirmDeletionFlow = (flow) => {
                             <select class="flows-dropdown" v-model="selectedNextPage">
                                 <option :value="null" disabled>Tujuan Halaman</option>
                                 <option :value="nextpage"
-                                    v-for="nextpage in pages.filter(page => page != selectedPage)">{{ nextpage.name }}
+                                    v-for="nextpage in props.page.filter(page => page != selectedPage)">{{
+                                        nextpage.page_name }}
                                 </option>
                             </select>
                         </div>
@@ -692,8 +851,10 @@ const confirmDeletionFlow = (flow) => {
 
                 <template #footer>
                     <div class="flex items-center justify-between w-full">
-                        <SecondaryButton @click="showLogicModal = false" class="hover:bg-red-500 hover:text-white">Back
-                        </SecondaryButton>
+                        <button @click="showLogicModal = false" type="button"
+                            class="inline-flex items-center rounded-md px-5 py-2 bg-red-500 text-sm mr-3 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition">
+                            Back
+                        </button>
                         <PrimaryButton @click="createFlow()">Save</PrimaryButton>
                     </div>
                 </template>
@@ -734,6 +895,11 @@ const confirmDeletionFlow = (flow) => {
     cursor: pointer;
 }
 
+[contentEditable=false]:empty:not(:focus):before {
+    content: attr(data-text);
+    color: rgba(107, 114, 128);
+}
+
 .flows-dropdown-label {
     display: flex;
     align-items: center;
@@ -741,4 +907,8 @@ const confirmDeletionFlow = (flow) => {
     margin-bottom: 0.75rem;
     font-size: 1rem;
 }
+</style>
+
+<style>
+@import url('/resources/css/quill-overwrite.css');
 </style>
