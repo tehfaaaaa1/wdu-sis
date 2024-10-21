@@ -96,8 +96,6 @@ const filteredProjects = computed(() => {
                             <tr>
                                 <th scope="col" class="px-6 py-3 w-1/4">Project Title</th>
                                 <th scope="col" class="px-6 py-3">Description</th>
-                                <!-- <th scope="col" class="px-6 py-3 w-1/6">Responses</th> -->
-                                <!-- <th scope="col" class="px-6 py-3">Team</th> -->
                                 <th scope="col" class="px-6 py-3 md:w-1/5 text-center">Action</th>
                             </tr>
                         </thead>
@@ -113,9 +111,6 @@ const filteredProjects = computed(() => {
                                 <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500">
                                     {{ project.desc }}
                                 </td>
-                                <!-- <td class="px-6 py-4">
-                                    100
-                                </td> -->
                                 <td class="px-6 py-6">
                                     <div v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'"
                                         class="flex justify-center">
