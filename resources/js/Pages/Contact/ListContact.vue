@@ -40,11 +40,11 @@ console.log(props.search)
 <template>
     <AppLayout title="List Contact">
         <div class="mx-auto rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <div class="flex items-center mb-5 w-full" :class="props.search == null || isEmpty(contact.data) ? 'justify-end' : 'justify-between'">
+            <div class="flex items-center mb-5 w-full" :class="(props.search == null || props.search?.includes('page')) || isEmpty(contact.data) ? 'justify-end' : 'justify-between'">
 
-                <div class="" v-if="props.search  && !isEmpty(contact.data)">
+                <div class="" v-if="(props.search && !props.search?.includes('page'))  && !isEmpty(contact.data)">
                     <a :href="route('list-contact')" class="font-medium text-base text-white hover:bg-white hover:text-secondary hover:ring-2 hover:ring-secondary transition px-4 py-2.5 bg-secondary rounded">
-                        Reset
+                        Reset 
                     </a>
                 </div>
                 <div class="flex">
@@ -58,7 +58,7 @@ console.log(props.search)
                     </button>
                 </div>
             </div>
-            <div class="relative overflow-x-auto pb-6">
+            <div class="relative overflow-x-auto pb-8">
                 <div class=" shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 sm:table-fixed">
                         <thead class="text-xs text-white uppercase bg-primary">
@@ -74,22 +74,23 @@ console.log(props.search)
                         <tbody>
                             <tr v-for="(contact, index) in contact.data" :key="index"
                                 class="bg-white border-b hover:bg-gray-50 group">
-                                <td scope="row" class="px-6 py-4 font-medium text-gray-900 break-words">
+                                <td scope="row" class="px-6 py-2.5 font-medium text-gray-900 break-words">
                                     {{ contact.email }}
                                 </td>
-                                <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 break-words">
+                                <td class="px-6 py-2.5 font-medium text-gray-900 sm:text-gray-500 break-words">
                                     {{ contact.first_name }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-2.5">
                                     {{ contact.last_name }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-2.5">
                                     {{ contact.company }}
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-2.5">
                                     {{ contact.occupation }}
+                                    
                                 </td>
-                                <td class="px-6 py-4 flex justify-end">
+                                <td class="px-6 py-2.5 flex justify-end">
                                     <Dropdown width="36">
                                         <template #trigger>
                                             <div class="collapse group-hover:visible w-12 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:ring-1 ring-inset ring-gray-300 cursor-pointer">

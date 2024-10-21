@@ -37,7 +37,7 @@ const newSender = () => {
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
                 <a :href="route('campaigns')"
-                    class="mb-3 inline-flex items-center rounded-md px-5 py-2 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition">
+                    class="mb-3 inline-flex items-center rounded-md px-5 py-2 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm transition hover:outline-none focus:outline-none hover:ring-2 focus:ring-2 hover:ring-red-500 hover:bg-white hover:text-red-500 focus:ring-red-500" >
                     Back
                 </a>
                 <form action="" @submit.prevent="submit" class="bg-white block rounded-sm">
@@ -78,7 +78,6 @@ const newSender = () => {
                                 <input type="email" name="" placeholder="Reply Address" v-model="form.sender_reply">
                                 <button type="button" @click="newSender">Add</button>
                             </div>
-
                         </div>
                     </div>
                     <!-- Recipient -->
