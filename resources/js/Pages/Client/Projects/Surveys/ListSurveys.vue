@@ -185,7 +185,7 @@ const getSurveySubmissions = (surveyId) => {
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_surveys', [clientSlug, projectSlug])"
                             v-if="$page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-m hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
+                            class="bg-primary mb-0 text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4">
                             Tambah Kuisioner
                         </NavLink>
                     </div>

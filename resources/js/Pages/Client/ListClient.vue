@@ -59,7 +59,7 @@ const filteredClients = computed(() => {
          
         <main class="min-h-screen bg-cover" style="background-image: url('/img/bg-dashboard.png');">
             <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center mb-5">
+                <div class="flex justify-between items-center mb-4">
                     <div class="w-1/2 sm:w-full">
                         <NavLink class="bg-primary mb-0 text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4" :href="route('create_client_page')"
                             v-if="$page.props.auth.user.usertype === 'admin' || $page.props.auth.user.usertype === 'superadmin'">

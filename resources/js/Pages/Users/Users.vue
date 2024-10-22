@@ -54,10 +54,10 @@ const search = () => {
 <template>
     <AppLayout title="Users">
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center mb-5">
+            <div class="flex justify-between items-center mb-4">
                 <div class="w-1/2 sm:w-full">
                     <NavLink
-                        class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4"
+                        class="bg-primary mb-0 text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4"
                         :href="route('users.create')">
                         Create User
                     </NavLink>

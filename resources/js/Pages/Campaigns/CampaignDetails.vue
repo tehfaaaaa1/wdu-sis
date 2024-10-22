@@ -112,28 +112,32 @@ const trs_changesender =()=>{
                                      <form action="" @submit.prevent="dataSender">
                                          <H2 class="text-center text-lg font-medium mb-2">Sender Data</H2>
                                          <div class="block w-full p-2">
-                                             <div class="flex justify-between mb-4">
+                                             <div class="sm:flex justify-between mb-4">
                                                  <p class="">Name</p>
-                                                 <input class="text-sm rounded-md border-primary w-1/3" type="text" name="sender_name" id="" 
+                                                 <input class="text-sm rounded-md border-primary sm:w-1/3" type="text" name="sender_name" id="" 
                                                  v-model="form.sender_name">
                                              </div>
-                                             <div class="flex justify-between mb-4">
+                                             <div class="sm:flex justify-between mb-4">
                                                  <p class="">Email</p>
-                                                 <input class="text-sm rounded-md border-primary w-1/3 " type="email" name="sender_email" id="" 
+                                                 <input class="text-sm rounded-md border-primary sm:w-1/3" type="email" name="sender_email" id="" 
                                                  v-model="form.sender_email">
                                              </div>
-                                             <div class="flex justify-between mb-4">
+                                             <div class="sm:flex justify-between mb-4">
                                                  <p class="">Reply address</p>
-                                                 <input class="text-sm rounded-md border-primary w-1/3 " type="email" name="sender_reply" id="" 
+                                                 <input class="text-sm rounded-md border-primary sm:w-1/3 " type="email" name="sender_reply" id="" 
                                                  v-model="form.sender_reply">
                                              </div>
-                                             <div class="mb-4">
-                                                 <PrimaryButton>Save Sender</PrimaryButton>
-                                             </div>
-                                             <PrimaryButton type="button" 
-                                             @click="trs_changesender(); addSender= false">
-                                                 Change Sender</PrimaryButton>
-                                         </div>
+                                             <div class="flex gap-x-3">
+                                                <div class="my-2">
+                                                    <PrimaryButton class="!px-2 !font-medium sm:!px-6 sm:py-2.5">Save Sender</PrimaryButton>
+                                                </div>
+                                                <div class="my-2">
+                                                    <SecondaryButton class="!px-2 !my-0 !font-medium sm:!px-6 sm:py-2.5" type="button" 
+                                                    @click="trs_changesender(); addSender= false">
+                                                    Change Sender</SecondaryButton>
+                                                </div>
+                                            </div>
+                                            </div>
                                      </form>
                                  </div>
                              </transition>
@@ -160,7 +164,7 @@ const trs_changesender =()=>{
                                     </div>
                                     <div class="flex gap-x-3 items-center mt-2">
                                         <button type="button"  @click="trs_addsender(); changeSender = false; addSenderNew= false"
-                                        class="inline-flex items-center rounded-md px-5 py-2 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm transition hover:outline-none focus:outline-none hover:ring-2 focus:ring-2 hover:ring-red-500 hover:bg-white hover:text-red-500 focus:ring-red-500">
+                                        class="inline-flex items-center rounded-md px-5 py-2.5 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm transition hover:outline-none focus:outline-none hover:ring-2 focus:ring-2 hover:ring-red-500 hover:bg-white hover:text-red-500 focus:ring-red-500">
                                             {{ campaign.sender_id ? 'Back' :'Close' }}
                                         </button>
 
