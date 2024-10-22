@@ -94,7 +94,7 @@ class CampaignController extends Controller
         echo "Mail send successfully !!";
     }
     // sender
-    public function addSender(Request $request) {
+    public function addSender(Request $request, $slug) {
         $validate = $request->validate([
             'sender_name'=> 'required|string|max:255',
             'sender_email' => 'required|email|max:255',
@@ -106,7 +106,20 @@ class CampaignController extends Controller
             'email'=> $validate['sender_email'],
             'reply_address' => $validate['sender_reply'],
         ]);
-        return back();
+        return redirect()->route('campaign-details',[$slug]);
+    }
+    public function updateSender(Request $request, $id, $slug) {
+        $validate = $request->validate([
+            'sender_name'=> 'required|string|max:255',
+            'sender_email' => 'required|email|max:255',
+            'sender_reply'=> 'required|email|max:255',
+        ]);
+        Sender::where('id', $id)->update([
+           'name' => $validate['sender_name'],
+            'email'=> $validate['sender_email'],
+            'reply_address' => $validate['sender_reply'],
+        ]);
+        return redirect()->route('campaign-details',[$slug]);  
     }
     
     

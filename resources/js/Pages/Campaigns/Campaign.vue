@@ -60,7 +60,7 @@ const createCampaign = () => {
                     <div class="block" v-for="(campaign, index) in campaigns" :key="index">
                         <div class="flex items-center w-full p-3 hover:bg-gray-50 item-row">
                             <div class="block">
-                                <a :href="route('details', [campaign.slug])">{{ campaign.name }}</a>
+                                <a :href="route('campaign-details', [campaign.slug])">{{ campaign.name }}</a>
                                 <p>Draft | Sent On {{ campaign.dibuat }}</p>
                             </div>
                         </div>

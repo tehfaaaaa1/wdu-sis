@@ -1,10 +1,13 @@
 <script setup>
 import NavLink from '@/Components/NavLink.vue';
+import NavLinkBlue from '@/Components/NavLinkBlue.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref, watch, onMounted } from 'vue';
+import Campaign from './Campaign.vue';
+import { camelCase } from 'lodash';
 
 const props = defineProps({
     campaign: Object,
@@ -14,6 +17,7 @@ const props = defineProps({
 })
 const addSenderNew = ref(false);
 const addSender = ref(false);
+const changeSender = ref(false);
 const addRecipient = ref(false);
 console.log(props.campaign)
 const form = useForm({
@@ -21,15 +25,26 @@ const form = useForm({
     sender_id: props.campaign.sender_id ?? '',
     recipient_id: props.campaign.recipient_id ?? '',
     isi: props.campaign.content ?? '',
+    sender_name: props.campaign.sender?.name,
+    sender_email: props.campaign.sender?.email,
+    sender_reply: props.campaign.sender?.reply_address
+})
+const senderNew = useForm({
     sender_name: '',
     sender_email: '',
     sender_reply: ''
 })
 const submit = () => {
-    form.post(route('campaign-data', [props.campaign.slug]))
+    form.post(route('campaign-data', [props.campaign.slug]),
+    {onsucces: window.location.reload()})
 }
 const newSender = () => {
-    form.post(route('add-sender'))
+    senderNew.post(route('add-sender', [props.campaign.slug]),
+    {onsucces: window.location.reload()})
+}
+const dataSender = ()=>{
+    form.post(route('update-sender',[props.campaign.sender.id, props.campaign.slug]) , 
+    {onsucces: window.location.reload()})
 }
 </script>
 <template>
@@ -50,32 +65,64 @@ const newSender = () => {
                         <input v-model="form.subject" type="text" placeholder="Subject"
                             class="w-full px-3 h-10 rounded-md text-sm" />
                     </div>
+                    <!-- Sender -->
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Sender</h1>
-                        <div class="block px-3 w-full">
+                        <div class="relative px-3 w-full">
                             <div :class="campaign.sender_id == null ? 'block' : 'flex justify-between'" class="w-full">
                                 <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
                                 <SecondaryButton class="!m-0" type="button"
-                                    @click="addSender = !addSender; addSenderNew ==true? addSenderNew = false :''">
+                                    @click="campaign.sender ?  (addSender = !addSender, changeSender = !changeSender ,addSenderNew ==true ? addSenderNew = false :'') 
+                                    : ( changeSender = !changeSender, addSenderNew = false) ">
                                     {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
                                 </SecondaryButton>
                             </div>
-                            <div class="w-full p-3 shadow-md rounded-sm" v-show="addSender">
+                            <!-- Sender Data -->
+                            <div class="w-full px-4 pt-3 pb-5 my-3 shadow-md rounded-md border-1 border border-primary" v-show="addSender">
+                                <form action="" @submit.prevent="dataSender">
+                                    <H2 class="text-center text-lg font-medium mb-2">Sender Data</H2>
+                                    <div class="block w-full p-2">
+                                        <div class="flex justify-between mb-4">
+                                            <p class="">Name</p>
+                                            <input class="text-sm rounded-md border-primary w-1/3" type="text" name="sender_name" id="" 
+                                            v-model="form.sender_name">
+                                        </div>
+                                        <div class="flex justify-between mb-4">
+                                            <p class="">Email</p>
+                                            <input class="text-sm rounded-md border-primary w-1/3 " type="email" name="sender_email" id="" 
+                                            v-model="form.sender_email">
+                                        </div>
+                                        <div class="flex justify-between mb-4">
+                                            <p class="">Reply address</p>
+                                            <input class="text-sm rounded-md border-primary w-1/3 " type="email" name="sender_reply" id="" 
+                                            v-model="form.sender_reply">
+                                        </div>
+                                        <div class="">
+                                            <PrimaryButton>Save Sender</PrimaryButton>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Change Sender -->
+                            <div class="w-full px-4 pt-3 pb-5 my-3 shadow-md rounded-md border-1 border border-primary" 
+                            v-show="changeSender">
+                            <h2 class="text-center text-lg font-medium mb-2">{{campaign.sender? ' Change' : 'Choose'}}</h2>
                                 <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
                                     <input type="radio" :id="'sender_' + sender.id"
-                                        class="checked:text-primary focus:ring-primary" v-model="form.sender_id"
+                                        class="checked:text-primary focus:ring-primary my-2" v-model="form.sender_id"
                                         :value="sender.id" />
                                     <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
                                         {{ sender.email }}
                                     </label>
                                 </div>
+                                <PrimaryButton class="mt-4" type="button" v-show="changeSender"
+                                    @click="addSenderNew = ! addSenderNew">Add New Sender</PrimaryButton>
                             </div>
-                            <PrimaryButton class="mt-2" type="button" v-show="addSender"
-                                @click="addSenderNew = ! addSenderNew">Or Add New</PrimaryButton>
+                            <!-- Add New Sender -->
                             <div class="block" v-show="addSenderNew">
-                                <input type="text" name="" placeholder="name" v-model="form.sender_name">
-                                <input type="email" name="" placeholder="email" v-model="form.sender_email">
-                                <input type="email" name="" placeholder="Reply Address" v-model="form.sender_reply">
+                                <input type="text" name="" placeholder="name" v-model="senderNew.sender_name">
+                                <input type="email" name="" placeholder="email" v-model="senderNew.sender_email">
+                                <input type="email" name="" placeholder="Reply Address" v-model="senderNew.sender_reply">
                                 <button type="button" @click="newSender">Add</button>
                             </div>
                         </div>
@@ -87,9 +134,14 @@ const newSender = () => {
                             <div :class="campaign.recipient_id == null ? 'block' : 'flex justify-between'"
                                 class="w-full">
                                 <h2>{{ campaign.recipient?.name ?? 'Choose the recipient or create new.' }}</h2>
-                                <SecondaryButton class="!m-0" type="button" @click="addRecipient = !addRecipient">
-                                    {{ campaign.recipient_id == null ? 'Add Recipient' : 'Edit Recipient' }}
-                                </SecondaryButton>
+                                <div class="flex gap-x-2 items-center">
+                                    <div class="" v-if="campaign.recipient_id">
+                                        <NavLinkBlue :href="route('recipient-details',[campaign.recipient.slug])" class="bg-secondary !my-0 text-white">See Details</NavLinkBlue>
+                                    </div>
+                                    <SecondaryButton class="!my-0" type="button" @click="addRecipient = !addRecipient">
+                                        {{ campaign.recipient_id == null ? 'Add Recipient' : 'Change Recipient' }}
+                                    </SecondaryButton>
+                                </div>
                             </div>
                             
                             <div class="w-full p-3 shadow-md rounded-sm" v-show="addRecipient">
@@ -102,6 +154,7 @@ const newSender = () => {
                                     </label>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                     <div class="form-field">

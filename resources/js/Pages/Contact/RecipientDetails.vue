@@ -101,7 +101,7 @@ console.log(props.recipient)
                                             <template #content>
                                                 <div class="py-1 text-start">
                                                     <a :href="route('edit-contact', [recipient[0].slug,contact_rec?.email_contact?.id])"
-                                                        :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
+                                                        :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer focus:outline-none focus:bg-gray-100 hover:bg-gray-100'">Edit
                                                     </a>
                                                     <a @click ="hapus(contact_rec.id)"
                                                         :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Remove
