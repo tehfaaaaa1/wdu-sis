@@ -27,8 +27,6 @@ const form = useForm({
 const isi = (surveyTitle) => {
     search.value = surveyTitle
 }
-
-
 const ShowCreate = ref(false)
 const CampaignName = ref(null)
 const newCampaign = () => {
