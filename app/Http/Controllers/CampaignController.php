@@ -53,6 +53,9 @@ class CampaignController extends Controller
         $rec = $campaign->recipient;
         $recipient = Recipient::all();
         $sender = Sender::all();
+        if(!$campaign){
+            return redirect()->route('list-campaign');
+        }
         return Inertia::render('Campaigns/CampaignDetails',[
             'campaign'=> $campaign,
             'created' => $campaign->created_at->format('M d,Y H:i'),
@@ -101,12 +104,16 @@ class CampaignController extends Controller
             'sender_reply'=> 'required|email|max:255',
         ]);
 
-        Sender::create([
-            'name' => $validate['sender_name'],
-            'email'=> $validate['sender_email'],
-            'reply_address' => $validate['sender_reply'],
-        ]);
-        return redirect()->route('campaign-details',[$slug]);
+        $send = new Sender;
+        $send->name = $validate['sender_name'];
+        $send->email = $validate['sender_email'];
+        $send->reply_address = $validate['sender_reply'];
+        $send->save();
+        // dd($send->id);
+        $camp = Campaign::firstOrNew(['slug'=>$slug]);
+        $camp->sender_id = $send->id;
+        $camp->save();
+        return redirect()->route('campaign-details',[$slug])->with(['addSender'=> false]);
     }
     public function updateSender(Request $request, $id, $slug) {
         $validate = $request->validate([
@@ -122,5 +129,20 @@ class CampaignController extends Controller
         return redirect()->route('campaign-details',[$slug]);  
     }
     
+    public function addRecipient(Request $request, $slug) {
+        $validated = $request->validate([
+            'name'=> 'required|string|max:255'
+        ]);
+        // dd(str::slug($validated['name'].now()));
+        $rec = new Recipient();
+        $rec->name = $validated['name'];
+        $rec->slug = Str::slug($validated['name'].now());
+        $rec->save();
+        $camp = Campaign::firstOrNew(['slug'=> $slug]);
+        $camp->recipient_id = $rec->id;
+        $camp->save();
+
+        return back();
+    }
     
 }

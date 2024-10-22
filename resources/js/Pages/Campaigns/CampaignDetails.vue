@@ -19,6 +19,7 @@ const addSenderNew = ref(false);
 const addSender = ref(false);
 const changeSender = ref(false);
 const addRecipient = ref(false);
+const addRecipientNew = ref(false);
 console.log(props.campaign)
 const form = useForm({
     subject: props.campaign.subject ?? '',
@@ -34,13 +35,19 @@ const senderNew = useForm({
     sender_email: '',
     sender_reply: ''
 })
+const RecipientNew = useForm({
+    name:''
+})
 const submit = () => {
     form.post(route('campaign-data', [props.campaign.slug]),
     {onsucces: window.location.reload()})
 }
 const newSender = () => {
-    senderNew.post(route('add-sender', [props.campaign.slug]),
-    {onsucces: window.location.reload()})
+    senderNew.post(route('add-sender', [props.campaign.slug]))
+}
+const newRecipient = () => {
+    RecipientNew.post(route('add-recipient', [props.campaign.slug]),
+    )
 }
 const dataSender = ()=>{
     form.post(route('update-sender',[props.campaign.sender.id, props.campaign.slug]) , 
@@ -74,7 +81,7 @@ const dataSender = ()=>{
                                 <SecondaryButton class="!m-0" type="button"
                                     @click="campaign.sender ?  (addSender = !addSender, changeSender = !changeSender ,addSenderNew ==true ? addSenderNew = false :'') 
                                     : ( changeSender = !changeSender, addSenderNew = false) ">
-                                    {{ campaign.sender_id == null ? 'Add Sender' : 'Edit Sender' }}
+                                    {{ campaign.sender_id == null ? 'Choose Sender' : 'Edit Sender' }}
                                 </SecondaryButton>
                             </div>
                             <!-- Sender Data -->
@@ -138,21 +145,28 @@ const dataSender = ()=>{
                                     <div class="" v-if="campaign.recipient_id">
                                         <NavLinkBlue :href="route('recipient-details',[campaign.recipient.slug])" class="bg-secondary !my-0 text-white">See Details</NavLinkBlue>
                                     </div>
-                                    <SecondaryButton class="!my-0" type="button" @click="addRecipient = !addRecipient">
-                                        {{ campaign.recipient_id == null ? 'Add Recipient' : 'Change Recipient' }}
+                                    <SecondaryButton class="!my-0" type="button" @click="addRecipient = !addRecipient; addRecipientNew = false">
+                                        {{ campaign.recipient_id == null ? 'Choose Recipient' : 'Change Recipient' }}
                                     </SecondaryButton>
                                 </div>
                             </div>
-                            
-                            <div class="w-full p-3 shadow-md rounded-sm" v-show="addRecipient">
+                            <!-- Choose Recipient -->
+                            <div class="w-full px-4 pt-3 pb-5 my-3 shadow-md rounded-md border-1 border border-primary" v-show="addRecipient">
+                                <h2 class="text-center text-lg font-medium mb-2">Choose</h2>
                                 <div class="" v-for="(recipient, rIndex) in recipients" :key="rIndex">
                                     <input type="radio" :id="'recipient_' + recipient.id" name="recipient_id"
-                                        class="checked:text-primary focus:ring-primary" v-model="form.recipient_id"
+                                        class="checked:text-primary focus:ring-primary my-1.5" v-model="form.recipient_id"
                                         :value="recipient.id" />
                                     <label :for="'recipient_' + recipient.id" class="pl-1.5 text-sm">
                                         {{ recipient.name }}
                                     </label>
                                 </div>
+                                <PrimaryButton class="mt-4" type="button" v-show="addRecipient"
+                                    @click="addRecipientNew = ! addRecipientNew">Add New Recipient</PrimaryButton>
+                            </div>
+                            <div class="" v-show="addRecipientNew">
+                                <input type="text" placeholder="Recipient Name" v-model="RecipientNew.name" name="" id="">
+                                <button type="button" @click="newRecipient">Add</button>
                             </div>
                             
                         </div>

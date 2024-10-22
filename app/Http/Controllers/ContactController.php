@@ -67,7 +67,7 @@ class ContactController extends Controller
             'company' => 'required|string|max:255',
             'occupation' => 'required|string|max:255',
         ]);
-        EmailContact::where('id', $id)->update([
+          EmailContact::where('id', $id)->update([
             'email' => $validate['email'],
             'first_name' => $validate['first_name'],
             'last_name'=> $validate['last_name'],
@@ -88,7 +88,8 @@ class ContactController extends Controller
         return redirect()->route('list-contact');
     }
     // Recipient
-    public function recipient() {
+    public function recipient(Request $request) {
+        // dd($request);
         $recipient = Recipient::all();
         return Inertia::render('Contact/ListRecipient', [
             'recipients'=> collect($recipient)->map(function ($r) {
