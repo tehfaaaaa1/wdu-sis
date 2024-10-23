@@ -49,9 +49,9 @@ console.log(props.search)
                 </div>
                 <div class="flex">
                     <input type="text" v-model="form.search" @keyup.enter="search"
-                        class="w-full md:h-10 border-primary rounded-s-md text-sm placeholder:text-center placeholder:font-thin focus:ring-1 focus:ring-primary focus:border-primary"
+                        class="w-full md:h-10 border-primary rounded-s-md text-sm placeholder:text-center   placeholder:font-thin focus:ring-1 focus:ring-primary focus:border-primary"
                         placeholder="Search">
-                        <button type="button" @click="search" class=" hover:bg-white hover:text-primary hover:ring-2 hover:ring-primary transition bg-primary p-2 rounded-r-md md:h-10 text-white text-center">
+                        <button type="button" @click="search" class=" hover:bg-white hover:text-primary hover:ring-1 focus:outline-none focus:ring-1 focus:ring-primary hover:ring-primary  bg-primary p-2 rounded-r-md md:h-10 text-white text-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                         </svg>

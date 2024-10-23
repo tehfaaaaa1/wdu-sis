@@ -54,8 +54,11 @@ class CampaignController extends Controller
         $rec = $campaign->recipient;
         $recipient = Recipient::all();
         $sender = Sender::all();
-        return Inertia::render('Campaigns/CampaignDetails', [
-            'campaign' => $campaign,
+        if(!$campaign){
+            return redirect()->route('list-campaign');
+        }
+        return Inertia::render('Campaigns/CampaignDetails',[
+            'campaign'=> $campaign,
             'created' => $campaign->created_at->format('M d,Y H:i'),
             'senders' => $sender,
             'recipients' => $recipient,
@@ -64,7 +67,8 @@ class CampaignController extends Controller
     public function addData(Request $request, $slug)
     {
         // dd($request->subject);
-        $campaign = Campaign::firstOrNew(['slug' => $slug ?? null]);
+        $campaign = Campaign::firstOrNew(['slug'=>$slug??null]);
+        $campaign->name = $request->name;
         $campaign->subject = $request->subject ?? null;
         $campaign->sender_id = $request->sender_id ?? null;
         $campaign->recipient_id = $request->recipient_id ?? null;
@@ -97,19 +101,51 @@ class CampaignController extends Controller
         echo "Mail send successfully !!";
     }
     // sender
-    public function addSender(Request $request)
-    {
+    public function addSender(Request $request, $slug) {
         $validate = $request->validate([
             'sender_name' => 'required|string|max:255',
             'sender_email' => 'required|email|max:255',
             'sender_reply' => 'required|email|max:255',
         ]);
 
-        Sender::create([
-            'name' => $validate['sender_name'],
-            'email' => $validate['sender_email'],
+        $send = new Sender;
+        $send->name = $validate['sender_name'];
+        $send->email = $validate['sender_email'];
+        $send->reply_address = $validate['sender_reply'];
+        $send->save();
+        // dd($send->id);
+        $camp = Campaign::firstOrNew(['slug'=>$slug]);
+        $camp->sender_id = $send->id;
+        $camp->save();
+        return redirect()->route('campaign-details',[$slug])->with(['addSender'=> false]);
+    }
+    public function updateSender(Request $request, $id, $slug) {
+        $validate = $request->validate([
+            'sender_name'=> 'required|string|max:255',
+            'sender_email' => 'required|email|max:255',
+            'sender_reply'=> 'required|email|max:255',
+        ]);
+        Sender::where('id', $id)->update([
+           'name' => $validate['sender_name'],
+            'email'=> $validate['sender_email'],
             'reply_address' => $validate['sender_reply'],
         ]);
+        return redirect()->route('campaign-details',[$slug]);  
+    }
+    
+    public function addRecipient(Request $request, $slug) {
+        $validated = $request->validate([
+            'name'=> 'required|string|max:255'
+        ]);
+        // dd(str::slug($validated['name'].now()));
+        $rec = new Recipient();
+        $rec->name = $validated['name'];
+        $rec->slug = Str::slug($validated['name'].now());
+        $rec->save();
+        $camp = Campaign::firstOrNew(['slug'=> $slug]);
+        $camp->recipient_id = $rec->id;
+        $camp->save();
+
         return back();
     }
 
