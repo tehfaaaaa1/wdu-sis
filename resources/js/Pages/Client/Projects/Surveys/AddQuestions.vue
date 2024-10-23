@@ -90,7 +90,6 @@ const descType = ref([
 function cloneQuestion(element) {
     let texts = []
     let choice = []
-    let required = 0
     let lastCindex = ''
     switch (element.name) {
         case 'Text':
@@ -542,7 +541,6 @@ watch(() => textEditor.value, () => {
                 </div>
             </aside>
 
-            <!-- Might try to make this as component -->
             <div v-show="textEditor" class="fixed inset-0 bg-black opacity-70 z-50 overflow-hidden"
                 @click="textEditor = false; questionForlogic = null"
                 @focusout="textEditor = false; questionForlogic = null" />
@@ -636,7 +634,6 @@ watch(() => textEditor.value, () => {
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
                                     <!-- Insert question here -->
-                                    <!-- {{ item  }} -->
                                     <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
                                         v-html="item.soal" type="text" placeholder="Insert question here"
                                         class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"

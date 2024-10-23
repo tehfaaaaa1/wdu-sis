@@ -1,5 +1,5 @@
 <template>
-    <QuillyEditor ref="editor" v-model="model" :options="toolbarOptions" />
+    <QuillyEditor ref="editor" v-model="model" :options="toolbarOptions" class="" />
 </template>
 <script setup lang="ts">
 import Quill from 'quill';

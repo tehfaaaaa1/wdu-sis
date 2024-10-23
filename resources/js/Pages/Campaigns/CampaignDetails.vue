@@ -106,9 +106,9 @@ const newSender = () => {
                     </div>
                     <div class="form-field">
                         <h1 class="font-medium w-1/5">Content</h1>
-                        <div class="block w-full px-3">
+                        <a :href="route('email-builder', [campaign.slug])" class="block w-full px-3">
                             Content
-                        </div>
+                        </a>
                     </div>
                     <div class="p-4">
                         <PrimaryButton class=" justify-center mt-2" :class="{ 'opacity-25': form.processing }"

@@ -103,9 +103,11 @@ const createCampaign = () => {
     font-size: 14px;
     color: gray;
 }
+
 .item-row:hover a {
     color: #5EB54D;
 }
+
 .item-row:not(:last-child) {
     border-bottom: 1px solid rgb(229, 231, 235);
 }
