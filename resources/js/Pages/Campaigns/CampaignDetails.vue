@@ -25,6 +25,7 @@ const addRecipient = ref(false);
 const addRecipientNew = ref(false);
 console.log(props.campaign)
 const form = useForm({
+    name: props.campaign.name,
     subject: props.campaign.subject ?? '',
     sender_id: props.campaign.sender_id ?? '',
     recipient_id: props.campaign.recipient_id ?? '',
@@ -58,7 +59,7 @@ const dataSender = ()=>{
 }
 </script>
 <template>
-    <AppLayout title=" Campaign Details">
+    <AppLayout title="Campaign Details">
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
                 <a :href="route('campaigns')"
@@ -67,7 +68,8 @@ const dataSender = ()=>{
                 </a>
                 <form action="" @submit.prevent="submit" class="bg-white block rounded-sm">
                     <div class="p-3 border-b" style="border-color: rgb(128, 128, 128);">
-                        <h1 class="text-xl font-medium">{{ campaign.name }}</h1>
+                        <!-- <h1 class="text-xl font-medium">{{ campaign.name }}</h1> -->
+                        <input type="text" v-model="form.name" class="border-0 border-b-2 p-1 focus:ring-0 focus:outline-none border-primary focus:border-primary text-xl font-semibold">
                         <p class="text-sm text-gray-500">Draft | Created at {{ created }}</p>
                     </div>
                     <div class="form-field">

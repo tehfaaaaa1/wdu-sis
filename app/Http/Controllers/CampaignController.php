@@ -66,6 +66,7 @@ class CampaignController extends Controller
     public function addData(Request $request, $slug) {
         // dd($request->subject);
         $campaign = Campaign::firstOrNew(['slug'=>$slug??null]);
+        $campaign->name = $request->name;
         $campaign->subject = $request->subject ?? null;
         $campaign->sender_id = $request->sender_id ?? null;
         $campaign->recipient_id = $request->recipient_id ?? null;
