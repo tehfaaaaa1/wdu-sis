@@ -94,7 +94,7 @@ class ProjectController extends Controller
             'desc' => $validated['desc'],
             // 'image' => $fileName,
             'client_id' => $id,
-            'slug' => Str::slug($validated['project_name']),
+            'slug' => Str::slug($validated['project_name'].now()),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

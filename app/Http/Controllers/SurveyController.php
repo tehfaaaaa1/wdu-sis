@@ -137,7 +137,7 @@ class SurveyController extends Controller
         Survey::create([
             'title' => $request->title,
             'desc' => $request->desc,
-            'slug' => Str::slug($request->title),
+            'slug' => Str::slug($request->title.now()),
             'province_targets' => json_encode($request->province_targets),
             'project_id' => $validatedData['project_id'], 
             'created_at' => now(),

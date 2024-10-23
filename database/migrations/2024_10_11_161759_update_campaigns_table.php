@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recipients', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique()->nullable();
-            $table->timestamps();
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->string('slug')->after('name')->unique()->nullable();
         });
     }
 
@@ -24,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recipients');
+    
     }
 };

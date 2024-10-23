@@ -26,7 +26,7 @@ const form = useForm({
     sender_reply: ''
 })
 const submit = () => {
-    form.post(route('campaign-data', [props.campaign.id]))
+    form.post(route('campaign-data', [props.campaign.slug]))
 }
 const newSender = () => {
     form.post(route('add-sender'))

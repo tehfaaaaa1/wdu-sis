@@ -46,12 +46,12 @@ const add = () => {
 const addcontact = () => {
     form.transform(() => ({
         data: contacts.value
-    })).post(route('store-contact', [props.recipient.id]))
+    })).post(route('store-contact', [props.recipient.slug]))
 }
 const importContact = () => {
     form.transform(() => ({
         file: form.file
-    })).post(route('contact.import', [props.recipient.id]))
+    })).post(route('contact.import', [props.recipient.slug]))
 }
 </script>
 <template>

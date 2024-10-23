@@ -22,6 +22,7 @@ const createRecipient = () => {
         name: RecipientName.value
     })).post(route('create-recipient'), { onSuccess: ShowCreate.value = false })
 }
+console.log(props.recipients)
 </script>
 <template>
     <AppLayout title="Recipient">
@@ -38,7 +39,7 @@ const createRecipient = () => {
                     <div class="block" v-for="(recipient, index) in recipients" :key="index">
                         <div class="flex items-center w-full p-3 hover:bg-gray-50 item-row">
                             <div class="block">
-                                <a :href="route('recipient-details', [recipient.id])">{{ recipient.name }}</a>
+                                <a :href="route('recipient-details', [recipient.slug])">{{ recipient.name }}</a>
                                 <p class="text-xs">Created At {{ recipient.dibuat }}</p>
                                 <!-- {{ recipient }} -->
                             </div>

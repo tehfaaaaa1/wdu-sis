@@ -11,6 +11,7 @@ class Recipient extends Model
     use HasFactory;
     protected $fillable = [
         'name',
+        'slug'
     ];
     public function contact_recipient(): HasMany
     {

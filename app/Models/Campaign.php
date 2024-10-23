@@ -11,6 +11,7 @@ class Campaign extends Model
     use HasFactory;
     protected $fillable=[
         'name',
+        'slug',
         'subject',
         'sender_id',
         'recipient_id',
