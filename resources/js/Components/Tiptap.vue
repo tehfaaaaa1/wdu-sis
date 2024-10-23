@@ -32,10 +32,11 @@
             :value="editor.getAttributes('textStyle').backgroundColor ?? '#ffffff'"
             class="w-5 h-7 border-b-4 border-gray-400">
         <div class="flex flex-col hover:bg-gray-200">
-            <label for="color" class="font-bold w-full text-center">A</label>
+            <label for="color" class="font-bold w-full text-center"
+                :class="`text-[${editor.getAttributes('textStyle').color ?? '#000000'}]`">A</label>
             <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" id="color"
                 :value="editor.getAttributes('textStyle').color ?? '#000000'" class="w-5 h-0 border-b-4"
-                :class="`border-b-[${editor.getAttributes('textStyle').color ?? '#000000'}]`">
+                :style="{ borderBottomColor: editor.getAttributes('textStyle').color ?? '#000000' }">
         </div>
         <Dropdown width="16">
             <template #trigger>
