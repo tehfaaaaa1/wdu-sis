@@ -83,8 +83,8 @@ const dataSender = ()=>{
                                 <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
                                 <SecondaryButton class="!m-0" type="button"
                                     @click="campaign.sender ?  (editSender = ! editSender, changeSender || addSenderNew? addSender = false : addSender = !addSender, changeSender = false , addSenderNew = false) 
-                                    : ( changeSender = !changeSender, addSenderNew = false) ">
-                                        {{ addSender || changeSender ||addSenderNew ? 'Close Sender' :(campaign.sender_id == null ? 'Choose Sender' : 'Edit Sender') }}
+                                    : ( editSender = ! editSender, !editSender ? changeSender = false : changeSender = !changeSender, addSenderNew = false) ">
+                                        {{ editSender ? 'Close Sender' :(campaign.sender_id == null ? 'Choose Sender' : 'Edit Sender') }}
                                 </SecondaryButton>
                             </div>
                             <!-- edit Sender -->
@@ -158,7 +158,7 @@ const dataSender = ()=>{
                                         </div>
                                     </div>
                                     <div class="flex gap-x-3 items-center">
-                                        <div class="my-2">
+                                        <div class="my-2" v-show="campaign.sender" >
                                             <button type="button" @click="addSender= !addSender; changeSender = false; addSenderNew= false"
                                             class="inline-flex items-center rounded-md px-5 py-2.5 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm transition hover:outline-none focus:outline-none hover:ring-2 focus:ring-2 hover:ring-red-500 hover:bg-white hover:text-red-500 focus:ring-red-500">
                                                 {{ campaign.sender_id ? 'Back' :'Close' }}
@@ -228,7 +228,7 @@ const dataSender = ()=>{
                                     <div class="" v-if="campaign.recipient_id">
                                         <NavLinkBlue :href="route('recipient-details',[campaign.recipient.slug])" class="bg-secondary !my-0 text-white">See Details</NavLinkBlue>
                                     </div>
-                                    <SecondaryButton class="!my-0" type="button" @click="editRecipient = !editRecipient; addRecipient = !addRecipient;  addRecipientNew = false">
+                                    <SecondaryButton class="!my-0" type="button" @click="editRecipient = !editRecipient, !editRecipient ? addRecipient = false : addRecipient = !addRecipient, addRecipientNew = false">
                                         {{ addRecipient || addRecipientNew ? 'Close Recipient' :(campaign.recipient_id == null ? 'Choose Recipient' : 'Change Recipient') }}
                                     </SecondaryButton>
                                 </div>
