@@ -140,8 +140,17 @@ import { TextStyle } from '@tiptap/extension-text-style';
 import { Link } from '@tiptap/extension-link';
 import { onUnmounted } from 'vue';
 
+const props = defineProps({
+    modelValue: String,
+})
+
+const emit = defineEmits(['update:modelValue'])
+
 const editor = useEditor({
-    content: '<p>I’m running Tiptap with Vue.js. 🎉</p>',
+    content: props.modelValue,
+    onUpdate: ({editor}) => {
+        emit('update:modelValue', editor.getHTML())
+    },
     extensions: [StarterKit, Underline, TextAlign.configure({ types: ['heading', 'paragraph'] }), TextStyle, Color.configure({ types: ['textStyle'] }), Link.configure({ openOnClick: false, defaultProtocol: 'https' }), BackgroundColor],
     editorProps: {
         attributes: {
