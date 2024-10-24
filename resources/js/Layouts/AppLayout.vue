@@ -98,7 +98,7 @@ const openn = ref(false)
                                                     :active="route().current('list-contact')">
                                                     List Contact
                                                 </NavLinkNoBg>
-                                                <NavLinkNoBg class="focus:text-primary w-full"
+                                                <NavLinkNoBg class="focus:text-primary w-full mb-1"
                                                     v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
                                                     :href="route('list-recipient')"
                                                     :active="route().current('list-recipient')">

@@ -14,15 +14,82 @@ use Illuminate\Support\Str;
 
 class ContactController extends Controller
 {
-    //
-    
-    public function contact() {
-        $contact = EmailContact::all();
+    // Contact
+    public function contact(Request $request) {
+        // dd($request->getQueryString());
+        $contact = EmailContact::filter(request(['search']))->paginate(12)->withQueryString()->onEachSide(2);
         return Inertia::render('Contact/ListContact', [
-            'contact' => $contact
+            'contact' => $contact,
+            'search' => $request->getQueryString()
         ]);
     }
-    public function recipient() {
+    public function importContact(Request $request, $slug) {
+        $id = Recipient::where('slug', $slug)->first();
+        // dd($id['id']);
+        Excel::import(new ContactsImport($id['id']), $request->file('file'));
+    }
+    public function editContact($slug, $id){
+        $rec = Recipient::where('slug', $slug)->first();
+        $contact = EmailContact::where('id', $id)->first();
+        return Inertia::render('Contact/EditContact', [
+            'contact'=> $contact,
+            'recipient' => $rec
+        ]);
+    }
+    public function editContact2( $id){
+        $contact = EmailContact::where('id', $id)->first();
+        return Inertia::render('Contact/EditContact', [
+            'contact'=> $contact
+        ]);
+    }
+    public function updateContact(Request $request, $slug, $id) {
+        $validate = $request->validate([
+            'email' => 'required|email|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company' => 'required|string|max:255',
+            'occupation' => 'required|string|max:255',
+        ]);
+        EmailContact::where('id', $id)->update([
+            'email' => $validate['email'],
+            'first_name' => $validate['first_name'],
+            'last_name'=> $validate['last_name'],
+            'company'=> $validate['company'],
+            'occupation'=> $validate['occupation']
+        ]);
+        return redirect()->route('recipient-details', [$slug]);
+    }
+    public function updateContact2(Request $request,$id) {
+        $validate = $request->validate([
+            'email' => 'required|email|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'company' => 'required|string|max:255',
+            'occupation' => 'required|string|max:255',
+        ]);
+          EmailContact::where('id', $id)->update([
+            'email' => $validate['email'],
+            'first_name' => $validate['first_name'],
+            'last_name'=> $validate['last_name'],
+            'company'=> $validate['company'],
+            'occupation'=> $validate['occupation']
+        ]);
+        return redirect()->route('list-contact');
+    }
+    public function delete($con_id) {
+        $email_con = EmailContact::where('id',$con_id)->first();
+        if(!$email_con){
+            return response()->json([
+                'status' => '500',
+                'error' => 'Contact not found'
+            ]);
+        }
+        EmailContact::where('id', $con_id)->delete();   
+        return redirect()->route('list-contact');
+    }
+    // Recipient
+    public function recipient(Request $request) {
+        // dd($request);
         $recipient = Recipient::all();
         return Inertia::render('Contact/ListRecipient', [
             'recipients'=> collect($recipient)->map(function ($r) {
@@ -46,11 +113,6 @@ class ContactController extends Controller
         ]);
     }
 
-
-    public function importContact(Request $request, $slug) {
-        Excel::import(new ContactsImport($slug), $request->file('file'));
-    }
-
     public function details($slug) {
         $rec = Recipient::where('slug', $slug)->get();
         foreach($rec as $r){
@@ -65,8 +127,17 @@ class ContactController extends Controller
             'contact' => $contactrecipient
         ]);
     }
-
-
+    public function remove(Request $request, $slug, $id) {
+        $contact_rec = ContactRecipient::where('id',$id)->first();
+        if(!$contact_rec){
+            return response()->json([
+                'status' => '500',
+                'error' => 'Contact not found'
+            ]);
+        }
+        ContactRecipient::where('id', $id)->delete();
+        return redirect()->route('recipient-details', [$slug]);
+    }
     public function addContact($slug){
         $rec = Recipient::where('slug', $slug)->first();
         return Inertia::render('Contact/AddContact',[

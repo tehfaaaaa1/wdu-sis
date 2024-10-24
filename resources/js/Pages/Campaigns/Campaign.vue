@@ -27,8 +27,6 @@ const form = useForm({
 const isi = (surveyTitle) => {
     search.value = surveyTitle
 }
-
-
 const ShowCreate = ref(false)
 const CampaignName = ref(null)
 const newCampaign = () => {
@@ -58,12 +56,12 @@ const createCampaign = () => {
                     <h2 class="font-semibold text-lg p-3">All Campaigns</h2>
                     <div class="border-b border-gray-200"></div>
                     <div class="block" v-for="(campaign, index) in campaigns" :key="index">
-                        <div class="flex items-center w-full p-3 hover:bg-gray-50 item-row">
+                        <a class="flex items-center w-full p-3 hover:bg-gray-50 item-row" :href="route('campaign-details', [campaign.slug])">
                             <div class="block">
-                                <a :href="route('details', [campaign.slug])">{{ campaign.name }}</a>
-                                <p>Draft | Sent On {{ campaign.dibuat }}</p>
+                                <h1>{{ campaign.name }}</h1>
+                                <p>Draft | Created at {{ campaign.dibuat }}</p>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
 
@@ -103,9 +101,11 @@ const createCampaign = () => {
     font-size: 14px;
     color: gray;
 }
-.item-row:hover a {
+
+.item-row:hover h1 {
     color: #5EB54D;
 }
+
 .item-row:not(:last-child) {
     border-bottom: 1px solid rgb(229, 231, 235);
 }

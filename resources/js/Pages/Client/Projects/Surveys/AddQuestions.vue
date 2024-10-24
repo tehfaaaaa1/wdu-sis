@@ -113,7 +113,7 @@ function cloneQuestion(element) {
             break;
     }
     return {
-        soal: '', texts: texts, choices: choice, types: [element.types], required: 0, lastChoiceIndex: lastCindex, logic_type: 1, logic_choice: null
+        soal: '', texts: texts, choices: choice, types: [element.types], required: 1, lastChoiceIndex: lastCindex, logic_type: 1, logic_choice: null
     };
 }
 
@@ -670,19 +670,18 @@ watch(() => textEditor.value, () => {
                                                     Multiple Choice
                                                 </div>
                                                 <div class="py-2 text-center border-t border-gray-300">
-                                                    <input type="checkbox" v-model="item.required" true-value="1"
-                                                        false-value="0" :id="'q' + index + '-optional'"
+                                                    <input type="checkbox" v-model="item.required" :id="'q' + index + '-optional'+(item.id??item.soal)" true-value="0" false-value="1"
                                                         class="cursor-pointer">
-                                                    <label :for="'q' + index + '-optional'"
+                                                    <label :for="'q' + index + '-optional'+(item.id??item.soal)"
                                                         class="pl-2 cursor-pointer select-none w-full text-sm">Optional</label>
                                                 </div>
                                             </div>
                                             <!-- delete question -->
-                                            <button type="button"
+                                            <button type="button"  @click="remove(page, index)"
                                                 class="cursor-pointer w-full flex items-center justify-center py-2 gap-x-1">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
-                                                    @click="remove(page, index)" class="size-6 text-red-600 z-10">
+                                                    class="size-6 text-red-600 z-10">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                 </svg>

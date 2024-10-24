@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             'client_name' => $client->client_name ?? 'No client assigned',
         ]);
     })->name('dashboard');
+    //Contact and Recipient
     Route::prefix('/contact')->group(function (){
         Route::get('/', [ContactController::class, 'contact'])->name('list-contact');
         Route::get('/recipient-list', [ContactController::class, 'recipient'])->name('list-recipient');
@@ -54,15 +55,24 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/recipient/{Recipient:slug}/add-contact', [ContactController::class, 'addContact'])->name('add-contact');
         Route::post('/recipient/{Recipient:slug}/addcontact', [ContactController::class,'storeContact'])->name('store-contact');
         Route::post('/recipient/{Recipient:slug}/import-contact', [ContactController::class, 'importContact'])->name('contact.import');
+        Route::get('/edit-contact/{Recipient:slug}/{Contact:id}', [ContactController::class, 'editContact'])->name('edit-contact');
+        Route::get('/edit-contact/{Contact:id}', [ContactController::class, 'editContact2'])->name('edit-contact-2');
+        Route::post('/update-contact/{Recipient:slug}/{Contact:id}', [ContactController::class, 'updateContact'])->name('update-contact');
+        Route::post('/update-contact/{Contact:id}', [ContactController::class, 'updateContact2'])->name('update-contact-2');
+        Route::get('/remove-contact/{Recipient:slug}/{ContactRecipient:id}', [ContactController::class, 'remove'])->name('remove-contact');
+        Route::get('/remove-contact/{Contact:id}', [ContactController::class, 'delete'])->name('delete-contact');
     });
+    //campaign
     Route::prefix('/campaign')->group(function () {
         Route::get('/', [CampaignController::class, 'index'])->name('campaigns');
         Route::post('/create-campaign', [CampaignController::class, 'store'])->name('create-campaign');
         // Route::get('/email-send', [HomeController::class, 'sendEmail'])->name('email.send');
         Route::get('/send', function () { return View::make('emails.testMail'); })->name('email.send');
-        Route::get('/{Campaign:slug}/details', [CampaignController::class, 'details'])->name('details');
+        Route::get('/{Campaign:slug}/details', [CampaignController::class, 'details'])->name('campaign-details');
+        Route::post('/add-recipient/{Campaign:slug}', [CampaignController::class, 'addRecipient'])->name('add-recipient');
         Route::post('/{Campaign:slug}/details/add-data', [CampaignController::class, 'addData'])->name('campaign-data');
-        Route::post('/add-sender',[ CampaignController::class, 'addSender'])->name('add-sender');
+        Route::post('/add-sender/{Campaign:slug}',[ CampaignController::class, 'addSender'])->name('add-sender');
+        Route::post('/update-sender/{Sender:id}/{Campaign:slug}',[ CampaignController::class, 'updateSender'])->name('update-sender');
     });
     // Client
     Route::prefix('/client')->group(function (){
@@ -129,7 +139,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::post('/create', [UserController::class, 'store'])->name('create_user')->middleware(['ableCreateUser']);
         Route::get('/create', [UserController::class, 'create'])->name('users.create')->middleware(['ableCreateUser']);
         Route::put('/update/{user}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
-        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit_user')->middleware(['ableCreateUser']);
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit-user')->middleware(['ableCreateUser']);
         Route::put('/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
         Route::get('/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
     });

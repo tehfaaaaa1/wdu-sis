@@ -244,7 +244,7 @@ class QuestionController extends Controller
                     ['id' => $questionData['id'] ?? null, 'survey_id' => $survey->id]
                 );
                 $saveQuestion->question_page_id =  $savePage->id;
-                $saveQuestion->required = $questionData['required'] ?? 0;
+                $saveQuestion->required = $questionData['required'] ?? 1;
                 $saveQuestion->order = $index + 1;
                 $saveQuestion->question_text = $questionData['soal'];
                 $saveQuestion->question_type_id = $questionType;
