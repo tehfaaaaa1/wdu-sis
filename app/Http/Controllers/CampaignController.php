@@ -36,18 +36,19 @@ class CampaignController extends Controller
             'survey' => $survey,
             'users' => $users,
             'response' => $response,
-            'campaigns'=> collect($campg)->map(function ($c)  {
+            'campaigns' => collect($campg)->map(function ($c) {
                 return [
-                    'id'=> $c->id,
-                    'name'=> $c->name,
-                    'slug'=> $c->slug,
-                    'dibuat'=>$c->created_at->format('M d Y H:i'),
-                    'upadte' =>$c->updated_at->format('M d Y H:i')
+                    'id' => $c->id,
+                    'name' => $c->name,
+                    'slug' => $c->slug,
+                    'dibuat' => $c->created_at->format('M d Y H:i'),
+                    'update' => $c->updated_at->format('M d Y H:i')
                 ];
             })
         ]);
     }
-    public function details($slug){
+    public function details($slug)
+    {
         $campaign = Campaign::where('slug', $slug)->first();
         $send = $campaign->sender;
         $rec = $campaign->recipient;
@@ -63,9 +64,11 @@ class CampaignController extends Controller
             'recipients' => $recipient,
         ]);
     }
-    public function addData(Request $request, $slug) {
+    public function addData(Request $request, $slug)
+    {
         // dd($request->subject);
         $campaign = Campaign::firstOrNew(['slug'=>$slug??null]);
+        $campaign->name = $request->name;
         $campaign->subject = $request->subject ?? null;
         $campaign->sender_id = $request->sender_id ?? null;
         $campaign->recipient_id = $request->recipient_id ?? null;
@@ -73,14 +76,15 @@ class CampaignController extends Controller
         $campaign->save();
         return back();
     }
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         // dd($request);
         $validated = $request->validate([
             'name' => 'string|max:255',
         ]);
         Campaign::create([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['name'].now())
+            'slug' => Str::slug($validated['name'] . now())
         ]);
         return redirect()->route('campaigns')->with('success', 'Success Add Campaign');
     }
@@ -99,9 +103,9 @@ class CampaignController extends Controller
     // sender
     public function addSender(Request $request, $slug) {
         $validate = $request->validate([
-            'sender_name'=> 'required|string|max:255',
+            'sender_name' => 'required|string|max:255',
             'sender_email' => 'required|email|max:255',
-            'sender_reply'=> 'required|email|max:255',
+            'sender_reply' => 'required|email|max:255',
         ]);
 
         $send = new Sender;
@@ -144,5 +148,9 @@ class CampaignController extends Controller
 
         return back();
     }
-    
+
+    public function emailBuilder()
+    {
+        return Inertia::render('Campaigns/MailBuilder');
+    }
 }

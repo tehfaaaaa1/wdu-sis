@@ -9,6 +9,7 @@ import DialogModal from '@/Components/DialogModal.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextEditor from '@/Components/TextEditor.vue';
+import LeftSticky from '@/Components/LeftSticky.vue';
 
 const props = defineProps({
     surveys: Object,
@@ -90,7 +91,6 @@ const descType = ref([
 function cloneQuestion(element) {
     let texts = []
     let choice = []
-    let required = 0
     let lastCindex = ''
     switch (element.name) {
         case 'Text':
@@ -388,6 +388,9 @@ const openTextEditor = (pgindex, q_index) => {
 function stripTags(str) {
     return str.replace(/(<([^>]+)>)/gi, '');
 }
+watch(()=> pages.value, ()=>{
+    console.log(pages.value)
+}, {deep: true})
 watch(() => textEditor.value, () => {
     if (textEditor.value == true) {
         document.body.style.overflow = 'hidden';
@@ -447,102 +450,98 @@ watch(() => textEditor.value, () => {
 
             <div class="absolute h-[96.5%] w-full bg-white opacity-50 z-40" v-if="props.surveys.status == 1"></div>
 
-            <aside class="sticky bg-gray-200 min-h-full top-11 z-30">
-                <div class="absolute lg:w-1/5">
-                    <div class="flex" id="question-or-flow">
-                        <h1 @click="QuestionOrFlow = 'question'"
-                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
-                            :class="{ 'border-ijo-terang': QuestionOrFlow == 'question' }">
-                            Question
-                        </h1>
-                        <h1 @click="QuestionOrFlow = 'flow'"
-                            class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
-                            :class="{ 'border-ijo-terang': QuestionOrFlow == 'flow' }">
-                            Flows
-                        </h1>
-                    </div>
-                    <div class="" id="add-question" v-if="QuestionOrFlow == 'question'">
-                        <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
-                            Question Types</p>
-                        <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                            :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
-                            <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
+            <LeftSticky top="11">
+                <div class="flex" id="question-or-flow">
+                    <h1 @click="QuestionOrFlow = 'question'"
+                        class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
+                        :class="{ 'border-ijo-terang': QuestionOrFlow == 'question' }">
+                        Question
+                    </h1>
+                    <h1 @click="QuestionOrFlow = 'flow'"
+                        class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
+                        :class="{ 'border-ijo-terang': QuestionOrFlow == 'flow' }">
+                        Flows
+                    </h1>
+                </div>
+                <div class="" id="add-question" v-if="QuestionOrFlow == 'question'">
+                    <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
+                        Question Types</p>
+                    <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
+                        :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
+                        <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
                                 items-center cursor-grab hover:font-semibold">
-                                <span>{{ item.name }}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-                            </div>
-                        </VueDraggable>
-
-                        <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
-                            Descriptions</p>
-                        <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                            :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
-                            <div v-for="item in descType" :key="item.types"
-                                class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-grab hover:font-semibold">
-                                <span>{{ item.name }}</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-gray-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                </svg>
-                            </div>
-                        </VueDraggable>
-
-                        <button type="button" class="bg-white border-gray-300 py-2 focus: px-4 flex justify-between
-                        items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
-                            :class="{ 'border-b': !showAddPage }">
-                            Add Page
+                            <span>{{ item.name }}</span>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-gray-500 transition ease-in-out duration-200"
-                                :class="showAddPage ? '-rotate-0' : '-rotate-90'">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                stroke="currentColor" class="size-6 text-gray-500">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
-                        </button>
-                        <transition enter-active-class="transition ease-out duration-200"
-                            enter-from-class="transform -translate-y-3"
-                            enter-to-class="transform opacity-100 translate-y-0"
-                            leave-active-class="transition ease-in duration-75"
-                            leave-from-class="transform opacity-100 translate-y-0"
-                            leave-to-class="transform -translate-y-3">
-                            <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"
-                                class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
-                                <input type="text" id="showAddPage" v-model="form.page_name"
-                                    class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
-                                    placeholder="Enter page name">
-                                <button type="submit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor"
-                                        class="size-6 transition hover:text-sky-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                                    </svg>
-                                </button>
-                            </form>
-                        </transition>
-                    </div>
-                    <div class="bg-white" id="add-flow" v-if="QuestionOrFlow == 'flow'">
-                        <div class="border-b border-gray-300 py-2 px-4">
-                            <div class="flows" v-for="(flow, index) in flows" :key="index"
-                                @click="showLogicModal = true; floww(flow)">
-                                <!-- All created flows will be listed here -->
-                                {{ flow.flow_name }}
+                        </div>
+                    </VueDraggable>
 
-                            </div>
+                    <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
+                        Descriptions</p>
+                    <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
+                        :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
+                        <div v-for="item in descType" :key="item.types"
+                            class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-grab hover:font-semibold">
+                            <span>{{ item.name }}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6 text-gray-500">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
                         </div>
-                        <div class="border-0 border-gray-300 py-2 px-4">
-                            <button type="button"
-                                class="w-full text-center border border-primary p-3 hover:bg-primary hover:text-white transition cursor-pointer"
-                                @click="showLogicModal = true; newFlow()">Tambah Flow Baru</button>
+                    </VueDraggable>
+
+                    <button type="button" class="bg-white border-gray-300 py-2 focus: px-4 flex justify-between
+                        items-center w-full hover:font-semibold" @click="showAddPage = !showAddPage"
+                        :class="{ 'border-b': !showAddPage }">
+                        Add Page
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6 text-gray-500 transition ease-in-out duration-200"
+                            :class="showAddPage ? '-rotate-0' : '-rotate-90'">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </button>
+                    <transition enter-active-class="transition ease-out duration-200"
+                        enter-from-class="transform -translate-y-3" enter-to-class="transform opacity-100 translate-y-0"
+                        leave-active-class="transition ease-in duration-75"
+                        leave-from-class="transform opacity-100 translate-y-0"
+                        leave-to-class="transform -translate-y-3">
+                        <form action="" v-if="showAddPage" @submit.prevent="addNewPage()"
+                            class="w-full flex justify-between items-center bg-white border-b border-gray-300 px-4">
+                            <input type="text" id="showAddPage" v-model="form.page_name"
+                                class="text-sm w-full -ms-1 me-4 mb-2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600"
+                                placeholder="Enter page name">
+                            <button type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor"
+                                    class="size-6 transition hover:text-sky-500">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                                </svg>
+                            </button>
+                        </form>
+                    </transition>
+                </div>
+                <div class="bg-white" id="add-flow" v-if="QuestionOrFlow == 'flow'">
+                    <div class="border-b border-gray-300 py-2 px-4">
+                        <div class="flows" v-for="(flow, index) in flows" :key="index"
+                            @click="showLogicModal = true; floww(flow)">
+                            <!-- All created flows will be listed here -->
+                            {{ flow.flow_name }}
+
                         </div>
+                    </div>
+                    <div class="border-0 border-gray-300 py-2 px-4">
+                        <button type="button"
+                            class="w-full text-center border border-primary p-3 hover:bg-primary hover:text-white transition cursor-pointer"
+                            @click="showLogicModal = true; newFlow()">Tambah Flow Baru</button>
                     </div>
                 </div>
-            </aside>
+            </LeftSticky>
 
-            <!-- Might try to make this as component -->
             <div v-show="textEditor" class="fixed inset-0 bg-black opacity-70 z-50 overflow-hidden"
                 @click="textEditor = false; questionForlogic = null"
                 @focusout="textEditor = false; questionForlogic = null" />
@@ -636,7 +635,6 @@ watch(() => textEditor.value, () => {
                                             d="M8.25 15 12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
                                     </svg>
                                     <!-- Insert question here -->
-                                    <!-- {{ item  }} -->
                                     <div v-if="item.types[0] != 'Image'" @click="openTextEditor(page_index, index)"
                                         v-html="item.soal" type="text" placeholder="Insert question here"
                                         class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"
@@ -670,14 +668,15 @@ watch(() => textEditor.value, () => {
                                                     Multiple Choice
                                                 </div>
                                                 <div class="py-2 text-center border-t border-gray-300">
-                                                    <input type="checkbox" v-model="item.required" :id="'q' + index + '-optional'+(item.id??item.soal)" true-value="0" false-value="1"
-                                                        class="cursor-pointer">
-                                                    <label :for="'q' + index + '-optional'+(item.id??item.soal)"
+                                                    <input type="checkbox" v-model="item.required"
+                                                        :id="'q' + index + '-optional' + (item.id ?? item.soal)"
+                                                        true-value="0" false-value="1" class="cursor-pointer">
+                                                    <label :for="'q' + index + '-optional' + (item.id ?? item.soal)"
                                                         class="pl-2 cursor-pointer select-none w-full text-sm">Optional</label>
                                                 </div>
                                             </div>
                                             <!-- delete question -->
-                                            <button type="button"  @click="remove(page, index)"
+                                            <button type="button" @click="remove(page, index)"
                                                 class="cursor-pointer w-full flex items-center justify-center py-2 gap-x-1">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"

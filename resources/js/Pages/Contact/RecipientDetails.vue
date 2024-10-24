@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import NavLink from '@/Components/NavLink.vue';
-import {ref} from 'vue';
+import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
 const props = defineProps({
@@ -18,8 +18,8 @@ const hapus = (id) => {
 const form = useForm([
 
 ])
-const confirmRemove = () => {   
-    form.get(route('remove-contact', [props.recipient[0].slug,selectedContactId.value]), {
+const confirmRemove = () => {
+    form.get(route('remove-contact', [props.recipient[0].slug, selectedContactId.value]), {
         onFinish: () => {
             showRemoveModal.value = false;
         }
@@ -47,7 +47,8 @@ console.log(props.recipient)
                 <div class="relative overflow-auto pb-20">
                     <div class="shadow-md sm:rounded-lg">
                         <table class="w-full text-sm text-left rtl:text-right text-gray-500 sm:table-fixed">
-                            <caption class="p-5 text-lg font-semibold rtl:text-right text-gray-900 bg-white text-center">
+                            <caption
+                                class="p-5 text-lg font-semibold rtl:text-right text-gray-900 bg-white text-center">
                                 {{ recipient[0].name }}
                                 <p class="mt-1 mb-4 text-sm font-normal text-gray-500">
                                     <!-- {{ client['desc'] }} -->
@@ -91,8 +92,9 @@ console.log(props.recipient)
                                             <template #trigger>
                                                 <div
                                                     class="collapse group-hover:visible w-12 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:ring-1 ring-inset ring-gray-300 cursor-pointer">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                        stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                        class="size-6">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
                                                     </svg>
@@ -103,7 +105,7 @@ console.log(props.recipient)
                                                     <a :href="route('edit-contact', [recipient[0].slug,contact_rec?.email_contact?.id])"
                                                         :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer focus:outline-none focus:bg-gray-100 hover:bg-gray-100'">Edit
                                                     </a>
-                                                    <a @click ="hapus(contact_rec.id)"
+                                                    <a @click="hapus(contact_rec.id)"
                                                         :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Remove
                                                     </a>
                                                 </div>
@@ -118,19 +120,20 @@ console.log(props.recipient)
             </div>
         </main>
         <div v-show="showRemoveModal" class="fixed inset-0 flex items-center justify-center z-50">
-        <div class="absolute inset-0 bg-gray-600 opacity-75"></div>
-        <div class="bg-white p-6 rounded-lg shadow-lg z-10">
-            <h2 class="text-lg font-semibold text-gray-800 mb-4">Confirm Remove</h2>
-            <p class="text-gray-600 mb-6">Are you sure want to Remove? This action cannot be undone.</p>
-            <div class="flex justify-end space-x-4">    
-                <button @click="cancelRemove" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
-                    Cancel
-                </button>
-                <button @click="confirmRemove" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                    Remove
-                </button>
+            <div class="absolute inset-0 bg-gray-600 opacity-75"></div>
+            <div class="bg-white p-6 rounded-lg shadow-lg z-10">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Confirm Remove</h2>
+                <p class="text-gray-600 mb-6">Are you sure want to Remove? This action cannot be undone.</p>
+                <div class="flex justify-end space-x-4">
+                    <button @click="cancelRemove"
+                        class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400">
+                        Cancel
+                    </button>
+                    <button @click="confirmRemove" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                        Remove
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
     </AppLayout>
 </template>
