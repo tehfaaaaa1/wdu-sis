@@ -6,9 +6,17 @@ import LeftSticky from '@/Components/LeftSticky.vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useForm } from '@inertiajs/vue3';
 
-// let tr;
+let tr;
 let td;
-const content = ref([tr => {}])
+const content = ref([{
+    tr: [{
+        td:[
+            { types: 'Text', name: 'Text', texts: '' },
+            { types: 'Image', name: 'Image', files: '' },
+            { types: 'Button', name: 'Button', texts: '' },
+        ],
+    }]
+    }])
 const elementOrLayout = ref('element')
 
 const elementsType = ref([
@@ -34,7 +42,7 @@ function cloneElement(element) {
             break;
     }
     return {
-        texts: text, files: file, types: [element.types]
+         td :[{texts: text, files: file, types:  element.types}]
     };
 }
 watch(content.value, () => {
@@ -83,19 +91,16 @@ console.log(content.value)
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                     <td align="center" bgcolor="#f4f4f4" style="padding: 20px;">
-                        <VueDraggable v-model="content" group="content">
-                            <table
-                                style="height: 100vh; width: 600px; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0/0.1), 0 2px 4px -2px rgb(0 0 0/0.1);">
-                                <tr v-for="(tr, tr_index) in content" :key="tr_index">
-                                    <td>
-                                        <div>
-                                            {{ tr }}
-                                            <!-- <Tiptap v-model="tr.texts" /> -->
-                                        </div>
+                        <table
+                        style="height: 100vh; width: 600px; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0/0.1), 0 2px 4px -2px rgb(0 0 0/0.1);">
+                        <VueDraggable v-model="content[0].tr" group="content">
+                            <tr v-for="(tr, tr_index) in content[0].tr" :key="tr_index">
+                                    <td v-for="(td, index) in tr.td" :key="index">
+                                        {{ td.types }}
                                     </td>
                                 </tr>
-                            </table>
-                        </VueDraggable>
+                            </VueDraggable>
+                        </table>
                     </td>
                 </tr>
             </table>
