@@ -32,16 +32,17 @@
             :value="editor.getAttributes('textStyle').backgroundColor ?? '#ffffff'"
             class="w-5 h-7 border-b-4 border-gray-400">
         <div class="flex flex-col hover:bg-gray-200">
-            <label for="color" class="font-bold w-full text-center"
-                :class="`text-[${editor.getAttributes('textStyle').color ?? '#000000'}]`">A</label>
+            <label for="color" class="font-bold w-full text-center before:content-['A']"
+                :class="`text-[${editor.getAttributes('textStyle').color ?? '#000000'}]`"></label>
             <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" id="color"
                 :value="editor.getAttributes('textStyle').color ?? '#000000'" class="w-5 h-0 border-b-4"
                 :style="{ borderBottomColor: editor.getAttributes('textStyle').color ?? '#000000' }">
         </div>
         <Dropdown width="16">
             <template #trigger>
-                <button :class="{ 'is-active': editor.isActive('heading') }" class="flex items-center">
-                    Heading <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                <button :class="{ 'is-active': editor.isActive('heading') }" class="flex select-none items-center before:content-['Heading']">
+                    <!-- Heading  -->
+                    <svg class="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
@@ -51,16 +52,16 @@
 
             <template #content>
                 <button @click=" editor.chain().focus().toggleHeading({ level: 1 }).run()"
-                    :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }" class="w-full">
-                    H1
+                    :class="{ 'is-active': editor.isActive('heading', { level: 1 }) }" class="w-full before:content-['H1']">
+                    <!-- H1 -->
                 </button>
                 <button @click="editor.chain().focus().toggleHeading({ level: 2 }).run()"
-                    :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" class="w-full">
-                    H2
+                    :class="{ 'is-active': editor.isActive('heading', { level: 2 }) }" class="w-full before:content-['H2']">
+                    <!-- H2 -->
                 </button>
                 <button @click="editor.chain().focus().toggleHeading({ level: 3 }).run()"
-                    :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }" class="w-full">
-                    H3
+                    :class="{ 'is-active': editor.isActive('heading', { level: 3 }) }" class="w-full before:content-['H3']">
+                    <!-- H3  -->
                 </button>
             </template>
         </Dropdown>
