@@ -7,20 +7,18 @@ import { VueDraggable } from 'vue-draggable-plus';
 import { useForm } from '@inertiajs/vue3';
 import { debounce } from 'lodash';
 
-let tr;
-let td;
 const content = ref([{
     tr: [{
-        td:[
-
+        td: [
+            // { types: 'Divider', name: 'Divider' },
         ],
     }]
-    }])
+}])
 const elementOrLayout = ref('element')
 
 const elementsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
-    { types: 'Image', name: 'Image', files: '', texts:''  },
+    { types: 'Image', name: 'Image', files: '', texts: '' },
     { types: 'Button', name: 'Button', texts: '' },
     { types: 'Divider', name: 'Divider' },
 ]);
@@ -41,7 +39,7 @@ function cloneElement(element) {
             break;
     }
     return {
-         td :[{texts: text, files: file, types:  element.types}]
+        td: [{ texts: text, files: file, types: element.types }]
     };
 }
 const handleImage = (event, tr_index, td_index) => {
@@ -60,25 +58,49 @@ const handleImage = (event, tr_index, td_index) => {
         reader.readAsDataURL(input.files[0])
     }
 }
-watch( () => content.value, 
-    debounce((newVal)=>{
+watch(() => content.value,
+    debounce((newVal) => {
         console.log(content.value, newVal)
-    }, 3000), 
+    }, 3000),
     { deep: true }
 )
 const form = useForm({
     content: '<p>I’m running Tiptap with Vue.js. 🎉</p>'
 })
-console.log(content.value)
+
+const mail = ref()
+const exportToHTML = () => {
+    const element = mail.value
+    const htmlContent = element.outerHTML
+
+    const fullHTML = `
+    <!DOCTYPE html>
+    <head>
+        <title>Exported Content</title>
+    </head>
+    <body>
+        ${htmlContent}
+    </body>
+    </html>
+    `
+
+    const blob = new Blob([fullHTML], { type: 'text/html' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'exported-content.html'
+
+    link.click()
+}
+
 </script>
 
 <template>
-    <AppLayout title="Build Email" >
+    <AppLayout title="Build Email">
         <main class="min-h-screen">
             <header class="bg-white grid grid-cols-2 items-center border-b border-gray-300 sticky top-0 z-50">
-
+                <button @click="exportToHTML">Save</button>
             </header>
-            <LeftSticky>
+            <LeftSticky class="top-6">
                 <div class="flex" id="element-or-layout">
                     <h1 @click="elementOrLayout = 'element'"
                         class="bg-white text-center font-semibold py-2.5 border-b-2 select-none cursor-pointer w-full"
@@ -106,11 +128,11 @@ console.log(content.value)
                     </div>
                 </div>
             </LeftSticky>
-            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" ref="mail" id="mail">
                 <tr>       
                     <td align="center" bgcolor="#f4f4f4" style="padding: 20px;">
-                        <table class="prose"
-                        style="height: 100vh; width: 600px; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0/0.1), 0 2px 4px -2px rgb(0 0 0/0.1); table-layout: auto;">
+                        <table class="prose" id="mail-content"
+                        style="width: 600px; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0/0.1), 0 2px 4px -2px rgb(0 0 0/0.1); table-layout: auto;">
                         <VueDraggable v-model="content[0].tr" group="content" style="height: inherit; width: inherit;">
                             <tr v-for="(tr, tr_index) in content[0].tr" class="" :key="tr_index" style="width: 100%;">
                                     <td v-for="(td, index) in tr.td" :key="index">
@@ -149,7 +171,10 @@ console.log(content.value)
         </main>
     </AppLayout>
 </template>
-<style scoped>
+<style>
+#mail-content {
+    height: 100vh;
+}
 .image{
     width: 100%;
     min-height: 5rem;
@@ -157,15 +182,18 @@ console.log(content.value)
     align-items: center;
     position: relative;
 }
-.image:hover{
+
+.image:hover {
     outline: 2px solid #5EB54D;
 }
-.button{
+
+.button {
     width: inherit;
     padding: 0.75rem 0;
     text-align: center;
 }
-.button:hover{
+
+.button:hover {
     outline: 2px solid #5EB54D;
 }
 .button .mail{
@@ -176,22 +204,25 @@ console.log(content.value)
     font-size: 14px;
     border-radius: 6px;
 }
-.divider{
+
+.divider {
     padding: 1.2rem 0;
     width: inherit;
 }
-.divider:hover{
-    outline : 2px solid #5EB54D;
-    cursor: pointer; 
+
+.divider:hover {
+    outline: 2px solid #5EB54D;
+    cursor: pointer;
 }
-.divider .line{
-    width: 80%; 
-    height: 0.2rem; 
-    background-color: #5EB54D; 
-    margin: auto; 
+
+.divider .line {
+    width: 80%;
+    height: 0.2rem;
+    background-color: #5EB54D;
+    margin: auto;
     border-radius: 2px;
     --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
-</style> 
+</style>
