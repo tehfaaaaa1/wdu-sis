@@ -6,17 +6,15 @@ import LeftSticky from '@/Components/LeftSticky.vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useForm } from '@inertiajs/vue3';
 
-let tr;
-let td;
 const content = ref([{
     tr: [{
-        td:[
+        td: [
             { types: 'Text', name: 'Text', texts: '' },
             { types: 'Image', name: 'Image', files: '' },
             { types: 'Button', name: 'Button', texts: '' },
         ],
     }]
-    }])
+}])
 const elementOrLayout = ref('element')
 
 const elementsType = ref([
@@ -42,7 +40,7 @@ function cloneElement(element) {
             break;
     }
     return {
-         td :[{texts: text, files: file, types:  element.types}]
+        td: [{ texts: text, files: file, types: element.types }]
     };
 }
 watch(content.value, () => {
@@ -51,14 +49,38 @@ watch(content.value, () => {
 const form = useForm({
     content: '<p>I’m running Tiptap with Vue.js. 🎉</p>'
 })
-console.log(content.value)
+
+const mail = ref()
+const exportToHTML = () => {
+    const element = mail.value
+    const htmlContent = element.outerHTML
+
+    const fullHTML = `
+    <!DOCTYPE html>
+    <head>
+        <title>Exported Content</title>
+    </head>
+    <body>
+        ${htmlContent}
+    </body>
+    </html>
+    `
+
+    const blob = new Blob([fullHTML], { type: 'text/html' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'exported-content.html'
+
+    link.click()
+}
+
 </script>
 
 <template>
     <AppLayout title="Build Email">
         <main class="min-h-screen">
             <header class="bg-white grid grid-cols-2 items-center border-b border-gray-300 sticky top-0 z-50">
-
+                <button @click="exportToHTML">Save</button>
             </header>
             <LeftSticky>
                 <div class="flex" id="element-or-layout">
@@ -88,13 +110,14 @@ console.log(content.value)
                     </div>
                 </div>
             </LeftSticky>
-            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" ref="mail" id="mail">
                 <tr>
                     <td align="center" bgcolor="#f4f4f4" style="padding: 20px;">
-                        <table
-                        style="height: 100vh; width: 600px; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0/0.1), 0 2px 4px -2px rgb(0 0 0/0.1);">
-                        <VueDraggable v-model="content[0].tr" group="content">
-                            <tr v-for="(tr, tr_index) in content[0].tr" :key="tr_index">
+                        <table id="mail-content"
+                            style="width: 600px; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0/0.1), 0 2px 4px -2px rgb(0 0 0/0.1);">
+                            <VueDraggable v-model="content[0].tr" group="content" class="h-full" id="drag-tr">
+                                <tr v-for="(tr, tr_index) in content[0].tr" :key="tr_index"
+                                    style="background-color: red;">
                                     <td v-for="(td, index) in tr.td" :key="index">
                                         {{ td.types }}
                                     </td>
@@ -107,3 +130,21 @@ console.log(content.value)
         </main>
     </AppLayout>
 </template>
+
+<style scoped lang="scss">
+#mail-content {
+    min-height: 100vh;
+}
+
+#drag-tr {
+    width: 100%;
+
+    tr {
+        width: 100%;
+
+        &:hover {
+            outline: 2px solid red;
+        }
+    }
+}
+</style>
