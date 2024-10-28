@@ -77,6 +77,47 @@ const exportToHTML = () => {
     <!DOCTYPE html>
     <head>
         <title>Exported Content</title>
+        <style>
+        #mail-content {
+    height: 100vh;
+}
+.image{
+    width: 600px;
+    min-height: 5rem;
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+}
+.button {
+    width: 600px;
+    padding: 0.75rem 0;
+    text-align: center;
+}
+
+.button .mail{
+    background-color: #5EB54D;
+    padding: 0.5rem 1.25rem;
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    border-radius: 6px;
+}
+
+.divider {
+    padding: 1rem 0;
+    width: inherit;
+}
+.divider .line {
+    width: 80%;
+    height: 0.2rem;
+    background-color: #5EB54D;
+    margin: auto;
+    border-radius: 2px;
+    --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+        </style>
     </head>
     <body>
         ${htmlContent}
@@ -135,33 +176,33 @@ const exportToHTML = () => {
                         style="width: 600px; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0/0.1), 0 2px 4px -2px rgb(0 0 0/0.1); table-layout: auto;">
                         <VueDraggable v-model="content[0].tr" group="content" style="height: inherit; width: inherit;">
                             <tr v-for="(tr, tr_index) in content[0].tr" class="" :key="tr_index" style="width: 100%;">
-                                    <td v-for="(td, index) in tr.td" :key="index">
-                                        <!-- {{ td }} -->
-                                        <div class="texts" v-if="td.types == 'Text'">
-                                            <Tiptap v-model="td.texts"/>
-                                            <div class="" v-html="td.texts"></div>
+                                <td v-for="(td, index) in tr.td" :key="index">
+                                    <!-- {{ td }} -->
+                                    <div class="texts" v-if="td.types == 'Text'">
+                                        <Tiptap v-model="td.texts"/>
+                                        <div class="" v-html="td.texts"></div>
+                                    </div>
+                                    <div class="image hover:ring-2 hover:ring-primary" v-if="td.types == 'Image'">
+                                        <input type="file" @input="handleImage($event, tr_index, index)" name="" :id="'file'+[index]" class="absolute left-0 right-0 mx-auto block w-1/2 text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" 
+                                        :class="td.files[0].files ? 'bg-transparent file:bg-transparent text-transparent file:text-transparent w-full h-full':'' ">
+                                        <div class="img" v-if="td.files[0].files != ''" v-for="(img, index) in td.files" :key="index">
+                                            <img :src="img.files" alt="" width="600" height="200">
+                                            <!-- <div class="" style="background: url('{{ img.files }}');">dasfsa</div> -->
                                         </div>
-                                        <div class="image" v-if="td.types == 'Image'">
-                                            <!-- {{ td }} -->
-                                            <input type="file" @input="handleImage($event, tr_index, index)" name="" :id="'file'+[index]" class="absolute left-0 right-0 mx-auto block w-1/2 text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" 
-                                            :class="td.files[0].files ? 'bg-transparent file:bg-transparent text-transparent file:text-transparent w-full h-full':'' ">
-                                            <div class="" v-for="(img, index) in td.files" :key="index">
-                                                <img :src="img.files" alt="">
-                                            </div>
+                                    </div>
+                                    <div class="button hover:ring-2 hover:ring-primary" v-if="td.types == 'Button'">
+                                        <button class="bg-primary px-3 py-1.5 rounded-md">
+                                            <input class="btn-input placeholder:text-sm text-center bg-transparent w-full p-0 text-sm text-white placeholder:text-white border-none hover:ring-0 focus:ring-0" type="text" v-model="td.texts" placeholder="Input Text Here" name="" id=""> 
+                                        </button>
+                                        <button class="mail">
+                                            {{ td.texts }}
+                                        </button>
+                                    </div>
+                                    <div class="divider hover:ring-2 hover:ring-primary " v-if="td.types == 'Divider'">
+                                        <div class="line">     
                                         </div>
-                                        <div class="button" v-if="td.types == 'Button'">
-                                            <button class="input bg-primary px-3 py-1.5 rounded-md">
-                                                <input class="btn-input placeholder:text-sm text-center bg-transparent w-full p-0 text-sm text-white placeholder:text-white border-none hover:ring-0 focus:ring-0" type="text" v-model="td.texts" placeholder="Input Text Here" name="" id=""> 
-                                            </button>
-                                            <button class="mail">
-                                                {{ td.texts }}
-                                            </button>
-                                        </div>
-                                        <div class="divider" v-if="td.types == 'Divider'">
-                                            <div class="line" >     
-                                            </div>
-                                        </div>
-                                    </td>
+                                    </div>
+                                </td>
                             </tr>
                         </VueDraggable>
                         </table>
@@ -175,46 +216,40 @@ const exportToHTML = () => {
 #mail-content {
     height: 100vh;
 }
+/* image */
 .image{
-    width: 100%;
-    min-height: 5rem;
+    width: 600px;
+    min-height: 3rem;
     display: inline-flex;
     align-items: center;
     position: relative;
 }
-
-.image:hover {
-    outline: 2px solid #5EB54D;
-}
-
-.button {
+.image .img{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: inherit;
+}
+/* Button */
+.button {
+    width: 600px;
     padding: 0.75rem 0;
     text-align: center;
 }
-
-.button:hover {
-    outline: 2px solid #5EB54D;
-}
 .button .mail{
     background-color: #5EB54D;
-    padding: 0.5rem 1.25rem;
+    padding: 0.5rem 1rem;
     text-align: center;
     color: white;
     font-size: 14px;
     border-radius: 6px;
+    width: 144px;
 }
-
+/* divider */
 .divider {
-    padding: 1.2rem 0;
-    width: inherit;
+    padding: 1rem 0;
+    width: 600px;
 }
-
-.divider:hover {
-    outline: 2px solid #5EB54D;
-    cursor: pointer;
-}
-
 .divider .line {
     width: 80%;
     height: 0.2rem;
