@@ -1,7 +1,7 @@
 <template>
-    <div class="" ref="elementEditor">
+    <div class="relative" ref="elementEditor">
         <section v-if="editor && openEditor"
-            class="buttons flex items-center flex-wrap gap-x-3 border border-b-0 border-gray-400 p-4 bg-white">
+            class="buttons flex items-center flex-wrap gap-x-3 border border-gray-400 p-4 bg-white absolute -top-[6.125rem] z-50">
             <button @click="editor.chain().focus().toggleBold().run()"
                 :disabled="!editor.can().chain().focus().toggleBold().run()"
                 :class="{ 'is-active': editor.isActive('bold') }">
