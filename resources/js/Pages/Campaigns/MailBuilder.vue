@@ -58,12 +58,12 @@ const handleImage = (event, tr_index, td_index) => {
         reader.readAsDataURL(input.files[0])
     }
 }
-watch(() => content.value,
-    debounce((newVal) => {
-        console.log(content.value, newVal)
-    }, 3000),
-    { deep: true }
-)
+// watch(() => content.value,
+//     debounce((newVal) => {
+//         console.log(content.value, newVal)
+//     }, 3000),
+//     { deep: true }
+// )
 const form = useForm({
     content: '<p>I’m running Tiptap with Vue.js. 🎉</p>'
 })
@@ -133,6 +133,8 @@ const exportToHTML = () => {
     link.click()
 }
 
+const openEditor = ref(false)
+
 </script>
 
 <template>
@@ -176,13 +178,13 @@ const exportToHTML = () => {
                             <table class="prose" id="mail-content"
                                 style="width: 600px; background-color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0/0.1), 0 2px 4px -2px rgb(0 0 0/0.1); table-layout: auto;">
                                 <tbody style="width: 100%; height: inherit;">
-                                    <VueDraggable v-model="content[0].tr" group="content" class="min-h-[300px]">
+                                    <VueDraggable v-model="content[0].tr" group="content" class="min-h-[300px] w-full">
                                         <tr v-for="(tr, tr_index) in content[0].tr" class="" :key="tr_index"
                                             style="width: 100%;">
-                                            <td v-for="(td, index) in tr.td" :key="index">
+                                            <td v-for="(td, index) in tr.td" :key="index" style="width: 100%;">
                                                 <!-- {{ td }} -->
                                                 <div class="texts" v-if="td.types == 'Text'">
-                                                    <Tiptap v-model="td.texts" />
+                                                    <Tiptap v-model="td.texts"  />
                                                     <div class="" v-html="td.texts"></div>
                                                 </div>
                                                 <div class="image hover:ring-2 hover:ring-primary"
@@ -226,7 +228,7 @@ const exportToHTML = () => {
         </main>
     </AppLayout>
 </template>
-<style>
+<style scoped>
 #mail-content {
     min-height: 100vh;
 }
