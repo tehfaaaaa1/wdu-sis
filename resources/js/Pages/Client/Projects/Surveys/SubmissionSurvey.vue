@@ -257,5 +257,18 @@ const showhide = (pgindex, qindex, value) => {
 </template>
 
 <style>
+.ql-align-center {
+    text-align: center;
+}
+
+.ql-align-right {
+    text-align: right;
+}
+
+.ql-align-justify {
+    text-align: justify;
+}
+
+
 @import url('/resources/css/quill-overwrite.css');
 </style>
