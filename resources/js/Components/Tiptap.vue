@@ -1,7 +1,7 @@
 <template>
     <div class="relative" ref="elementEditor">
         <section v-if="editor && openEditor"
-            class="buttons flex items-center flex-wrap gap-x-3 border border-gray-400 p-4 bg-white absolute -top-[6.125rem] z-50">
+            class="buttons flex items-center flex-wrap border border-gray-400 bg-white absolute -top-[3rem] z-50">
             <button @click="editor.chain().focus().toggleBold().run()"
                 :disabled="!editor.can().chain().focus().toggleBold().run()"
                 :class="{ 'is-active': editor.isActive('bold') }">
@@ -27,17 +27,19 @@
                     <path fill-rule="evenodd"
                         d="M4.75 2a.75.75 0 0 1 .75.75V9a4.5 4.5 0 1 0 9 0V2.75a.75.75 0 0 1 1.5 0V9A6 6 0 0 1 4 9V2.75A.75.75 0 0 1 4.75 2ZM2 17.25a.75.75 0 0 1 .75-.75h14.5a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1-.75-.75Z"
                         clip-rule="evenodd" />
-                </svg>
+                </svg  >
             </button>
-            <input type="color" @input="editor.chain().focus().setBackgroundColor($event.target.value).run()"
-                :value="editor.getAttributes('textStyle').backgroundColor ?? '#ffffff'"
-                class="w-5 h-7 border-b-4 border-gray-400">
-            <div class="flex flex-col hover:bg-gray-200">
-                <label for="color" class="font-bold w-full text-center before:content-['A']"
-                    :class="`text-[${editor.getAttributes('textStyle').color ?? '#000000'}]`"></label>
+            <div class="hover:bg-gray-200 h-10 px-2 inline-flex items-center">
+                <input type="color" @input="editor.chain().focus().setBackgroundColor($event.target.value).run()"
+                    :value="editor.getAttributes('textStyle').backgroundColor ?? '#ffffff'"
+                    class="w-5 h-7 border-b-4 border-gray-400 bg-transparent">
+            </div>
+            <div class="inline-flex hover:bg-gray-200 h-10 px-2 items-center">
+                <label for="color" class="font-bold w-5 h-7 text-center border-b-4 before:content-['A'] before:text-lg "
+                    :class="`text-[${editor.getAttributes('textStyle').color ?? '#000000'}]`"
+                    :style="{ borderBottomColor: editor.getAttributes('textStyle').color ?? '#000000' }"></label>
                 <input type="color" @input="editor.chain().focus().setColor($event.target.value).run()" id="color"
-                    :value="editor.getAttributes('textStyle').color ?? '#000000'" class="w-5 h-0 border-b-4"
-                    :style="{ borderBottomColor: editor.getAttributes('textStyle').color ?? '#000000' }">
+                    :value="editor.getAttributes('textStyle').color ?? '#000000'" class="w-0 h-0">
             </div>
             <Dropdown width="16">
                 <template #trigger>
@@ -215,7 +217,8 @@ onUnmounted(() => {
 }
 
 section button {
-    padding: 0.25rem;
+    padding: 0.5rem;
+    min-height: 44px;
 
     &:hover {
         background-color: rgb(229 231 235);
