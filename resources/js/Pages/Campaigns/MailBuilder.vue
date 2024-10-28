@@ -183,9 +183,9 @@ const openEditor = ref(false)
                                             style="width: 100%;">
                                             <td v-for="(td, index) in tr.td" :key="index" style="width: 100%;">
                                                 <!-- {{ td }} -->
-                                                <div class="texts" v-if="td.types == 'Text'">
-                                                    <Tiptap v-model="td.texts"  />
-                                                    <div class="" v-html="td.texts"></div>
+                                                <div class="texts hover:ring-2 hover:ring-primary" v-if="td.types == 'Text'">
+                                                    <Tiptap v-model="td.texts" />
+                                                    <div class="output" v-html="td.texts"></div>
                                                 </div>
                                                 <div class="image hover:ring-2 hover:ring-primary"
                                                     v-if="td.types == 'Image'">
@@ -232,7 +232,13 @@ const openEditor = ref(false)
 #mail-content {
     min-height: 100vh;
 }
-
+.texts{
+    width: 600px;
+}
+.texts .output{
+    padding: 0.4rem 0.8rem;
+    
+}
 /* image */
 .image {
     width: 600px;
@@ -255,9 +261,7 @@ const openEditor = ref(false)
     padding: 0.75rem 0;
     text-align: center;
 }
-
-
-button .mail {
+.button .mail {
     background-color: #5EB54D;
     padding: 0.5rem 1rem;
     text-align: center;
