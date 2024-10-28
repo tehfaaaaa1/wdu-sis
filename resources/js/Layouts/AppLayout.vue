@@ -69,11 +69,7 @@ const openn = ref(false)
                                     :href="route('users')" :active="route().current('users')">
                                     User
                                 </NavLink>
-                                <NavLink class="focus:text-primary"
-                                    v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
-                                    :href="route('campaigns')" :active="route().current('campaigns')">
-                                    Campaigns
-                                </NavLink>
+   
                                 <div class="relative">
                                     <div @mouseenter="openn = true" @mouseleave="openn = false">
                                         <NavLink class="focus:text-primary" :href="route('list-contact')"
