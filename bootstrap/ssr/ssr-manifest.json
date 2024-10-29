@@ -4,12 +4,12 @@
   ],
   "node_modules/laravel-vite-plugin/inertia-helpers/index.js": [],
   "node_modules/quill/dist/quill.core.css": [
-    "/build/assets/AddQuestions-DtbEPNYS.js",
-    "/build/assets/AddQuestions-CdydWaEp.css"
+    "/build/assets/AddQuestions-BAf4WFii.js",
+    "/build/assets/AddQuestions-CDXmGRZE.css"
   ],
   "node_modules/quill/dist/quill.snow.css": [
-    "/build/assets/AddQuestions-DtbEPNYS.js",
-    "/build/assets/AddQuestions-CdydWaEp.css"
+    "/build/assets/AddQuestions-BAf4WFii.js",
+    "/build/assets/AddQuestions-CDXmGRZE.css"
   ],
   "resources/js/Components/ActionMessage.vue": [
     "/build/assets/ActionMessage-CMRC4Q_0.js"
@@ -27,8 +27,8 @@
     "/build/assets/AuthenticationCardLogo-DcwaY1SR.js"
   ],
   "resources/js/Components/BackgroundColor.ts": [
-    "/build/assets/MailBuilder-JXoauku5.js",
-    "/build/assets/MailBuilder-T6yWuDT-.css"
+    "/build/assets/MailBuilder-sJVHybaA.js",
+    "/build/assets/MailBuilder-CnbUwv-s.css"
   ],
   "resources/js/Components/Banner.vue": [
     "/build/assets/AppLayout-DzxXFISf.js"
@@ -115,27 +115,27 @@
     "/build/assets/SectionTitle-DsKZJEmq.js"
   ],
   "resources/js/Components/TextEditor.vue": [
-    "/build/assets/AddQuestions-DtbEPNYS.js",
-    "/build/assets/AddQuestions-CdydWaEp.css"
+    "/build/assets/AddQuestions-BAf4WFii.js",
+    "/build/assets/AddQuestions-CDXmGRZE.css"
   ],
   "resources/js/Components/TextEditor.vue?vue&type=script&setup=true&lang.ts": [
-    "/build/assets/AddQuestions-DtbEPNYS.js",
-    "/build/assets/AddQuestions-CdydWaEp.css"
+    "/build/assets/AddQuestions-BAf4WFii.js",
+    "/build/assets/AddQuestions-CDXmGRZE.css"
   ],
   "resources/js/Components/TextEditor.vue?vue&type=style&index=0&scoped=ccc755c0&lang.css": [
-    "/build/assets/AddQuestions-DtbEPNYS.js",
-    "/build/assets/AddQuestions-CdydWaEp.css"
+    "/build/assets/AddQuestions-BAf4WFii.js",
+    "/build/assets/AddQuestions-CDXmGRZE.css"
   ],
   "resources/js/Components/TextInput.vue": [
     "/build/assets/TextInput-DfqTAIOp.js"
   ],
   "resources/js/Components/Tiptap.vue": [
-    "/build/assets/MailBuilder-JXoauku5.js",
-    "/build/assets/MailBuilder-T6yWuDT-.css"
+    "/build/assets/MailBuilder-sJVHybaA.js",
+    "/build/assets/MailBuilder-CnbUwv-s.css"
   ],
   "resources/js/Components/Tiptap.vue?vue&type=style&index=0&lang.scss": [
-    "/build/assets/MailBuilder-JXoauku5.js",
-    "/build/assets/MailBuilder-T6yWuDT-.css"
+    "/build/assets/MailBuilder-sJVHybaA.js",
+    "/build/assets/MailBuilder-CnbUwv-s.css"
   ],
   "resources/js/Layouts/AppLayout.vue": [
     "/build/assets/AppLayout-DzxXFISf.js"
@@ -184,12 +184,12 @@
     "/build/assets/CampaignDetails-DzSRuPrS.css"
   ],
   "resources/js/Pages/Campaigns/MailBuilder.vue": [
-    "/build/assets/MailBuilder-JXoauku5.js",
-    "/build/assets/MailBuilder-T6yWuDT-.css"
+    "/build/assets/MailBuilder-sJVHybaA.js",
+    "/build/assets/MailBuilder-CnbUwv-s.css"
   ],
-  "resources/js/Pages/Campaigns/MailBuilder.vue?vue&type=style&index=0&scoped=27fd98ca&lang.css": [
-    "/build/assets/MailBuilder-JXoauku5.js",
-    "/build/assets/MailBuilder-T6yWuDT-.css"
+  "resources/js/Pages/Campaigns/MailBuilder.vue?vue&type=style&index=0&scoped=75d24faf&lang.css": [
+    "/build/assets/MailBuilder-sJVHybaA.js",
+    "/build/assets/MailBuilder-CnbUwv-s.css"
   ],
   "resources/js/Pages/Client/CreateClient.vue": [
     "/build/assets/CreateClient-B7wtj3zR.js",
@@ -223,16 +223,16 @@
     "/build/assets/ListProjects-D6OoIFyK.js"
   ],
   "resources/js/Pages/Client/Projects/Surveys/AddQuestions.vue": [
-    "/build/assets/AddQuestions-DtbEPNYS.js",
-    "/build/assets/AddQuestions-CdydWaEp.css"
+    "/build/assets/AddQuestions-BAf4WFii.js",
+    "/build/assets/AddQuestions-CDXmGRZE.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/AddQuestions.vue?vue&type=style&index=0&scoped=65d84d31&lang.css": [
-    "/build/assets/AddQuestions-DtbEPNYS.js",
-    "/build/assets/AddQuestions-CdydWaEp.css"
+    "/build/assets/AddQuestions-BAf4WFii.js",
+    "/build/assets/AddQuestions-CDXmGRZE.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/AddQuestions.vue?vue&type=style&index=1&lang.css": [
-    "/build/assets/AddQuestions-DtbEPNYS.js",
-    "/build/assets/AddQuestions-CdydWaEp.css"
+    "/build/assets/AddQuestions-BAf4WFii.js",
+    "/build/assets/AddQuestions-CDXmGRZE.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/CreateSurveys.vue": [
     "/build/assets/CreateSurveys-Bm-I3mpD.js",
@@ -273,28 +273,28 @@
     "/build/assets/LocationSurveys-BN9mMAOW.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/Report/AllReport.vue": [
-    "/build/assets/AllReport-C8ia_Esg.js",
-    "/build/assets/AllReport-CvteA7qB.css"
+    "/build/assets/AllReport-U5WmRR_c.js",
+    "/build/assets/AllReport-D3AbAjNl.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/Report/AllReport.vue?vue&type=style&index=0&lang.css": [
-    "/build/assets/AllReport-C8ia_Esg.js",
-    "/build/assets/AllReport-CvteA7qB.css"
+    "/build/assets/AllReport-U5WmRR_c.js",
+    "/build/assets/AllReport-D3AbAjNl.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/Report/ReportSurvey.vue": [
-    "/build/assets/ReportSurvey-CLKrNtgt.js",
-    "/build/assets/AllReport-CvteA7qB.css"
+    "/build/assets/ReportSurvey-GoRFsDaf.js",
+    "/build/assets/AllReport-D3AbAjNl.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/Report/ReportSurvey.vue?vue&type=style&index=0&lang.css": [
-    "/build/assets/ReportSurvey-CLKrNtgt.js",
-    "/build/assets/AllReport-CvteA7qB.css"
+    "/build/assets/ReportSurvey-GoRFsDaf.js",
+    "/build/assets/AllReport-D3AbAjNl.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/SubmissionSurvey.vue": [
-    "/build/assets/SubmissionSurvey-DAV-Arfo.js",
-    "/build/assets/SubmissionSurvey-DP3OwEBB.css"
+    "/build/assets/SubmissionSurvey-Dc8heLK_.js",
+    "/build/assets/SubmissionSurvey-DucU-Yrw.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/SubmissionSurvey.vue?vue&type=style&index=0&lang.css": [
-    "/build/assets/SubmissionSurvey-DAV-Arfo.js",
-    "/build/assets/SubmissionSurvey-DP3OwEBB.css"
+    "/build/assets/SubmissionSurvey-Dc8heLK_.js",
+    "/build/assets/SubmissionSurvey-DucU-Yrw.css"
   ],
   "resources/js/Pages/Client/Projects/Surveys/biodata.vue": [
     "/build/assets/biodata-B3EpvIWo.js"
