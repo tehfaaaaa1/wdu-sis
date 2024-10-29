@@ -149,20 +149,20 @@ const showhide = (pgindex, qindex, value) => {
             ) : null;
 
             // Identify only children and descendants
-            const team = matchedQuestion ? currentQuestions.filter(qq => qq.id!=currentQuestion.id &&
+            const team = matchedQuestion ? currentQuestions.filter(qq => qq.id != currentQuestion.id &&
                 matchedQuestion.choice.some(cc => cc.id === qq.question_choice_id)
             ) : [];
 
             const originalQuestion = props.page[currentIndex.value].question.find(q => q.id === element.id);
 
-            const s = team ? currentQuestions.filter(p=> team.some(t=>t.choice.some(c=>c.id == p.question_choice_id))) :null
+            const s = team ? currentQuestions.filter(p => team.some(t => t.choice.some(c => c.id == p.question_choice_id))) : null
             // Ensure no change to any ancestors (only affect children)
             if (
                 currentQuestion.question_choice_id !== element.question_choice_id &&
                 matchedQuestion?.question_choice_id !== element.question_choice_id &&
                 !team.some(t => t.question_choice_id === element.question_choice_id) && // Fix here: ensure no child shares same question_choice_id
                 parentQuestion?.question_choice_id !== element.question_choice_id &&
-                !s.some(ss=> ss.question_choice_id === element.question_choice_id)
+                !s.some(ss => ss.question_choice_id === element.question_choice_id)
             ) {
                 console.log(matchedQuestion, element, team, parentQuestion, s);
                 element.question_logic_type_id = originalQuestion.logic_type;
@@ -178,7 +178,7 @@ const showhide = (pgindex, qindex, value) => {
     });
 };
 
-</script>  
+</script>
 
 <template>
 
@@ -188,7 +188,7 @@ const showhide = (pgindex, qindex, value) => {
             <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
             <div class="bg-white rounded-b-md">
                 <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">
-                    {{ currentPage.page_name }}</h2>  
+                    {{ currentPage.page_name }}</h2>
 
                 <form @submit.prevent="submit" class="w-full">
                     <div class="p-5 pb-1">
@@ -257,6 +257,8 @@ const showhide = (pgindex, qindex, value) => {
 </template>
 
 <style>
+@import url('/resources/css/quill-overwrite.css');
+
 .ql-align-center {
     text-align: center;
 }
@@ -268,7 +270,4 @@ const showhide = (pgindex, qindex, value) => {
 .ql-align-justify {
     text-align: justify;
 }
-
-
-@import url('/resources/css/quill-overwrite.css');
 </style>
