@@ -231,8 +231,10 @@ const showhide = (pgindex, qindex, value) => {
                             </div>
 
                             <!-- Handling Descriptions -->
-                            <div class="" v-if="question.question_type_id == 4">
-                                <img :src="'/img/' + question.question_text" class="" alt="Image">
+                            <div v-if="question.question_type_id == 4">
+                                <img :src="'/img/' + question.question_text" 
+                                style="max-width: 500px; max-height: 300px; width: auto; height: auto; display: block; margin: 0 auto;" 
+                                alt="Image" />
                             </div>
 
                             <div v-html="question.question_text" class="output" v-if="question.question_type_id == 5">

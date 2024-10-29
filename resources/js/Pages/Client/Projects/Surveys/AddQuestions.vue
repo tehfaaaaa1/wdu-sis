@@ -67,7 +67,7 @@ const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
             default:
                 break;
         }
-        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex, logic_type: item.question_logic_type_id ?? 1, logic_choice: item.question_choice_id ?? null }
+        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex, logic_type: item.question_logic_type_id ?? 1, logic_choice: item.question_choice_id ?? null, width: 200, height: 150 }
     })
     return { id: page.id, order: page.order, name: page.page_name, question: question }
 }))
@@ -399,6 +399,11 @@ watch(() => textEditor.value, () => {
     }
 })
 
+const updateSize = (pgindex, qindex) => {
+    const question = pages.value[pgindex].question[qindex];
+    question.width = Math.max(question.width, 0); 
+    question.height = Math.max(question.height, 0);
+}
 
 </script>
 
@@ -639,9 +644,30 @@ watch(() => textEditor.value, () => {
                                         v-html="item.soal" type="text" placeholder="Insert question here"
                                         class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"
                                         contenteditable="false" data-text="Insert question here" />
+                                        
                                     <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                         id="file_input" @input="handleImage($event, page_index, index)"
-                                        class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
+                                        class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" />
+
+                                    <!-- Image Preview and Resizing Controls -->
+                                    <div v-if="item.types[0] == 'Image' && pages[page_index].question[index].files[0].files">
+                                        <div class="resizable">
+                                            <img :src="pages[page_index].question[index].files[0].files" 
+                                                :style="{ width: pages[page_index].question[index].width + 'px', height: pages[page_index].question[index].height + 'px' }" 
+                                                :alt="item.soal" />
+                                            
+                                            <div class="resize-controls">
+                                                <label>
+                                                    Width:
+                                                    <input type="number" v-model="pages[page_index].question[index].width" @input="updateSize(page_index, index)" />
+                                                </label>
+                                                <label>
+                                                    Height:
+                                                    <input type="number" v-model="pages[page_index].question[index].height" @input="updateSize(page_index, index)" />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <!-- Question types -->
                                     <Dropdown align="right" width="48">
@@ -756,12 +782,6 @@ watch(() => textEditor.value, () => {
                                     </div>
                                 </div>
 
-                                <!-- Image -->
-                                <div class="px-5 flex justify-center" v-for="(image, index) in item.files" :key="index">
-                                    <img v-if="image.files != item.soal" :src="image.files" alt="Preview">
-                                    <img v-else :src="'/img/' + item.soal" alt="Preview Image">
-
-                                </div>
                             </div>
                         </VueDraggable>
                         <div class="border border-gray-500 my-5"
@@ -905,6 +925,12 @@ watch(() => textEditor.value, () => {
     justify-content: space-between;
     margin-bottom: 0.75rem;
     font-size: 1rem;
+}
+
+.resize-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 </style>
 
