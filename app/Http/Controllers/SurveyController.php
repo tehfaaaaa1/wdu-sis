@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\FormClosed;
 use App\Models\Flow;
 use App\Models\QuestionPage;
 use URL;
@@ -273,7 +274,14 @@ class SurveyController extends Controller
     {
         $status = $request->surveyStatus;
         $id = $request->surveyId;
-        Survey::where('id', $id)->update($status == 0 ? ['status' => 1] : ['status' => 0]);
+        // $update = Survey::where('id', $id)->update($status == 0 ? ['status' => 1] : ['status' => 0]);
+        $update = Survey::firstOrCreate(['id'=>$id]);
+        $update->status = $status == 0 ? 1 : 0;
+        // dd($status);
+        $update->save();
+        // dd($update->id);
+        // FormClosed::dispatch($update);
+        broadcast(new FormClosed($update));
         return back()->with('success', 'change Status');
     }
 }

@@ -5,6 +5,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { debounce } from 'lodash';
+import Echo from 'laravel-echo';
+import DialogModal from '@/Components/DialogModal.vue';
 const props = defineProps({
     surveys: Object,
     projects: Object,
@@ -67,6 +69,8 @@ function prevPage() {
         currentIndex.value--;
     }
 }
+
+const formClosed = ref()
 onMounted(() => {
     const savedForm = localStorage.getItem(storageKey);
     if (savedForm) {
@@ -86,6 +90,17 @@ onMounted(() => {
         }
     });
 
+    window.Echo.private(`survey.${props.surveys.id}`).listen('.formClosed', (e) => {
+        console.log(e.survey.status)
+        if(e.survey.status ==0){
+            formClosed.value = true;
+        } else {
+            formClosed.value = false
+        }
+    });
+    if(props.surveys.status == 0){
+        formClosed.value = true
+    }
 });
 watch(() => form.page,
     debounce((newVal) => {
@@ -184,6 +199,28 @@ const showhide = (pgindex, qindex, value) => {
 
     <Head :title="'Isi Survey'" />
     <div class="min-h-screen bg-gray-300">
+        <DialogModal :show="formClosed">
+            <template #title>
+                <div class="text-center">
+                    PEMBERITAHUAN
+                </div>
+            </template>
+
+            <template #content>
+                <div class="border border-gray-300 p-4">
+                    FORM TELAH DITUTUP
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="flex items-center justify-between w-full">
+                    <a :href="route('listsurvey', [client.slug, project.slug])"
+                        class="inline-flex items-center rounded-md px-5 py-2 bg-red-500 text-sm mr-3 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition">
+                        Back
+                    </a>
+                </div>
+            </template>
+        </DialogModal>
         <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
             <div class="bg-white rounded-b-md">
