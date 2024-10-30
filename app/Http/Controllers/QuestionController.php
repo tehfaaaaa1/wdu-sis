@@ -221,10 +221,6 @@ class QuestionController extends Controller
     }
 
     public function flow(Request $request, $clientSlug, $projectSlug, $surveyId){
-        // dd($request);
-        // if(array_search(null, Arr::except($request->all(), 'flow_id'))){
-        //     abort(403, 'Missing Flow Data');
-        // };
         
         $validated = $request->validate([
             'name'=>'required|string|max:255',
@@ -234,8 +230,6 @@ class QuestionController extends Controller
             'question'=>'required_if:useQ,true',
             'choice'=>'required_if:useQ,true',
         ]);
-        dd($validated);
-        // dd($saveFlow);
         $flowID = $request->flow_id;
         $saveFlow = Flow::firstOrNew(['id'=>$flowID??null]);
         $saveFlow->flow_name = $validated['name'];

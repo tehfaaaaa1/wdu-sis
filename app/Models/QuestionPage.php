@@ -24,6 +24,6 @@ class QuestionPage extends Model
         return $this->hasMany(Question::class);
     }
     public function flow() : HasMany{
-        return $this->hasMany(Flow::class);
+        return $this->hasMany(Flow::class, 'current_page_id');
     }
 }

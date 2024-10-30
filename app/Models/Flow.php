@@ -20,8 +20,11 @@ class Flow extends Model
     public function question(): BelongsTo{
         return $this->belongsTo(Question::class);
     }
-    public function pages(): BelongsTo{
-        return $this->belongsTo(QuestionPage::class, 'question_page_id');
+    public function currentpages(): BelongsTo{
+        return $this->belongsTo(QuestionPage::class, 'current_page_id');
+    }
+    public function nextpages(): BelongsTo{
+        return $this->belongsTo(QuestionPage::class, 'next_page_id');
     }
     public function choice() : BelongsTo {
         return $this->belongsTo(QuestionChoice::class, 'question_choice_id');
