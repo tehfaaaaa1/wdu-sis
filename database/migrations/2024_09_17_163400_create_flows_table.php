@@ -14,9 +14,9 @@ class CreateFlowsTable extends Migration
     public function up()
     {
         Schema::create('flows', function (Blueprint $table) {
-            $table->bigIncrements('id'); // Primary Key with auto-increment
+            $table->id(); // Primary Key with auto-increment
 
-            $table->string('flow_name', 255)->collation('utf8mb4_unicode_ci');
+            $table->string('flow_name', 255);
             $table->foreignId('current_page_id')
                   ->constrained('question_pages')
                   ->cascadeOnDelete();
