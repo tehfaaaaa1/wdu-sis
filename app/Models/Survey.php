@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use function Illuminate\Events\queueable;
+
 class Survey extends Model
 {
     use HasFactory;
@@ -21,29 +23,34 @@ class Survey extends Model
         'project_id',
         'city_id',
         'regency_id',
-        'province_targets', 
+        'province_targets',
     ];
 
     protected $casts = [
-        'province_targets' => 'array', 
+        'province_targets' => 'array',
     ];
 
-    public function project(): BelongsTo {
+    public function project(): BelongsTo
+    {
         return $this->BelongsTo(Project::class, 'project_id');
     }
 
-    public function question(): HasMany {
+    public function question(): HasMany
+    {
         return $this->hasMany(Question::class);
     }
 
-    public function response(): HasMany {
+    public function response(): HasMany
+    {
         return $this->hasMany(Response::class);
     }
 
-    public function page(): HasMany {
+    public function page(): HasMany
+    {
         return $this->hasMany(QuestionPage::class);
     }
-    public function flow() : HasMany{
+    public function flow(): HasMany
+    {
         return $this->hasMany(Flow::class);
     }
 }

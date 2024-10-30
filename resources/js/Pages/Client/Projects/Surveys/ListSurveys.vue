@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -33,7 +33,7 @@ const showCitiesAndRegencies = ref([]);
 const toggleVisibility = (surveyId, provinceIndex) => {
     if (!showCitiesAndRegencies.value[surveyId]) {
         showCitiesAndRegencies.value[surveyId] = [];
-    }
+    }   
     showCitiesAndRegencies.value[surveyId][provinceIndex] = !showCitiesAndRegencies.value[surveyId][provinceIndex];
 };
 
@@ -142,8 +142,6 @@ const getCitiesAndRegencies = (survey) => {
     return provincesData;
 };
 
-
-
 const parseProvinceTargets = (survey) => {
     try {
         return typeof survey.province_targets === 'string'
@@ -155,10 +153,22 @@ const parseProvinceTargets = (survey) => {
     }
 };
 
-
 const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
 };
+
+onMounted(() => {
+    props.surveys.forEach(element => {
+        window.Echo.private(`survey.${element.id}`).listen('.formClosed', (e) => {
+            if (e.survey.id == element.id) {
+                element.status = e.survey.status
+            } else {
+                return false
+            }
+        });
+    });
+})
+
 </script>
 
 <template>
@@ -288,12 +298,10 @@ const getSurveySubmissions = (surveyId) => {
                                         </div>
                                     </div>
                                     <div class="flex justify-center">
-                                        <p v-if="survey.status == 0"
-                                            class="w-24 bg-auto bg-red-100 text-red-800 text-xs font-medium rounded text-center mt-3 p-2">
-                                            DITUTUP</p>
-                                        <p v-if="survey.status == 1"
-                                            class="w-24 bg-auto bg-green-100 text-green-800 text-xs font-medium rounded text-center mt-3 p-2">
-                                            DIBUKA</p>
+                                        <p :class="survey.status == 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'"
+                                            class="w-24 bg-auto  text-xs font-medium rounded text-center mt-3 p-2">
+                                            {{ survey.status == 0 ? 'DITUTUP' : 'DIBUKA' }}
+                                        </p>
                                     </div>
                                 </td>
                                 <td class="px-6 py-6">
@@ -304,7 +312,7 @@ const getSurveySubmissions = (surveyId) => {
                                                 :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
                                                 <p class="text-center"
                                                     :class="props.user.current_team_id != 1 || props.user.usertype == 'superadmin' ? '' : ''">
-                                                    Anda Sudah Mengisi Survey Ini</p>
+                                                    Anda Sudah Mengisi Kuisioner Ini</p>
                                             </div>
                                             <div class="m-auto"
                                                 v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
@@ -341,7 +349,6 @@ const getSurveySubmissions = (surveyId) => {
                                                 class="font-medium text-red-600 hover:underline cursor-pointer p-1">Delete</a>
                                         </div>
                                     </div>
-
                                 </td>
                             </tr>
                         </tbody>

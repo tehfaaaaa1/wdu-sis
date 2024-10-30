@@ -1,10 +1,10 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { computed, ref, watch, onMounted } from 'vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { debounce } from 'lodash';
+import DialogModal from '@/Components/DialogModal.vue';
 const props = defineProps({
     surveys: Object,
     projects: Object,
@@ -67,6 +67,8 @@ function prevPage() {
         currentIndex.value--;
     }
 }
+
+const formClosed = ref()
 onMounted(() => {
     const savedForm = localStorage.getItem(storageKey);
     if (savedForm) {
@@ -86,6 +88,16 @@ onMounted(() => {
         }
     });
 
+    window.Echo.private(`survey.${props.surveys.id}`).listen('.formClosed', (e) => {
+        if(e.survey.status ==0){
+            formClosed.value = true;
+        } else {
+            formClosed.value = false
+        }
+    });
+    if(props.surveys.status == 0){
+        formClosed.value = true
+    }
 });
 watch(() => form.page,
     debounce((newVal) => {
@@ -149,20 +161,20 @@ const showhide = (pgindex, qindex, value) => {
             ) : null;
 
             // Identify only children and descendants
-            const team = matchedQuestion ? currentQuestions.filter(qq => qq.id!=currentQuestion.id &&
+            const team = matchedQuestion ? currentQuestions.filter(qq => qq.id != currentQuestion.id &&
                 matchedQuestion.choice.some(cc => cc.id === qq.question_choice_id)
             ) : [];
 
             const originalQuestion = props.page[currentIndex.value].question.find(q => q.id === element.id);
 
-            const s = team ? currentQuestions.filter(p=> team.some(t=>t.choice.some(c=>c.id == p.question_choice_id))) :null
+            const s = team ? currentQuestions.filter(p => team.some(t => t.choice.some(c => c.id == p.question_choice_id))) : null
             // Ensure no change to any ancestors (only affect children)
             if (
                 currentQuestion.question_choice_id !== element.question_choice_id &&
                 matchedQuestion?.question_choice_id !== element.question_choice_id &&
                 !team.some(t => t.question_choice_id === element.question_choice_id) && // Fix here: ensure no child shares same question_choice_id
                 parentQuestion?.question_choice_id !== element.question_choice_id &&
-                !s.some(ss=> ss.question_choice_id === element.question_choice_id)
+                !s.some(ss => ss.question_choice_id === element.question_choice_id)
             ) {
                 console.log(matchedQuestion, element, team, parentQuestion, s);
                 element.question_logic_type_id = originalQuestion.logic_type;
@@ -178,17 +190,39 @@ const showhide = (pgindex, qindex, value) => {
     });
 };
 
-</script>  
+</script>
 
 <template>
 
     <Head :title="'Isi Survey'" />
     <div class="min-h-screen bg-gray-300">
+        <DialogModal :show="formClosed">
+            <template #title>
+                <div class="text-center">
+                    PEMBERITAHUAN
+                </div>
+            </template>
+
+            <template #content>
+                <div class="border border-gray-300 p-4">
+                    FORM TELAH DITUTUP
+                </div>
+            </template>
+
+            <template #footer>
+                <div class="flex items-center justify-between w-full">
+                    <a :href="route('listsurvey', [client.slug, project.slug])"
+                        class="inline-flex items-center rounded-md px-5 py-2 bg-red-500 text-sm mr-3 font-semibold leading-6 text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition">
+                        Back
+                    </a>
+                </div>
+            </template>
+        </DialogModal>
         <main class="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
             <div class="bg-primary text-white rounded-t-md select-none py-1.5" />
             <div class="bg-white rounded-b-md">
                 <h2 class="text-center text-xl font-semibold py-4 border-b border-gray-400">
-                    {{ currentPage.page_name }}</h2>  
+                    {{ currentPage.page_name }}</h2>
 
                 <form @submit.prevent="submit" class="w-full">
                     <div class="p-5 pb-1">
@@ -259,6 +293,8 @@ const showhide = (pgindex, qindex, value) => {
 </template>
 
 <style>
+@import url('/resources/css/quill-overwrite.css');
+
 .ql-align-center {
     text-align: center;
 }
@@ -270,7 +306,4 @@ const showhide = (pgindex, qindex, value) => {
 .ql-align-justify {
     text-align: justify;
 }
-
-
-@import url('/resources/css/quill-overwrite.css');
 </style>

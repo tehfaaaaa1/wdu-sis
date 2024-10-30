@@ -139,9 +139,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/list-users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
         Route::post('/create', [UserController::class, 'store'])->name('create_user')->middleware(['ableCreateUser']);
         Route::get('/create', [UserController::class, 'create'])->name('users.create')->middleware(['ableCreateUser']);
-        Route::put('/update/{user}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
         Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit-user')->middleware(['ableCreateUser']);
-        Route::put('/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
+        Route::put('/{id}/update', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
         Route::get('/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
     });
 
