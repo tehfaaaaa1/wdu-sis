@@ -1,11 +1,9 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import { computed, ref, watch, onMounted } from 'vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { debounce } from 'lodash';
-import Echo from 'laravel-echo';
 import DialogModal from '@/Components/DialogModal.vue';
 const props = defineProps({
     surveys: Object,
