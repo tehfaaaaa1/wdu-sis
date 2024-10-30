@@ -264,7 +264,7 @@ const getSurveySubmissions = (surveyId) => {
                                                     :key="regencyIndex"
                                                     :class="{ 'text-gray-500 italic': regency.isPlaceholder, 'px-2': true }">
                                                     - {{ regency.regency_name }} <b v-if="!regency.isPlaceholder">({{
-                                                        regency.responseRegency }})</b>
+                                                    regency.responseRegency }})</b>
                                                 </li>
                                             </ul>
                                         </li>
@@ -304,7 +304,7 @@ const getSurveySubmissions = (surveyId) => {
                                                 :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
                                                 <p class="text-center"
                                                     :class="props.user.current_team_id != 1 || props.user.usertype == 'superadmin' ? '' : ''">
-                                                    Anda Sudah Mengisi Survey Ini</p>
+                                                    Anda Sudah Mengisi Kuisioner Ini</p>
                                             </div>
                                             <div class="m-auto"
                                                 v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
@@ -341,7 +341,6 @@ const getSurveySubmissions = (surveyId) => {
                                                 class="font-medium text-red-600 hover:underline cursor-pointer p-1">Delete</a>
                                         </div>
                                     </div>
-
                                 </td>
                             </tr>
                         </tbody>

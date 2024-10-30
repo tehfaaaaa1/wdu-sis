@@ -15,10 +15,11 @@ const props = defineProps({
     recipients: Object,
     senders: Object,
 })
-const addSenderNew = ref(false);
 const editSender = ref(false);
-const addSender = ref(false);
+const SenderData = ref(false);
+const AddOrchangeSender = ref(false)
 const changeSender = ref(false);
+const addNewSender = ref(false);
 
 const editRecipient = ref(false);
 const addRecipient = ref(false);
@@ -84,8 +85,8 @@ const dataSender = ()=>{
                             <div :class="campaign.sender_id == null ? 'block' : 'flex justify-between'" class="w-full">
                                 <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
                                 <SecondaryButton class="!m-0" type="button"
-                                    @click="campaign.sender ?  (editSender = ! editSender, changeSender || addSenderNew? addSender = false : addSender = !addSender, changeSender = false , addSenderNew = false) 
-                                    : ( editSender = ! editSender, !editSender ? changeSender = false : changeSender = !changeSender, addSenderNew = false) ">
+                                    @click="campaign.sender ?  (editSender = ! editSender, changeSender || addNewSender? SenderData = false : SenderData = !SenderData, changeSender = false , addNewSender = false) 
+                                    : ( editSender = ! editSender, !editSender ? changeSender = false : changeSender = !changeSender, addNewSender = false) ">
                                         {{ editSender ? 'Close Sender' :(campaign.sender_id == null ? 'Choose Sender' : 'Edit Sender') }}
                                 </SecondaryButton>
                             </div>
@@ -97,7 +98,7 @@ const dataSender = ()=>{
                             leave-active-class="transition ease-out duration-75 delay-0"
                             leave-from-class="transform opacity-100 translate-y-0"
                             leave-to-class="transform opacity-0 -translate-y-5">
-                            <div class="min-h-80 shadow-md border-1 border-primary" v-show="editSender">
+                            <div class="min-h-[21rem] max-h-[21rem] overflow-y-hidden border-1 border-primary" v-show="editSender">
                                 <!-- Sender Data -->
                                 <transition
                                 enter-active-class="transition ease-out duration-150 delay-150"
@@ -106,7 +107,7 @@ const dataSender = ()=>{
                                 leave-active-class="transition ease-out duration-0 delay-0"
                                 leave-from-class="transform opacity-0 translate-y-0"
                                 leave-to-class="transform opacity-0 -translate-y-3">
-                                <form action="" @submit.prevent="dataSender" class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-80 flex flex-col justify-between border-primary" v-show="addSender">
+                                <form action="" @submit.prevent="dataSender" class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-80 flex flex-col justify-between border-primary" v-show="SenderData">
                                         <div class="block w-full p-2">
                                             <h2 class="text-center text-lg font-medium mb-2">Sender Data</h2>
                                             <div class="sm:flex justify-between mb-4">
@@ -131,14 +132,14 @@ const dataSender = ()=>{
                                             </div>
                                             <div class="my-2">
                                                 <SecondaryButton class="!px-2 !my-0 !font-medium sm:!px-6 sm:py-2.5" type="button" 
-                                                @click="changeSender = !changeSender; addSender= false">
+                                                @click="AddOrchangeSender = !AddOrchangeSender; changeSender = !changeSender; SenderData= false">
                                                 Change Sender</SecondaryButton>
                                             </div>
                                         </div>
                                 </form>
                                 </transition>
     
-                                <!-- Change Sender -->
+                                <!-- Add Or Change Sender -->
                                  <transition 
                                     enter-active-class="transition ease-out duration-150 delay-150"
                                     enter-from-class="transform opacity-0 -translate-y-3"
@@ -146,75 +147,74 @@ const dataSender = ()=>{
                                     leave-active-class="transition ease-out duration-0 delay-0"
                                     leave-from-class="transform opacity-0 translate-y-0"
                                     leave-to-class="transform opacity-0 -translate-y-3">
-                                     <div class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-80 flex flex-col justify-between border-primary"
-                                     v-show="changeSender">
-                                     <div class="">
-                                        <h2 class="text-center text-lg font-medium mb-2">{{campaign.sender? ' Change' : 'Choose'}}</h2>
-                                        <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
-                                            <input type="radio" :id="'sender_' + sender.id"
-                                                    class="checked:text-primary focus:ring-primary my-2" v-model="form.sender_id"
-                                                    :value="sender.id" />
-                                            <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
-                                                {{ sender.email }}
-                                            </label>
+                                    <div class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-80 flex flex-col justify-between border-primary"
+                                     v-show="AddOrchangeSender">
+                                        <div class="block w-full p-2">
+                                            <h2 class="text-center text-lg font-medium mb-2 cursor-pointer"> 
+                                                <span :class="changeSender? 'text-ijo-gelap':''"
+                                                @click="addNewSender = false; changeSender = true">{{campaign.sender? ' Change' : 'Choose' }}</span> | 
+                                                <span :class="addNewSender ? 'text-ijo-gelap' :''" 
+                                                @click="addNewSender = true; changeSender = false">Add New</span>
+                                            </h2>
+                                            <!-- Change Sender -->
+                                            <transition 
+                                            enter-active-class="transition ease-in duration-150 delay-150"
+                                            enter-from-class="transform opacity-0 -translate-x-3"
+                                            enter-to-class="transform opacity-100 translate-x-0"
+                                            leave-active-class="transition ease-out duration-75 delay-0"
+                                            leave-from-class="transform opacity-0 translate-x-0"
+                                            leave-to-class="transform opacity-0 -translate-x-3">
+                                                <div class="" v-show="changeSender">
+                                                    <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
+                                                        <input type="radio" :id="'sender_' + sender.id"
+                                                            class="checked:text-primary focus:ring-primary my-2" v-model="form.sender_id"
+                                                            :value="sender.id" />
+                                                        <label :for="'sender_' + sender.id" class="pl-1.5 text-sm">
+                                                            {{ sender.email }}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </transition>
+                                            <!-- Add New Sender -->
+                                            <transition
+                                            enter-active-class="transition ease-in duration-150 delay-150"
+                                            enter-from-class="transform opacity-0 -translate-x-3"
+                                            enter-to-class="transform opacity-100 translate-x-0"
+                                            leave-active-class="transition ease-out duration-50 delay-0"
+                                            leave-from-class="transform opacity-0 translate-x-0"
+                                            leave-to-class="transform opacity-0 -translate-x-3">
+                                                <div class="" v-show="addNewSender">
+                                                    <div class="block w-full p-2" >
+                                                        <div class="sm:flex justify-between mb-4">
+                                                            <p> Name</p>
+                                                            <input type="text" name="" v-model="senderNew.sender_name" required
+                                                            class="text-sm rounded-md border-primary sm:w-1/3" placeholder="Name"> 
+                                                        </div>
+                                                        <div class="sm:flex justify-between mb-4">
+                                                            <p>Email</p>
+                                                            <input type="email" name="" v-model="senderNew.sender_email" required class="text-sm rounded-md border-primary sm:w-1/3" placeholder="Email">
+                                                        </div>
+                                                        <div class="sm:flex justify-between mb-4">
+                                                            <p>Reply Address</p>
+                                                            <input type="email" name="" v-model="senderNew.sender_reply" required class="text-sm rounded-md border-primary sm:w-1/3" placeholder="Reply Address">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </transition>
                                         </div>
-                                    </div>
-                                    <div class="flex gap-x-3 items-center">
-                                        <div class="my-2" v-show="campaign.sender" >
-                                            <button type="button" @click="addSender= !addSender; changeSender = false; addSenderNew= false"
-                                            class="inline-flex items-center rounded-md px-5 py-2.5 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm transition hover:outline-none focus:outline-none hover:ring-2 focus:ring-2 hover:ring-red-500 hover:bg-white hover:text-red-500 focus:ring-red-500">
-                                                {{ campaign.sender_id ? 'Back' :'Close' }}
-                                            </button>
-                                        </div>
-                                        <div class="my-2">
-                                            <PrimaryButton class="!px-2 !my-0 !font-medium sm:!px-6 sm:py-2.5" type="button" v-show="changeSender"
-                                            @click="addSenderNew = !addSenderNew; changeSender = false">Add New Sender</PrimaryButton>
+                                        <div class="flex gap-x-3 items-center">
+                                            <div class="my-2" v-show="campaign.sender" >
+                                                <button type="button" @click="SenderData= !SenderData; AddOrchangeSender = false; changeSender = false; addNewSender= false"
+                                                class="inline-flex items-center rounded-md px-5 py-2.5 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm transition hover:outline-none focus:outline-none hover:ring-2 focus:ring-2 hover:ring-red-500 hover:bg-white hover:text-red-500 focus:ring-red-500">
+                                                    {{ campaign.sender_id ? 'Back' :'Close' }}
+                                                </button>
+                                            </div>
+                                            <div class="my-2" v-if="addNewSender">
+                                                <PrimaryButton class="!px-2 !font-medium sm:!px-6 sm:py-2.5">Create Sender</PrimaryButton>
                                             </div>
                                         </div>
                                     </div>
                                  </transition>
-    
-                                <!-- Add New Sender -->
-                                <transition
-                                enter-active-class="transition ease-out duration-150 delay-150"
-                                enter-from-class="transform opacity-0 -translate-y-3"
-                                enter-to-class="transform opacity-100 translate-y-0"
-                                leave-active-class="transition ease-out duration-0 delay-0"
-                                leave-from-class="transform opacity-0 translate-y-0"
-                                leave-to-class="transform opacity-0 -translate-y-3">
-                                <form action="" @submit.prevent="newSender"class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-80 flex flex-col justify-between border-primary" v-show="addSenderNew" >
-                                    <div class="block w-full p-2">
-                                        <h2 class="text-center text-lg font-medium mb-4 ">Add New Sender</h2>
-                                        <div class="sm:flex justify-between mb-4">
-                                            <p> Name</p>
-                                            <input type="text" name="" v-model="senderNew.sender_name" required
-                                            class="text-sm rounded-md border-primary sm:w-1/3" placeholder="Name"> 
-                                        </div>
-                                        <div class="sm:flex justify-between mb-4">
-                                            <p>Email</p>
-                                            <input type="email" name="" v-model="senderNew.sender_email" required
-                                            class="text-sm rounded-md border-primary sm:w-1/3" placeholder="Email">
-                                        </div>
-                                        <div class="sm:flex justify-between mb-4">
-                                            <p>Reply Address</p>
-                                            <input type="email" name="" v-model="senderNew.sender_reply" required
-                                            class="text-sm rounded-md border-primary sm:w-1/3" placeholder="Reply Address">
-                                        </div>
-                                    </div>
-                                        <div class="flex gap-x-3 items-center">
-                                            <div class="my-2">
-                                                    <button type="button"  @click="changeSender = !changeSender; addSenderNew= false"
-                                                    class="inline-flex items-center rounded-md px-5 py-2.5 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm transition hover:outline-none focus:outline-none hover:ring-2 focus:ring-2 hover:ring-red-500 hover:bg-white hover:text-red-500 focus:ring-red-500">
-                                                        Back
-                                                    </button>
-                                                </div>
-                                            <div class="my-2">
-                                                <PrimaryButton class="!px-2 !font-medium sm:!px-6 sm:py-2.5">Create Sender</PrimaryButton>
-                                            </div>
-                                        </div>
-                                    
-                                </form>
-                                </transition>
                             </div>
                             </transition>
                         </div>
@@ -243,7 +243,7 @@ const dataSender = ()=>{
                             leave-active-class="transition ease-out duration-75 delay-50"
                             leave-from-class="transform opacity-100 translate-y-0"
                             leave-to-class="transform opacity-0 -translate-y-5">
-                            <div class="min-h-60 shadow-sm border-1 border-primary" v-show="editRecipient">
+                            <div class="min-h-64 max-h-64 overflow-hidden border-1 border-primary" v-show="editRecipient">
                                 <!-- Choose Recipient -->
                                 <transition
                                 enter-active-class="transition ease-out duration-150 delay-150"
@@ -252,7 +252,7 @@ const dataSender = ()=>{
                                 leave-active-class="transition ease-out duration-0 delay-0"
                                 leave-from-class="transform opacity-0 translate-y-0"
                                 leave-to-class="transform opacity-0 -translate-y-3">
-                                    <div class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-60 flex flex-col justify-between border-primary" v-show="addRecipient">
+                                    <div class="w-full px-4 pt-3 pb-3 my-3 shadow-sm rounded-md border-1 border min-h-60 flex flex-col justify-between border-primary" v-show="addRecipient">
                                         <div class="">
                                             <h2 class="text-center text-lg font-medium mb-2">Choose</h2>
                                             <div class="" v-for="(recipient, rIndex) in recipients" :key="rIndex">
@@ -279,7 +279,7 @@ const dataSender = ()=>{
                                 leave-active-class="transition ease-out duration-0 delay-0"
                                 leave-from-class="transform opacity-0 translate-y-0"
                                 leave-to-class="transform opacity-0 -translate-y-3">
-                                <form @submit.prevent="newRecipient" class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-60 flex flex-col justify-between border-primary" v-show="addRecipientNew">
+                                <form @submit.prevent="newRecipient" class="w-full px-4 pt-3 pb-3 my-3 shadow-sm rounded-md border-1 border min-h-60 flex flex-col justify-between border-primary" v-show="addRecipientNew">
                                     <div class="block w-full p-2">
                                         <h1 class="text-center text-lg font-medium mb-4 ">Add New Recipient</h1>
                                         <div class="sm:flex justify-between mb-4">

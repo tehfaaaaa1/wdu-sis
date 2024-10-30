@@ -91,7 +91,6 @@ onMounted(() => {
     });
 
     window.Echo.private(`survey.${props.surveys.id}`).listen('.formClosed', (e) => {
-        console.log(e.survey.status)
         if(e.survey.status ==0){
             formClosed.value = true;
         } else {
