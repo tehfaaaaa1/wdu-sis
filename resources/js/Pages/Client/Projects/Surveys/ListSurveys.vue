@@ -33,7 +33,7 @@ const showCitiesAndRegencies = ref([]);
 const toggleVisibility = (surveyId, provinceIndex) => {
     if (!showCitiesAndRegencies.value[surveyId]) {
         showCitiesAndRegencies.value[surveyId] = [];
-    }
+    }   
     showCitiesAndRegencies.value[surveyId][provinceIndex] = !showCitiesAndRegencies.value[surveyId][provinceIndex];
 };
 
