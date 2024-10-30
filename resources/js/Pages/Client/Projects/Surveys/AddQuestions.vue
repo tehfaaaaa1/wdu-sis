@@ -132,6 +132,10 @@
         };
     }
 
+    function clone(pgindx, question) {
+        pages.value[pgindx].question.push(question)
+    }
+
     // Page functions
     function addNewPage() {
         pages.value.push({ name: form.page_name, question: [] });
@@ -306,9 +310,7 @@
     onMounted(() => {
         // Attach the event listener when the component is mounted
         window.addEventListener('beforeunload', handleBeforeUnload);
-
     });
-
     onBeforeUnmount(() => {
         // Remove the event listener when the component is unmounted
         window.removeEventListener('beforeunload', handleBeforeUnload);
@@ -319,12 +321,16 @@
     const selectedChoice = ref('')
     const selectedNextPage = ref('')
     const flowName = ref(null)
+    const useQuestion = ref(false)
     const flowId = ref(null)
     const floww = (flow) => {
-        selectedPage.value = props.page.find(p => p.id == flow.question_page_id)
-        selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
-        selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
-        selectedNextPage.value = props.page.find(a => a.order == flow.next_page_order)
+        selectedPage.value = props.page.find(p => p.id == flow.current_page_id)
+        if (flow.question_id) {
+            selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
+            selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
+            useQuestion.value = true
+        }
+        selectedNextPage.value = props.page.find(a => a.id == flow.next_page_id)
         flowName.value = flow.flow_name
         flowId.value = flow.id
     }
@@ -337,14 +343,15 @@
     }
     const createFlow = () => {
         form.transform(() => ({
-            page: selectedPage.value,
+            name: flowName.value,
+            current_page: selectedPage.value,
+            next_page: selectedNextPage.value,
+            useQ: useQuestion.value,
             question: selectedQuestion.value,
             choice: selectedChoice.value,
-            next: selectedNextPage.value,
-            name: flowName.value,
-            flow_id: flowId.value ?? null
+            flow_id: flowId.value ?? null,
         })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
-            { onSuccess: showLogicModal.value = false });
+            { onSuccess: showLogicModal.value = false, onSuccess: window.location.reload() });
     }
 
     const hapusFlow = ref(false)
@@ -388,9 +395,9 @@
     function stripTags(str) {
         return str.replace(/(<([^>]+)>)/gi, '');
     }
-    watch(()=> pages.value, ()=>{
-        console.log(pages.value)
-    }, {deep: true})
+    // watch(()=> pages.value, ()=>{
+    //     console.log(pages.value)
+    // }, {deep: true})
     watch(() => textEditor.value, () => {
         if (textEditor.value == true) {
             document.body.style.overflow = 'hidden';
@@ -401,11 +408,11 @@
 
     const updateSize = (pgindex, qindex) => {
         const question = pages.value[pgindex].question[qindex];
-        question.width = Math.max(question.width, 0); 
+        question.width = Math.max(question.width, 0);
         question.height = Math.max(question.height, 0);
     }
 
-    </script>
+</script>
 
 <template>
     <AppLayout title="Tambah Pertanyaan Survey">
@@ -644,16 +651,17 @@
                                         v-html="item.soal" type="text" placeholder="Insert question here"
                                         class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"
                                         contenteditable="false" data-text="Insert question here" />
-                                        
+
                                     <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                         id="file_input" @input="handleImage($event, page_index, index)"
                                         class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" />
 
                                     <!-- Image Preview and Resizing Controls -->
-                                    <div v-if="item.types[0] == 'Image' && pages[page_index].question[index].files[0].files">
+                                    <div
+                                        v-if="item.types[0] == 'Image' && pages[page_index].question[index].files[0].files">
                                         <div class="resizable">
-                                            <img :src="pages[page_index].question[index].files[0].files" 
-                                                :style="{ width: pages[page_index].question[index].width + 'px', height: pages[page_index].question[index].height + 'px' }" 
+                                            <img :src="pages[page_index].question[index].files[0].files"
+                                                :style="{ width: pages[page_index].question[index].width + 'px', height: pages[page_index].question[index].height + 'px' }"
                                                 :alt="item.soal" />
                                         </div>
                                     </div>
@@ -681,6 +689,10 @@
                                                 <div @click="checkboxQuestion(item)"
                                                     class="px-4 py-2 text-sm cursor-pointer">
                                                     Multiple Choice
+                                                </div>
+                                                <div @click="clone(page_index, item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer">
+                                                    Clone
                                                 </div>
                                                 <div class="py-2 text-center border-t border-gray-300">
                                                     <input type="checkbox" v-model="item.required"
@@ -792,6 +804,10 @@
                         </h3>
                         <h3 class="font-bold mb-2 text-red-500">Jika tidak ada pertanyaan berarti anda belum save</h3>
                         <div class="flows-dropdown-label">
+                            Nama Flow
+                            <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
+                        </div>
+                        <div class="flows-dropdown-label">
                             Halaman Awal
                             <select class="flows-dropdown" v-model="selectedPage"
                                 @change="selectedQuestion = null; selectedNextPage = null">
@@ -799,37 +815,42 @@
                                 <option :value="page" v-for="page in props.page">{{ page.page_name }}</option>
                             </select>
                         </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
-                            Pertanyaan
-                            <select class="flows-dropdown" v-model="selectedQuestion">
-                                <option :value="null" disabled>Pertanyaan</option>
-                                <option :value="question" class=""
-                                    v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
-                                    {{ stripTags(question.question_text) }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
-                            Pilihan Jawaban
-                            <select class="flows-dropdown" v-model="selectedChoice">
-                                <option :value="''" disabled>Pilihan Jawaban</option>
-                                <option :value="option" v-for="option in selectedQuestion.choice">{{ option.value }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage">
+                        <div class="flows-dropdown-label " v-if="selectedPage">
                             Halaman Tujuan
                             <select class="flows-dropdown" v-model="selectedNextPage">
-                                <option :value="null" disabled>Tujuan Halaman</option>
+                                <option :value="null" disabled> Halaman Tujuan</option>
                                 <option :value="nextpage"
-                                    v-for="nextpage in props.page.filter(page => page != selectedPage)">{{
+                                    v-for="nextpage in props.page.filter(page => page != selectedPage && page.order >= selectedPage.order)">
+                                    {{
                                         nextpage.page_name }}
                                 </option>
                             </select>
                         </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage">
-                            Nama Flow
-                            <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
+                        <div class="mb-2 inline-flex justify-between w-full">
+                            <PrimaryButton type="button" @click="useQuestion = !useQuestion">Use Question
+                            </PrimaryButton>
+                            <PrimaryButton v-if="selectedQuestion" type="button"
+                                @click="selectedQuestion = null; selectedChoice = null">Reset Question</PrimaryButton>
+                        </div>
+                        <div class="relative" v-show="useQuestion">
+                            <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
+                                Pertanyaan
+                                <select class="flows-dropdown" v-model="selectedQuestion">
+                                    <option :value="null" disabled>Pertanyaan</option>
+                                    <option :value="question" class=""
+                                        v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
+                                        {{ stripTags(question.question_text) }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
+                                Pilihan Jawaban
+                                <select class="flows-dropdown" v-model="selectedChoice">
+                                    <option :value="''" disabled>Pilihan Jawaban</option>
+                                    <option :value="option" v-for="option in selectedQuestion.choice">{{ option.value }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                         <div class="flows-dropdown-label" :class="{ '!justify-center': hapusFlow == true }"
                             v-if="selectedPage">

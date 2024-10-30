@@ -11,18 +11,20 @@ class Flow extends Model
     use HasFactory;
     protected $fillable =[
         'flow_name',
-        'question_page_id',
+        'current_page_id',
+        'next_page_id',
         'question_id',
         'question_choice_id',
-        'next_page_order',
-        'survey_id',
-        'current_page_order'
+        'survey_id'
     ];  
     public function question(): BelongsTo{
         return $this->belongsTo(Question::class);
     }
-    public function pages(): BelongsTo{
-        return $this->belongsTo(QuestionPage::class, 'question_page_id');
+    public function currentpages(): BelongsTo{
+        return $this->belongsTo(QuestionPage::class, 'current_page_id');
+    }
+    public function nextpages(): BelongsTo{
+        return $this->belongsTo(QuestionPage::class, 'next_page_id');
     }
     public function choice() : BelongsTo {
         return $this->belongsTo(QuestionChoice::class, 'question_choice_id');

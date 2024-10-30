@@ -29,6 +29,7 @@ const storageKey = `survey_id_${props.surveys.id}`;
 const form = useForm({
     page: props.pagee.map((page) => ({
         page_id: page.id,
+        page_name: page.page_name,
         flow: page.flow ?? null,
         order: page.order,
         back: null,
@@ -43,26 +44,27 @@ const form = useForm({
     client_slug: client['slug'],
 });
 
-const flow = computed(() => form.page[currentIndex.value].flow.find(p => p.question_page_id == form.page[currentIndex.value].page_id || p.next_page_order == form.page[currentIndex.value].order) ?? null)
+const flow = computed(() => 
+form.page[currentIndex.value].flow.find(p => p.current_page_id == form.page[currentIndex.value].page_id ?? null))
 
-let backOrder = null
-let logic = null
 function nextPage() {
-    if (flow.value && form.page[currentIndex.value].answer.some(a => a.radios == flow.value.question_choice_id)) {
-        backOrder = flow.value.current_page_order
-        currentIndex.value += flow.value.next_page_order - (1 + currentIndex.value);
-        form.page[currentIndex.value].back = backOrder;
-        logic = currentIndex.value
-    } else {
-        if (backOrder && logic != currentIndex.value) {
-            form.page[logic].back = null
+    if(flow.value){
+        let nextpage = form.page.find(p=> p.page_id == flow.value.next_page_id)
+        if(flow.value.question_id && form.page[currentIndex.value].answer.some(a => a.radios == flow.value.question_choice_id)){
+            nextpage.back = currentIndex.value
+            currentIndex.value = nextpage.order -1
+            console.log(nextpage)
+        } else{ 
+            nextpage.back = null
+            currentIndex.value ++;
         }
-        currentIndex.value++;
-    }
+    } else{
+        currentIndex.value ++;
+    }      
 }
 function prevPage() {
-    if (form.page[currentIndex.value].back) {
-        currentIndex.value = form.page[currentIndex.value].back - 1
+    if (form.page[currentIndex.value].back != null) {
+        currentIndex.value = form.page[currentIndex.value].back
     } else {
         currentIndex.value--;
     }
@@ -189,7 +191,6 @@ const showhide = (pgindex, qindex, value) => {
         }
     });
 };
-
 </script>
 
 <template>

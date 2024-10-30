@@ -123,9 +123,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::get('/{id}/list-response/export', [ResponseController::class, 'export'])->name('export-response');
                 // question
                 Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys')->middleware('admin');
-                Route::post('/manual-save-question/{id}',[QuestionController::class, 'manualSave'])->name('manual-save-question')->middleware('admin');
-                Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store')->middleware('admin');
-                Route::post('create-flow/{id}',[QuestionController::class, 'flow'])->name('save-flow')->middleware('admin');
+                Route::post('/manual-save-question/{Survey:id}',[QuestionController::class, 'manualSave'])->name('manual-save-question')->middleware('admin');
+                Route::post('create-flow/{Survey:id}',[QuestionController::class, 'flow'])->name('save-flow')->middleware('admin');
                 Route::get('{Survey:id}/delete-flow/{Flow:id}',[QuestionController::class, 'deleteFlow'])->name('delete-flow')->middleware('admin');
                 
                 //Resource
