@@ -1,407 +1,416 @@
-<script setup>
-import { useForm } from '@inertiajs/vue3';
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import { VueDraggable } from 'vue-draggable-plus';
-import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
-import DialogModal from '@/Components/DialogModal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextEditor from '@/Components/TextEditor.vue';
-import LeftSticky from '@/Components/LeftSticky.vue';
+    <script setup>
+    import { useForm } from '@inertiajs/vue3';
+    import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+    import AppLayout from '@/Layouts/AppLayout.vue';
+    import Dropdown from '@/Components/Dropdown.vue';
+    import { VueDraggable } from 'vue-draggable-plus';
+    import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
+    import DialogModal from '@/Components/DialogModal.vue';
+    import SecondaryButton from '@/Components/SecondaryButton.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import TextEditor from '@/Components/TextEditor.vue';
+    import LeftSticky from '@/Components/LeftSticky.vue';
 
-const props = defineProps({
-    surveys: Object,
-    projects: Object,
-    clients: Object,
-    page: Object,
-    flows: Object,
-    surveyall: Object,
-    logictype: Object
-})
-const project = props.projects[0];
-const client = props.clients[0];
-const MAX_RADIO_CHOICES = 5;
-let question;
-const showAddPage = ref(false)
-const showDeleteModal = ref(false);
-const showLogicModal = ref(false);
-const openDropdown = ref(false);
-const QuestionOrFlow = ref('question') // 'question' or 'flow'
-// Note: Customize the functions below if needed
-const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
-    page.question.sort((a, b) => a.order - b.order)
-    question = page.question.map((item) => {
-        let tipe = []
-        let text = []
+    const props = defineProps({
+        surveys: Object,
+        projects: Object,
+        clients: Object,
+        page: Object,
+        flows: Object,
+        surveyall: Object,
+        logictype: Object
+    })
+    const project = props.projects[0];
+    const client = props.clients[0];
+    const MAX_RADIO_CHOICES = 5;
+    let question;
+    const showAddPage = ref(false)
+    const showDeleteModal = ref(false);
+    const showLogicModal = ref(false);
+    const openDropdown = ref(false);
+    const QuestionOrFlow = ref('question') // 'question' or 'flow'
+    // Note: Customize the functions below if needed
+    const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
+        page.question.sort((a, b) => a.order - b.order)
+        question = page.question.map((item) => {
+            let tipe = []
+            let text = []
+            let choice = []
+            let files = []
+            let lastCindex = ''
+            switch (item.question_type_id) {
+                case 1:
+                    tipe = ['Text']
+                    text = [{ isi: '' }]
+                    break;
+                case 2:
+                    tipe = ['Radio']
+                    choice = item.choice.map((isi) => {
+                        return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                    })
+                    lastCindex = choice.length - 1
+                    break;
+                case 3:
+                    tipe = ['Checkbox']
+                    choice = item.choice.map((isi) => {
+                        return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                    })
+                    lastCindex = choice.length - 1
+                    break;
+                case 4:
+                    tipe = ['Image']
+                    files = [{ files: item.question_text }]
+                    break;
+                case 5:
+                    tipe = ['Paragraph']
+                    break;
+                default:
+                    break;
+            }
+            return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex, logic_type: item.question_logic_type_id ?? 1, logic_choice: item.question_choice_id ?? null, width: 200, height: 150 }
+        })
+        return { id: page.id, order: page.order, name: page.page_name, question: question }
+    }))
+
+    if (pages.value.length == 0) {
+        pages.value.push({ name: 'title', question: [] })
+    }
+
+    const questionsType = ref([
+        { types: 'Text', name: 'Text', texts: '' },
+        { types: 'Radio', name: 'Single Choice', choices: '' },
+        { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
+        { types: 'Radio', name: 'Yes / No', choices: '' },
+    ]);
+
+    const descType = ref([
+        { types: 'Image', name: 'Image', files: '' },
+        { types: 'Paragraph', name: 'Paragraph' },
+    ])
+
+    function cloneQuestion(element) {
+        let texts = []
         let choice = []
-        let files = []
         let lastCindex = ''
-        switch (item.question_type_id) {
-            case 1:
-                tipe = ['Text']
-                text = [{ isi: '' }]
+        switch (element.name) {
+            case 'Text':
+                texts = [{ isi: '' }]
                 break;
-            case 2:
-                tipe = ['Radio']
-                choice = item.choice.map((isi) => {
-                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-                })
+            case 'Single Choice':
+                choice = [{ pilih: '' }]
                 lastCindex = choice.length - 1
                 break;
-            case 3:
-                tipe = ['Checkbox']
-                choice = item.choice.map((isi) => {
-                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-                })
+            case 'Yes / No':
+                choice = [{ pilih: 'Yes' }, { pilih: 'No' }]
                 lastCindex = choice.length - 1
                 break;
-            case 4:
-                tipe = ['Image']
-                files = [{ files: item.question_text }]
+            case 'Multiple Choice':
+                choice = [{ pilih: '' }]
+                lastCindex = choice.length - 1
                 break;
-            case 5:
-                tipe = ['Paragraph']
-                break;
+
             default:
                 break;
         }
-        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex, logic_type: item.question_logic_type_id ?? 1, logic_choice: item.question_choice_id ?? null }
-    })
-    return { id: page.id, order: page.order, name: page.page_name, question: question }
-}))
-
-if (pages.value.length == 0) {
-    pages.value.push({ name: 'title', question: [] })
-}
-
-const questionsType = ref([
-    { types: 'Text', name: 'Text', texts: '' },
-    { types: 'Radio', name: 'Single Choice', choices: '' },
-    { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
-    { types: 'Radio', name: 'Yes / No', choices: '' },
-]);
-
-const descType = ref([
-    { types: 'Image', name: 'Image', files: '' },
-    { types: 'Paragraph', name: 'Paragraph' },
-])
-
-function cloneQuestion(element) {
-    let texts = []
-    let choice = []
-    let lastCindex = ''
-    switch (element.name) {
-        case 'Text':
-            texts = [{ isi: '' }]
-            break;
-        case 'Single Choice':
-            choice = [{ pilih: '' }]
-            lastCindex = choice.length - 1
-            break;
-        case 'Yes / No':
-            choice = [{ pilih: 'Yes' }, { pilih: 'No' }]
-            lastCindex = choice.length - 1
-            break;
-        case 'Multiple Choice':
-            choice = [{ pilih: '' }]
-            lastCindex = choice.length - 1
-            break;
-
-        default:
-            break;
+        return {
+            soal: '', texts: texts, choices: choice, types: [element.types], required: 1, lastChoiceIndex: lastCindex, logic_type: 1, logic_choice: null
+        };
     }
-    return {
-        soal: '', texts: texts, choices: choice, types: [element.types], required: 1, lastChoiceIndex: lastCindex, logic_type: 1, logic_choice: null
-    };
-}
 
-function cloneDesc(element) {
-    let file = []
-    switch (element.name) {
-        case 'Image':
-            file = [{ files: '' }]
-            break;
+    function cloneDesc(element) {
+        let file = []
+        switch (element.name) {
+            case 'Image':
+                file = [{ files: '' }]
+                break;
 
-        default:
-            break;
-    }
-    return {
-        soal: '', types: [element.types], files: file
-    };
-}
-
-// Page functions
-function addNewPage() {
-    pages.value.push({ name: form.page_name, question: [] });
-    form.reset('page_name');
-    showAddPage.value = false;
-}
-const deletePageId = ref(null);
-const hapus = (index) => {
-    deletePageId.value = index;
-    showDeleteModal.value = true;
-};
-const confirmDeletion = (page) => {
-    page.splice(deletePageId.value, 1);
-    showDeleteModal.value = false;
-    openDropdown.value = false;
-    p(pages)
-};
-const p = (page) => {
-    if (page.value.length == 0) {
-        pages.value.push({ name: 'title', question: [] })
-    }
-}
-const cancelDeletion = () => (showDeleteModal.value = false);
-
-// Log Update
-// const logUpdate = (newQuestions) => {
-//     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
-// };
-
-// QUESTIONS OVER HERE
-// Question 
-function textQuestion(question) {
-    if (question.types.length > 0 && !question.types.includes('Text')) {
-        // Clear previous type and data if it isn't Text
-        clearQuestionType(question);
-    }
-    if (!question.types.includes('Text')) {
-        const text = { isi: '' };
-        question.texts.push(text);
-        question.types.push('Text');
-    }
-}
-function clone(pgindx, question){
-    pages.value[pgindx].question.push(question)
-}
-function radioQuestion(question) {
-    if (question.types.length > 0 && !question.types.includes('Radio')) {
-        // Clear previous type and data if it isn't Text
-        clearQuestionType(question);
-    }
-    if (!question.types.includes('Radio')) {
-        if (!question.choices.length) {
-            const checkbox = { pilih: '' };
-            question.choices.push(checkbox);
+            default:
+                break;
         }
-        question.types.push('Radio'); // Track the type
+        return {
+            soal: '', types: [element.types], files: file
+        };
     }
-}
-function checkboxQuestion(question) {
-    if (question.types.length > 0 && !question.types.includes('Checkbox')) {
-        // Clear previous type and data if it isn't Text
-        clearQuestionType(question);
+
+    function clone(pgindx, question) {
+        pages.value[pgindx].question.push(question)
     }
-    if (!question.types.includes('Checkbox')) {
-        if (!question.choices.length) {
-            const checkbox = { pilih: '' };
-            question.choices.push(checkbox);
+
+    // Page functions
+    function addNewPage() {
+        pages.value.push({ name: form.page_name, question: [] });
+        form.reset('page_name');
+        showAddPage.value = false;
+    }
+    const deletePageId = ref(null);
+    const hapus = (index) => {
+        deletePageId.value = index;
+        showDeleteModal.value = true;
+    };
+    const confirmDeletion = (page) => {
+        page.splice(deletePageId.value, 1);
+        showDeleteModal.value = false;
+        openDropdown.value = false;
+        p(pages)
+    };
+    const p = (page) => {
+        if (page.value.length == 0) {
+            pages.value.push({ name: 'title', question: [] })
         }
-        question.types.push('Checkbox'); // Track the type
-
-        question.lastChoiceIndex = question.choices.length - 1; // update radio index
     }
-}
+    const cancelDeletion = () => (showDeleteModal.value = false);
 
-// add
-function AddRadioOption(question) {
-    const radio = { pilih: '' };
-    question.choices.push(radio);
-    // question.types.push('Radio'); // Track the type
+    // Log Update
+    // const logUpdate = (newQuestions) => {
+    //     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
+    // };
 
-    question.lastChoiceIndex = question.choices.length - 1;
-}
-function AddCheckboxOption(question) {
-    const checkbox = { pilih: '' };
-    question.choices.push(checkbox);
-    // question.types.push('Checkbox'); // Track the type
-
-    question.lastChoiceIndex = question.choices.length - 1;
-}
-
-// delete
-function deleteRadio(question, index) {
-    if (question.lastChoiceIndex >= 1) {
-        question.choices.splice(index, 1)
-        question.lastChoiceIndex = question.choices.length - 1; // update radio index
+    // QUESTIONS OVER HERE
+    // Question 
+    function textQuestion(question) {
+        if (question.types.length > 0 && !question.types.includes('Text')) {
+            // Clear previous type and data if it isn't Text
+            clearQuestionType(question);
+        }
+        if (!question.types.includes('Text')) {
+            const text = { isi: '' };
+            question.texts.push(text);
+            question.types.push('Text');
+        }
     }
-}
-function deleteCheckbox(question, index) {
-    if (question.lastChoiceIndex >= 1) {
-        question.choices.splice(index, 1)
-        question.lastChoiceIndex = question.choices.length - 1; // update radio index
+    function radioQuestion(question) {
+        if (question.types.length > 0 && !question.types.includes('Radio')) {
+            // Clear previous type and data if it isn't Text
+            clearQuestionType(question);
+        }
+        if (!question.types.includes('Radio')) {
+            if (!question.choices.length) {
+                const checkbox = { pilih: '' };
+                question.choices.push(checkbox);
+            }
+            question.types.push('Radio'); // Track the type
+        }
     }
-}
+    function checkboxQuestion(question) {
+        if (question.types.length > 0 && !question.types.includes('Checkbox')) {
+            // Clear previous type and data if it isn't Text
+            clearQuestionType(question);
+        }
+        if (!question.types.includes('Checkbox')) {
+            if (!question.choices.length) {
+                const checkbox = { pilih: '' };
+                question.choices.push(checkbox);
+            }
+            question.types.push('Checkbox'); // Track the type
 
-function clearQuestionType(question) {
-    // Clear the existing type and its associated data
-    if (question.types.includes('Text')) {
-        question.texts = [];  // Clear text data
-    } else if (question.types.includes('Radio') || question.types.includes('Checkbox')) {
-        question.choices = question.choices;  // Clear choice data
+            question.lastChoiceIndex = question.choices.length - 1; // update radio index
+        }
     }
 
-    // Clear the type
-    question.types = [];
-}
+    // add
+    function AddRadioOption(question) {
+        const radio = { pilih: '' };
+        question.choices.push(radio);
+        // question.types.push('Radio'); // Track the type
 
-function isTypeAdded(question, type) {
-    return question.types.includes(type);
-}
+        question.lastChoiceIndex = question.choices.length - 1;
+    }
+    function AddCheckboxOption(question) {
+        const checkbox = { pilih: '' };
+        question.choices.push(checkbox);
+        // question.types.push('Checkbox'); // Track the type
 
-function remove(page, index) {
-    page.question.splice(index, 1);
-}
+        question.lastChoiceIndex = question.choices.length - 1;
+    }
 
-const form = useForm({
-    page_name: '',
-    project_slug: project['slug'],
-    client_slug: client['slug'],
-});
+    // delete
+    function deleteRadio(question, index) {
+        if (question.lastChoiceIndex >= 1) {
+            question.choices.splice(index, 1)
+            question.lastChoiceIndex = question.choices.length - 1; // update radio index
+        }
+    }
+    function deleteCheckbox(question, index) {
+        if (question.lastChoiceIndex >= 1) {
+            question.choices.splice(index, 1)
+            question.lastChoiceIndex = question.choices.length - 1; // update radio index
+        }
+    }
 
-// Save Mechanic
-const savingStatus = ref('')
-const handleBeforeUnload = (event) => {
-    event.preventDefault();
-    event.returnValue = ''; // This is required for the alert to be shown in some browsers
-    return '';
-};
+    function clearQuestionType(question) {
+        // Clear the existing type and its associated data
+        if (question.types.includes('Text')) {
+            question.texts = [];  // Clear text data
+        } else if (question.types.includes('Radio') || question.types.includes('Checkbox')) {
+            question.choices = question.choices;  // Clear choice data
+        }
 
-const submitForm = () => {
-    savingStatus.value = 'saving';
-    form.transform(() => ({
-        data: pages.value,
-        survey: props.surveys.id,
+        // Clear the type
+        question.types = [];
+    }
+
+    function isTypeAdded(question, type) {
+        return question.types.includes(type);
+    }
+
+    function remove(page, index) {
+        page.question.splice(index, 1);
+    }
+
+    const form = useForm({
+        page_name: '',
         project_slug: project['slug'],
         client_slug: client['slug'],
-    })).post(route('manual-save-question', [form.client_slug, form.project_slug, props.surveys.id]), {
-        preserveState: true,
-        preserveScroll: true,
-        onSuccess: () => {
-            // Automatically clear the status after 3 seconds
-            setTimeout(() => {
-                savingStatus.value = '';
-            }, 3000); // 3000ms = 3 seconds
-            console.log('success')
-            savingStatus.value = 'saved';
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        },
-        onError: (error) => {
-            setTimeout(() => {
-                savingStatus.value = '';
-            }, 3000); // 3000ms = 3 seconds
-            console.error('Error saving:', error);
-            savingStatus.value = 'error';
-        },
     });
 
-};
-const status = () => {
-    form.transform(() => ({
-        surveyId: props.surveys.id,
-        surveyStatus: props.surveys.status
-    })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
-}
+    // Save Mechanic
+    const savingStatus = ref('')
+    const handleBeforeUnload = (event) => {
+        event.preventDefault();
+        event.returnValue = ''; // This is required for the alert to be shown in some browsers
+        return '';
+    };
 
-onMounted(() => {
-    // Attach the event listener when the component is mounted
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    const submitForm = () => {
+        savingStatus.value = 'saving';
+        form.transform(() => ({
+            data: pages.value,
+            survey: props.surveys.id,
+            project_slug: project['slug'],
+            client_slug: client['slug'],
+        })).post(route('manual-save-question', [form.client_slug, form.project_slug, props.surveys.id]), {
+            preserveState: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                // Automatically clear the status after 3 seconds
+                setTimeout(() => {
+                    savingStatus.value = '';
+                }, 3000); // 3000ms = 3 seconds
+                console.log('success')
+                savingStatus.value = 'saved';
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+            },
+            onError: (error) => {
+                setTimeout(() => {
+                    savingStatus.value = '';
+                }, 3000); // 3000ms = 3 seconds
+                console.error('Error saving:', error);
+                savingStatus.value = 'error';
+            },
+        });
 
-});
+    };
+    const status = () => {
+        form.transform(() => ({
+            surveyId: props.surveys.id,
+            surveyStatus: props.surveys.status
+        })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
+    }
 
-onBeforeUnmount(() => {
-    // Remove the event listener when the component is unmounted
-    window.removeEventListener('beforeunload', handleBeforeUnload);
-});
-// PAGE FLOW
-const selectedPage = ref('')
-const selectedQuestion = ref('')
-const selectedChoice = ref('')
-const selectedNextPage = ref('')
-const flowName = ref(null)
-const flowId = ref(null)
-const floww = (flow) => {
-    selectedPage.value = props.page.find(p => p.id == flow.question_page_id)
-    selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
-    selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
-    selectedNextPage.value = props.page.find(a => a.order == flow.next_page_order)
-    flowName.value = flow.flow_name
-    flowId.value = flow.id
-}
-const newFlow = () => {
-    selectedPage.value = ''
-    selectedQuestion.value = ''
-    selectedChoice.value = ''
-    selectedNextPage.value = ''
-    flowName.value = null
-}
-const createFlow = () => {
-    form.transform(() => ({
-        page: selectedPage.value,
-        question: selectedQuestion.value,
-        choice: selectedChoice.value,
-        next: selectedNextPage.value,
-        name: flowName.value,
-        flow_id: flowId.value ?? null
-    })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
-        { onSuccess: showLogicModal.value = false });
-}
-
-const hapusFlow = ref(false)
-const confirmDeletionFlow = (flow) => {
-    form.get(route('delete-flow', [form.client_slug, form.project_slug, props.surveys.id, flow]), { onSuccess: hapusFlow.value = false });
-}
-
-// PREVIEW IMAGE
-const handleImage = (event, pgindex, qindex) => {
-    pages.value[pgindex].question[qindex].soal = event.target.files[0];
-    pages.value[pgindex].question[qindex].files[0].files = event.target.files[0];
-    var input = event.target;
-    if (input.files) {
-        if (pages.value[pgindex].question[qindex].files[0].files.size / 1024 > 2048) {
-            alert('EXCEED IMAGE SIZE LIMIT');
-            exit;
+    onMounted(() => {
+        // Attach the event listener when the component is mounted
+        window.addEventListener('beforeunload', handleBeforeUnload);
+    });
+    onBeforeUnmount(() => {
+        // Remove the event listener when the component is unmounted
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+    });
+    // PAGE FLOW
+    const selectedPage = ref('')
+    const selectedQuestion = ref('')
+    const selectedChoice = ref('')
+    const selectedNextPage = ref('')
+    const flowName = ref(null)
+    const useQuestion = ref(false)
+    const flowId = ref(null)
+    const floww = (flow) => {
+        selectedPage.value = props.page.find(p => p.id == flow.current_page_id)
+        if (flow.question_id) {
+            selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
+            selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
+            useQuestion.value = true
         }
-        var reader = new FileReader();
-        reader.onload = (e) => {
-            pages.value[pgindex].question[qindex].files[0].files = e.target.result;
+        selectedNextPage.value = props.page.find(a => a.id == flow.next_page_id)
+        flowName.value = flow.flow_name
+        flowId.value = flow.id
+    }
+    const newFlow = () => {
+        selectedPage.value = ''
+        selectedQuestion.value = ''
+        selectedChoice.value = ''
+        selectedNextPage.value = ''
+        flowName.value = null
+    }
+    const createFlow = () => {
+        form.transform(() => ({
+            name: flowName.value,
+            current_page: selectedPage.value,
+            next_page: selectedNextPage.value,
+            useQ: useQuestion.value,
+            question: selectedQuestion.value,
+            choice: selectedChoice.value,
+            flow_id: flowId.value ?? null,
+        })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
+            { onSuccess: showLogicModal.value = false, onSuccess: window.location.reload() });
+    }
+
+    const hapusFlow = ref(false)
+    const confirmDeletionFlow = (flow) => {
+        form.get(route('delete-flow', [form.client_slug, form.project_slug, props.surveys.id, flow]), { onSuccess: hapusFlow.value = false });
+    }
+
+    // PREVIEW IMAGE
+    const handleImage = (event, pgindex, qindex) => {
+        pages.value[pgindex].question[qindex].soal = event.target.files[0];
+        pages.value[pgindex].question[qindex].files[0].files = event.target.files[0];
+        var input = event.target;
+        if (input.files) {
+            if (pages.value[pgindex].question[qindex].files[0].files.size / 1024 > 2048) {
+                alert('EXCEED IMAGE SIZE LIMIT');
+                exit;
+            }
+            var reader = new FileReader();
+            reader.onload = (e) => {
+                pages.value[pgindex].question[qindex].files[0].files = e.target.result;
+            }
+            reader.readAsDataURL(input.files[0])
         }
-        reader.readAsDataURL(input.files[0])
     }
-}
 
-// # TEXT EDITOR
-const page_index = ref(null);
-const qIndex = ref(null);
-const textEditor = ref(false);
-const questionForlogic = ref(null)
-const openTextEditor = (pgindex, q_index) => {
-    textEditor.value = !textEditor.value
-    page_index.value = pgindex
-    qIndex.value = q_index
-    if (pages.value[pgindex].question[q_index].logic_choice != null) {
-        questionForlogic.value = pages.value[pgindex].question.find(q => q.choices.some(c => c.cId == pages.value[pgindex].question[q_index].logic_choice))
-    } else {
-        questionForlogic.value = null
+    // # TEXT EDITOR
+    const page_index = ref(null);
+    const qIndex = ref(null);
+    const textEditor = ref(false);
+    const questionForlogic = ref(null)
+    const openTextEditor = (pgindex, q_index) => {
+        textEditor.value = !textEditor.value
+        page_index.value = pgindex
+        qIndex.value = q_index
+        if (pages.value[pgindex].question[q_index].logic_choice != null) {
+            questionForlogic.value = pages.value[pgindex].question.find(q => q.choices.some(c => c.cId == pages.value[pgindex].question[q_index].logic_choice))
+        } else {
+            questionForlogic.value = null
+        }
     }
-}
-function stripTags(str) {
-    return str.replace(/(<([^>]+)>)/gi, '');
-}
-// watch(()=> pages.value, ()=>{
-//     console.log(pages.value)
-// }, {deep: true})
-watch(() => textEditor.value, () => {
-    if (textEditor.value == true) {
-        document.body.style.overflow = 'hidden';
-    } else {
-        document.body.style.overflow = null;
+    function stripTags(str) {
+        return str.replace(/(<([^>]+)>)/gi, '');
     }
-})
+    // watch(()=> pages.value, ()=>{
+    //     console.log(pages.value)
+    // }, {deep: true})
+    watch(() => textEditor.value, () => {
+        if (textEditor.value == true) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = null;
+        }
+    })
 
+    const updateSize = (pgindex, qindex) => {
+        const question = pages.value[pgindex].question[qindex];
+        question.width = Math.max(question.width, 0);
+        question.height = Math.max(question.height, 0);
+    }
 
 </script>
 
@@ -642,9 +651,20 @@ watch(() => textEditor.value, () => {
                                         v-html="item.soal" type="text" placeholder="Insert question here"
                                         class="output text-sm w-full mx-1 rounded-md cursor-pointer min-h-[2.3rem]"
                                         contenteditable="false" data-text="Insert question here" />
+
                                     <input v-if="item.types[0] == 'Image'" type="file" accept=".png, .jpg, .jpeg"
                                         id="file_input" @input="handleImage($event, page_index, index)"
-                                        class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white">
+                                        class="block w-full text-sm text-gray-900 border border-gray-300 cursor-pointer bg-gray-50 rounded-lg focus:outline-none file:py-2 file:px-3 file:mr-2.5 file:rounded-s-lg file:border-0 file:bg-gray-800 file:font-medium file:text-white" />
+
+                                    <!-- Image Preview and Resizing Controls -->
+                                    <div
+                                        v-if="item.types[0] == 'Image' && pages[page_index].question[index].files[0].files">
+                                        <div class="resizable">
+                                            <img :src="pages[page_index].question[index].files[0].files"
+                                                :style="{ width: pages[page_index].question[index].width + 'px', height: pages[page_index].question[index].height + 'px' }"
+                                                :alt="item.soal" />
+                                        </div>
+                                    </div>
 
                                     <!-- Question types -->
                                     <Dropdown align="right" width="48">
@@ -763,12 +783,6 @@ watch(() => textEditor.value, () => {
                                     </div>
                                 </div>
 
-                                <!-- Image -->
-                                <div class="px-5 flex justify-center" v-for="(image, index) in item.files" :key="index">
-                                    <img v-if="image.files != item.soal" :src="image.files" alt="Preview">
-                                    <img v-else :src="'/img/' + item.soal" alt="Preview Image">
-
-                                </div>
                             </div>
                         </VueDraggable>
                         <div class="border border-gray-500 my-5"
@@ -790,6 +804,10 @@ watch(() => textEditor.value, () => {
                         </h3>
                         <h3 class="font-bold mb-2 text-red-500">Jika tidak ada pertanyaan berarti anda belum save</h3>
                         <div class="flows-dropdown-label">
+                            Nama Flow
+                            <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
+                        </div>
+                        <div class="flows-dropdown-label">
                             Halaman Awal
                             <select class="flows-dropdown" v-model="selectedPage"
                                 @change="selectedQuestion = null; selectedNextPage = null">
@@ -797,37 +815,42 @@ watch(() => textEditor.value, () => {
                                 <option :value="page" v-for="page in props.page">{{ page.page_name }}</option>
                             </select>
                         </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
-                            Pertanyaan
-                            <select class="flows-dropdown" v-model="selectedQuestion">
-                                <option :value="null" disabled>Pertanyaan</option>
-                                <option :value="question" class=""
-                                    v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
-                                    {{ stripTags(question.question_text) }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
-                            Pilihan Jawaban
-                            <select class="flows-dropdown" v-model="selectedChoice">
-                                <option :value="''" disabled>Pilihan Jawaban</option>
-                                <option :value="option" v-for="option in selectedQuestion.choice">{{ option.value }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage">
+                        <div class="flows-dropdown-label " v-if="selectedPage">
                             Halaman Tujuan
                             <select class="flows-dropdown" v-model="selectedNextPage">
-                                <option :value="null" disabled>Tujuan Halaman</option>
+                                <option :value="null" disabled> Halaman Tujuan</option>
                                 <option :value="nextpage"
-                                    v-for="nextpage in props.page.filter(page => page != selectedPage)">{{
+                                    v-for="nextpage in props.page.filter(page => page != selectedPage && page.order >= selectedPage.order)">
+                                    {{
                                         nextpage.page_name }}
                                 </option>
                             </select>
                         </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage">
-                            Nama Flow
-                            <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
+                        <div class="mb-2 inline-flex justify-between w-full">
+                            <PrimaryButton type="button" @click="useQuestion = !useQuestion">Use Question
+                            </PrimaryButton>
+                            <PrimaryButton v-if="selectedQuestion" type="button"
+                                @click="selectedQuestion = null; selectedChoice = null">Reset Question</PrimaryButton>
+                        </div>
+                        <div class="relative" v-show="useQuestion">
+                            <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
+                                Pertanyaan
+                                <select class="flows-dropdown" v-model="selectedQuestion">
+                                    <option :value="null" disabled>Pertanyaan</option>
+                                    <option :value="question" class=""
+                                        v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
+                                        {{ stripTags(question.question_text) }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
+                                Pilihan Jawaban
+                                <select class="flows-dropdown" v-model="selectedChoice">
+                                    <option :value="''" disabled>Pilihan Jawaban</option>
+                                    <option :value="option" v-for="option in selectedQuestion.choice">{{ option.value }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                         <div class="flows-dropdown-label" :class="{ '!justify-center': hapusFlow == true }"
                             v-if="selectedPage">
@@ -912,6 +935,12 @@ watch(() => textEditor.value, () => {
     justify-content: space-between;
     margin-bottom: 0.75rem;
     font-size: 1rem;
+}
+
+.resize-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 </style>
 

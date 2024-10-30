@@ -9,7 +9,8 @@ const props = defineProps({
     surveys: Object,
     projects: Object,
     clients: Object,
-    user: Object
+    user: Object,
+    provinces: Array,
 });
 
 const project = props.projects[0]
@@ -19,9 +20,16 @@ const form = useForm({
     alamat: '',
     no_hp: '',
     instansi: '',
+    province_id: '',
     project_slug: project['slug'],
     client_slug: client['slug'],
 });
+
+const provinces = ref([]);
+
+axios.get(route('provinces.index')).then(response => {
+    provinces.value = response.data;
+})
 
 const submit = () => {
     form.post(route('add_bio', [form.client_slug, form.project_slug, props.surveys.id, props.user.id]));
@@ -56,6 +64,11 @@ const submit = () => {
                         </div>
 
                         <div class="mt-4 relative px-5">
+                            <label for="province">Pilih Provinsi</label>
+
+                        </div>
+                        
+                        <div class="mt-4 relative px-5">
                             <label for="">Nomor Handphone</label>
                             <TextInput v-model="form.no_hp" type="number" placeholder="No Hp"
                                 class="block rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
@@ -64,7 +77,7 @@ const submit = () => {
                         </div>
 
                         <div class="mt-4 relative px-5">
-                            <label for="">Nama Instansi</label>
+                            <label for="">Instansi</label>
                             <TextInput v-model="form.instansi" type="text" placeholder="Instansi"
                                 class="block rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-primary focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                 required />
