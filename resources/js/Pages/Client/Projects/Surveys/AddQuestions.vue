@@ -655,17 +655,6 @@ const updateSize = (pgindex, qindex) => {
                                             <img :src="pages[page_index].question[index].files[0].files" 
                                                 :style="{ width: pages[page_index].question[index].width + 'px', height: pages[page_index].question[index].height + 'px' }" 
                                                 :alt="item.soal" />
-                                            
-                                            <div class="resize-controls">
-                                                <label>
-                                                    Width:
-                                                    <input type="number" v-model="pages[page_index].question[index].width" @input="updateSize(page_index, index)" />
-                                                </label>
-                                                <label>
-                                                    Height:
-                                                    <input type="number" v-model="pages[page_index].question[index].height" @input="updateSize(page_index, index)" />
-                                                </label>
-                                            </div>
                                         </div>
                                     </div>
 
