@@ -319,12 +319,16 @@ const selectedQuestion = ref('')
 const selectedChoice = ref('')
 const selectedNextPage = ref('')
 const flowName = ref(null)
+const useQuestion = ref(false)
 const flowId = ref(null)
 const floww = (flow) => {
-    selectedPage.value = props.page.find(p => p.id == flow.question_page_id)
-    selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
-    selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
-    selectedNextPage.value = props.page.find(a => a.order == flow.next_page_order)
+    selectedPage.value = props.page.find(p => p.id == flow.current_page_id)
+    if(flow.question_id){
+        selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
+        selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
+        useQuestion.value = true
+    }
+    selectedNextPage.value = props.page.find(a => a.id == flow.next_page_id)
     flowName.value = flow.flow_name
     flowId.value = flow.id
 }
@@ -337,14 +341,15 @@ const newFlow = () => {
 }
 const createFlow = () => {
     form.transform(() => ({
-        page: selectedPage.value,
+        name: flowName.value,
+        current_page: selectedPage.value,
+        next_page: selectedNextPage.value,
+        useQ: useQuestion.value,
         question: selectedQuestion.value,
         choice: selectedChoice.value,
-        next: selectedNextPage.value,
-        name: flowName.value,
-        flow_id: flowId.value ?? null
+        flow_id: flowId.value ?? null,
     })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
-        { onSuccess: showLogicModal.value = false });
+        { onSuccess: showLogicModal.value = false, onSuccess:window.location.reload()});
 }
 
 const hapusFlow = ref(false)
@@ -783,6 +788,10 @@ watch(() => textEditor.value, () => {
                         </h3>
                         <h3 class="font-bold mb-2 text-red-500">Jika tidak ada pertanyaan berarti anda belum save</h3>
                         <div class="flows-dropdown-label">
+                            Nama Flow
+                            <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
+                        </div>
+                        <div class="flows-dropdown-label">
                             Halaman Awal
                             <select class="flows-dropdown" v-model="selectedPage"
                                 @change="selectedQuestion = null; selectedNextPage = null">
@@ -790,37 +799,39 @@ watch(() => textEditor.value, () => {
                                 <option :value="page" v-for="page in props.page">{{ page.page_name }}</option>
                             </select>
                         </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
-                            Pertanyaan
-                            <select class="flows-dropdown" v-model="selectedQuestion">
-                                <option :value="null" disabled>Pertanyaan</option>
-                                <option :value="question" class=""
-                                    v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
-                                    {{ stripTags(question.question_text) }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
-                            Pilihan Jawaban
-                            <select class="flows-dropdown" v-model="selectedChoice">
-                                <option :value="''" disabled>Pilihan Jawaban</option>
-                                <option :value="option" v-for="option in selectedQuestion.choice">{{ option.value }}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage">
+                        <div class="flows-dropdown-label " v-if="selectedPage">
                             Halaman Tujuan
                             <select class="flows-dropdown" v-model="selectedNextPage">
-                                <option :value="null" disabled>Tujuan Halaman</option>
+                                <option :value="null" disabled> Halaman Tujuan</option>
                                 <option :value="nextpage"
-                                    v-for="nextpage in props.page.filter(page => page != selectedPage)">{{
+                                    v-for="nextpage in props.page.filter(page => page != selectedPage && page.order >= selectedPage.order)">{{
                                         nextpage.page_name }}
                                 </option>
                             </select>
                         </div>
-                        <div class="flows-dropdown-label" v-if="selectedPage">
-                            Nama Flow
-                            <input type="text" class="w-[30%]" v-model="flowName" placeholder="Nama Flow">
+                        <div class="mb-2 inline-flex justify-between w-full">
+                            <PrimaryButton type="button" @click="useQuestion = !useQuestion" >Use Question</PrimaryButton>
+                            <PrimaryButton v-if="selectedQuestion" type="button" @click="selectedQuestion = null; selectedChoice = null" >Reset Question</PrimaryButton>
+                        </div>
+                        <div class="relative" v-show="useQuestion">
+                            <div class="flows-dropdown-label" v-if="selectedPage" @change="selectedChoice = ''">
+                                Pertanyaan
+                                <select class="flows-dropdown" v-model="selectedQuestion">
+                                    <option :value="null" disabled>Pertanyaan</option>
+                                    <option :value="question" class=""
+                                        v-for="question in selectedPage.question.filter(prop => prop.question_type_id == 2)">
+                                        {{ stripTags(question.question_text) }}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="flows-dropdown-label" v-if="selectedQuestion && selectedPage">
+                                Pilihan Jawaban
+                                <select class="flows-dropdown" v-model="selectedChoice">
+                                    <option :value="''" disabled>Pilihan Jawaban</option>
+                                    <option :value="option" v-for="option in selectedQuestion.choice">{{ option.value }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
                         <div class="flows-dropdown-label" :class="{ '!justify-center': hapusFlow == true }"
                             v-if="selectedPage">
