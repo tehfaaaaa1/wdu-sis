@@ -57,6 +57,7 @@ const chartOptions = {
     },
 };
 
+
 const count = (pgind, qind, choice, answer, question) => {
     const all = answer.length
     if (PieChartData[pgind].question[qind].labels.length != choice.length) {
@@ -126,7 +127,9 @@ const showAllanswer = ref(props.page.map((p) => ({
                                                 :chart-options="chartOptions" />
                                         </div>
                                         <div v-if="question.question_type_id == 4">
-                                            <img :src="'/img/' + question.question_text" />
+                                            <img :src="'/img/' + question.question_text"
+                                            style="max-width: 500px; max-height: 300px; width: auto; height: auto; display: block; margin: 0 auto;" 
+                                            alt="Image" />
                                         </div>
                                         <div class="output" v-if="question.question_type_id == 5"
                                             v-html="question.question_text"></div>
