@@ -174,6 +174,9 @@ function textQuestion(question) {
         question.types.push('Text');
     }
 }
+function clone(pgindx, question){
+    pages.value[pgindx].question.push(question)
+}
 function radioQuestion(question) {
     if (question.types.length > 0 && !question.types.includes('Radio')) {
         // Clear previous type and data if it isn't Text
@@ -388,9 +391,9 @@ const openTextEditor = (pgindex, q_index) => {
 function stripTags(str) {
     return str.replace(/(<([^>]+)>)/gi, '');
 }
-watch(()=> pages.value, ()=>{
-    console.log(pages.value)
-}, {deep: true})
+// watch(()=> pages.value, ()=>{
+//     console.log(pages.value)
+// }, {deep: true})
 watch(() => textEditor.value, () => {
     if (textEditor.value == true) {
         document.body.style.overflow = 'hidden';
@@ -666,6 +669,10 @@ watch(() => textEditor.value, () => {
                                                 <div @click="checkboxQuestion(item)"
                                                     class="px-4 py-2 text-sm cursor-pointer">
                                                     Multiple Choice
+                                                </div>
+                                                <div @click="clone(page_index, item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer">
+                                                    Clone
                                                 </div>
                                                 <div class="py-2 text-center border-t border-gray-300">
                                                     <input type="checkbox" v-model="item.required"
