@@ -86,7 +86,7 @@ const dataSender = ()=>{
                                 <h2>{{ campaign.sender?.email ?? 'Choose the sender or create new.' }}</h2>
                                 <SecondaryButton class="!m-0" type="button"
                                     @click="campaign.sender ?  (editSender = ! editSender, changeSender || addNewSender? SenderData = false : SenderData = !SenderData, changeSender = false , addNewSender = false) 
-                                    : ( editSender = ! editSender, !editSender ? changeSender = false : changeSender = !changeSender, addNewSender = false) ">
+                                    : ( editSender = ! editSender, addNewSender ? changeSender = false : changeSender = !changeSender, AddOrchangeSender = !AddOrchangeSender) ">
                                         {{ editSender ? 'Close Sender' :(campaign.sender_id == null ? 'Choose Sender' : 'Edit Sender') }}
                                 </SecondaryButton>
                             </div>
