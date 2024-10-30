@@ -132,7 +132,7 @@ const dataSender = ()=>{
                                             </div>
                                             <div class="my-2">
                                                 <SecondaryButton class="!px-2 !my-0 !font-medium sm:!px-6 sm:py-2.5" type="button" 
-                                                @click="AddOrchangeSender = !AddOrchangeSender; changeSender = !changeSender; SenderData= false">
+                                                @click="AddOrchangeSender = true; changeSender = true; SenderData= false">
                                                 Change Sender</SecondaryButton>
                                             </div>
                                         </div>
@@ -141,10 +141,10 @@ const dataSender = ()=>{
     
                                 <!-- Add Or Change Sender -->
                                  <transition 
-                                    enter-active-class="transition ease-out duration-150 delay-150"
+                                    enter-active-class="transition ease-out duration-150 delay-100"
                                     enter-from-class="transform opacity-0 -translate-y-3"
                                     enter-to-class="transform opacity-100 translate-y-0"
-                                    leave-active-class="transition ease-out duration-0 delay-0"
+                                    leave-active-class="transition ease-out duration-100 delay-75"
                                     leave-from-class="transform opacity-0 translate-y-0"
                                     leave-to-class="transform opacity-0 -translate-y-3">
                                     <div class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-80 flex flex-col justify-between border-primary"
@@ -202,9 +202,10 @@ const dataSender = ()=>{
                                                 </div>
                                             </transition>
                                         </div>
+
                                         <div class="flex gap-x-3 items-center">
                                             <div class="my-2" v-show="campaign.sender" >
-                                                <button type="button" @click="SenderData= !SenderData; AddOrchangeSender = false; changeSender = false; addNewSender= false"
+                                                <button type="button" @click="SenderData= true; AddOrchangeSender = false; changeSender = false; addNewSender= false"
                                                 class="inline-flex items-center rounded-md px-5 py-2.5 bg-red-500  text-sm font-semibold leading-6 text-white shadow-sm transition hover:outline-none focus:outline-none hover:ring-2 focus:ring-2 hover:ring-red-500 hover:bg-white hover:text-red-500 focus:ring-red-500">
                                                     {{ campaign.sender_id ? 'Back' :'Close' }}
                                                 </button>
