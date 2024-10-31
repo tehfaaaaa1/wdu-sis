@@ -228,11 +228,11 @@ const showhide = (pgindex, qindex, value) => {
                 <form @submit.prevent="submit" class="w-full">
                     <div class="p-5 pb-1">
                         <div v-for="(question, qIndex) in currentPage.question" :key="qIndex" class="mb-4">
-                            <div v-if="question.question_type_id <= 3 && question.question_logic_type_id != 2">
+                            <div v-if="(question.question_type_id <= 3 || question.question_type_id == 6) && question.question_logic_type_id != 2 ">
                                 <label v-html="question.question_text" class="output"></label>
 
                                 <!-- Handling radio inputs for question type 2 -->
-                                <div v-if="question.question_type_id == 2 && question.question_logic_type_id != 2">
+                                <div v-if="(question.question_type_id == 2  || question.question_type_id == 6) && question.question_logic_type_id != 2">
                                     <div v-for="(list, i) in question.choice" :key="i">
                                         <input v-if="list.question_id === question.id" type="radio"
                                             :id="'qradio' + (list.question_id) + '-option' + (i + 1)" :value="list.id"
