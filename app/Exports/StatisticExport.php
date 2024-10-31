@@ -27,7 +27,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
-        $this->response = $response;   
+        $this->response = $response;
     }
 
     public function title(): string
@@ -37,7 +37,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
 
     public function query()
     {
-        return Question::query()->where('survey_id', $this->survey_id)->where('question_type_id', '<=', 3 )->orderBy('question_page_id')->orderBy('order');
+        return Question::query()->where('survey_id', $this->survey_id)->where('question_type_id', '<=', 3)->orderBy('question_page_id')->orderBy('order');
     }
 
     public function startCell(): string
@@ -45,16 +45,17 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
         return 'B3';
     }
 
-    public function map($row): array{
+    public function map($row): array
+    {
         $this->rownumber++;
-        $choice = $row->choice->toArray();  
+        $choice = $row->choice->toArray();
         $answer = $row->answer->toArray();
         $totalResponse = count($answer);
 
-    if ($row->question_type_id != 1 && $row->question_type_id <= 3) {
+        if ($row->question_type_id != 1 && $row->question_type_id <= 3) {
             $hitung = [];
             $mapRows = [
-                [$this->rownumber, strip_tags($row->question_text)], 
+                [$this->rownumber, strip_tags($row->question_text)],
                 ['', '', 'Response Percent', 'Response Count'],
             ];
             foreach ($choice as $index => $c) {
@@ -66,15 +67,15 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
                 $mapRows[] = ['', $c['value'], number_format($percentage, 2, '.', "") . '%', $count];
             }
             $mapRows[] = [''];
-        return $mapRows;
-    } else if ($row->question_type_id == 1) {
-        return [
-            [$this->rownumber, strip_tags($row->question_text)], 
-            ['', (string)$totalResponse ?? (string)'no' . ' Responses' ],
-            [''],
-        ];
+            return $mapRows;
+        } else if ($row->question_type_id == 1) {
+            return [
+                [$this->rownumber, strip_tags($row->question_text)],
+                ['', (string)$totalResponse.' Responses' ?? (string)'No' . ' Responses'],
+                [''],
+            ];
+        }
     }
-}
 
     public function registerEvents(): array
     {
