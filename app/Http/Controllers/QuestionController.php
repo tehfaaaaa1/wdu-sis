@@ -31,7 +31,6 @@ class QuestionController extends Controller
         $project = DB::table('projects')
         ->where('slug', $projectSlug)
         ->get();
-        $surveyall = Survey::where('project_id', $project[0]->id)->get();
         $client = DB::table('clients')
             ->where('slug', $clientSlug)
             ->get();
@@ -65,7 +64,6 @@ class QuestionController extends Controller
                 // 'lastId' => $lastId,
                 // 'c_lastId' => $c_lastId,
                 'flows'=> $flow,
-                'surveyall' => $surveyall,
                 'logictype'=>$logic_type
             ]
         );

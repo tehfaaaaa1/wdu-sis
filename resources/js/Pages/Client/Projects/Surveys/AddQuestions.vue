@@ -1,416 +1,463 @@
-    <script setup>
-    import { useForm } from '@inertiajs/vue3';
-    import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
-    import AppLayout from '@/Layouts/AppLayout.vue';
-    import Dropdown from '@/Components/Dropdown.vue';
-    import { VueDraggable } from 'vue-draggable-plus';
-    import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
-    import DialogModal from '@/Components/DialogModal.vue';
-    import SecondaryButton from '@/Components/SecondaryButton.vue';
-    import PrimaryButton from '@/Components/PrimaryButton.vue';
-    import TextEditor from '@/Components/TextEditor.vue';
-    import LeftSticky from '@/Components/LeftSticky.vue';
+<script setup>
+import { useForm } from '@inertiajs/vue3';
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+import { VueDraggable } from 'vue-draggable-plus';
+import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
+import DialogModal from '@/Components/DialogModal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextEditor from '@/Components/TextEditor.vue';
+import LeftSticky from '@/Components/LeftSticky.vue';
 
-    const props = defineProps({
-        surveys: Object,
-        projects: Object,
-        clients: Object,
-        page: Object,
-        flows: Object,
-        surveyall: Object,
-        logictype: Object
+const props = defineProps({
+    surveys: Object,
+    projects: Object,
+    clients: Object,
+    page: Object,
+    flows: Object,
+    logictype: Object
+})
+const project = props.projects[0];
+const client = props.clients[0];
+const MAX_RADIO_CHOICES = 50;
+let question;
+const showAddPage = ref(false)
+const showDeleteModal = ref(false);
+const showLogicModal = ref(false);
+const openDropdown = ref(false);
+const QuestionOrFlow = ref('question') // 'question' or 'flow'
+// Note: Customize the functions below if needed
+const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
+    page.question.sort((a, b) => a.order - b.order)
+    question = page.question.map((item) => {
+        let tipe = []
+        let text = []
+        let choice = []
+        let files = []
+        let lastCindex = ''
+        switch (item.question_type_id) {
+            case 1:
+                tipe = ['Text']
+                text = [{ isi: '' }]
+                break;
+            case 2:
+                tipe = ['Radio']
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                })
+                lastCindex = choice.length - 1
+                break;
+            case 3:
+                tipe = ['Checkbox']
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order }
+                })
+                lastCindex = choice.length - 1
+                break;
+            case 4:
+                tipe = ['Image']
+                files = [{ files: item.question_text }]
+                break;
+            case 5:
+                tipe = ['Paragraph']
+                break;
+            default:
+                break;
+        }
+        return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex, logic_type: item.question_logic_type_id ?? 1, logic_choice: item.question_choice_id ?? null, width: 200, height: 150, sort: 'desc' }
     })
-    const project = props.projects[0];
-    const client = props.clients[0];
-    const MAX_RADIO_CHOICES = 5;
-    let question;
-    const showAddPage = ref(false)
-    const showDeleteModal = ref(false);
-    const showLogicModal = ref(false);
-    const openDropdown = ref(false);
-    const QuestionOrFlow = ref('question') // 'question' or 'flow'
-    // Note: Customize the functions below if needed
-    const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
-        page.question.sort((a, b) => a.order - b.order)
-        question = page.question.map((item) => {
-            let tipe = []
-            let text = []
-            let choice = []
-            let files = []
-            let lastCindex = ''
-            switch (item.question_type_id) {
-                case 1:
-                    tipe = ['Text']
-                    text = [{ isi: '' }]
-                    break;
-                case 2:
-                    tipe = ['Radio']
-                    choice = item.choice.map((isi) => {
-                        return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-                    })
-                    lastCindex = choice.length - 1
-                    break;
-                case 3:
-                    tipe = ['Checkbox']
-                    choice = item.choice.map((isi) => {
-                        return { pilih: isi.value, cId: isi.id, c_order: isi.order }
-                    })
-                    lastCindex = choice.length - 1
-                    break;
-                case 4:
-                    tipe = ['Image']
-                    files = [{ files: item.question_text }]
-                    break;
-                case 5:
-                    tipe = ['Paragraph']
-                    break;
-                default:
-                    break;
-            }
-            return { id: item.id, soal: item.question_text, order: item.order, texts: text, types: tipe, required: item.required, choices: choice, files: files, lastChoiceIndex: lastCindex, logic_type: item.question_logic_type_id ?? 1, logic_choice: item.question_choice_id ?? null, width: 200, height: 150 }
-        })
-        return { id: page.id, order: page.order, name: page.page_name, question: question }
-    }))
+    return { id: page.id, order: page.order, name: page.page_name, question: question }
+}))
 
-    if (pages.value.length == 0) {
+if (pages.value.length == 0) {
+    pages.value.push({ name: 'title', question: [] })
+}
+
+const questionsType = ref([
+    { types: 'Text', name: 'Text', texts: '' },
+    { types: 'Radio', name: 'Single Choice', choices: '' },
+    { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
+    { types: 'Radio', name: 'Yes / No', choices: '' },
+    { types: 'Number', name: 'Number Scale', choices: '' },
+]);
+
+const descType = ref([
+    { types: 'Image', name: 'Image', files: '' },
+    { types: 'Paragraph', name: 'Paragraph' },
+])
+
+function cloneQuestion(element) {
+    let texts = []
+    let choice = []
+    let lastCindex = ''
+    switch (element.name) {
+        case 'Text':
+            texts = [{ isi: '' }]
+            break;
+        case 'Single Choice':
+            choice = [{ pilih: '' }]
+            lastCindex = choice.length - 1
+            break;
+        case 'Yes / No':
+            choice = [{ pilih: 'Yes' }, { pilih: 'No' }]
+            lastCindex = choice.length - 1
+            break;
+        case 'Multiple Choice':
+            choice = [{ pilih: '' }]
+            lastCindex = choice.length - 1
+            break;
+        case 'Number Scale':
+            choice = [{ pilih: '', number: 0 }]
+            lastCindex = choice.length - 1
+            break;
+
+        default:
+            break;
+    }
+    return {
+        soal: '', texts: texts, choices: choice, types: [element.types], required: 1, lastChoiceIndex: lastCindex, logic_type: 1, logic_choice: null, sort: 'desc'
+    };
+}
+
+function cloneDesc(element) {
+    let file = []
+    switch (element.name) {
+        case 'Image':
+            file = [{ files: '' }]
+            break;
+
+        default:
+            break;
+    }
+    return {
+        soal: '', types: [element.types], files: file
+    };
+}
+
+function clone(pgindx, question) {
+    pages.value[pgindx].question.push(question)
+}
+
+// Page functions
+function addNewPage() {
+    pages.value.push({ name: form.page_name, question: [] });
+    form.reset('page_name');
+    showAddPage.value = false;
+}
+const deletePageId = ref(null);
+const hapus = (index) => {
+    deletePageId.value = index;
+    showDeleteModal.value = true;
+};
+const confirmDeletion = (page) => {
+    page.splice(deletePageId.value, 1);
+    showDeleteModal.value = false;
+    openDropdown.value = false;
+    p(pages)
+};
+const p = (page) => {
+    if (page.value.length == 0) {
         pages.value.push({ name: 'title', question: [] })
     }
+}
+const cancelDeletion = () => (showDeleteModal.value = false);
 
-    const questionsType = ref([
-        { types: 'Text', name: 'Text', texts: '' },
-        { types: 'Radio', name: 'Single Choice', choices: '' },
-        { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
-        { types: 'Radio', name: 'Yes / No', choices: '' },
-    ]);
+// Log Update
+// const logUpdate = (newQuestions) => {
+//     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
+// };
 
-    const descType = ref([
-        { types: 'Image', name: 'Image', files: '' },
-        { types: 'Paragraph', name: 'Paragraph' },
-    ])
-
-    function cloneQuestion(element) {
-        let texts = []
-        let choice = []
-        let lastCindex = ''
-        switch (element.name) {
-            case 'Text':
-                texts = [{ isi: '' }]
-                break;
-            case 'Single Choice':
-                choice = [{ pilih: '' }]
-                lastCindex = choice.length - 1
-                break;
-            case 'Yes / No':
-                choice = [{ pilih: 'Yes' }, { pilih: 'No' }]
-                lastCindex = choice.length - 1
-                break;
-            case 'Multiple Choice':
-                choice = [{ pilih: '' }]
-                lastCindex = choice.length - 1
-                break;
-
-            default:
-                break;
+// QUESTIONS OVER HERE
+// Question 
+function textQuestion(question) {
+    if (question.types.length > 0 && !question.types.includes('Text')) {
+        // Clear previous type and data if it isn't Text
+        clearQuestionType(question);
+    }
+    if (!question.types.includes('Text')) {
+        const text = { isi: '' };
+        question.texts.push(text);
+        question.types.push('Text');
+    }
+}
+function radioQuestion(question) {
+    if (question.types.length > 0 && !question.types.includes('Radio')) {
+        // Clear previous type and data if it isn't Text
+        clearQuestionType(question);
+    }
+    if (!question.types.includes('Radio')) {
+        if (!question.choices.length) {
+            const checkbox = { pilih: '' };
+            question.choices.push(checkbox);
         }
-        return {
-            soal: '', texts: texts, choices: choice, types: [element.types], required: 1, lastChoiceIndex: lastCindex, logic_type: 1, logic_choice: null
-        };
+        question.types.push('Radio'); // Track the type
     }
-
-    function cloneDesc(element) {
-        let file = []
-        switch (element.name) {
-            case 'Image':
-                file = [{ files: '' }]
-                break;
-
-            default:
-                break;
+}
+function checkboxQuestion(question) {
+    if (question.types.length > 0 && !question.types.includes('Checkbox')) {
+        // Clear previous type and data if it isn't Text
+        clearQuestionType(question);
+    }
+    if (!question.types.includes('Checkbox')) {
+        if (!question.choices.length) {
+            const checkbox = { pilih: '' };
+            question.choices.push(checkbox);
         }
-        return {
-            soal: '', types: [element.types], files: file
-        };
-    }
+        question.types.push('Checkbox'); // Track the type
 
-    function clone(pgindx, question) {
-        pages.value[pgindx].question.push(question)
+        question.lastChoiceIndex = question.choices.length - 1; // update radio index
     }
+}
 
-    // Page functions
-    function addNewPage() {
-        pages.value.push({ name: form.page_name, question: [] });
-        form.reset('page_name');
-        showAddPage.value = false;
+function numberQuestion(question) {
+    if (question.types.length > 0 && !question.types.includes('Number')) {
+        // Clear previous type and data if it isn't Text
+        clearQuestionType(question);
     }
-    const deletePageId = ref(null);
-    const hapus = (index) => {
-        deletePageId.value = index;
-        showDeleteModal.value = true;
-    };
-    const confirmDeletion = (page) => {
-        page.splice(deletePageId.value, 1);
-        showDeleteModal.value = false;
-        openDropdown.value = false;
-        p(pages)
-    };
-    const p = (page) => {
-        if (page.value.length == 0) {
-            pages.value.push({ name: 'title', question: [] })
+    if (!question.types.includes('Number')) {
+        if (!question.choices.length) {
+            const checkbox = { pilih: '', number: '' };
+            question.choices.push(checkbox);
         }
+        question.types.push('Number'); // Track the type
     }
-    const cancelDeletion = () => (showDeleteModal.value = false);
+}
 
-    // Log Update
-    // const logUpdate = (newQuestions) => {
-    //     console.log('Questions updated:', JSON.stringify(newQuestions, null, 2));
-    // };
+// add
+function AddRadioOption(question) {
+    const radio = { pilih: '' };
+    question.choices.push(radio);
+    // question.types.push('Radio'); // Track the type
 
-    // QUESTIONS OVER HERE
-    // Question 
-    function textQuestion(question) {
-        if (question.types.length > 0 && !question.types.includes('Text')) {
-            // Clear previous type and data if it isn't Text
-            clearQuestionType(question);
-        }
-        if (!question.types.includes('Text')) {
-            const text = { isi: '' };
-            question.texts.push(text);
-            question.types.push('Text');
-        }
+    question.lastChoiceIndex = question.choices.length - 1;
+}
+function AddCheckboxOption(question) {
+    const checkbox = { pilih: '' };
+    question.choices.push(checkbox);
+    // question.types.push('Checkbox'); // Track the type
+
+    question.lastChoiceIndex = question.choices.length - 1;
+}
+function AddNumberOption(question) {
+    let n = question.choices.number
+    const radio = { pilih: '', number: '' };
+    question.choices.push(radio);
+    SortNumber(question)
+    question.lastChoiceIndex = question.choices.length - 1;
+}
+
+function SortNumber(question) {
+    let number = question.choices.number ?? question.choices.length;
+    if (question.sort == 'asc') {
+        // for (let i = 0; i < number; i++) {
+        //     question.choices[i].number = i + 1
+        // }
+        question.choices.forEach(element => {
+            element.number = number
+            number++;
+        });
+    } else if (question.sort == 'desc') {
+        question.choices.forEach(element => {
+            element.number = number
+            number--;
+        });
     }
-    function radioQuestion(question) {
-        if (question.types.length > 0 && !question.types.includes('Radio')) {
-            // Clear previous type and data if it isn't Text
-            clearQuestionType(question);
-        }
-        if (!question.types.includes('Radio')) {
-            if (!question.choices.length) {
-                const checkbox = { pilih: '' };
-                question.choices.push(checkbox);
-            }
-            question.types.push('Radio'); // Track the type
-        }
-    }
-    function checkboxQuestion(question) {
-        if (question.types.length > 0 && !question.types.includes('Checkbox')) {
-            // Clear previous type and data if it isn't Text
-            clearQuestionType(question);
-        }
-        if (!question.types.includes('Checkbox')) {
-            if (!question.choices.length) {
-                const checkbox = { pilih: '' };
-                question.choices.push(checkbox);
-            }
-            question.types.push('Checkbox'); // Track the type
+}
+// delete
+function deleteRadio(question, index) {
+    if (question.lastChoiceIndex >= 1) {
+        question.choices.splice(index, 1)
+        question.lastChoiceIndex = question.choices.length - 1; // update radio index
 
-            question.lastChoiceIndex = question.choices.length - 1; // update radio index
-        }
+        let number = question.choices.number ?? question.choices.length
+        console.log(number)
     }
-
-    // add
-    function AddRadioOption(question) {
-        const radio = { pilih: '' };
-        question.choices.push(radio);
-        // question.types.push('Radio'); // Track the type
-
-        question.lastChoiceIndex = question.choices.length - 1;
+}
+function deleteCheckbox(question, index) {
+    if (question.lastChoiceIndex >= 1) {
+        question.choices.splice(index, 1)
+        question.lastChoiceIndex = question.choices.length - 1; // update radio index
     }
-    function AddCheckboxOption(question) {
-        const checkbox = { pilih: '' };
-        question.choices.push(checkbox);
-        // question.types.push('Checkbox'); // Track the type
+}
 
-        question.lastChoiceIndex = question.choices.length - 1;
-    }
-
-    // delete
-    function deleteRadio(question, index) {
-        if (question.lastChoiceIndex >= 1) {
-            question.choices.splice(index, 1)
-            question.lastChoiceIndex = question.choices.length - 1; // update radio index
-        }
-    }
-    function deleteCheckbox(question, index) {
-        if (question.lastChoiceIndex >= 1) {
-            question.choices.splice(index, 1)
-            question.lastChoiceIndex = question.choices.length - 1; // update radio index
-        }
+function clearQuestionType(question) {
+    // Clear the existing type and its associated data
+    if (question.types.includes('Text')) {
+        question.texts = [];  // Clear text data
+    } else if (question.types.includes('Radio') || question.types.includes('Checkbox') || question.types.includes('Number')) {
+        question.choices = question.choices;  // Clear choice data
     }
 
-    function clearQuestionType(question) {
-        // Clear the existing type and its associated data
-        if (question.types.includes('Text')) {
-            question.texts = [];  // Clear text data
-        } else if (question.types.includes('Radio') || question.types.includes('Checkbox')) {
-            question.choices = question.choices;  // Clear choice data
-        }
+    // Clear the type
+    question.types = [];
+}
 
-        // Clear the type
-        question.types = [];
-    }
+function isTypeAdded(question, type) {
+    return question.types.includes(type);
+}
 
-    function isTypeAdded(question, type) {
-        return question.types.includes(type);
-    }
+function remove(page, index) {
+    page.question.splice(index, 1);
+}
 
-    function remove(page, index) {
-        page.question.splice(index, 1);
-    }
+const form = useForm({
+    page_name: '',
+    project_slug: project['slug'],
+    client_slug: client['slug'],
+});
 
-    const form = useForm({
-        page_name: '',
+// Save Mechanic
+const savingStatus = ref('')
+const handleBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = ''; // This is required for the alert to be shown in some browsers
+    return '';
+};
+
+const submitForm = () => {
+    savingStatus.value = 'saving';
+    form.transform(() => ({
+        data: pages.value,
+        survey: props.surveys.id,
         project_slug: project['slug'],
         client_slug: client['slug'],
+    })).post(route('manual-save-question', [form.client_slug, form.project_slug, props.surveys.id]), {
+        preserveState: true,
+        preserveScroll: true,
+        onSuccess: () => {
+            // Automatically clear the status after 3 seconds
+            setTimeout(() => {
+                savingStatus.value = '';
+            }, 3000); // 3000ms = 3 seconds
+            console.log('success')
+            savingStatus.value = 'saved';
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        },
+        onError: (error) => {
+            setTimeout(() => {
+                savingStatus.value = '';
+            }, 3000); // 3000ms = 3 seconds
+            console.error('Error saving:', error);
+            savingStatus.value = 'error';
+        },
     });
 
-    // Save Mechanic
-    const savingStatus = ref('')
-    const handleBeforeUnload = (event) => {
-        event.preventDefault();
-        event.returnValue = ''; // This is required for the alert to be shown in some browsers
-        return '';
-    };
+};
+const status = () => {
+    form.transform(() => ({
+        surveyId: props.surveys.id,
+        surveyStatus: props.surveys.status
+    })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
+}
 
-    const submitForm = () => {
-        savingStatus.value = 'saving';
-        form.transform(() => ({
-            data: pages.value,
-            survey: props.surveys.id,
-            project_slug: project['slug'],
-            client_slug: client['slug'],
-        })).post(route('manual-save-question', [form.client_slug, form.project_slug, props.surveys.id]), {
-            preserveState: true,
-            preserveScroll: true,
-            onSuccess: () => {
-                // Automatically clear the status after 3 seconds
-                setTimeout(() => {
-                    savingStatus.value = '';
-                }, 3000); // 3000ms = 3 seconds
-                console.log('success')
-                savingStatus.value = 'saved';
-                window.removeEventListener('beforeunload', handleBeforeUnload);
-            },
-            onError: (error) => {
-                setTimeout(() => {
-                    savingStatus.value = '';
-                }, 3000); // 3000ms = 3 seconds
-                console.error('Error saving:', error);
-                savingStatus.value = 'error';
-            },
-        });
-
-    };
-    const status = () => {
-        form.transform(() => ({
-            surveyId: props.surveys.id,
-            surveyStatus: props.surveys.status
-        })).patch(route('changeStatus', [form.client_slug, form.project_slug, props.surveys.id]))
+onMounted(() => {
+    // Attach the event listener when the component is mounted
+    window.addEventListener('beforeunload', handleBeforeUnload);
+});
+onBeforeUnmount(() => {
+    // Remove the event listener when the component is unmounted
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+});
+// PAGE FLOW
+const selectedPage = ref('')
+const selectedQuestion = ref('')
+const selectedChoice = ref('')
+const selectedNextPage = ref('')
+const flowName = ref(null)
+const useQuestion = ref(false)
+const flowId = ref(null)
+const floww = (flow) => {
+    selectedPage.value = props.page.find(p => p.id == flow.current_page_id)
+    if (flow.question_id) {
+        selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
+        selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
+        useQuestion.value = true
     }
+    selectedNextPage.value = props.page.find(a => a.id == flow.next_page_id)
+    flowName.value = flow.flow_name
+    flowId.value = flow.id
+}
+const newFlow = () => {
+    selectedPage.value = ''
+    selectedQuestion.value = ''
+    selectedChoice.value = ''
+    selectedNextPage.value = ''
+    flowName.value = null
+}
+const createFlow = () => {
+    form.transform(() => ({
+        name: flowName.value,
+        current_page: selectedPage.value,
+        next_page: selectedNextPage.value,
+        useQ: useQuestion.value,
+        question: selectedQuestion.value,
+        choice: selectedChoice.value,
+        flow_id: flowId.value ?? null,
+    })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
+        { onSuccess: showLogicModal.value = false, onSuccess: window.location.reload() });
+}
 
-    onMounted(() => {
-        // Attach the event listener when the component is mounted
-        window.addEventListener('beforeunload', handleBeforeUnload);
-    });
-    onBeforeUnmount(() => {
-        // Remove the event listener when the component is unmounted
-        window.removeEventListener('beforeunload', handleBeforeUnload);
-    });
-    // PAGE FLOW
-    const selectedPage = ref('')
-    const selectedQuestion = ref('')
-    const selectedChoice = ref('')
-    const selectedNextPage = ref('')
-    const flowName = ref(null)
-    const useQuestion = ref(false)
-    const flowId = ref(null)
-    const floww = (flow) => {
-        selectedPage.value = props.page.find(p => p.id == flow.current_page_id)
-        if (flow.question_id) {
-            selectedQuestion.value = selectedPage.value.question.find(a => a.id == flow.question_id)
-            selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
-            useQuestion.value = true
+const hapusFlow = ref(false)
+const confirmDeletionFlow = (flow) => {
+    form.get(route('delete-flow', [form.client_slug, form.project_slug, props.surveys.id, flow]), { onSuccess: hapusFlow.value = false });
+}
+
+// PREVIEW IMAGE
+const handleImage = (event, pgindex, qindex) => {
+    pages.value[pgindex].question[qindex].soal = event.target.files[0];
+    pages.value[pgindex].question[qindex].files[0].files = event.target.files[0];
+    var input = event.target;
+    if (input.files) {
+        if (pages.value[pgindex].question[qindex].files[0].files.size / 1024 > 2048) {
+            alert('EXCEED IMAGE SIZE LIMIT');
+            exit;
         }
-        selectedNextPage.value = props.page.find(a => a.id == flow.next_page_id)
-        flowName.value = flow.flow_name
-        flowId.value = flow.id
-    }
-    const newFlow = () => {
-        selectedPage.value = ''
-        selectedQuestion.value = ''
-        selectedChoice.value = ''
-        selectedNextPage.value = ''
-        flowName.value = null
-    }
-    const createFlow = () => {
-        form.transform(() => ({
-            name: flowName.value,
-            current_page: selectedPage.value,
-            next_page: selectedNextPage.value,
-            useQ: useQuestion.value,
-            question: selectedQuestion.value,
-            choice: selectedChoice.value,
-            flow_id: flowId.value ?? null,
-        })).post(route('save-flow', [form.client_slug, form.project_slug, props.surveys.id]),
-            { onSuccess: showLogicModal.value = false, onSuccess: window.location.reload() });
-    }
-
-    const hapusFlow = ref(false)
-    const confirmDeletionFlow = (flow) => {
-        form.get(route('delete-flow', [form.client_slug, form.project_slug, props.surveys.id, flow]), { onSuccess: hapusFlow.value = false });
-    }
-
-    // PREVIEW IMAGE
-    const handleImage = (event, pgindex, qindex) => {
-        pages.value[pgindex].question[qindex].soal = event.target.files[0];
-        pages.value[pgindex].question[qindex].files[0].files = event.target.files[0];
-        var input = event.target;
-        if (input.files) {
-            if (pages.value[pgindex].question[qindex].files[0].files.size / 1024 > 2048) {
-                alert('EXCEED IMAGE SIZE LIMIT');
-                exit;
-            }
-            var reader = new FileReader();
-            reader.onload = (e) => {
-                pages.value[pgindex].question[qindex].files[0].files = e.target.result;
-            }
-            reader.readAsDataURL(input.files[0])
+        var reader = new FileReader();
+        reader.onload = (e) => {
+            pages.value[pgindex].question[qindex].files[0].files = e.target.result;
         }
+        reader.readAsDataURL(input.files[0])
     }
+}
 
-    // # TEXT EDITOR
-    const page_index = ref(null);
-    const qIndex = ref(null);
-    const textEditor = ref(false);
-    const questionForlogic = ref(null)
-    const openTextEditor = (pgindex, q_index) => {
-        textEditor.value = !textEditor.value
-        page_index.value = pgindex
-        qIndex.value = q_index
-        if (pages.value[pgindex].question[q_index].logic_choice != null) {
-            questionForlogic.value = pages.value[pgindex].question.find(q => q.choices.some(c => c.cId == pages.value[pgindex].question[q_index].logic_choice))
-        } else {
-            questionForlogic.value = null
-        }
+// # TEXT EDITOR
+const page_index = ref(null);
+const qIndex = ref(null);
+const textEditor = ref(false);
+const questionForlogic = ref(null)
+const openTextEditor = (pgindex, q_index) => {
+    textEditor.value = !textEditor.value
+    page_index.value = pgindex
+    qIndex.value = q_index
+    if (pages.value[pgindex].question[q_index].logic_choice != null) {
+        questionForlogic.value = pages.value[pgindex].question.find(q => q.choices.some(c => c.cId == pages.value[pgindex].question[q_index].logic_choice))
+    } else {
+        questionForlogic.value = null
     }
-    function stripTags(str) {
-        return str.replace(/(<([^>]+)>)/gi, '');
+}
+function stripTags(str) {
+    return str.replace(/(<([^>]+)>)/gi, '');
+}
+// watch(()=> pages.value, ()=>{
+//     console.log(pages.value)
+// }, {deep: true})
+watch(() => textEditor.value, () => {
+    if (textEditor.value == true) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = null;
     }
-    // watch(()=> pages.value, ()=>{
-    //     console.log(pages.value)
-    // }, {deep: true})
-    watch(() => textEditor.value, () => {
-        if (textEditor.value == true) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = null;
-        }
-    })
+})
 
-    const updateSize = (pgindex, qindex) => {
-        const question = pages.value[pgindex].question[qindex];
-        question.width = Math.max(question.width, 0);
-        question.height = Math.max(question.height, 0);
-    }
+const updateSize = (pgindex, qindex) => {
+    const question = pages.value[pgindex].question[qindex];
+    question.width = Math.max(question.width, 0);
+    question.height = Math.max(question.height, 0);
+}
+
+const showDeletePageButton = ref(false)
 
 </script>
 
@@ -418,7 +465,7 @@
     <AppLayout title="Tambah Pertanyaan Survey">
 
         <main class="min-h-screen relative">
-            <header class="bg-white grid grid-cols-2 items-center border-b border-gray-300 sticky top-0 z-50">
+            <header class="bg-white flex justify-between items-center border-b border-gray-300 sticky top-0 z-50">
                 <div class="flex items-center gap-x-4">
                     <a :href="route('listsurvey', [client['slug'], project['slug']])"
                         class="flex justify-center items-center font-semibold text-white focus:outline-none focus:ring-2 focus:rounded-sm focus:ring-red-500 bg-red-500 py-2.5 ps-4 pe-8 gap-1 hover:bg-red-600 transition">
@@ -432,7 +479,7 @@
                         {{ props.surveys.title }}
                     </h2>
                 </div>
-                <div class="grid grid-cols-2 items-center justify-items-end">
+                <div class="flex gap-x-4 items-center justify-items-end">
                     <div class="save-status flex justify-start">
                         <p v-if="savingStatus === 'saving'" class="text-wrap">Saving...</p>
                         <p v-if="savingStatus === 'saved'" class="font-semibold text-wrap">All changes saved.</p>
@@ -447,7 +494,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
-                                Save Questions
+                                Save
                             </button>
                         </form>
                         <form @submit.prevent="status">
@@ -617,14 +664,16 @@
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
                     :class="'pb-8 rounded-md'" handle=".handle">
-                    <div class="rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
+                    <div @mouseenter="showDeletePageButton = true" @mouseleave="showDeletePageButton = false"
+                        class="rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
                         <div
                             class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle cursor-move">
                             <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
                                 class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
-                            <div class="absolute -right-16 z-10 mt-2 origin-top-right">
+                            <div class="absolute -right-[3.125rem] z-10 mt-2 origin-top-right"
+                                v-show="showDeletePageButton">
                                 <button type="button" @click="hapus(page_index)"
-                                    class="cursor-pointer block bg-white p-3 rounded-full border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
+                                    class="cursor-pointer block bg-white p-3 border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-6 text-red-500">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -690,11 +739,15 @@
                                                     class="px-4 py-2 text-sm cursor-pointer">
                                                     Multiple Choice
                                                 </div>
-                                                <div @click="clone(page_index, item)"
+                                                <div @click="numberQuestion(item)"
                                                     class="px-4 py-2 text-sm cursor-pointer">
+                                                    Number Scale
+                                                </div>
+                                                <div @click="clone(page_index, item)"
+                                                    class="px-4 py-2 text-sm cursor-pointer border-t border-gray-300">
                                                     Clone
                                                 </div>
-                                                <div class="py-2 text-center border-t border-gray-300">
+                                                <div class="px-4 py-2 border-t border-gray-300">
                                                     <input type="checkbox" v-model="item.required"
                                                         :id="'q' + index + '-optional' + (item.id ?? item.soal)"
                                                         true-value="0" false-value="1" class="cursor-pointer">
@@ -704,7 +757,7 @@
                                             </div>
                                             <!-- delete question -->
                                             <button type="button" @click="remove(page, index)"
-                                                class="cursor-pointer w-full flex items-center justify-center py-2 gap-x-1">
+                                                class="cursor-pointer w-full flex items-center px-4 py-2 gap-x-1">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
                                                     class="size-6 text-red-600 z-10">
@@ -731,11 +784,11 @@
                                 <div class="px-5" v-for="(radio, index) in item.choices" :key="index"
                                     v-if="item.types.includes('Radio')">
                                     <div class="flex items-center mb-2">
-                                        <span class="select-none">O</span>
+                                        <span class="select-none">&#128903;</span>
                                         <input type="text" v-model="radio.pilih" :name="'radio-' + item.id"
                                             :id="'radio' + (index + 1) + '-q' + (item.id)"
                                             placeholder="Insert single choice"
-                                            class="text-sm mx-4 block w-1/4 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
+                                            class="text-sm mx-4 block w-1/2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
 
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
@@ -759,11 +812,11 @@
                                 <div class="px-5" v-for="(checkbox, index) in item.choices" :key="index"
                                     v-if="item.types.includes('Checkbox')">
                                     <div class="flex items-center mb-2">
-                                        <span class="select-none">&#9634;</span>
+                                        <span class="select-none">&#9635;</span>
                                         <input type="text" v-model="checkbox.pilih" :name="'checkbox-' + item.id"
                                             :id="'checkbox' + (index + 1) + '-q' + (item.id)"
-                                            placeholder="Insert multiple choice here"
-                                            class="text-sm mx-4 rounded-md block w-1/4">
+                                            placeholder="Insert multiple choice"
+                                            class="text-sm mx-4 rounded-md block w-1/2">
 
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
@@ -778,6 +831,53 @@
                                         v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
                                         <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
                                             @click="AddCheckboxOption(item)">
+                                            Add Options
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- number scale -->
+                                <div class="px-5 flex items-center gap-x-2 font-bold"
+                                    v-if="item.types.includes('Number')">
+                                    <div @click="item.sort = 'desc'; SortNumber(item)" class="p-2"
+                                        :class="item.sort == 'desc' ? 'text-green-800 bg-green-100' : 'text-gray-400'">
+                                        Descend
+                                    </div>
+                                    <div class="">|</div>
+                                    <div @click="item.sort = 'asc'; SortNumber(item)" class="p-2"
+                                        :class="item.sort == 'asc' ? 'text-green-800 bg-green-100' : 'text-gray-400'">
+                                        Ascend
+                                    </div>
+                                    <div class="">|</div>
+                                    <div class="flex items-center">Start From
+                                        <input type="number" v-model="item.choices.number" @input="SortNumber(item)"
+                                            :id="'number-value' + (index + 1) + '-q' + (item.id)" placeholder="0"
+                                            class="text-sm mx-4 block w-1/3 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
+                                    </div>
+                                </div>
+                                <div class="px-5" v-for="(number, index) in item.choices" :key="index"
+                                    v-if="item.types.includes('Number')">
+                                    <div class="flex items-center mb-2">
+                                        <span class="select-none">&#128905;</span>
+                                        <input type="text" v-model="number.pilih" :name="'number-question-' + item.id"
+                                            :id="'number-question' + (index + 1) + '-q' + (item.id)"
+                                            placeholder="Insert single choice"
+                                            class="text-sm mx-4 block w-1/2 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
+                                        <div class="me-3">{{ number.number }} </div>
+
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="size-6 text-red-600 cursor-pointer"
+                                            @click="deleteRadio(item, index)">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+
+                                    </div>
+                                    <div class="ml-7"
+                                        v-if="index === item.choices.length - 1 && item.choices.length < MAX_RADIO_CHOICES">
+                                        <a class="w-1/4 flex justify-center py-2.5 my-0 text-white !bg-primary rounded-md text-sm hover:!bg-transparent hover:text-primary hover:outline hover:outline-primary transition hover:duration-200 cursor-pointer"
+                                            @click="AddNumberOption(item)">
                                             Add Options
                                         </a>
                                     </div>
