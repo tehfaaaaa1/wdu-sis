@@ -147,7 +147,7 @@ const dataSender = ()=>{
                                     leave-active-class="transition ease-out duration-100 delay-75"
                                     leave-from-class="transform opacity-0 translate-y-0"
                                     leave-to-class="transform opacity-0 -translate-y-3">
-                                    <div class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-80 flex flex-col justify-between border-primary"
+                                    <div class="w-full px-4 pt-3 pb-3 my-3 shadow-md rounded-md border-1 border min-h-80 max-h-80 overflow-hidden flex flex-col justify-between border-primary"
                                      v-show="AddOrchangeSender">
                                         <div class="block w-full p-2">
                                             <h2 class="text-center text-lg font-medium mb-2 cursor-pointer"> 
@@ -161,8 +161,8 @@ const dataSender = ()=>{
                                             enter-active-class="transition ease-in duration-150 delay-150"
                                             enter-from-class="transform opacity-0 -translate-x-3"
                                             enter-to-class="transform opacity-100 translate-x-0"
-                                            leave-active-class="transition ease-out duration-75 delay-0"
-                                            leave-from-class="transform opacity-0 translate-x-0"
+                                            leave-active-class="transition ease-out duration-0 delay-0"
+                                            leave-from-class="transform opacity-0         translate-x-0"
                                             leave-to-class="transform opacity-0 -translate-x-3">
                                                 <div class="" v-show="changeSender">
                                                     <div class="" v-for="(sender, rIndex) in senders" :key="rIndex">
@@ -180,7 +180,7 @@ const dataSender = ()=>{
                                             enter-active-class="transition ease-in duration-150 delay-150"
                                             enter-from-class="transform opacity-0 -translate-x-3"
                                             enter-to-class="transform opacity-100 translate-x-0"
-                                            leave-active-class="transition ease-out duration-50 delay-0"
+                                            leave-active-class="transition ease-out duration-0 delay-0"
                                             leave-from-class="transform opacity-0 translate-x-0"
                                             leave-to-class="transform opacity-0 -translate-x-3">
                                                 <div class="" v-show="addNewSender">
