@@ -63,6 +63,12 @@ const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
             case 5:
                 tipe = ['Paragraph']
                 break;
+            case 6:
+                tipe = ['Number']
+                choice = item.choice.map((isi)=>{
+                    return {pilih: isi.value, cId: isi.id, c_order: isi.order, number:isi.scale }
+                })
+            break;
             default:
                 break;
         }

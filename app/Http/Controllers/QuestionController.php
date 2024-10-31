@@ -87,6 +87,7 @@ class QuestionController extends Controller
             'data.*.question.*.order' => 'nullable|integer',
             'data.*.question.*.logic_choice' => 'nullable|integer',
             'data.*.question.*.logic_type' => 'nullable|integer',
+            
         ]);
         // dd($validatedData);
         $survey = Survey::findOrFail($request->survey);
@@ -146,6 +147,21 @@ class QuestionController extends Controller
                             $questionType = 1;
                             $choices = []; // Clear any existing choices for Text type
                             break;
+                        case 'Number':
+                            $questionType = 6;
+                            $choices = $questionData['choices'] ?? [];
+                            if (count($choices) < 2) {
+                                abort(403, "Isilah Minimal 2 Pilihan !!");
+                            }
+                            for($i = 0; $i<count($choices);$i++ ){
+                                for($j = $i + 1;$j<count($choices);$j++){
+                                    $intersect = array_intersect($choices[$i], $choices[$j]);
+                                    if(!empty($intersect)){
+                                        abort(403, 'ada pilihan yang sama dalam 1 pertanyaan');
+                                    }
+                                }
+                            }
+                            break;    
                         case 'Radio':
                         case 'Checkbox':
                             $questionType = $type === 'Radio' ? 2 : 3;
@@ -193,6 +209,7 @@ class QuestionController extends Controller
                     );
                     $saveChoice->value = $choice['pilih'];
                     $saveChoice->question_id = $saveQuestion->id;
+                    $saveChoice->scale = $choice['number'] ?? null;
                     $saveChoice->order = $choice['c_order'] ?? random_int(1, 10000);
                     $saveChoice->save();
 
