@@ -57,11 +57,11 @@
                                 <form class="w-full">
                                     <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                         :key="index">
-                                        <div class="block mb-2.5" v-if="question.question_type_id <= 3">
+                                        <div class="block mb-2.5" v-if="question.question_type_id <= 3 || question.question_type_id == 6">
                                             <div class="font-semibold flex gap-x-1">{{ index + 1 }}. <label
                                                     v-html="question.question_text" class="output"></label></div>
                                             <!-- Handling radio inputs for question type 2 -->
-                                            <div v-if="question.question_type_id == 2">
+                                            <div v-if="question.question_type_id == 2 || question.question_type_id ==6">
                                                 <div v-for="(list, i) in question.choice" :key="i">
                                                     <input type="radio" :name="'radio' + list.id" :id="'radio' + list.id"
                                                         :checked="checked(list, question)" disabled>

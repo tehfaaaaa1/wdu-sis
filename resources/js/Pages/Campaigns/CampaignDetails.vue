@@ -48,15 +48,18 @@ const submit = () => {
     {onsucces: window.location.reload()})
 }
 const newSender = () => {
-    senderNew.post(route('add-sender', [props.campaign.slug]))
+    senderNew.post(route('add-sender', [props.campaign.slug]),
+    {onsucces:submit}
+    )
 }
 const newRecipient = () => {
     RecipientNew.post(route('add-recipient', [props.campaign.slug]),
+    {onsucces: submit}
     )
 }
 const dataSender = ()=>{
     form.post(route('update-sender',[props.campaign.sender.id, props.campaign.slug]) , 
-    {onsucces: window.location.reload()})
+    {onsucces: submit})
 }
 </script>
 <template>
@@ -255,18 +258,20 @@ const dataSender = ()=>{
                                 leave-to-class="transform opacity-0 -translate-y-3">
                                     <div class="w-full px-4 pt-3 pb-3 my-3 shadow-sm rounded-md border-1 border min-h-60 flex flex-col justify-between border-primary" v-show="addRecipient">
                                         <div class="">
-                                            <h2 class="text-center text-lg font-medium mb-2">Choose</h2>
-                                            <div class="" v-for="(recipient, rIndex) in recipients" :key="rIndex">
-                                                <input type="radio" :id="'recipient_' + recipient.id" name="recipient_id"
-                                                    class="checked:text-primary focus:ring-primary my-1.5" v-model="form.recipient_id"
-                                                    :value="recipient.id" />
-                                                <label :for="'recipient_' + recipient.id" class="pl-1.5 text-sm">
-                                                    {{ recipient.name }}
-                                                </label>
+                                            <h2 class="text-center text-lg font-medium mb-1">Choose</h2>
+                                            <div class="grid grid-rows-5 grid-flow-col ">
+                                                <div class="" v-for="(recipient, rIndex) in recipients" :key="rIndex">
+                                                        <input type="radio" :id="'recipient_' + recipient.id" name="recipient_id"
+                                                            class="checked:text-primary focus:ring-primary my-1" v-model="form.recipient_id"
+                                                            :value="recipient.id" />
+                                                        <label :for="'recipient_' + recipient.id" class="pl-1.5 text-sm">
+                                                            {{ recipient.name }}
+                                                        </label>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="">
-                                            <PrimaryButton class="mt-4" type="button"
+                                            <PrimaryButton class="mt-3" type="button"   
                                                     @click="addRecipientNew = ! addRecipientNew, addRecipient = ! addRecipient">Add New Recipient</PrimaryButton>
                                         </div>
                                     </div>
@@ -314,7 +319,7 @@ const dataSender = ()=>{
                         </a>
                     </div>
                     <div class="p-4">
-                        <PrimaryButton class=" justify-center mt-2 !font-semibold" :class="{ 'opacity-25': form.processing }"
+                        <PrimaryButton type="submit" @click="submit" class=" justify-center mt-2 !font-semibold" :class="{ 'opacity-25': form.processing }"
                             :disabled="form.processing">
                             Save All Changes
                         </PrimaryButton>
