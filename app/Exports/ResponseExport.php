@@ -37,26 +37,24 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
         $this->surveyTitle = $title;
         $this->question = $question->where('question_type_id', '<=', 3)->toArray();
         // array_push($this->question, $question->where('question_type_id', '==', 6)->first()->toArray());
-
-        usort($this->question, function ($a, $b) {
-            if($a['question_page_id'] == $b['question_page_id']){
-                return $a['order'] >= $b['order'] ;
-            }
-            return $a['question_page_id'] >= $b['question_page_id'];
-        });
-        foreach($this->question as $index => $quest){ 
-                $this->question_text[$index] = strip_tags($quest['question_text']);
-        }
         foreach ($question as $q) {
-            if ($q->question_type_id == 2 || $q->question_type_id == 3 ||$q->question_type_id == 6) {
-                if($q->question_type_id == 6){
+            if ($q->question_type_id == 2 || $q->question_type_id == 3 || $q->question_type_id == 6) {
+                if ($q->question_type_id == 6) {
                     // dd($q);
                     array_push($this->question, $q->toArray());
                 }
                 array_push($this->choice, $q->choice->toArray());
-            } 
-        }   
-
+            }
+        }
+        usort($this->question, function ($a, $b) {
+            if ($a['question_page_id'] == $b['question_page_id']) {
+                return $a['order'] >= $b['order'];
+            }
+            return $a['question_page_id'] >= $b['question_page_id'];
+        });
+        foreach ($this->question as $index => $quest) {
+            $this->question_text[$index] = strip_tags($quest['question_text']);
+        }
     }
 
     public function title(): string
@@ -96,20 +94,16 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             return ($a['question_id'] >= $b['question_id']);
         });
         $groupAnswer = [];
-        dd($this->question);
+
         foreach ($this->question as $q) {
             $groupAnswer[$q['id']][] = null;
             foreach ($answer as $index => $ans) {
                 foreach ($this->choice as $choice) {
                     foreach ($choice as $c) {
-                        if($q['question_type_id'] <=3){
-                            $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['value'] : '';
-                        } else if($q['question_type_id']  == 6){
-                            $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['scale'] : '';
-                        }
+                        $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['scale'] ?? $c['value'] : '';
                     }
                 }
-            $q['id'] == $ans['question_id'] ? $groupAnswer[$q['id']][] = $answer[$index]['answer'] : ''; 
+                $q['id'] == $ans['question_id'] ? $groupAnswer[$q['id']][] = $answer[$index]['answer'] : '';
             }
             $groupAnswer[$q['id']] =  array_filter($groupAnswer[$q['id']], function ($value) {
                 return $value != null;
@@ -118,7 +112,6 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
         foreach ($groupAnswer as $qId => &$answe) {
             $answe = implode(", ", $answe);
         }
-        // dd($response);
         return array_merge(
             [
                 $this->rownumber,

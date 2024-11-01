@@ -463,7 +463,7 @@ const updateSize = (pgindex, qindex) => {
     question.height = Math.max(question.height, 0);
 }
 
-const showDeletePageButton = ref(false)
+const showDeletePageButton = ref([false])
 
 </script>
 
@@ -670,14 +670,14 @@ const showDeletePageButton = ref(false)
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
                     :class="'pb-8 rounded-md'" handle=".handle">
-                    <div @mouseenter="showDeletePageButton = true" @mouseleave="showDeletePageButton = false"
+                    <div @mouseenter="showDeletePageButton[page_index] = true" @mouseleave="showDeletePageButton[page_index] = false"
                         class="rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
                         <div
                             class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle cursor-move">
                             <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
                                 class="w-full bg-transparent text-white border-0 border-b border-white placeholder:font-normal placeholder-gray-100 focus:ring-0 focus:border-b-2 focus:border-white transition" />
                             <div class="absolute -right-[3.125rem] z-10 mt-2 origin-top-right"
-                                v-show="showDeletePageButton">
+                                v-show="showDeletePageButton[page_index]">
                                 <button type="button" @click="hapus(page_index)"
                                     class="cursor-pointer block bg-white p-3 border focus:outline-none focus:ring-1 focus:ring-red-500 border-gray-300 shadow-md">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

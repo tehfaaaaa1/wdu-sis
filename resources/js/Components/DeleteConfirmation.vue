@@ -1,6 +1,6 @@
 <template>
-    <div v-if="show" class="fixed inset-0 flex items-center justify-center z-50">
-        <div class="absolute inset-0 bg-gray-600 opacity-75"></div>
+    <div v-if="show" class="fixed inset-0 flex items-center justify-center z-50 cursor-auto">
+        <div class="absolute inset-0 bg-gray-600 opacity-25"></div>
         <div class="bg-white p-6 rounded-lg shadow-lg z-10">
             <h2 class="text-lg font-semibold text-gray-800 mb-4">Confirm deletion</h2>
             <p class="text-gray-600 mb-6">Are you sure want to delete? This action cannot be undone.</p>
