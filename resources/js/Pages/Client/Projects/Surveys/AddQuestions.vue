@@ -376,6 +376,7 @@ const selectedNextPage = ref('')
 const flowName = ref(null)
 const useQuestion = ref(false)
 const flowId = ref(null)
+const dltFlow = ref(false)
 const floww = (flow) => {
     selectedPage.value = props.page.find(p => p.id == flow.current_page_id)
     if (flow.question_id) {
@@ -383,6 +384,7 @@ const floww = (flow) => {
         selectedChoice.value = selectedQuestion.value.choice.find(c => c.id == flow.question_choice_id)
         useQuestion.value = true
     }
+    dltFlow.value = true
     selectedNextPage.value = props.page.find(a => a.id == flow.next_page_id)
     flowName.value = flow.flow_name
     flowId.value = flow.id
@@ -960,7 +962,7 @@ const showDeletePageButton = ref([false])
                                 </option>
                             </select>
                         </div>
-                        <div class="mb-2 inline-flex justify-between w-full">
+                        <div class="mb-2 inline-flex justify-between w-full" v-if="selectedPage">
                             <PrimaryButton type="button" @click="useQuestion = !useQuestion">Use Question
                             </PrimaryButton>
                             <PrimaryButton v-if="selectedQuestion" type="button"
@@ -988,7 +990,7 @@ const showDeletePageButton = ref([false])
                         </div>
                         <div class="flows-dropdown-label" :class="{ '!justify-center': hapusFlow == true }"
                             v-if="selectedPage">
-                            <a @click="hapusFlow = !hapusFlow" v-if="!hapusFlow"
+                            <a @click="hapusFlow = !hapusFlow" v-if="!hapusFlow && dltFlow"
                                 class="font-medium text-base text-red-600 hover:underline cursor-pointer">Delete</a>
                             <div class="inset-0 flex items-center justify-center" v-if="hapusFlow">
                                 <!-- <div class="absolute inset-0 bg-gray-600 opacity-75"></div> -->
