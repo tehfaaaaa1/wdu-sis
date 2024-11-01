@@ -68,9 +68,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::post('/create-campaign', [CampaignController::class, 'store'])->name('create-campaign');
         // Route::get('/email-send', [HomeController::class, 'sendEmail'])->name('email.send');
         Route::get('/send', function () { return View::make('emails.testMail'); })->name('email.send');
-        Route::get('/{Campaign:slug}/details', [CampaignController::class, 'details'])->name('details');
+        Route::get('/{Campaign:slug}/details', [CampaignController::class, 'details'])->name('campaign-details');
+        Route::post('/add-recipient/{Campaign:slug}', [CampaignController::class, 'addRecipient'])->name('add-recipient');
         Route::post('/{Campaign:slug}/details/add-data', [CampaignController::class, 'addData'])->name('campaign-data');
-        Route::post('/add-sender',[ CampaignController::class, 'addSender'])->name('add-sender');
+        Route::get('/{Campaign:slug}/email-builder', [CampaignController::class, 'emailBuilder'])->name('email-builder');
+        Route::post('/add-sender/{Campaign:slug}',[ CampaignController::class, 'addSender'])->name('add-sender');
+        Route::post('/update-sender/{Sender:id}/{Campaign:slug}',[ CampaignController::class, 'updateSender'])->name('update-sender');
     });
     // Client
     Route::prefix('/client')->group(function (){
@@ -120,9 +123,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
                 Route::get('/{id}/list-response/export', [ResponseController::class, 'export'])->name('export-response');
                 // question
                 Route::get('/add-question/{id}',[QuestionController::class, 'question'])->name('question_surveys')->middleware('admin');
-                Route::post('/manual-save-question/{id}',[QuestionController::class, 'manualSave'])->name('manual-save-question')->middleware('admin');
-                Route::post('/store-question/{id}',[QuestionController::class, 'store'])->name('question_store')->middleware('admin');
-                Route::post('create-flow/{id}',[QuestionController::class, 'flow'])->name('save-flow')->middleware('admin');
+                Route::post('/manual-save-question/{Survey:id}',[QuestionController::class, 'manualSave'])->name('manual-save-question')->middleware('admin');
+                Route::post('create-flow/{Survey:id}',[QuestionController::class, 'flow'])->name('save-flow')->middleware('admin');
                 Route::get('{Survey:id}/delete-flow/{Flow:id}',[QuestionController::class, 'deleteFlow'])->name('delete-flow')->middleware('admin');
                 
                 //Resource
@@ -136,9 +138,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         Route::get('/list-users', [UserController::class, 'index'])->name('users')->middleware(['ableCreateUser']);
         Route::post('/create', [UserController::class, 'store'])->name('create_user')->middleware(['ableCreateUser']);
         Route::get('/create', [UserController::class, 'create'])->name('users.create')->middleware(['ableCreateUser']);
-        Route::put('/update/{user}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
         Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit-user')->middleware(['ableCreateUser']);
-        Route::put('/{id}', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
+        Route::put('/{id}/update', [UserController::class, 'update'])->name('update_user')->middleware(['ableCreateUser']);
         Route::get('/{id}/delete', [UserController::class, 'destroy'])->name('delete_user')->middleware(['ableCreateUser']);
     });
 

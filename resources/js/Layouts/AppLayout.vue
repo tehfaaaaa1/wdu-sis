@@ -64,16 +64,13 @@ const openn = ref(false)
                                     :active="route().current('listclient')">
                                     Client
                                 </NavLink>
-                                <NavLink class="focus:text-primary "
-                                    v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
-                                    :href="route('users')" :active="route().current('users')">
-                                    User
-                                </NavLink>
+
                                 <NavLink class="focus:text-primary"
                                     v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
                                     :href="route('campaigns')" :active="route().current('campaigns')">
                                     Campaigns
                                 </NavLink>
+
                                 <div class="relative">
                                     <div @mouseenter="openn = true" @mouseleave="openn = false">
                                         <NavLink class="focus:text-primary" :href="route('list-contact')"
@@ -89,7 +86,7 @@ const openn = ref(false)
                                         leave-active-class="transition ease-in duration-75"
                                         leave-from-class="transform opacity-100 scale-100"
                                         leave-to-class="transform opacity-0 scale-95">
-                                        <div v-show="openn" class="absolute z-50 rounded-md shadow-lg w-40"
+                                        <div v-show="openn" class="absolute z-[100] rounded-md shadow-lg w-40"
                                             @mouseenter="openn = true" @mouseleave="openn = false">
                                             <div class="py-1 rounded-md ring-1 ring-black ring-opacity-5 bg-white">
                                                 <NavLinkNoBg class="focus:text-primary w-full"
@@ -98,7 +95,7 @@ const openn = ref(false)
                                                     :active="route().current('list-contact')">
                                                     List Contact
                                                 </NavLinkNoBg>
-                                                <NavLinkNoBg class="focus:text-primary w-full mb-2"
+                                                <NavLinkNoBg class="focus:text-primary w-full mb-1"
                                                     v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
                                                     :href="route('list-recipient')"
                                                     :active="route().current('list-recipient')">
@@ -109,6 +106,11 @@ const openn = ref(false)
                                     </transition>
                                 </div>
 
+                                <NavLink class="focus:text-primary "
+                                    v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                                    :href="route('users')" :active="route().current('users')">
+                                    User
+                                </NavLink>
 
                             </div>
                         </div>
@@ -276,13 +278,23 @@ const openn = ref(false)
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
-                            :href="route('users')" :active="route().current('users')">
-                            User
+                            :href="route('campaigns')" :active="route().current('campaigns')">
+                            Campaigns
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
-                            :href="route('campaigns')" :active="route().current('campaigns')">
-                            Campaigns
+                            :href="route('list-contact')" :active="route().current('list-contact')">
+                            Contact List
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                            :href="route('list-recipient')" :active="route().current('list-recipient')">
+                            Recipient List
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            v-if="$page.props.auth.user.usertype === 'superadmin' || $page.props.auth.user.current_team_id === 5"
+                            :href="route('users')" :active="route().current('users')">
+                            User
                         </ResponsiveNavLink>
                     </div>
 

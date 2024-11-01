@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -33,7 +33,7 @@ const showCitiesAndRegencies = ref([]);
 const toggleVisibility = (surveyId, provinceIndex) => {
     if (!showCitiesAndRegencies.value[surveyId]) {
         showCitiesAndRegencies.value[surveyId] = [];
-    }
+    }   
     showCitiesAndRegencies.value[surveyId][provinceIndex] = !showCitiesAndRegencies.value[surveyId][provinceIndex];
 };
 
@@ -142,8 +142,6 @@ const getCitiesAndRegencies = (survey) => {
     return provincesData;
 };
 
-
-
 const parseProvinceTargets = (survey) => {
     try {
         return typeof survey.province_targets === 'string'
@@ -155,10 +153,22 @@ const parseProvinceTargets = (survey) => {
     }
 };
 
-
 const getSurveySubmissions = (surveyId) => {
     return props.userTarget[surveyId] || 0;
 };
+
+onMounted(() => {
+    props.surveys.forEach(element => {
+        window.Echo.private(`survey.${element.id}`).listen('.formClosed', (e) => {
+            if (e.survey.id == element.id) {
+                element.status = e.survey.status
+            } else {
+                return false
+            }
+        });
+    });
+})
+
 </script>
 
 <template>
@@ -185,7 +195,7 @@ const getSurveySubmissions = (surveyId) => {
                     <div class="w-1/2 sm:w-full">
                         <NavLink :href="route('create_surveys', [clientSlug, projectSlug])"
                             v-if="$page.props.auth.user.usertype === 'superadmin'"
-                            class="bg-primary text-white font-medium text-sm px-6 mr-5 py-2 rounded-m hover:bg-white hover:text-primary transition focus:ring-2 focus:ring-primary">
+                            class="bg-primary mb-0 text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4">
                             Tambah Kuisioner
                         </NavLink>
                     </div>
@@ -288,33 +298,29 @@ const getSurveySubmissions = (surveyId) => {
                                         </div>
                                     </div>
                                     <div class="flex justify-center">
-                                        <p v-if="survey.status == 0"
-                                            class="w-24 bg-auto bg-red-100 text-red-800 text-xs font-medium rounded text-center mt-3 p-2">
-                                            DITUTUP</p>
-                                        <p v-if="survey.status == 1"
-                                            class="w-24 bg-auto bg-green-100 text-green-800 text-xs font-medium rounded text-center mt-3 p-2">
-                                            DIBUKA</p>
+                                        <p :class="survey.status == 0 ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'"
+                                            class="w-24 bg-auto  text-xs font-medium rounded text-center mt-3 p-2">
+                                            {{ survey.status == 0 ? 'DITUTUP' : 'DIBUKA' }}
+                                        </p>
                                     </div>
                                 </td>
                                 <td class="px-6 py-6">
                                     <div class="grid grid-cols-2 gap-x-2 justify-center content-center">
-                                        <div class="flex items-center"
-                                            v-if="props.user.current_team_id == 1 || props.user.current_team_id == 2">
-                                            <div v-if="hasFilledSurvey(survey)"
-                                                :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                        <div class="flex items-center" v-if="props.user.current_team_id == 1 || props.user.current_team_id == 2" 
+                                        :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                            <div v-if="hasFilledSurvey(survey)" class="m-auto">
                                                 <p class="text-center"
                                                     :class="props.user.current_team_id != 1 || props.user.usertype == 'superadmin' ? '' : ''">
-                                                    Anda Sudah Mengisi Survey Ini</p>
+                                                    Anda Sudah Mengisi Kuisioner Ini</p>
+                                                    <!-- {{ props.user.current_team_id == 1 && props.user.usertype == 'user' }} -->
                                             </div>
                                             <div class="m-auto"
-                                                v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
-                                                :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                                v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)">
                                                 <p class="text-center">Kuisioner Ditutup</p>
                                             </div>
                                             <NavLink v-else
                                                 :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:text-secondary focus:hover:!ring-secondary hover:!ring-secondary focus:!ring-secondary transition "
-                                                :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:text-secondary focus:hover:!ring-secondary hover:!ring-secondary focus:!ring-secondary transition ">
                                                 Isi Kuisioner
                                             </NavLink>
                                         </div>
@@ -341,7 +347,6 @@ const getSurveySubmissions = (surveyId) => {
                                                 class="font-medium text-red-600 hover:underline cursor-pointer p-1">Delete</a>
                                         </div>
                                     </div>
-
                                 </td>
                             </tr>
                         </tbody>

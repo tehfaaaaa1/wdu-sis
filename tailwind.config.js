@@ -40,6 +40,31 @@ export default {
             borderWidth: {
                 '6': '6px',
             },
+            typography: ({ theme }) => ({
+                DEFAULT: {
+                    css: {
+                        '--tw-prose-bullets': theme('colors.black'),
+                        li: {
+                            p: {
+                                margin: 0
+                            }
+                        },
+                        p: {
+                            margin: 0,
+                            color: theme('colors.black')
+                        },
+                        h1: {
+                            margin: 0
+                        },
+                        h2: {
+                            margin: 0
+                        },
+                        h3: {
+                            margin: 0
+                        },
+                    }
+                }
+            }),
         },
     },
 

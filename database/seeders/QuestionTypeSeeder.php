@@ -13,12 +13,15 @@ class QuestionTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('question_types')->insert([
-            ['question_type' => 'Text'],
-            ['question_type' => 'Radio'],
-            ['question_type' => 'Checkbox'],
-            ['question_type' => 'Image'],
-            ['question_type' => 'Paragraph'],]
+        DB::table('question_types')->insert(
+            [
+                ['question_type' => 'Text'],
+                ['question_type' => 'Radio'],
+                ['question_type' => 'Checkbox'],
+                ['question_type' => 'Image'],
+                ['question_type' => 'Paragraph'],
+                ['question_type' => 'Number'],
+            ]
         );
     }
 }

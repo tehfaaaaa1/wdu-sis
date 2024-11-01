@@ -17,14 +17,16 @@ class ContactController extends Controller
     // Contact
     public function contact(Request $request) {
         // dd($request->getQueryString());
-        $contact = EmailContact::filter(request(['search']))->paginate(20)->withQueryString()->onEachSide(2);
+        $contact = EmailContact::filter(request(['search']))->paginate(12)->withQueryString()->onEachSide(2);
         return Inertia::render('Contact/ListContact', [
             'contact' => $contact,
             'search' => $request->getQueryString()
         ]);
     }
     public function importContact(Request $request, $slug) {
-        Excel::import(new ContactsImport($slug), $request->file('file'));
+        $id = Recipient::where('slug', $slug)->first();
+        // dd($id['id']);
+        Excel::import(new ContactsImport($id['id']), $request->file('file'));
     }
     public function editContact($slug, $id){
         $rec = Recipient::where('slug', $slug)->first();
@@ -65,7 +67,7 @@ class ContactController extends Controller
             'company' => 'required|string|max:255',
             'occupation' => 'required|string|max:255',
         ]);
-        EmailContact::where('id', $id)->update([
+          EmailContact::where('id', $id)->update([
             'email' => $validate['email'],
             'first_name' => $validate['first_name'],
             'last_name'=> $validate['last_name'],
@@ -82,11 +84,12 @@ class ContactController extends Controller
                 'error' => 'Contact not found'
             ]);
         }
-        EmailContact::where('id', $con_id)->delete();
+        EmailContact::where('id', $con_id)->delete();   
         return redirect()->route('list-contact');
     }
     // Recipient
-    public function recipient() {
+    public function recipient(Request $request) {
+        // dd($request);
         $recipient = Recipient::all();
         return Inertia::render('Contact/ListRecipient', [
             'recipients'=> collect($recipient)->map(function ($r) {

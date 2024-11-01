@@ -59,6 +59,7 @@ class ResponseController extends Controller
     public function report(Survey $surveyModel, $clientSlug, $projectSlug, $surveyId, $responseId)
     {
         $survey = Survey::findOrFail($surveyId);
+        $provinces = Province::all();
         $response = Response::with('user')->where('survey_id', $surveyId)->findOrFail($responseId);
         $project = DB::table('projects')->where('slug', $projectSlug)->get();
         $client = DB::table('clients')->where('slug', $clientSlug)->get();
@@ -97,6 +98,7 @@ class ResponseController extends Controller
                 'submit' => $response->updated_at->format('H:i:s d-m-Y'),
                 'answer' => $answers,
                 'biodata' => $bio,
+                'provinces' => $provinces,
             ]
         );
     }

@@ -7,11 +7,12 @@ use Inertia\Inertia;
 use App\Models\Answer;
 use App\Models\Survey;
 use App\Models\Response;
+use App\Events\FormClosed;
 use App\Models\QuestionPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Cookie;
+use Illuminate\Support\Facades\Cookie;
 
 class AnswerController extends Controller
 {
@@ -112,6 +113,7 @@ class AnswerController extends Controller
                 }),
             ];
         });
+        // broadcast(new FormClosed($id));
         
         // Render the view
         return Inertia::render(

@@ -54,10 +54,10 @@ const search = () => {
 <template>
     <AppLayout title="Users">
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center mb-5">
+            <div class="flex justify-between items-center mb-4">
                 <div class="w-1/2 sm:w-full">
                     <NavLink
-                        class="bg-primary text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4"
+                        class="bg-primary mb-0 text-white font-medium text-sm px-6 py-2 rounded-md hover:bg-white hover:text-primary hover:border-primary transition mr-4"
                         :href="route('users.create')">
                         Create User
                     </NavLink>
@@ -120,71 +120,73 @@ const search = () => {
                     </div>
                 </div>
             </div>
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 sm:table-fixed">
-                    <thead class="text-xs text-white uppercase bg-primary">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">Name</th>
-                            <th scope="col" class="px-6 py-3">Email</th>
-                            <th scope="col" class="px-6 py-3 w-[10%]">User Type</th>
-                            <th scope="col" class="px-6 py-3">Team</th>
-                            <th scope="col" class="px-6 py-3">Client</th>
-                            <th scope="col" class="px-6 py-3 md:w-1/12"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="user in users.data" :key="user.id" class="bg-white border-b hover:bg-gray-50 group">
-                            <td scope="row" class="px-6 py-4 font-medium text-gray-900">
-                                {{ user.name }}
-                            </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 break-words">
-                                {{ user.email }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ user.usertype }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ user.current_team != null ? user.current_team.name : 'No Team' }}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{ user.client != null ? user.client.client_name : 'No Client' }}
-                            </td>
-                            <td class="px-6 py-4 flex justify-end">
-                                <Dropdown width="36">
-                                    <template #trigger>
-                                        <div
-                                            class="collapse group-hover:visible w-12 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:ring-1 ring-inset ring-gray-300 cursor-pointer">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="size-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                                            </svg>
-                                        </div>
-                                    </template>
-                                    <template #content>
-                                        <div class="py-1">
-                                            <a :href="route('edit-user', [user.id])"
-                                                :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
-                                            </a>
-                                            <a @click="hapus(user.id)"
-                                                :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Delete
-                                            </a>
-                                        </div>
-                                    </template>
-                                </Dropdown>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="px-6 py-4 bg-white text-center" v-if="isEmpty(users.data)">
-                    <p class="font-semibold">User Tersebut Tidak Ada</p>
-                    <br>
-                    <a :href="route('users')"
-                        class="font-medium text-base text-white hover:bg-white hover:text-secondary hover:ring-2 hover:ring-secondary transition px-4 py-2.5 bg-secondary rounded">Kembali</a>
-                    <div class="my-3" />
-                </div>
-                <div class="" v-if="!isEmpty(users.data)">
-                    <Pagination :links="users.links" />
+            <div class="relative overflow-x-auto pb-10">
+                <div class=" shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 sm:table-fixed">
+                        <thead class="text-xs text-white uppercase bg-primary">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Name</th>
+                                <th scope="col" class="px-6 py-3">Email</th>
+                                <th scope="col" class="px-6 py-3 w-[10%]">User Type</th>
+                                <th scope="col" class="px-6 py-3">Team</th>
+                                <th scope="col" class="px-6 py-3">Client</th>
+                                <th scope="col" class="px-6 py-3 md:w-1/12"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="user in users.data" :key="user.id" class="bg-white border-b hover:bg-gray-50 group">
+                                <td scope="row" class="px-6 py-4 font-medium text-gray-900">
+                                    {{ user.name }}
+                                </td>
+                                <td class="px-6 py-4 font-medium text-gray-900 sm:text-gray-500 break-words">
+                                    {{ user.email }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ user.usertype }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ user.current_team != null ? user.current_team.name : 'No Team' }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{ user.client != null ? user.client.client_name : 'No Client' }}
+                                </td>
+                                <td class="px-6 py-4 flex justify-end">
+                                    <Dropdown width="36">
+                                        <template #trigger>
+                                            <div
+                                                class="collapse group-hover:visible w-12 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:ring-1 ring-inset ring-gray-300 cursor-pointer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                    stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                                                </svg>
+                                            </div>
+                                        </template>
+                                        <template #content>
+                                            <div class="py-1">
+                                                <a :href="route('edit-user', [user.id])"
+                                                    :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Edit
+                                                </a>
+                                                <a @click="hapus(user.id)"
+                                                    :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100'">Delete
+                                                </a>
+                                            </div>
+                                        </template>
+                                    </Dropdown>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="px-6 py-4 bg-white text-center" v-if="isEmpty(users.data)">
+                        <p class="font-semibold">User Tersebut Tidak Ada</p>
+                        <br>
+                        <a :href="route('users')"
+                            class="font-medium text-base text-white hover:bg-white hover:text-secondary hover:ring-2 hover:ring-secondary transition px-4 py-2.5 bg-secondary rounded">Kembali</a>
+                        <div class="my-3" />
+                    </div>
+                    <div class="" v-if="!isEmpty(users.data)">
+                        <Pagination :links="users.links" />
+                    </div>
                 </div>
             </div>
         </main>

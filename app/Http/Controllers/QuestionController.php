@@ -31,7 +31,6 @@ class QuestionController extends Controller
         $project = DB::table('projects')
         ->where('slug', $projectSlug)
         ->get();
-        $surveyall = Survey::where('project_id', $project[0]->id)->get();
         $client = DB::table('clients')
             ->where('slug', $clientSlug)
             ->get();
@@ -65,79 +64,9 @@ class QuestionController extends Controller
                 // 'lastId' => $lastId,
                 // 'c_lastId' => $c_lastId,
                 'flows'=> $flow,
-                'surveyall' => $surveyall,
                 'logictype'=>$logic_type
             ]
         );
-    }
-
-    public function store(Request $request, $clientSlug, $projectSlug, $id)
-    {
-        // $surveyid = Survey::where('id', $id);
-        $allRequest = $request->all();
-        $allData = $allRequest['data'];
-        $idSurvey = $request['survey'];
-        $clientSlug = $request['client_slug'];
-        $projectSlug = $request['project_slug'];
-        // dd($allData);
-        foreach ($allData as $data) {
-            // dd($data);
-            $soal = $data['soal'];
-            $type = $data['types'];
-            $question_type = null;
-            $req = $data['required'];
-            $tipe = null;
-            if ($soal !== null && $type !== []) {
-                foreach ($type as $Typee) {
-                    switch ($Typee) {
-                        case 'Text':
-                            $question_type = 1;
-                            $tipe = null;
-                            break;
-                        case 'Radio':
-                            $question_type = 2;
-                            $tipe = $data['radios'];
-                            if (count($tipe) < 2) {
-                                abort(403, "Isilah Minimal 2 Pilihan !!");
-                            }
-                            break;
-                        case 'Checkbox':
-                            $question_type = 3;
-                            $tipe = $data['checkbox'];
-                            if (count($tipe) < 2) {
-                                abort(403, "Isilah Minimal 2 Pilihan !!");
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            } else {
-                abort(403, "Belum Mengisi Soal dan Memilih Tipe Soal");
-            }
-
-            $newQuestion = new Question;
-            $newQuestion->question_text = $soal;
-            $newQuestion->survey_id = $idSurvey;
-            $newQuestion->question_type_id = $question_type;
-            $newQuestion->order = random_int(1, 10000);
-            $newQuestion->required = $req;
-            $newQuestion->save();
-            if ($tipe !== null) {
-                foreach ($tipe as $choice) {
-                    $value = $choice['pilih'];
-                    QuestionChoice::Create([
-                        'value' => $value,
-                        'question_id' => $newQuestion->id,
-                        'order' => random_int(1, 10000),
-                    ]);
-                }
-            } else {
-            }
-        }
-
-        // session()->flash('question_added', 'Questions added!');
-        return redirect()->route('listsurvey', [$clientSlug, $projectSlug])->with('question_added', 'Question added successfully.');
     }
 
     public function manualSave(Request $request, $clientSlug, $projectSlug, $id)
@@ -158,6 +87,7 @@ class QuestionController extends Controller
             'data.*.question.*.order' => 'nullable|integer',
             'data.*.question.*.logic_choice' => 'nullable|integer',
             'data.*.question.*.logic_type' => 'nullable|integer',
+            
         ]);
         // dd($validatedData);
         $survey = Survey::findOrFail($request->survey);
@@ -217,6 +147,21 @@ class QuestionController extends Controller
                             $questionType = 1;
                             $choices = []; // Clear any existing choices for Text type
                             break;
+                        case 'Number':
+                            $questionType = 6;
+                            $choices = $questionData['choices'] ?? [];
+                            if (count($choices) < 2) {
+                                abort(403, "Isilah Minimal 2 Pilihan !!");
+                            }
+                            for($i = 0; $i<count($choices);$i++ ){
+                                for($j = $i + 1;$j<count($choices);$j++){
+                                    $intersect = array_intersect($choices[$i], $choices[$j]);
+                                    if(!empty($intersect)){
+                                        abort(403, 'ada pilihan yang sama dalam 1 pertanyaan');
+                                    }
+                                }
+                            }
+                            break;    
                         case 'Radio':
                         case 'Checkbox':
                             $questionType = $type === 'Radio' ? 2 : 3;
@@ -248,7 +193,7 @@ class QuestionController extends Controller
                 $saveQuestion->order = $index + 1;
                 $saveQuestion->question_text = $questionData['soal'];
                 $saveQuestion->question_type_id = $questionType;
-                $saveQuestion->question_logic_type_id = $questionData['logic_type'];
+                $saveQuestion->question_logic_type_id = $questionData['logic_type'] ?? null; 
                 $saveQuestion->question_choice_id = $questionData['logic_choice'] ?? null;
                 $saveQuestion->save();
 
@@ -264,6 +209,7 @@ class QuestionController extends Controller
                     );
                     $saveChoice->value = $choice['pilih'];
                     $saveChoice->question_id = $saveQuestion->id;
+                    $saveChoice->scale = $choice['number'] ?? null;
                     $saveChoice->order = $choice['c_order'] ?? random_int(1, 10000);
                     $saveChoice->save();
 
@@ -289,27 +235,24 @@ class QuestionController extends Controller
         return back()->with('success', 'Survey created successfully.');
     }
 
-    public function flow(Request $request, $clientSlug, $projectSlug, $id){
-        if(array_search(null, Arr::except($request->all(), 'flow_id'))){
-            abort(403, 'Missing Flow Data');
-        };
-        $pageId = $request->page['id'];
-        $qId = $request->question['id'];
-        $qchoiceId = $request->choice['id'];
-        $nextOrder = $request->next['order'];   
-        $flowID = $request->flow_id;
-        $currentOrder = $request->page['order'];
-        $request->validate([
-            'name' => 'required|string|max:255'
+    public function flow(Request $request, $clientSlug, $projectSlug, $surveyId){
+        
+        $validated = $request->validate([
+            'name'=>'required|string|max:255',
+            'current_page'=>'required',
+            'next_page'=>'required',
+            'useQ'=>'required|boolean',
+            'question'=>'required_if:useQ,true',
+            'choice'=>'required_if:useQ,true',
         ]);
+        $flowID = $request->flow_id;
         $saveFlow = Flow::firstOrNew(['id'=>$flowID??null]);
-        $saveFlow->flow_name = $request->name;
-        $saveFlow->question_page_id = $pageId;
-        $saveFlow->question_id = $qId;
-        $saveFlow->current_page_order = $currentOrder;
-        $saveFlow->question_choice_id = $qchoiceId;
-        $saveFlow->next_page_order = $nextOrder;
-        $saveFlow->survey_id = $id;
+        $saveFlow->flow_name = $validated['name'];
+        $saveFlow->current_page_id = $validated['current_page']['id'];
+        $saveFlow->next_page_id = $validated['next_page']['id'];
+        $saveFlow->question_id = $validated['question']['id'] ?? null;
+        $saveFlow->question_choice_id = $validated['choice']['id'] ?? null;
+        $saveFlow->survey_id = $surveyId;
         $saveFlow->save();
 
         return back()->with('success', 'Survey created successfully.');
