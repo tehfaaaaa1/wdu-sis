@@ -11,11 +11,11 @@
         responses: [Array, Object],
         answer: Array,
         biodata: Object,
-        start: Object,
-        submit: Object,
+        start: String,
+        submit: String,
         provinces: Array,
     });
-    
+
     const project = props.projects[0]
     const client = props.clients[0]
 
@@ -28,7 +28,7 @@
         return q.answer.some(ans => ans.answer == choice.id && ans.response_id == props.responses.id);
     };
 
-    </script>
+</script>
 
     <template>
         <AppLayout title="Hasil Survey">
@@ -57,15 +57,22 @@
                                 <form class="w-full">
                                     <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                         :key="index">
-                                        <div class="block mb-2.5" v-if="question.question_type_id <= 3">
+                                        <div class="block mb-2.5"
+                                            v-if="question.question_type_id <= 3 || question.question_type_id == 6">
                                             <div class="font-semibold flex gap-x-1">{{ index + 1 }}. <label
                                                     v-html="question.question_text" class="output"></label></div>
                                             <!-- Handling radio inputs for question type 2 -->
-                                            <div v-if="question.question_type_id == 2">
-                                                <div v-for="(list, i) in question.choice" :key="i">
-                                                    <input type="radio" :name="'radio' + list.id" :id="'radio' + list.id"
-                                                        :checked="checked(list, question)" disabled>
-                                                    <label :for="'radio' + list.id" class="px-3">{{ list.value }}</label>
+                                            <div
+                                                v-if="question.question_type_id == 2 || question.question_type_id == 6">
+                                                <div v-for="(list, i) in question.choice" :key="i"
+                                                    class="flex items-center gap-x-3">
+                                                    <input type="radio" :name="'radio' + list.id"
+                                                        :id="'radio' + list.id" :checked="checked(list, question)"
+                                                        disabled>
+                                                    <span class="font-bold">{{ list.scale }}</span>
+                                                    <label :for="'radio' + list.id" class="">
+                                                        {{ list.value }}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <!-- Handle checkbox for question type 3 -->
@@ -74,7 +81,8 @@
                                                     <input type="checkbox" :name="'checkbox' + list.id"
                                                         :id="'checkbox' + list.id" :checked="checked(list, question)"
                                                         disabled>
-                                                    <label :for="'checkbox' + list.id" class="px-3">{{ list.value }}</label>
+                                                    <label :for="'checkbox' + list.id" class="px-3">{{ list.value
+                                                        }}</label>
                                                 </div>
                                             </div>
                                             <!-- Handling textarea for question type 1 -->
@@ -99,6 +107,6 @@
             </main>
         </AppLayout>
     </template>
-    <style>
-    @import url('/resources/css/quill-overwrite.css');
-    </style>
+<style>
+@import url('/resources/css/quill-overwrite.css');
+</style>

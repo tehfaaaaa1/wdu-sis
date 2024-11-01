@@ -63,7 +63,7 @@ const count = (pgind, qind, choice, answer, question) => {
     if (PieChartData[pgind].question[qind].labels.length != choice.length) {
         choice.forEach((element, ind) => {
             const persentage = ((answer.filter(a => a.answer == element.id).length * 100) / all).toFixed(2)
-            if (question.question_type_id == 2) {
+            if (question.question_type_id == 2 || question.question_type_id == 6) {
                 PieChartData[pgind].question[qind].labels.push(element.value + ' (' + persentage + '%)')
                 PieChartData[pgind].question[qind].datasets[0].data.push(answer.filter(a => a.answer == element.id).length)
             }
@@ -94,18 +94,22 @@ const showAllanswer = ref(props.page.map((p) => ({
                                 <div v-for="(question, index) in page.question.sort((a, b) => a.order - b.order)"
                                     :key="index">
                                     <div class="block mb-2.5">
-                                        <div class="font-semibold flex gap-x-1" v-if="question.question_type_id <= 3">
+                                        <div class="font-semibold flex gap-x-1"
+                                            v-if="question.question_type_id <= 3 || question.question_type_id == 6">
                                             {{ index + 1 }}. <label v-html="question.question_text"
                                                 class="output"></label>{{ ' (' + responses.length + ' Response)' }}
                                         </div>
                                         <!-- Handling radio inputs for question type 2 -->
-                                        <div v-if="question.question_type_id == 2" class="flex gap-x-10">
-                                            <div class="">
-                                                <div v-for="(list, i) in question.choice" :key="i">
+                                        <div v-if="question.question_type_id == 2 || question.question_type_id == 6"
+                                            class="flex gap-x-10">
+                                            <div>
+                                                <div v-for="(list, i) in question.choice" :key="i" class="flex gap-x-3">
                                                     <input type="radio" :name="'radio' + list.id"
                                                         :id="'radio' + list.id" disabled>
-                                                    <label :for="'radio' + list.id" class="px-3">{{ list.value
-                                                        }}</label>
+                                                    <span>{{ list.scale }}</span>
+                                                    <label :for="'radio' + list.id">
+                                                        {{ list.value }}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <PieChart :chart-data="PieChartData[ind].question[index]"
@@ -114,12 +118,13 @@ const showAllanswer = ref(props.page.map((p) => ({
                                         </div>
                                         <!-- Handle checkbox for question type 3 -->
                                         <div class="flex gap-x-10" v-if="question.question_type_id === 3">
-                                            <div class="">
-                                                <div class="" v-for="(list, i) in question.choice" :key="i">
+                                            <div>
+                                                <div v-for="(list, i) in question.choice" :key="i">
                                                     <input type="checkbox" :name="'checkbox' + list.id"
                                                         :id="'checkbox' + list.id" disabled>
-                                                    <label :for="'checkbox' + list.id" class="px-3">{{ list.value
-                                                        }}</label>
+                                                    <label :for="'checkbox' + list.id" class="px-3">
+                                                        {{ list.value }}
+                                                    </label>
                                                 </div>
                                             </div>
                                             <BarChart :chart-data="BarChartData[ind].question[index]"
@@ -128,8 +133,8 @@ const showAllanswer = ref(props.page.map((p) => ({
                                         </div>
                                         <div v-if="question.question_type_id == 4">
                                             <img :src="'/img/' + question.question_text"
-                                            style="max-width: 500px; max-height: 300px; width: auto; height: auto; display: block; margin: 0 auto;" 
-                                            alt="Image" />
+                                                style="max-width: 500px; max-height: 300px; width: auto; height: auto; display: block; margin: 0 auto;"
+                                                alt="Image" />
                                         </div>
                                         <div class="output" v-if="question.question_type_id == 5"
                                             v-html="question.question_text"></div>
