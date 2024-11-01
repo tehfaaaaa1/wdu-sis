@@ -306,23 +306,21 @@ onMounted(() => {
                                 </td>
                                 <td class="px-6 py-6">
                                     <div class="grid grid-cols-2 gap-x-2 justify-center content-center">
-                                        <div class="flex items-center"
-                                            v-if="props.user.current_team_id == 1 || props.user.current_team_id == 2">
-                                            <div v-if="hasFilledSurvey(survey)"
-                                                :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                        <div class="flex items-center" v-if="props.user.current_team_id == 1 || props.user.current_team_id == 2" 
+                                        :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                            <div v-if="hasFilledSurvey(survey)" class="m-auto">
                                                 <p class="text-center"
                                                     :class="props.user.current_team_id != 1 || props.user.usertype == 'superadmin' ? '' : ''">
                                                     Anda Sudah Mengisi Kuisioner Ini</p>
+                                                    <!-- {{ props.user.current_team_id == 1 && props.user.usertype == 'user' }} -->
                                             </div>
                                             <div class="m-auto"
-                                                v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)"
-                                                :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                                v-else-if="hasPubllish(survey) && !hasFilledSurvey(survey)">
                                                 <p class="text-center">Kuisioner Ditutup</p>
                                             </div>
                                             <NavLink v-else
                                                 :href="props.user.biodata_id == null ? route('biodata', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id]) : route('edit_bio', [clientSlug, projectSlug, survey.id, $page.props.auth.user.id])"
-                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:text-secondary focus:hover:!ring-secondary hover:!ring-secondary focus:!ring-secondary transition "
-                                                :class="props.user.current_team_id == 1 && props.user.usertype == 'user' ? 'col-span-2' : ''">
+                                                class="w-full flex justify-center py-2.5 text-white bg-secondary rounded-md text-sm hover:bg-transparent hover:text-secondary focus:hover:!ring-secondary hover:!ring-secondary focus:!ring-secondary transition ">
                                                 Isi Kuisioner
                                             </NavLink>
                                         </div>
