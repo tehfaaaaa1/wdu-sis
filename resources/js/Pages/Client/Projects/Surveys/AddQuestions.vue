@@ -65,10 +65,10 @@ const pages = ref(props.page.sort((a, b) => a.order - b.order).map((page) => {
                 break;
             case 6:
                 tipe = ['Number']
-                choice = item.choice.map((isi)=>{
-                    return {pilih: isi.value, cId: isi.id, c_order: isi.order, number:isi.scale }
+                choice = item.choice.map((isi) => {
+                    return { pilih: isi.value, cId: isi.id, c_order: isi.order, number: isi.scale }
                 })
-            break;
+                break;
             default:
                 break;
         }
@@ -85,8 +85,8 @@ const questionsType = ref([
     { types: 'Text', name: 'Text', texts: '' },
     { types: 'Radio', name: 'Single Choice', choices: '' },
     { types: 'Checkbox', name: 'Multiple Choice', choices: '' },
-    { types: 'Radio', name: 'Yes / No', choices: '' },
     { types: 'Number', name: 'Number Scale', choices: '' },
+    // { types: 'Radio', name: 'Yes / No', choices: '' },
 ]);
 
 const descType = ref([
@@ -106,10 +106,6 @@ function cloneQuestion(element) {
             choice = [{ pilih: '' }]
             lastCindex = choice.length - 1
             break;
-        case 'Yes / No':
-            choice = [{ pilih: 'Yes' }, { pilih: 'No' }]
-            lastCindex = choice.length - 1
-            break;
         case 'Multiple Choice':
             choice = [{ pilih: '' }]
             lastCindex = choice.length - 1
@@ -118,6 +114,10 @@ function cloneQuestion(element) {
             choice = [{ pilih: '', number: 0 }]
             lastCindex = choice.length - 1
             break;
+        // case 'Yes / No':
+        //     choice = [{ pilih: 'Yes' }, { pilih: 'No' }]
+        //     lastCindex = choice.length - 1
+        //     break;
 
         default:
             break;
@@ -251,11 +251,13 @@ function AddNumberOption(question) {
     const radio = { pilih: '', number: '' };
     question.choices.push(radio);
     SortNumber(question)
+    // console.log(question)
     question.lastChoiceIndex = question.choices.length - 1;
 }
 
 function SortNumber(question) {
-    let number = question.choices.number ?? question.choices.length;
+    // console.log(pages.value)
+    let number = question.choices[0].number ?? question.choices.length;
     if (question.sort == 'asc') {
         // for (let i = 0; i < number; i++) {
         //     question.choices[i].number = i + 1
@@ -529,33 +531,52 @@ const showDeletePageButton = ref([false])
                     </h1>
                 </div>
                 <div class="" id="add-question" v-if="QuestionOrFlow == 'question'">
-                    <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
+                    <p class="bg-white text-center font-semibold py-2.5 border-b select-none w-full">
                         Question Types</p>
                     <VueDraggable v-model="questionsType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                        :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype">
-                        <div v-for="item in questionsType" :key="item.types" class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between
-                                items-center cursor-grab hover:font-semibold">
-                            <span>{{ item.name }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-gray-500">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        :animation="150" :clone="cloneQuestion" :sort="false" class="list-qtype grid grid-cols-2">
+                        <div v-for="item in questionsType" :key="item.types"
+                            class="list-qtype-item bg-white border border-gray-300 py-2 px-4 cursor-grab hover:font-semibold flex flex-col items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#666666" v-if="item.name == 'Text'">
+                                <path d="M420-160v-520H200v-120h560v120H540v520H420Z" />
                             </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#666666" v-if="item.name == 'Single Choice'">
+                                <path
+                                    d="M480-280q83 0 141.5-58.5T680-480q0-83-58.5-141.5T480-680q-83 0-141.5 58.5T280-480q0 83 58.5 141.5T480-280Zm0 200q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#666666" v-if="item.name == 'Multiple Choice'">
+                                <path
+                                    d="m424-312 282-282-56-56-226 226-114-114-56 56 170 170ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#666666" v-if="item.name == 'Number Scale'">
+                                <path
+                                    d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm100-200h46v-240h-36l-70 50 24 36 36-26v180Zm124 0h156v-40h-94l-2-2q21-20 34.5-34t21.5-22q18-18 27-36t9-38q0-29-22-48.5T458-600q-26 0-47 15t-29 39l40 16q5-13 14.5-20.5T458-558q15 0 24.5 8t9.5 20q0 11-4 20.5T470-486l-32 32-54 54v40Zm296 0q36 0 58-20t22-52q0-18-10-32t-28-22v-2q14-8 22-20.5t8-29.5q0-27-21-44.5T678-600q-25 0-46.5 14.5T604-550l40 16q4-12 13-19t21-7q13 0 21.5 7.5T708-534q0 14-10 22t-26 8h-18v40h20q20 0 31 8t11 22q0 13-11 22.5t-25 9.5q-17 0-26-7.5T638-436l-40 16q7 29 28.5 44.5T680-360ZM160-240h640v-480H160v480Zm0 0v-480 480Z" />
+                            </svg>
+                            <span class="text-center">{{ item.name }}</span>
                         </div>
                     </VueDraggable>
 
-                    <p class="bg-white text-center font-semibold py-2.5 border-b-2 select-none w-full">
+                    <p class="bg-white text-center font-semibold py-2.5 border-y select-none w-full">
                         Descriptions</p>
                     <VueDraggable v-model="descType" :group="{ name: 'questions', pull: 'clone', put: false }"
-                        :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype">
+                        :animation="150" :clone="cloneDesc" :sort="false" class="list-qtype grid grid-cols-2">
                         <div v-for="item in descType" :key="item.types"
-                            class="list-qtype-item bg-white border-b border-gray-300 py-2 px-4 flex justify-between items-center cursor-grab hover:font-semibold">
-                            <span>{{ item.name }}</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6 text-gray-500">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            class="list-qtype-item bg-white border border-gray-300 py-2 px-4 flex flex-col items-center cursor-grab hover:font-semibold">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#666666" v-if="item.name == 'Image'">
+                                <path
+                                    d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Zm140-360q25 0 42.5-17.5T400-620q0-25-17.5-42.5T340-680q-25 0-42.5 17.5T280-620q0 25 17.5 42.5T340-560Z" />
                             </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                                fill="#666666" v-if="item.name == 'Paragraph'">
+                                <path
+                                    d="M160-360v-80h640v80H160Zm0 160v-80h640v80H160Zm0-320v-80h640v80H160Zm0-160v-80h640v80H160Z" />
+                            </svg>
+                            <span class="text-center">{{ item.name }}</span>
                         </div>
                     </VueDraggable>
 
@@ -670,8 +691,9 @@ const showDeletePageButton = ref([false])
             <form class="mx-auto max-w-xl lg:max-w-2xl xl:max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
                 <VueDraggable v-model="pages" group="pages" :animation="150" class="select-none"
                     :class="'pb-8 rounded-md'" handle=".handle">
-                    <div @mouseenter="showDeletePageButton[page_index] = true" @mouseleave="showDeletePageButton[page_index] = false"
-                        class="rounded-md relative" v-for="(page, page_index) in pages" :key="page_index">
+                    <div @mouseenter="showDeletePageButton[page_index] = true"
+                        @mouseleave="showDeletePageButton[page_index] = false" class="rounded-md relative"
+                        v-for="(page, page_index) in pages" :key="page_index">
                         <div
                             class="p-5 rounded-t-md border-b border-gray-300 bg-primary flex items-center relative handle cursor-move">
                             <input type="text" :id="'page-name-' + page_index" v-model="page.name" placeholder="Title"
@@ -750,8 +772,13 @@ const showDeletePageButton = ref([false])
                                                     Number Scale
                                                 </div>
                                                 <div @click="clone(page_index, item)"
-                                                    class="px-4 py-2 text-sm cursor-pointer border-t border-gray-300">
-                                                    Clone
+                                                    class="cursor-pointer w-full flex items-center px-4 py-2 gap-x-1 border-t border-gray-300">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                                                        viewBox="0 -960 960 960" width="24px" fill="#666666">
+                                                        <path
+                                                            d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Zm160-240v-480 480Z" />
+                                                    </svg>
+                                                    <p class="text-sm">Clone</p>
                                                 </div>
                                                 <div class="px-4 py-2 border-t border-gray-300">
                                                     <input type="checkbox" v-model="item.required"
@@ -856,10 +883,11 @@ const showDeletePageButton = ref([false])
                                     </div>
                                     <div class="">|</div>
                                     <div class="flex items-center">Start From
-                                        <input type="number" v-model="item.choices.number" @input="SortNumber(item)"
+                                        <input type="number" v-model="item.choices[0].number" @input="SortNumber(item)"
                                             :id="'number-value' + (index + 1) + '-q' + (item.id)" placeholder="0"
                                             class="text-sm mx-4 block w-1/3 border-0 border-b-2 border-gray-400 focus:ring-0 focus:border-gray-600">
                                     </div>
+                                    <!-- {{ item.choices }} -->
                                 </div>
                                 <div class="px-5" v-for="(number, index) in item.choices" :key="index"
                                     v-if="item.types.includes('Number')">
