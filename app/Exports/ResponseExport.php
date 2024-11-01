@@ -34,7 +34,7 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     {
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
-        $this->question = $question->where('question_type_id', '<=', 3)->toArray();
+        $this->question = $question->where('question_type_id', '<=', 3, '||', 'question_type_id', '==' , 6)->toArray();
         usort($this->question, function ($a, $b) {
             if($a['question_page_id'] == $b['question_page_id']){
                 return $a['order'] >= $b['order'] ;
@@ -45,9 +45,9 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
                 $this->question_text[$index] = strip_tags($quest['question_text']);
         }
         foreach ($question as $q) {
-            if ($q->question_type_id == 2 || $q->question_type_id == 3) {
+            if ($q->question_type_id == 2 || $q->question_type_id == 3 ||$q->question_type_id == 6) {
                 array_push($this->choice, $q->choice->toArray());
-            };
+            }
         }
     }
 
@@ -93,7 +93,12 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             foreach ($answer as $index => $ans) {
                 foreach ($this->choice as $choice) {
                     foreach ($choice as $c) {
-                        $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['value'] : '';
+                        // dd($this->question);
+                        if($q->question_type_id <=3){
+                            $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['value'] : '';
+                        } else if($q->question_type_id == 6){
+                            $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['scale'] : '';
+                        }
                     }
                 }
             $q['id'] == $ans['question_id'] ? $groupAnswer[$q['id']][] = $answer[$index]['answer'] : ''; 
