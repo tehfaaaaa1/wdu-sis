@@ -32,9 +32,12 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
     public $choice = [];
     public function __construct($surveyId, $title, $question)
     {
+        // dd($question->where('question_type_id', '<=', 3));
         $this->survey_id = $surveyId;
         $this->surveyTitle = $title;
-        $this->question = $question->where('question_type_id', '<=', 3, '||', 'question_type_id', '==' , 6)->toArray();
+        $this->question = $question->where('question_type_id', '<=', 3)->toArray();
+        // array_push($this->question, $question->where('question_type_id', '==', 6)->first()->toArray());
+
         usort($this->question, function ($a, $b) {
             if($a['question_page_id'] == $b['question_page_id']){
                 return $a['order'] >= $b['order'] ;
@@ -46,9 +49,14 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
         }
         foreach ($question as $q) {
             if ($q->question_type_id == 2 || $q->question_type_id == 3 ||$q->question_type_id == 6) {
+                if($q->question_type_id == 6){
+                    // dd($q);
+                    array_push($this->question, $q->toArray());
+                }
                 array_push($this->choice, $q->choice->toArray());
-            }
-        }
+            } 
+        }   
+
     }
 
     public function title(): string
@@ -88,12 +96,12 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             return ($a['question_id'] >= $b['question_id']);
         });
         $groupAnswer = [];
+        dd($this->question);
         foreach ($this->question as $q) {
             $groupAnswer[$q['id']][] = null;
             foreach ($answer as $index => $ans) {
                 foreach ($this->choice as $choice) {
                     foreach ($choice as $c) {
-                        // dd);
                         if($q['question_type_id'] <=3){
                             $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['value'] : '';
                         } else if($q['question_type_id']  == 6){
