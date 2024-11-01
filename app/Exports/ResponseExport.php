@@ -93,10 +93,10 @@ class ResponseExport implements FromQuery, WithHeadings, WithMapping, WithColumn
             foreach ($answer as $index => $ans) {
                 foreach ($this->choice as $choice) {
                     foreach ($choice as $c) {
-                        // dd($this->question);
-                        if($q->question_type_id <=3){
+                        // dd);
+                        if($q['question_type_id'] <=3){
                             $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['value'] : '';
-                        } else if($q->question_type_id == 6){
+                        } else if($q['question_type_id']  == 6){
                             $ans['answer'] == $c['id'] ? $answer[$index]['answer'] = $c['scale'] : '';
                         }
                     }
