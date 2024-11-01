@@ -4,7 +4,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import NavLink from '@/Components/NavLink.vue';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
-import DeleteConfirmation from '@/Components/DeleteConfirmation.vue';
+import HeaderText from '@/Components/HeaderText.vue';
 const props = defineProps({
     recipient: Object,
     contact: Object
@@ -34,6 +34,11 @@ console.log(props.recipient)
 </script>
 <template>
     <AppLayout title="Recipient Details">
+        <template #header>
+            <HeaderText :href="route('list-recipient')">
+                <span class="text-black">Recipient - </span>{{ recipient[0].name }}
+            </HeaderText>
+        </template>
         <main class="min-h-screen">
             <div class="mx-auto mt-5 rounded-md max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center mb-5">
@@ -102,7 +107,7 @@ console.log(props.recipient)
                                             </template>
                                             <template #content>
                                                 <div class="py-1 text-start">
-                                                    <a :href="route('edit-contact', [recipient[0].slug,contact_rec?.email_contact?.id])"
+                                                    <a :href="route('edit-contact', [recipient[0].slug, contact_rec?.email_contact?.id])"
                                                         :class="'text-gray-700 block px-4 py-2 text-sm cursor-pointer focus:outline-none focus:bg-gray-100 hover:bg-gray-100'">Edit
                                                     </a>
                                                     <a @click="hapus(contact_rec.id)"

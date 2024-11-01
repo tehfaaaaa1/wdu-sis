@@ -37,7 +37,7 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
 
     public function query()
     {
-        return Question::query()->where('survey_id', $this->survey_id)->where('question_type_id', '<=', 3)->orderBy('question_page_id')->orderBy('order');
+        return Question::query()->where('survey_id', $this->survey_id)->where('question_type_id', '<=', 6)->orderBy('question_page_id')->orderBy('order');
     }
 
     public function startCell(): string
@@ -51,8 +51,8 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
         $choice = $row->choice->toArray();
         $answer = $row->answer->toArray();
         $totalResponse = count($answer);
-
-        if ($row->question_type_id != 1 && $row->question_type_id <= 3) {
+        // dd($row[1]);
+        if ($row->question_type_id != 1 && ($row->question_type_id <= 3 || $row->question_type_id == 6)) {
             $hitung = [];
             $mapRows = [
                 [$this->rownumber, strip_tags($row->question_text)],
@@ -64,16 +64,18 @@ class StatisticExport implements FromQuery, WithMapping, ShouldAutoSize, WithCus
                 }
                 $hitung[$index] ?? 0 ? $count = count($hitung[$index]) : $count = '0';
                 $answer ? $percentage = ($count * 100) / $totalResponse : $percentage = '0';
-                $mapRows[] = ['', $c['value'], number_format($percentage, 2, '.', "") . '%', $count];
+                $mapRows[] = [str($c['scale']), $c['value'], number_format($percentage, 2, '.', "") . '%', $count];
             }
             $mapRows[] = [''];
             return $mapRows;
         } else if ($row->question_type_id == 1) {
             return [
                 [$this->rownumber, strip_tags($row->question_text)],
-                ['', (string)$totalResponse.' Responses' ?? (string)'No' . ' Responses'],
+                ['', (string)$totalResponse . ' Responses' ?? (string)'No' . ' Responses'],
                 [''],
             ];
+        } else {
+            return false;
         }
     }
 
